@@ -1,0 +1,3 @@
+[submodule "borg"]
+	path = packages/borg
+	url = git@github.com:emacscollective/borg.git
