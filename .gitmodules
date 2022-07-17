@@ -26,9 +26,6 @@
 [submodule "avy"]
 	path = packages/avy
 	url = git@github.com:abo-abo/avy.git
-[submodule "awesome-tray"]
-	path = packages/awesome-tray
-	url = git@github.com:manateelazycat/awesome-tray.git
 [submodule "beancount-mode"]
 	path = packages/beancount-mode
 	url = git@github.com:beancount/beancount-mode.git
