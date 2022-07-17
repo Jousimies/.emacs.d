@@ -845,12 +845,12 @@ Emacs 中拉圾回收的策略是当Emacs自上一次垃圾收集后分配的内
 
   (setq rime-inline-predicates '(rime-predicate-space-after-cc-p
                                  rime-predicate-after-alphabet-char-p))
-  (face-spec-set 'rime-default-face
-                 '((((background light))
-                    :foreground "#000000" :background nil)
-                   (t
-                    :foreground "#FFFFFF" :background nil))
-                 'face-override-spec)
+  ;; (face-spec-set 'rime-default-face
+  ;;                '((((background light))
+  ;;                   :foreground "#000000" :background nil)
+  ;;                  (t
+  ;;                   :foreground "#FFFFFF" :background nil))
+  ;;                'face-override-spec)
   (with-eval-after-load 'rime
     (define-key rime-mode-map (kbd "M-j") 'rime-force-enable))
 #+end_src
