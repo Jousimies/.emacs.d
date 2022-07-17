@@ -175,9 +175,6 @@
 [submodule "format-all"]
 	path = packages/format-all
 	url = git@github.com:lassik/emacs-format-all-the-code.git
-[submodule "frog-menu"]
-	path = packages/frog-menu
-	url = git@github.com:clemera/frog-menu.git
 [submodule "gcmh"]
 	path = packages/gcmh
 	url = git@gitlab.com:koral/gcmh.git
@@ -353,6 +350,9 @@
 [submodule "popon"]
 	path = packages/popon
 	url = https://codeberg.org/akib/emacs-popon.git
+[submodule "popup"]
+	path = packages/popup
+	url = git@github.com:auto-complete/popup-el.git
 [submodule "posframe"]
 	path = packages/posframe
 	url = git@github.com:tumashu/posframe.git

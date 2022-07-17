@@ -1158,31 +1158,8 @@ Fastest solution to spell check camel case code or plain text.
 #+end_src
 *** flyspell-correct
 #+begin_src emacs-lisp
-  (defun frog-menu-flyspell-correct (candidates word)
-    "Run `frog-menu-read' for the given CANDIDATES.
-
-  List of CANDIDATES is given by flyspell for the WORD.
-
-  Return selected word to use as a replacement or a tuple
-  of (command . word) to be used by `flyspell-do-correct'."
-    (let* ((corrects (if flyspell-sort-corrections
-                         (sort candidates 'string<)
-                       candidates))
-           (actions `(("C-s" "Save word"         (save    . ,word))
-                      ("C-a" "Accept (session)"  (session . ,word))
-                      ("C-b" "Accept (buffer)"   (buffer  . ,word))
-                      ("C-c" "Skip"              (skip    . ,word))))
-           (prompt   (format "Dictionary: [%s]"  (or ispell-local-dictionary
-                                                     ispell-dictionary
-                                                     "default")))
-           (res      (frog-menu-read prompt corrects actions)))
-      (unless res
-        (error "Quit"))
-      res))
-#+end_src
-#+begin_src emacs-lisp
   (global-set-key (kbd "C-;") ' flyspell-correct-wrapper)
-  (setq flyspell-correct-interface #'frog-menu-flyspell-correct)
+  (setq flyspell-correct-interface #'flyspell-correct-popup)
 #+end_src
 ** Language Translate
 *** Powerthesaurus
