@@ -836,7 +836,7 @@ Emacs 中拉圾回收的策略是当Emacs自上一次垃圾收集后分配的内
 #+begin_src emacs-lisp
   (setq rime-user-data-dir "~/Library/Rime/")
   (setq default-input-method "rime")
-  (setq rime-show-candidate 'minibuffer)
+  (setq rime-show-candidate 'posframe)
   (setq rime-posframe-properties '(:internal-border-width 0))
   (setq rime-disable-predicates '(rime-predicate-prog-in-code-p
                                   rime-predicate-org-in-src-block-p
