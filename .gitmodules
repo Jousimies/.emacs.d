@@ -1,3 +1,471 @@
+[submodule "ace-pinyin"]
+	path = packages/ace-pinyin
+	url = git@github.com:cute-jumper/ace-pinyin.git
+[submodule "aio"]
+	path = packages/aio
+	url = git@github.com:skeeto/emacs-aio.git
+[submodule "alert"]
+	path = packages/alert
+	url = git@github.com:jwiegley/alert.git
+[submodule "anaphora"]
+	path = packages/anaphora
+	url = git@github.com:rolandwalker/anaphora.git
+[submodule "async"]
+	path = packages/async
+	url = git@github.com:jwiegley/emacs-async.git
+[submodule "auctex"]
+	path = packages/auctex
+	url = git@github.com:emacsmirror/auctex.git
+	build-step = ./autogen.sh
+	build-step = ./configure --with-texmf-dir=$HOME/texmf
+	build-step = make
+	build-step = sudo make install
+[submodule "auto-save-git"]
+	path = packages/auto-save-git
+	url = git@github.com:manateelazycat/auto-save.git
+[submodule "avy"]
+	path = packages/avy
+	url = git@github.com:abo-abo/avy.git
+[submodule "awesome-tray"]
+	path = packages/awesome-tray
+	url = git@github.com:manateelazycat/awesome-tray.git
+[submodule "beancount-mode"]
+	path = packages/beancount-mode
+	url = git@github.com:beancount/beancount-mode.git
+[submodule "biblio"]
+	path = packages/biblio
+	url = git@github.com:cpitclaudel/biblio.el.git
+[submodule "biblio-zotero"]
+	path = packages/biblio-zotero
+	url = git@github.com:gkowzan/biblio-zotero.git
+[submodule "bibtex-completion"]
+	path = packages/bibtex-completion
+	url = git@github.com:tmalsburg/helm-bibtex.git
+	no-byte-compile = helm-bibtex.el
+	no-byte-compile = ivy-bibtex.el
 [submodule "borg"]
 	path = packages/borg
 	url = git@github.com:emacscollective/borg.git
+[submodule "browse-at-remote"]
+	path = packages/browse-at-remote
+	url = git@github.com:rmuslimov/browse-at-remote.git
+[submodule "cape"]
+	path = packages/cape
+	url = git@github.com:minad/cape.git
+[submodule "cdlatex"]
+	path = packages/cdlatex
+	url = git@github.com:cdominik/cdlatex.git
+[submodule "chinese-word-at-point"]
+	path = packages/chinese-word-at-point
+	url = git@github.com:xuchunyang/chinese-word-at-point.el.git
+[submodule "citar"]
+	path = packages/citar
+	url = git@github.com:bdarcus/citar.git
+[submodule "citeproc"]
+	path = packages/citeproc
+	url = git@github.com:andras-simonyi/citeproc-el.git
+[submodule "closql"]
+	path = packages/closql
+	url = git@github.com:emacscollective/closql.git
+[submodule "compat"]
+	path = packages/compat
+	url = git@github.com:emacsmirror/compat.git
+[submodule "consult"]
+	path = packages/consult
+	url = git@github.com:minad/consult.git
+[submodule "consult-bibtex"]
+	path = packages/consult-bibtex
+	url = git@github.com:mohkale/consult-bibtex.git
+[submodule "consult-dir"]
+	path = packages/consult-dir
+	url = git@github.com:karthink/consult-dir.git
+[submodule "corfu"]
+	path = packages/corfu
+	url = git@github.com:minad/corfu.git
+    load-path = .
+    load-path = ./extensions
+[submodule "csv"]
+	path = packages/csv
+	url = git@gitlab.com:u11/csv.el.git
+[submodule "ctrlf"]
+	path = packages/ctrlf
+	url = git@github.com:raxod502/ctrlf.git
+[submodule "dash"]
+	path = packages/dash
+	url = git@github.com:magnars/dash.el.git
+[submodule "deferred"]
+	path = packages/deferred
+	url = git@github.com:kiwanami/emacs-deferred.git
+[submodule "dired-hide-dotfiles"]
+	path = packages/dired-hide-dotfiles
+	url = git@github.com:mattiasb/dired-hide-dotfiles.git
+[submodule "diredfl"]
+	path = packages/diredfl
+	url = git@github.com:purcell/diredfl.git
+[submodule "easy-kill"]
+	path = packages/easy-kill
+	url = git@github.com:leoliu/easy-kill.git
+[submodule "ebib"]
+	path = packages/ebib
+	url = git@github.com:joostkremers/ebib.git
+	no-byte-compile = ebib-ivy.el
+[submodule "ein"]
+	path = packages/ein
+	url = git@github.com:millejoh/emacs-ipython-notebook.git
+[submodule "eldoc"]
+	path = packages/eldoc
+	url = git@github.com:emacsmirror/eldoc.git
+[submodule "elfeed"]
+	path = packages/elfeed
+	url = git@github.com:skeeto/elfeed.git
+[submodule "elfeed-org"]
+	path = packages/elfeed-org
+	url = git@github.com:remyhonig/elfeed-org.git
+[submodule "elfeed-summary"]
+	path = packages/elfeed-summary
+	url = git@github.com:SqrtMinusOne/elfeed-summary.git
+[submodule "elisp-refs"]
+	path = packages/elisp-refs
+	url = git@github.com:Wilfred/elisp-refs.git
+[submodule "emacsql"]
+	path = packages/emacsql
+	url = git@github.com:skeeto/emacsql.git
+	no-byte-compile = emacsql-pg.el
+[submodule "emacsql-sqlite-builtin"]
+	path = packages/emacsql-sqlite-builtin
+	url = git@github.com:emacscollective/emacsql-sqlite-builtin.git
+[submodule "emacsql-sqlite3"]
+	path = packages/emacsql-sqlite3
+	url = git@github.com:cireu/emacsql-sqlite3.git
+[submodule "embark"]
+	path = packages/embark
+	url = git@github.com:oantolin/embark.git
+	no-byte-compile = avy-embark-collect.el
+[submodule "embrace"]
+	path = packages/embrace
+	url = git@github.com:cute-jumper/embrace.el.git
+[submodule "engine-mode"]
+	path = packages/engine-mode
+	url = git@github.com:hrs/engine-mode.git
+[submodule "epkg"]
+	path = packages/epkg
+	url = git@github.com:emacscollective/epkg.git
+[submodule "esxml"]
+	path = packages/esxml
+	url = git@github.com:tali713/esxml.git
+[submodule "expand-region"]
+	path = packages/expand-region
+	url = git@github.com:magnars/expand-region.el.git
+[submodule "f"]
+	path = packages/f
+	url = git@github.com:rejeep/f.el.git
+[submodule "flymake"]
+	path = packages/flymake
+	url = git@github.com:emacsmirror/flymake.git
+[submodule "flymake-easy"]
+	path = packages/flymake-easy
+	url = git@github.com:purcell/flymake-easy.git
+[submodule "flymake-popon"]
+	path = packages/flymake-popon
+	url = https://codeberg.org/akib/emacs-flymake-popon.git
+[submodule "flymake-python-pyflakes"]
+	path = packages/flymake-python-pyflakes
+	url = git@github.com:purcell/flymake-python-pyflakes.git
+[submodule "flyspell-correct"]
+	path = packages/flyspell-correct
+	url = git@github.com:d12frosted/flyspell-correct.git
+	no-byte-compile = flyspell-correct-ivy.el
+	no-byte-compile = flyspell-correct-helm.el
+	no-byte-compile = flyspell-correct-avy-menu.el
+	no-byte-compile = flyspell-correct-ido.el
+[submodule "format-all"]
+	path = packages/format-all
+	url = git@github.com:lassik/emacs-format-all-the-code.git
+[submodule "frog-menu"]
+	path = packages/frog-menu
+	url = git@github.com:clemera/frog-menu.git
+[submodule "gcmh"]
+	path = packages/gcmh
+	url = git@gitlab.com:koral/gcmh.git
+[submodule "git-timemachine"]
+	path = packages/git-timemachine
+	url = git@gitlab.com:pidu/git-timemachine.git
+[submodule "go-translate"]
+	path = packages/go-translate
+	url = git@github.com:lorniu/go-translate.git
+[submodule "goggles"]
+	path = packages/goggles
+	url = git@github.com:minad/goggles.git
+[submodule "grab-mac-link"]
+	path = packages/grab-mac-link
+	url = git@github.com:xuchunyang/grab-mac-link.el.git
+[submodule "helpful"]
+	path = packages/helpful
+	url = git@github.com:Wilfred/helpful.git
+[submodule "ht"]
+	path = packages/ht
+	url = git@github.com:Wilfred/ht.el.git
+[submodule "htmlize"]
+	path = packages/htmlize
+	url = git@github.com:hniksic/emacs-htmlize.git
+[submodule "hungry-delete"]
+	path = packages/hungry-delete
+	url = git@github.com:nflath/hungry-delete.git
+[submodule "im-cursor-chg"]
+	path = packages/im-cursor-chg
+	url = git@github.com:Jousimies/im-cursor-chg.git
+[submodule "info-colors"]
+	path = packages/info-colors
+	url = git@github.com:ubolonton/info-colors.git
+[submodule "inheritenv"]
+	path = packages/inheritenv
+	url = git@github.com:purcell/inheritenv.git
+[submodule "insert-translated-name"]
+	path = packages/insert-translated-name
+	url = git@github.com:manateelazycat/insert-translated-name.git
+[submodule "js2-mode"]
+	path = packages/js2-mode
+	url = git@github.com:mooz/js2-mode.git
+[submodule "key-chord"]
+	path = packages/key-chord
+	url = git@github.com:emacsorphanage/key-chord.git
+[submodule "kv"]
+	path = packages/kv
+	url = git@github.com:nicferrier/emacs-kv.git
+[submodule "language-id"]
+	path = packages/language-id
+	url = git@github.com:lassik/emacs-language-id.git
+[submodule "link-hint"]
+	path = packages/link-hint
+	url = git@github.com:noctuid/link-hint.el.git
+[submodule "lsp-bridge"]
+	path = packages/lsp-bridge
+	url = git@github.com:manateelazycat/lsp-bridge.git
+    load-path = .
+    load-path = ./acm
+[submodule "lua-mode"]
+	path = packages/lua-mode
+	url = git@github.com:immerrr/lua-mode.git
+[submodule "magit"]
+	path = packages/magit
+	url = git@github.com:magit/magit.git
+	no-byte-compile = lisp/magit-libgit.el
+	recursive-byte-compile = true
+[submodule "marginalia"]
+	path = packages/marginalia
+	url = git@github.com:minad/marginalia.git
+[submodule "markdown-mode"]
+	path = packages/markdown-mode
+	url = git@github.com:jrblevin/markdown-mode.git
+[submodule "math-preview"]
+	path = packages/math-preview
+	url = git@gitlab.com:matsievskiysv/math-preview.git
+[submodule "mermaid-mode"]
+	path = packages/mermaid-mode
+	url = git@github.com:abrochard/mermaid-mode.git
+[submodule "modus-themes"]
+	path = packages/modus-themes
+	url = git@gitlab.com:protesilaos/modus-themes.git
+[submodule "mu4e-alert"]
+	path = packages/mu4e-alert
+	url = git@github.com:xzz53/mu4e-alert.git
+[submodule "mu4e-column-faces"]
+	path = packages/mu4e-column-faces
+	url = git@github.com:Alexander-Miller/mu4e-column-faces.git
+[submodule "no-littering"]
+	path = packages/no-littering
+	url = git@github.com:emacscollective/no-littering.git
+[submodule "on"]
+	path = packages/on
+	url = git@github.com:ajgrf/on.el.git
+[submodule "orderless"]
+	path = packages/orderless
+	url = git@github.com:oantolin/orderless.git
+[submodule "org-anki"]
+	path = packages/org-anki
+	url = git@github.com:eyeinsky/org-anki.git
+[submodule "org-appear"]
+	path = packages/org-appear
+	url = git@github.com:awth13/org-appear.git
+[submodule "org-auto-tangle"]
+	path = packages/org-auto-tangle
+	url = git@github.com:yilkalargaw/org-auto-tangle.git
+[submodule "org-download"]
+	path = packages/org-download
+	url = git@github.com:abo-abo/org-download.git
+[submodule "org-edna"]
+	path = packages/org-edna
+	url = git@github.com:emacsmirror/org-edna.git
+[submodule "org-msg"]
+	path = packages/org-msg
+	url = git@github.com:jeremy-compostella/org-msg.git
+[submodule "org-present"]
+	path = packages/org-present
+	url = git@github.com:rlister/org-present.git
+[submodule "org-roam"]
+	path = packages/org-roam
+	url = git@github.com:org-roam/org-roam.git
+	load-path = .
+	load-path = extensions
+[submodule "org-roam-bibtex"]
+	path = packages/org-roam-bibtex
+	url = git@github.com:org-roam/org-roam-bibtex.git
+	no-byte-compile = orb-helm.el
+	no-byte-compile = orb-ivy.el
+[submodule "org-roam-ui"]
+	path = packages/org-roam-ui
+	url = git@github.com:org-roam/org-roam-ui.git
+[submodule "org-superstar"]
+	path = packages/org-superstar
+	url = git@github.com:integral-dw/org-superstar-mode.git
+[submodule "org-transclusion"]
+	path = packages/org-transclusion
+	url = git@github.com:nobiot/org-transclusion.git
+[submodule "osm"]
+	path = packages/osm
+	url = git@github.com:minad/osm.git
+[submodule "osx-dictionary"]
+	path = packages/osx-dictionary
+	url = git@github.com:xuchunyang/osx-dictionary.el.git
+[submodule "osx-trash"]
+	path = packages/osx-trash
+	url = git@github.com:emacsorphanage/osx-trash.git
+[submodule "ov"]
+	path = packages/ov
+	url = git@github.com:emacsorphanage/ov.git
+[submodule "ox-hugo"]
+	path = packages/ox-hugo
+	url = git@github.com:kaushalmodi/ox-hugo.git
+[submodule "packages/pdfannots"]
+	path = packages/pdfannots
+	url = git@github.com:0xabu/pdfannots.git
+[submodule "parsebib"]
+	path = packages/parsebib
+	url = git@github.com:joostkremers/parsebib.git
+[submodule "pdf-tools"]
+	path = packages/pdf-tools
+	url = git@github.com:vedang/pdf-tools.git
+	load-path = .
+	load-path = ./lisp
+[submodule "peep-dired"]
+	path = packages/peep-dired
+	url = git@github.com:asok/peep-dired.git
+[submodule "pinyinlib"]
+	path = packages/pinyinlib
+	url = git@github.com:cute-jumper/pinyinlib.el.git
+[submodule "polymode"]
+	path = packages/polymode
+	url = git@github.com:polymode/polymode.git
+[submodule "popon"]
+	path = packages/popon
+	url = https://codeberg.org/akib/emacs-popon.git
+[submodule "posframe"]
+	path = packages/posframe
+	url = git@github.com:tumashu/posframe.git
+[submodule "powerthesaurus"]
+	path = packages/powerthesaurus
+	url = git@github.com:SavchenkoValeriy/emacs-powerthesaurus.git
+[submodule "project"]
+	path = packages/project
+	url = git@github.com:emacsmirror/project.git
+[submodule "promise"]
+	path = packages/promise
+	url = git@github.com:chuntaro/emacs-promise.git
+[submodule "queue"]
+	path = packages/queue
+	url = git@github.com:emacsmirror/queue.git
+[submodule "rainbow-identifiers"]
+	path = packages/rainbow-identifiers
+	url = git@github.com:Fanael/rainbow-identifiers.git
+[submodule "rainbow-mode"]
+	path = packages/rainbow-mode
+	url = git@github.com:emacsmirror/rainbow-mode.git
+[submodule "request"]
+	path = packages/request
+	url = git@github.com:tkf/emacs-request.git
+[submodule "rime"]
+	path = packages/rime
+	url = git@github.com:DogLooksGood/emacs-rime.git
+[submodule "rime-regexp"]
+	path = packages/rime-regexp
+	url = git@github.com:colawithsauce/rime-regexp.el.git
+[submodule "rust-mode"]
+	path = packages/rust-mode
+	url = git@github.com:rust-lang/rust-mode.git
+[submodule "s"]
+	path = packages/s
+	url = git@github.com:magnars/s.el.git
+[submodule "shrink-path"]
+	path = packages/shrink-path
+	url = git@gitlab.com:bennya/shrink-path.el.git
+[submodule "simple-httpd"]
+	path = packages/simple-httpd
+	url = git@github.com:skeeto/emacs-web-server.git
+[submodule "skewer-mode"]
+	path = packages/skewer-mode
+	url = git@github.com:skeeto/skewer-mode.git
+[submodule "smog"]
+	path = packages/smog
+	url = git@github.com:zzkt/smog.git
+[submodule "sqlite3"]
+	path = packages/sqlite3
+	url = git@github.com:pekingduck/emacs-sqlite3-api.git
+[submodule "stock-tracker"]
+	path = packages/stock-tracker
+	url = git@github.com:beacoder/stock-tracker.git
+[submodule "string-inflection"]
+	path = packages/string-inflection
+	url = git@github.com:akicho8/string-inflection.git
+[submodule "tablist"]
+	path = packages/tablist
+	url = git@github.com:politza/tablist.git
+[submodule "tempel"]
+	path = packages/tempel
+	url = git@github.com:minad/tempel.git
+[submodule "toc-org"]
+	path = packages/toc-org
+	url = git@github.com:snosov1/toc-org.git
+[submodule "tomelr"]
+	path = packages/tomelr
+	url = git@github.com:kaushalmodi/tomelr.git
+[submodule "transient"]
+	path = packages/transient
+	url = git@github.com:magit/transient.git
+[submodule "ts"]
+	path = packages/ts
+	url = git@github.com:alphapapa/ts.el.git
+[submodule "undo-fu-session"]
+	path = packages/undo-fu-session
+	url = git@gitlab.com:ideasman42/emacs-undo-fu-session.git
+[submodule "vertico"]
+	path = packages/vertico
+	url = git@github.com:minad/vertico.git
+	load-path = .
+	load-path = ./extensions
+[submodule "visual-fill-column"]
+	path = packages/visual-fill-column
+	url = https://codeberg.org/joostkremers/visual-fill-column.git
+[submodule "vundo"]
+	path = packages/vundo
+	url = git@github.com:casouri/vundo.git
+[submodule "websocket"]
+	path = packages/websocket
+	url = git@github.com:ahyatt/emacs-websocket.git
+[submodule "with-editor"]
+	path = packages/with-editor
+	url = git@github.com:magit/with-editor.git
+[submodule "writegood-mode"]
+	path = packages/writegood-mode
+	url = git@github.com:bnbeckwith/writegood-mode.git
+[submodule "wucuo"]
+	path = packages/wucuo
+	url = git@github.com:redguardtoo/wucuo.git
+[submodule "yaml-mode"]
+	path = packages/yaml-mode
+	url = git@github.com:yoshiki/yaml-mode.git
+[submodule "zetteldesk"]
+	path = packages/zetteldesk
+	url = git@github.com:Vidianos-Giannitsis/zetteldesk.el.git
+    no-byte-compile = zetteldesk-remark.el
+    no-byte-compile = zetteldesk-kb.el
+    no-byte-compile = zetteldesk-kb-complete.el
