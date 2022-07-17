@@ -1439,12 +1439,7 @@ If you do not provide the separator bar, the last state is used as the DONE stat
   (setq org-confirm-babel-evaluate nil)
 #+end_src
 *** org-capture
-不是很喜欢 org-capture 触发的窗口，然后再在窗口中选择要执行的命令。 +对于经常使用的 template ，我选择使用 one-key 。这样大部分情况下我不需要看一个占据半个屏幕的窗口。 one-key 默认不弹出窗口，其仅在 echo area 中显示提示信息，有需要的时候通过 ~?~ 展示就好了。+ （己经不使用 one-key ，改用 global-set-key）
-#+begin_src emacs-lisp
-  (defun my/org-capture-shortcut (key)
-    (interactive)
-    (org-capture nil key))
-#+end_src
++不是很喜欢 org-capture 触发的窗口，然后再在窗口中选择要执行的命令。+ (经常用能记住，时间长了不用就记不住快捷键。) +对于经常使用的 template ，我选择使用 one-key 。这样大部分情况下我不需要看一个占据半个屏幕的窗口。 one-key 默认不弹出窗口，其仅在 echo area 中显示提示信息，有需要的时候通过 ~?~ 展示就好了。+ （己经不使用 one-key ，改用 global-set-key）
 #+begin_src emacs-lisp
   (setq org-capture-templates
     '(("d" "Today Diary" entry (file+headline (lambda () (concat my-roam "/daily/" (format-time-string "%Y-%m-%d" (current-time)) ".org")) "Morning Diary")
@@ -1462,12 +1457,7 @@ If you do not provide the separator bar, the last state is used as the DONE stat
        "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")))
 #+end_src
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-c o c d") (lambda () (interactive) (my/org-capture-shortcut "d")))
-  (global-set-key (kbd "C-c o c t") (lambda () (interactive) (my/org-capture-shortcut "tt")))
-  (global-set-key (kbd "C-c o c T") (lambda () (interactive) (my/org-capture-shortcut "td")))
-  (global-set-key (kbd "C-c o c i") (lambda () (interactive) (my/org-capture-shortcut "i")))
-  (global-set-key (kbd "C-c o c r") (lambda () (interactive) (my/org-capture-shortcut "r")))
-  (global-set-key (kbd "C-c o c c") (lambda () (interactive) (my/org-capture-shortcut "s")))
+  (global-set-key (kbd "C-c c") 'org-capture)
 #+end_src
 *** org-attach
 #+begin_src emacs-lisp
