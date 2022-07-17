@@ -272,6 +272,9 @@
 [submodule "mu4e-column-faces"]
 	path = packages/mu4e-column-faces
 	url = git@github.com:Alexander-Miller/mu4e-column-faces.git
+[submodule "nano-theme"]
+	path = packages/nano-theme
+	url = git@github.com:rougier/nano-theme.git
 [submodule "no-littering"]
 	path = packages/no-littering
 	url = git@github.com:emacscollective/no-littering.git
