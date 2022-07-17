@@ -287,6 +287,9 @@
 [submodule "org-edna"]
 	path = packages/org-edna
 	url = git@github.com:emacsmirror/org-edna.git
+[submodule "org-modern"]
+	path = packages/org-modern
+	url = git@github.com:minad/org-modern.git
 [submodule "org-msg"]
 	path = packages/org-msg
 	url = git@github.com:jeremy-compostella/org-msg.git

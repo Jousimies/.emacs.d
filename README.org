@@ -1305,16 +1305,6 @@ If you do not provide the separator bar, the last state is used as the DONE stat
             ("NEXT" ("WAIT") ("CNCL") ("SOMEDAY"))
             ("DONE" ("WAIT") ("CNCL") ("SOMEDAY")))))
 #+end_src
-*** org faces
-#+begin_src emacs-lisp
-  (setq org-todo-keyword-faces
-	  '(("TODO" :foreground "Red" :weight bold)
-	    ("NEXT" :foreground "Forest green" :weight bold)
-	    ("SOMEDAY" :foreground "blue" :weight bold)
-	    ("DONE" :foreground "#705628" :weight bold)
-	    ("WAIT" :foreground "Orange" :weight bold)
-	    ("CNCL" :foreground "#b4534b" :weight bold)))
-#+end_src
 *** org-babel
 根据需要加载 org-babel-load-languages, 加快 Emacs 的启动速度，[[https://emacs-china.org/t/org-babel/18699][相关讨论见 Emacs-china 论坛]]。
 #+begin_src emacs-lisp
