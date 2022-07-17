@@ -1165,7 +1165,7 @@ Fastest solution to spell check camel case code or plain text.
 *** Powerthesaurus
 有 autoload ，此处不需要做配置，只需要在设置相应的按键绑定。
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-c l t") 'powerthesaurus-lookup-dwim)
+  (global-set-key (kbd "C-c l l") 'powerthesaurus-lookup-dwim)
 #+end_src
 *** Smog
 还没搞懂这个软件怎么用，这里是一些资料。
