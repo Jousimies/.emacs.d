@@ -103,6 +103,8 @@ If I have seen further, it is by standing on the shoulders of giants. ---- Sir I
 + https://sachachua.com/dotemacs/
 + https://github.com/raxod502/radian
 + https://tecosaur.github.io/emacs-config/config.html
+** Attention
+本配置需要升级 Emacs 到版本 29. 否则 tab-bar 在显示 global-mode-string 内容时会出现夸行的问题。
 * The Early Init File
 #+begin_src emacs-lisp :tangle early-init.el
   ;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
