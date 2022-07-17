@@ -263,9 +263,6 @@
 [submodule "mermaid-mode"]
 	path = packages/mermaid-mode
 	url = git@github.com:abrochard/mermaid-mode.git
-[submodule "modus-themes"]
-	path = packages/modus-themes
-	url = git@gitlab.com:protesilaos/modus-themes.git
 [submodule "mu4e-alert"]
 	path = packages/mu4e-alert
 	url = git@github.com:xzz53/mu4e-alert.git
