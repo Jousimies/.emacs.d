@@ -99,9 +99,6 @@
 [submodule "dired-hide-dotfiles"]
 	path = packages/dired-hide-dotfiles
 	url = git@github.com:mattiasb/dired-hide-dotfiles.git
-[submodule "diredfl"]
-	path = packages/diredfl
-	url = git@github.com:purcell/diredfl.git
 [submodule "easy-kill"]
 	path = packages/easy-kill
 	url = git@github.com:leoliu/easy-kill.git

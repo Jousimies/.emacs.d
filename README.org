@@ -865,10 +865,6 @@ Emacs 中拉圾回收的策略是当Emacs自上一次垃圾收集后分配的内
   (setq dired-listing-switches "-al --group-directories-first")
   (put 'dired-find-alternate-file 'disabled nil)
 #+end_src
-*** diredfl
-#+begin_src emacs-lisp
-  (add-hook 'dired-mode-hook 'diredfl-global-mode)
-#+end_src
 *** peep-dired
 #+begin_src emacs-lisp
   (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "pdf"))
