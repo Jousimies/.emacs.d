@@ -103,6 +103,9 @@
 	path = packages/ebib
 	url = git@github.com:joostkremers/ebib.git
 	no-byte-compile = ebib-ivy.el
+[submodule "ebuku"]
+	path = packages/ebuku
+	url = git@github.com:flexibeast/ebuku.git
 [submodule "ein"]
 	path = packages/ein
 	url = git@github.com:millejoh/emacs-ipython-notebook.git

@@ -2761,6 +2761,10 @@ elfeed buffer display. 代码借鉴自 [[https://github.com/karthink/.emacs.d/bl
 
   (global-set-key (kbd "C-c w r") 'elfeed-summary)
 #+end_src
+** Bookmark, ebuku
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c t m") 'ebuku)
+#+end_src
 ** Email
 Emacs 可以进行 Email 的管理，分三个部份，收邮件，看邮件和发邮件。收邮件使用isync，看邮件使用mu，发邮件使用msmtp。
 
