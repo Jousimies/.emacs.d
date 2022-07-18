@@ -843,10 +843,10 @@ Emacs 中拉圾回收的策略是当Emacs自上一次垃圾收集后分配的内
 #+end_src
 *** dired
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-c d b") (lambda () (interactive) (dired "~/blog")))
+  (global-set-key (kbd "C-c d b") (lambda () (interactive) (dired "~/blog/")))
   (global-set-key (kbd "C-c d d") (lambda () (interactive) (dired "~/Downloads/")))
-  (global-set-key (kbd "C-c d D") (lambda () (interactive) (dired "~/Documents")))
-  (global-set-key (kbd "C-c d n") (lambda () (interactive) (dired "~/Nextcloud")))
+  (global-set-key (kbd "C-c d D") (lambda () (interactive) (dired "~/Documents/")))
+  (global-set-key (kbd "C-c d n") (lambda () (interactive) (dired "~/Nextcloud/")))
 #+end_src
 #+begin_src emacs-lisp
   (setq dired-recursive-deletes 'always)
