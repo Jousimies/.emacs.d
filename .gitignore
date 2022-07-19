@@ -11,3 +11,4 @@ init.elc
 early-init.el
 var
 etc
+/elpa
