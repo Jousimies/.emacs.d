@@ -164,61 +164,6 @@ org-mode
 "#+LATEX_HEADER: \\newenvironment{enabstract}{\\par\\small\\noindent\\mbox{}\\hfill{\\bfseries \\enabstractname}\\hfill\\mbox{}\\par \\vskip 2.5ex}{\\par\\vskip 2.5ex}" n>
 "#+LATEX_HEADER: \\newenvironment{cnabstract}{\\par\\small\\noindent\\mbox{}\\hfill{\\bfseries \\cnabstractname}\\hfill\\mbox{}\\par\\vskip 2.5ex}{\\par\\vskip 2.5ex}" n>)
 
-(latex-book-bak
- "#+LATEX_CLASS:book" n>
- "#+LATEX_HEADER: \\usepackage[linkcolor=blue,citecolor=blue,backref=page]{hyperref}" n>
- "#+LATEX_HEADER: \\hypersetup{hidelinks}" n>
- "#+LATEX_HEADER: \\usepackage{geometry}" n>
- "#+LATEX_HEADER: \\geometry{top=2cm,bottom=2cm,right=2cm,left=2.5cm}" n>
- "#+LATEX_HEADER: \\geometry{headsep=0.5cm}" n>
- "#+LATEX_HEADER: \\usepackage{setspace}" n>
- "#+LATEX_HEADER: \\setlength{\\baselineskip}{22pt}" n>
- "#+LATEX_HEADER: \\setlength{\\parskip}{0pt}" n>
-
- "#+LATEX_HEADER: \\usepackage{fontspec}" n>
- "#+LATEX_HEADER: \\setCJKmainfont{SimSun}" n>
- "#+LATEX_HEADER: \\setCJKmonofont{SimSun}" n>
- "#+LATEX_HEADER: \\setCJKfamilyfont{kaiti}{Kaiti SC}" n>
- "#+LATEX_HEADER: \\newcommand{\\KaiTi}{\\CJKfamily{kaiti}}" n>
- "#+LATEX_HEADER: \\setCJKfamilyfont{heiti}{Hei}" n>
- "#+LATEX_HEADER: \\newcommand{\\HeiTi}{\\CJKfamily{heiti}}" n>
- "#+LATEX_HEADER: \\setmainfont{Times New Roman}" n>
- "#+LATEX_HEADER: \\newcommand{\\chuhao}{\\fontsize{42.2pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\xiaochu}{\\fontsize{36.1pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\yihao}{\\fontsize{26.1pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\xiaoyi}{\\fontsize{24.1pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\erhao}{\\fontsize{22.1pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\xiaoer}{\\fontsize{18.1pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\sanhao}{\\fontsize{16.1pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\xiaosan}{\\fontsize{15.1pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\sihao}{\\fontsize{14.1pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\xiaosi}{\\fontsize{12.1pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\wuhao}{\\fontsize{10.5pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\xiaowu}{\\fontsize{9.0pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\liuhao}{\\fontsize{7.5pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\xiaoliu}{\\fontsize{6.5pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\qihao}{\\fontsize{5.5pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\newcommand{\\bahao}{\\fontsize{5.0pt}{\\baselineskip}\\selectfont}" n>
- "#+LATEX_HEADER: \\usepackage{titlesec}" n>
- "#+LATEX_HEADER: \\titleformat{\\chapter}[block]{\\normalfont\\xiaoer\\bfseries\\centering\\HeiTi}{第{\\zhnumber{\\thechapter}}章}{10pt}{\\xiaoer}" n>
- "#+LATEX_HEADER: \\titleformat{\\section}[block]{\\normalfont\\xiaosan\\bfseries\\HeiTi}{\\thesection}{10pt}{\\xiaosan}" n>
- "#+LATEX_HEADER: \\titleformat{\\subsection}[block]{\\normalfont\\sihao\\bfseries\\HeiTi}{\\thesubsection}{10pt}{\\sihao}" n>
- "#+LATEX_HEADER: \\titleformat{\\subsubsection}[block]{\\normalfont\\sihao\\bfseries\\HeiTi}{\\thesubsubsection}{10pt}{\\sihao}" n>
- "#+LATEX_HEADER: \\titlespacing{\\chapter} {0pt}{-22pt}{0pt}{}" n>
- "#+LATEX_HEADER: \\titlespacing{\\section} {0pt}{0pt}{0pt}" n>
- "#+LATEX_HEADER: \\titlespacing{\\subsection} {0pt}{0pt}{0pt}" n>
- "#+LATEX_HEADER: \\titlespacing{\\subsubsection} {0pt}{0pt}{0pt}" n>
- "#+LATEX_HEADER: \\usepackage{fancyhdr}" n>
- "#+LATEX_HEADER: \\pagestyle{fancy}" n>
- "#+LATEX_HEADER: \\fancypagestyle{plain}{\\pagestyle{fancy}}" n>
- "#+LATEX_HEADER: \\usepackage{minted}" n>
- "#+LATEX_HEADER: \\usepackage{graphicx}" n>
- "#+LATEX_HEADER: \\usepackage{subfigure}" n>
- "#+LATEX_HEADER: \\usepackage{caption}" n>
- "#+LATEX_HEADER: \\captionsetup{font={small}}" n>
- "#+LATEX_HEADER: \\setcounter{secnumdepth}{2}" n>
- "#+LATEX_HEADER: \\ctexset{contentsname=\\HeiTi{目{\\quad}录}}" n> "#+LATEX_HEADER: \\ctexset{section={format=\\raggedright}}")
-
 (latex-article
  "#+LATEX_CLASS:article" n>
  "#+LATEX_CLASS_OPTIONS: [12pt,a4paper]" n>
@@ -231,17 +176,20 @@ org-mode
  "#+LATEX_HEADER: \\usepackage{setspace}" n>
  "#+LATEX_HEADER: \\setlength{\\baselineskip}{22pt}" n>
  "#+LATEX_HEADER: \\setlength{\\parskip}{0pt}" n>
- "#+LATEX_HEADER: \\usepackage{fontspec}" n>
- "#+LATEX_HEADER: \\setCJKmainfont{SimSun}" n>
- "#+LATEX_HEADER: \\setCJKmonofont{SimSun}" n>
- "#+LATEX_HEADER: \\setCJKfamilyfont{kaiti}{Kaiti SC}" n>
- "#+LATEX_HEADER: \\newcommand{\\KaiTi}{\\CJKfamily{kaiti}}" n>
- "#+LATEX_HEADER: \\setCJKfamilyfont{heiti}{Hei}" n>
- "#+LATEX_HEADER: \\newcommand{\\HeiTi}{\\CJKfamily{heiti}}" n>
+
  "#+LATEX_HEADER: \\setmainfont{Times New Roman}" n>
+ "#+LATEX_HEADER: \\setsansfont{Arial}" n>
+ "#+LATEX_HEADER: \\setmonofont{PT Mono}" n>
+
+ "#+LATEX_HEADER: \\setCJKmainfont[BoldFont=STZhongsong, ItalicFont=STKaiti]{STSong}" n>
+ "#+LATEX_HEADER: \\setCJKsansfont[BoldFont=STHeiti]{STXihei}" n>
+ "#+LATEX_HEADER: \\setCJKmonofont{STFangsong}" n>
+
+ "#+LATEX_HEADER: \\usepackage{fontspec}" n>
  "#+LATEX_HEADER: \\usepackage[namelimits]{amsmath}" n>
  "#+LATEX_HEADER: \\usepackage{amssymb}" n>
  "#+LATEX_HEADER: \\usepackage{mathrsfs}" n>
+
  "#+LATEX_HEADER: \\newcommand{\\chuhao}{\\fontsize{42.2pt}{\\baselineskip}\\selectfont}" n>
  "#+LATEX_HEADER: \\newcommand{\\xiaochu}{\\fontsize{36.1pt}{\\baselineskip}\\selectfont}" n>
  "#+LATEX_HEADER: \\newcommand{\\yihao}{\\fontsize{26.1pt}{\\baselineskip}\\selectfont}" n>
