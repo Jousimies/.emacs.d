@@ -2890,6 +2890,11 @@ Replace fancy icon with all-the-icons。原来的 icon 看起来丑。
   (with-eval-after-load 'mu4e
     (mu4e-alert-enable-mode-line-display))
 #+end_src
+#+begin_src emacs-lisp
+  (add-hook 'mu4e-index-updated-hook
+            (defun new-mail-sound ()
+              (shell-command "afplay /System/Library/Sounds/Blow.aiff")))
+#+end_src
 *** mu4e-column-faces
 #+begin_src emacs-lisp
   (with-eval-after-load 'mu4e
