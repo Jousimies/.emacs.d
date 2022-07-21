@@ -919,9 +919,7 @@ Emacs 中拉圾回收的策略是当Emacs自上一次垃圾收集后分配的内
   (require 'auto-save)
   (setq auto-save-silent t)
   (setq auto-save-delete-trailing-whitespace t)
-
   (add-hook 'on-first-input-hook 'auto-save-enable)
-  (add-hook 'org-capture-mode-hook #'(lambda nil (setq auto-save-delete-trailing-whitespace nil)))
 #+end_src
 *** save hist
 Toggle saving of minibuffer history.
