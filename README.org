@@ -1846,15 +1846,15 @@ Copied from https://org-roam.discourse.group/t/opening-url-in-roam-refs-field/25
 #+begin_src emacs-lisp
   (face-spec-set 'org-transclusion-fringe
 		 '((((background light))
-		    :foreground "red")
+		    :foreground "black")
 		   (t
-		    :foreground "green"))
+		    :foreground "white"))
 		 'face-override-spec)
   (face-spec-set 'org-transclusion-source-fringe
 		 '((((background light))
-		    :foreground "red")
+		    :foreground "black")
 		   (t
-		    :foreground "green"))
+		    :foreground "white"))
 		 'face-override-spec)
 #+end_src
 #+begin_src emacs-lisp
