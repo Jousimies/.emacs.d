@@ -54,7 +54,7 @@
  "n" '(:ignore t :wk "Notes")
  "nb" '(org-roam-buffer-toggle :wk "Roam buffer")
  "nr" '(org-roam-node-random :wk "Random node")
- "nf" '(org-roam-node-find :wk "Find node")
+ "nn" '(org-roam-node-find :wk "Find node")
  "ni" '(org-roam-node-insert :wk "Insert node")
  "ns" '(org-roam-db-sync :wk "Sync DB")
 
@@ -143,7 +143,14 @@
    :non-normal-prefix "M-SPC"
    "ns" '(consult-org-roam-search :wk "Search")
    "nb" '(consult-org-roam-backlinks :wk "Open Backlinks")
-   "nl" '(consult-org-roam-forward-links :wk "Open Links")))
+   "nf" '(consult-org-roam-forward-links :wk "Open Links")))
+
+(when (maybe-require-package 'consult-notes)
+  (general-define-key
+   :states '(normal visual emacs)
+   :prefix "SPC"
+   :non-normal-prefix "M-SPC"
+   "nv" '(consult-notes-org-roam-find-node-relation :wk "Node navigation")))
 
 (when (maybe-require-package 'org-transclusion)
   (face-spec-set 'org-transclusion-fringe
