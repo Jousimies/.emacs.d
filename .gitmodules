@@ -1,0 +1,9 @@
+[submodule "auto-save"]
+	path = site-lisp/auto-save
+	url = git@github.com:manateelazycat/auto-save.git
+[submodule "rime-regexp"]
+	path = site-lisp/rime-regexp
+	url = git@github.com:colawithsauce/rime-regexp.el.git
+[submodule "plantuml-emacs"]
+	path = site-lisp/plantuml-emacs
+	url = git@github.com:ginqi7/plantuml-emacs.git

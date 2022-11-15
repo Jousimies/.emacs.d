@@ -1,0 +1,7 @@
+* The difference between with setq and setq-default
+- source ::[[https://stackoverflow.com/questions/18172728/the-difference-between-setq-and-setq-default-in-emacs-lisp][elisp - The difference between setq and setq-default in Emacs Lisp - Stack Overflow]]
+
+If a variable is buffer-local, then setq sets its local value in the current buffer
+and setq-default sets the global default value.
+
+If a variable is not buffer-local, then setq and setq-default do the same thing.
