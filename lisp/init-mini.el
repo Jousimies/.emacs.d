@@ -74,6 +74,10 @@ apps are not started from a shell."
 ;; Magit, a better git.
 (when (maybe-require-package 'magit)
   (require-package 'git-timemachine))
+(general-define-key
+   :states 'normal
+   :keymaps 'with-editor-mode-map
+   "RET" "C-c C-c")
 
 ;; Recent file
 (add-hook 'after-init-hook 'recentf-mode)
