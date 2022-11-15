@@ -87,7 +87,18 @@
   :PLOT: %^{PLOT}
   :END:")))
 
-  (global-set-key (kbd "<f10>") 'org-capture))
+  (global-set-key (kbd "<f10>") 'org-capture)
+  (general-define-key
+   :keymaps 'org-capture-mode-map
+   [remap evil-save-and-close]          'org-capture-finalize
+   [remap evil-save-modified-and-close] 'org-capture-finalize
+   [remap evil-quit]                    'org-capture-kill)
+
+  (general-define-key
+   :states 'normal
+   :keymaps 'org-capture-mode-map
+   "RET" "C-c C-c"
+   "SPC k" '(org-capture-kill :which-key "abort capture")))
 
 ;; Refile
 (with-eval-after-load 'org
