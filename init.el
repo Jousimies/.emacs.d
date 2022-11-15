@@ -108,6 +108,7 @@ locate PACKAGE."
 (require 'init-org)
 (require 'init-org+)
 (require 'init-roam)
+(require 'init-denote)
 (require 'init-finance)
 (require 'init-bibtex)
 (require 'init-blog)
