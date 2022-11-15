@@ -9,31 +9,31 @@
 (set-keyboard-coding-system 'utf-8)
 
 (setq-default ring-bell-function 'ignore
-	          use-short-answers t
-	          read-process-output-max #x10000
-	          message-kill-buffer-on-exit t
-	          message-kill-buffer-query nil
-	          indent-tabs-mode nil
-	          tab-width 4
-	          make-backup-files nil
-	          create-lockfiles nil
-	          confirm-kill-processes nil
-	          confirm-kill-emacs nil
-	          recenter-redisplay nil
-	          load-prefer-newer t
-	          mark-ring-max 128
-	          next-screen-context-lines 5
-	          scroll-preserve-screen-position t
-	          auto-save-default nil
-	          auto-save-list-file-name nil
-	          kill-do-not-save-duplicates t
-	          kill-ring-max (* kill-ring-max 2)
-	          help-window-select t
-	          help-window-keep-selected t
-	          history-delete-duplicates t
-	          view-read-only t
-	          kill-read-only-ok t
-	          async-shell-command-display-buffer nil
+              use-short-answers t
+              read-process-output-max #x10000
+              message-kill-buffer-on-exit t
+              message-kill-buffer-query nil
+              indent-tabs-mode nil
+              tab-width 4
+              make-backup-files nil
+              create-lockfiles nil
+              confirm-kill-processes nil
+              confirm-kill-emacs nil
+              recenter-redisplay nil
+              load-prefer-newer t
+              mark-ring-max 128
+              next-screen-context-lines 5
+              scroll-preserve-screen-position t
+              auto-save-default nil
+              auto-save-list-file-name nil
+              kill-do-not-save-duplicates t
+              kill-ring-max (* kill-ring-max 2)
+              help-window-select t
+              help-window-keep-selected t
+              history-delete-duplicates t
+              view-read-only t
+              kill-read-only-ok t
+              async-shell-command-display-buffer nil
               ;; Improve the performance of rendering long lines.
               bidi-display-reordering nil)
 
@@ -47,9 +47,19 @@
 ;; Delete selection
 (add-hook 'after-init-hook 'delete-selection-mode)
 
-;;
+;; Winner.
 (setq-default winner-dont-bind-my-keys t)
 (add-hook 'after-init-hook 'winner-mode)
+(setq winner-boring-buffers '("*Completions*"
+                              "*Compile-Log*"
+                              "*inferior-lisp*"
+                              "*Fuzzy Completions*"
+                              "*Apropos*"
+                              "*Help*"
+                              "*cvs*"
+                              "*Buffer List*"
+                              "*Ibuffer*"
+                              "*esh command on file*"))
 
 ;; Auto revert file.
 (setq-default revert-without-query t)
@@ -59,8 +69,8 @@
 (setq-default history-length 1000
               savehist-save-minibuffer-history 1
               savehist-additional-variables '(kill-ring
-				                              search-ring
-				                              regexp-search-ring)
+                                              search-ring
+                                              regexp-search-ring)
               history-delete-duplicates t)
 (run-with-idle-timer 1 nil (lambda ()
                              (savehist-mode)))
@@ -103,13 +113,13 @@
 
 ;; Hippie expand.
 (setq hippie-expand-try-functions-list '(try-complete-file-name-partially
-					                     try-complete-file-name
-					                     try-expand-all-abbrevs
-					                     try-expand-dabbrev
-					                     try-expand-dabbrev-all-buffers
-					                     try-expand-dabbrev-from-kill
-					                     try-complete-lisp-symbol-partially
-					                     try-complete-lisp-symbol))
+                                         try-complete-file-name
+                                         try-expand-all-abbrevs
+                                         try-expand-dabbrev
+                                         try-expand-dabbrev-all-buffers
+                                         try-expand-dabbrev-from-kill
+                                         try-complete-lisp-symbol-partially
+                                         try-complete-lisp-symbol))
 (global-set-key [remap dabbrev-expand] 'hippie-expand)
 
 (provide 'init-builtin)
