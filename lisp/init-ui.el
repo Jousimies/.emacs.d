@@ -45,6 +45,8 @@
 (when (maybe-require-package 'rainbow-delimiters)
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
+;; Cursor.
+(blink-cursor-mode -1)
 
 ;; Beacon
 (when (maybe-require-package 'beacon)
