@@ -32,7 +32,7 @@
 (global-display-fill-column-indicator-mode t)
 
 ;; Show paren.
-(setq show-paren-style 'mixed)
+(setq show-paren-style 'parenthesis)
 (setq show-paren-context-when-offscreen 'overlay)
 
 (add-hook 'text-mode-hook 'show-paren-mode)
