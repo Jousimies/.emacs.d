@@ -76,8 +76,8 @@ apps are not started from a shell."
   (require-package 'git-timemachine))
 
 ;; Recent file
+(add-hook 'after-init-hook 'recentf-mode)
 (run-with-idle-timer 1 nil (lambda ()
-                             (recentf-mode)
                              (recentf-cleanup)))
 (with-eval-after-load 'recentf
   (setq recentf-max-saved-items 1000)
