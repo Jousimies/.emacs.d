@@ -18,7 +18,8 @@
   (add-hook 'after-init-hook 'vertico-mode)
 
   (when (maybe-require-package 'vertico-prescient)
-    (add-hook 'vertico-mode-hook 'vertico-prescient-mode))
+    (add-hook 'vertico-mode-hook 'vertico-prescient-mode)
+    (setq vertico-prescient-completion-styles '(orderless prescient partial-completion)))
 
   (when (maybe-require-package 'embark)
     (with-eval-after-load 'vertico

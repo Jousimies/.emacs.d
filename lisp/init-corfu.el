@@ -5,7 +5,7 @@
 (setq tab-always-indent 'complete)
 
 (require-package 'orderless)
-(setq completion-styles '(orderless basic))
+(setq completion-styles '(orderless partial-completion))
 
 (setq completion-category-defaults nil
       completion-category-overrides '((file (styles . (partial-completion)))))
@@ -32,7 +32,7 @@
 
   (when (maybe-require-package 'corfu-prescient)
     (add-hook 'corfu-mode-hook 'corfu-prescient-mode)
-    (setq corfu-prescient-completion-styles '(orderless prescient basci))))
+    (setq corfu-prescient-completion-styles '(orderless prescient partial-completion))))
 
 (provide 'init-corfu)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
