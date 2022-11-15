@@ -119,10 +119,7 @@
     (mu4e-alert-enable-mode-line-display))
 
   (when (maybe-require-package 'mu4e-column-faces)
-    (mu4e-column-faces-mode))
-
-  (when (maybe-require-package 'mu4e-conversation)
-    (global-mu4e-conversation-mode)))
+    (mu4e-column-faces-mode)))
 
 (general-define-key
  :states '(normal visual emacs)
