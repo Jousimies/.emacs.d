@@ -60,11 +60,33 @@
 
 ;; Capture
 (with-eval-after-load 'org
-  (setq org-capture-templates '(("a" "Anki Deck")
-                                ("ae" "Deck: English" entry (file (lambda () (concat my-galaxy "/anki/anki_english.org")))
+  (setq org-capture-templates '(("i" "Inbox"
+                                 plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/inbox.org")))
+                                 "**** %?\n%U\n" :time-prompt t :tree-type week)
+                                ("a" "Anki Deck")
+                                ("ae" "Deck: English"
+                                 entry (file (lambda ()
+                                               (concat my-galaxy "/anki/anki_english.org")))
                                  "* %?\n" :jump-to-captured t)
-                                ("ac" "Deck: Civil Engineering" entry (file (lambda () (concat my-galaxy "/anki/anki_engineering.org")))
-                                 "* %?\n" :jump-to-captured t)))
+                                ("ac" "Deck: Civil Engineering"
+                                 entry (file (lambda ()
+                                               (concat my-galaxy "/anki/anki_engineering.org")))
+                                 "* %?\n" :jump-to-captured t)
+                                ("s" "Code snippets"
+                                 entry (file (lambda ()
+                                               (concat my-galaxy "/scripts/snippets.org")))
+                                 "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
+                                ("l" "Lists")
+                                ("lm" "Movie"
+                                 entry (file+headline (lambda () (concat my-galaxy "/roam/main/movie.org")) "Movie list")
+                                 "* %?
+  :PROPERTIES:
+  :GENRE: %^{Film genre|Action|Adventure|Comedy|Drama|Fantasy|Horror|Musicals|Mystery|Romance|Science fiction|Sports|Thriller}
+  :COUNTRY:
+  :SCORE:
+  :PLOT: %^{PLOT}
+  :END:")))
+
   (global-set-key (kbd "<f10>") 'org-capture))
 
 ;; Refile
