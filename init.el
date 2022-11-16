@@ -17,8 +17,9 @@
 
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
-
+
 ;; Load path
+;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
 ;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce the startup time.
 (defun update-load-path (&rest _)
   "Update `load-path'."
@@ -36,7 +37,24 @@ Otherwise the startup will be very slow."
 (advice-add #'package-initialize :after #'add-subdirs-to-load-path)
 
 (update-load-path)
+
+;; Shell Path
+;; https://www.emacswiki.org/emacs/ExecPath
+(defun set-exec-path-from-shell-PATH ()
+  "Set up Emacs' `exec-path' and PATH environment variable.
+To match that used by the user's shell.
 
+This is particularly useful under Mac OS X and macOS, where GUI
+apps are not started from a shell."
+  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string
+              "[ \t\n]*$" "" (shell-command-to-string
+                      "$SHELL --login -c 'echo $PATH'"
+                            ))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(set-exec-path-from-shell-PATH)
 ;; Custom file
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
@@ -46,7 +64,7 @@ Otherwise the startup will be very slow."
 
 (when (not package-archive-contents)
   (package-refresh-contents))
-
+
 ;; https://github.com/purcell/emacs.d/blob/master/lisp/init-elpa.el
 (defun require-package (package &optional min-version no-refresh)
   "Install given PACKAGE, optionally requiring MIN-VERSION.
@@ -78,7 +96,7 @@ locate PACKAGE."
     (error
      (message "Couldn't install optional package `%s': %S" package err)
      nil)))
-
+
 ;; Persoanl Info
 (setq user-full-name "Duan Ning")
 (setq user-mail-address "duan_n@outlook.com")
@@ -87,17 +105,21 @@ locate PACKAGE."
 ;; https://github.com/purcell/emacs.d/blob/master/lisp/init-benchmarking.el
 (require 'init-benchmarking)
 
-(require 'init-mini)
+(require 'init-variables)
+(require 'init-evil)
 (require 'init-builtin)
+(require 'init-recentf)
+
 (require 'init-ui)
 (require 'init-utils)
+(require 'init-git)
 
 (require 'init-dired)
 (require 'init-proxy)
 (require 'init-dashboard)
 (require 'init-modeline)
-(require 'init-corfu)
 (require 'init-minibuffer)
+(require 'init-completion)
 
 (require 'init-rime)
 (require 'init-browser)
@@ -114,6 +136,7 @@ locate PACKAGE."
 (require 'init-bibtex)
 (require 'init-blog)
 (require 'init-latex)
+(require 'init-pomodoro)
 
 (require 'init-flymake)
 (require 'init-markdown)
@@ -129,7 +152,7 @@ locate PACKAGE."
 
 (when (file-exists-p custom-file)
   (load custom-file))
-
+
 ;; Gcmh
 (when (maybe-require-package 'gcmh)
   (add-hook 'after-init-hook 'gcmh-mode)

@@ -168,16 +168,25 @@
   (setq org-clock-report-include-clocking-task t)
   ;; (setq org-clock-out-switch-to-state "DONE")
   (setq org-clock-in-switch-to-state 'bh/clock-in-to-next)
-  (setq bh/keep-clock-running nil))
+  (setq bh/keep-clock-running nil)
 
-(general-define-key
- :states '(normal visual emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- "oc" '(:ignore t :wk "Clock")
- "ocj" '(org-clock-goto :wk "Clock goto")
- "oci" '(org-clock-in :wk "Clock In")
- "oco" '(org-clock-out :wk "Clock Out"))
+  (org-clock-persistence-insinuate)
+
+  (when (maybe-require-package 'org-mru-clock)
+    (setq org-mru-clock-how-many 100)
+
+    (with-eval-after-load 'embark
+      (add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook)))
+
+  (general-define-key
+   :states '(normal visual emacs)
+   :prefix "SPC"
+   :non-normal-prefix "M-SPC"
+   "oc" '(:ignore t :wk "Clock")
+   "ocj" '(org-clock-goto :wk "Clock goto")
+   "oci" '(org-clock-in :wk "Clock In")
+   "oco" '(org-clock-out :wk "Clock Out")
+   "ocr" '(org-mru-clock-select-recent-task :wk "Recent")))
 
 ;; Punch In and Punch Out.
 (defun bh/is-task-p ()
@@ -230,7 +239,7 @@ Callers of this function already widen the buffer view."
       (if (equal (point) task)
           nil
         t))))
-(defun bh/clock-in-to-next ()
+(defun bh/clock-in-to-next (kw) ;; kw should not been deleted.
   "Switch a task from TODO to NEXT when clocking in.
 Skips capture tasks, projects, and subprojects.
 Switch projects and subprojects from NEXT back to TODO"

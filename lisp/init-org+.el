@@ -53,6 +53,9 @@
   (setq org-appear-autolinks t)
 
   (add-hook 'org-mode-hook 'org-appear-mode))
+;; Link beautify
+;; (when (maybe-require-package 'org-link-beautify)
+;;   (add-hook 'org-mode-hook 'org-link-beautify-mode))
 
 ;; Math preview.
 (when (maybe-require-package 'math-preview)

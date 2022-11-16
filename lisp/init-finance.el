@@ -2,8 +2,15 @@
 ;;; Code:
 ;;; Commentary:
 (when (maybe-require-package 'ledger-mode)
-  (with-eval-after-load 'corfu
-    (add-hook 'ledger-mode-hook 'corfu-mode))
+
+  ;; company-ledger is better than corfu.
+  ;; (with-eval-after-load 'corfu
+  ;;   (add-hook 'ledger-mode-hook 'corfu-mode))
+
+  (when (maybe-require-package 'company-ledger)
+    (with-eval-after-load 'company
+      (add-to-list 'company-backends 'company-ledger)))
+
   (setq ledger-schedule-file (expand-file-name "finance/schedule.ledger" my-galaxy))
   (setq ledger-reports
         '(("bal"            "%(binary) -f %(ledger-file) bal")

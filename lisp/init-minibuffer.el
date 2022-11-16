@@ -17,6 +17,9 @@
 (when (maybe-require-package 'vertico)
   (add-hook 'after-init-hook 'vertico-mode)
 
+  (when (maybe-require-package 'prescient)
+    (add-hook 'after-init-hook 'prescient-persist-mode))
+
   (when (maybe-require-package 'vertico-prescient)
     (add-hook 'vertico-mode-hook 'vertico-prescient-mode)
     (setq vertico-prescient-completion-styles '(orderless prescient partial-completion)))

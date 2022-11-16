@@ -1,6 +1,24 @@
 ;;; init-ui.el --- User interface. -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Code:
 ;;; Commentary:
+;; Fonts and themes
+(set-frame-font "Iosevka Fixed 16" nil t)
+(if (display-graphic-p)
+    (dolist (charset '(kana han cjk-misc bopomofo))
+      (set-fontset-font (frame-parameter nil 'font)
+			charset (font-spec :family "Source Han Serif SC" :height 160))))
+
+(require-package 'doom-themes)
+(defun my/apply-theme (appearance)
+  "Load theme, taking current system APPEARANCE into consideration."
+  (mapc #'disable-theme custom-enabled-themes)
+  (pcase appearance
+    ('light (load-theme 'doom-nord-light t))
+    ('dark (load-theme 'doom-nord t))))
+(add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
+
+(toggle-frame-fullscreen)
+
 (when (maybe-require-package 'all-the-icons)
   (when (display-graphic-p)
     (require 'all-the-icons))
@@ -29,8 +47,8 @@
 (add-hook 'prog-mode-hook 'menu-bar--display-line-numbers-mode-relative)
 ;; Show fill column indicator.
 (setq-default fill-column 90)
-(global-display-fill-column-indicator-mode t)
-
+;; (global-display-fill-column-indicator-mode t)
+(add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
 ;; Show paren.
 (setq show-paren-style 'parenthesis)
 (setq show-paren-context-when-offscreen 'overlay)

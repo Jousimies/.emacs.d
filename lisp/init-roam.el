@@ -20,6 +20,15 @@
                  (display-buffer-in-side-window)
                  (side . right)
                  (window-width . 0.25)))
+  (defun tim/org-roam-buffer-show (_)
+    (if (and
+         ;; Don't do anything if we're in the minibuffer or in the calendar
+         (not (minibufferp))
+         (not (derived-mode-p 'calendar-mode))
+         ;; Show org-roam buffer iff the current buffer has a org-roam file
+         (xor (org-roam-file-p) (eq 'visible (org-roam-buffer--visibility))))
+        (org-roam-buffer-toggle)))
+  (add-hook 'window-buffer-change-functions 'tim/org-roam-buffer-show)
   ;; org-roam-capture
   (setq org-roam-capture-templates '(("a" "articles" plain "%?"
                                       :target (file+head "articles/${slug}.org"
