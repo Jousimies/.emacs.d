@@ -3,9 +3,11 @@
 ;;; Commentary:
 
 (when (maybe-require-package 'pdf-tools)
-  (run-with-idle-timer 2 nil (lambda ()
-                               (pdf-tools-install)))
-  (setq pdf-view-use-unicode-ligther nil)
+  (add-hook 'doc-view-mode-hook (lambda () (require 'pdf-tools)))
+
+  (with-eval-after-load 'pdf-tools
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-width))
 
   (add-hook 'pdf-tools-enabled-hook
             #'(lambda ()

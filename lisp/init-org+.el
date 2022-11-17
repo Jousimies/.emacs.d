@@ -65,9 +65,10 @@
 
   (general-define-key
    :states '(normal visual emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "tm" '(math-preview-all :wk "Math preveiw")))
+   :prefix "SPC m"
+   :non-normal-prefix "M-SPC m"
+   "p" '(math-preview-all :wk "Math preveiw")
+   "P" '(math-preview-clear-all :wk "Math preveiw")))
 
 
 ;; Plantuml
@@ -86,6 +87,23 @@
    "op" '(:ignore t :wk "Plantuml")
    "opm" '(plantuml-org-to-mindmap-open :wk "Mindmap")
    "ops" '(plantuml-org-to-wbs-open :wk "Work Breakdown Structure"))
+
+(when (maybe-require-package 'org-rainbow-tags)
+  (add-hook 'org-mode-hook 'org-rainbow-tags-mode))
+
+(require-package 'boxy-headings)
+(general-define-key
+   :states '(normal visual emacs)
+   :prefix "SPC"
+   :non-normal-prefix "M-SPC"
+   "oh" '(boxy-headings :wk "Boxy heading"))
+
+(with-eval-after-load 'company
+  (require-package 'company-org-block)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (add-to-list (make-local-variable 'company-backends)
+                           'company-org-block))))
 
 (provide 'init-org+)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

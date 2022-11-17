@@ -172,11 +172,10 @@
 
   (org-clock-persistence-insinuate)
 
-  (when (maybe-require-package 'org-mru-clock)
-    (setq org-mru-clock-how-many 100)
-
-    (with-eval-after-load 'embark
-      (add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook)))
+  ;; (when (maybe-require-package 'org-mru-clock)
+  ;;   (setq org-mru-clock-how-many 100)
+  ;;   (with-eval-after-load 'embark
+  ;;     (add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook)))
 
   (general-define-key
    :states '(normal visual emacs)
@@ -356,6 +355,11 @@ A prefix `ARG' forces clock in of the default task."
 
   (define-key org-mode-map (kbd "C-,") nil)
   (define-key org-mode-map (kbd "C-'") nil)
+
+  (general-define-key
+   :states 'normal
+   :keymaps 'org-mode-map
+   "RET" "C-c C-o")
 
   (setq org-agenda-custom-commands
         '(("A" "Archive"

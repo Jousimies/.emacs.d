@@ -12,7 +12,8 @@
   ;;                         (registers . 5)))
   (setq dashboard-items nil)
   ;; (setq dashboard-set-navigator t)
-  (add-hook 'after-init-hook 'dashboard-setup-startup-hook))
+  ;; (add-hook 'after-init-hook 'dashboard-setup-startup-hook)
+  (dashboard-setup-startup-hook))
 
 (provide 'init-dashboard)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

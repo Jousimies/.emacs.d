@@ -37,7 +37,8 @@
     (add-to-list 'display-buffer-alist
                  '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                    nil
-                   (window-parameters (mode-line-format . none)))))
+                   (window-parameters (mode-line-format . none))))
+    (require-package 'embark-consult))
 
   (with-eval-after-load 'vertico
     (define-key vertico-map (kbd "C-j") 'vertico-directory-up)

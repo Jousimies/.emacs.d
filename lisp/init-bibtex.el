@@ -31,8 +31,8 @@
     (define-key citar-org-citation-map (kbd "<return>") 'org-open-at-point)
     (define-key org-mode-map (kbd "C-c C-x @") 'citar-insert-citation))
 
-  (with-eval-after-load 'embark
-    (citar-embark-mode 1))
+  (when (maybe-require-package 'citar-embark)
+    (add-hook 'after-init-hook 'citar-embark-mode))
 
   (general-define-key
    :states '(normal visual emacs)
@@ -43,6 +43,7 @@
    "bn" '(citar-open-note :wk "Open note")
    "bl" '(citar-open-links :wk "Open links")))
 
+(require-package 'biblio)
 (provide 'init-bibtex)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init-bibtex.el ends here

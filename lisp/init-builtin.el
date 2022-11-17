@@ -103,9 +103,7 @@
 (add-hook 'after-init-hook 'display-battery-mode 10)
 
 ;; Auto insert pair.
-(add-hook 'text-mode-hook 'electric-pair-mode)
-(add-hook 'prog-mode-hook 'electric-pair-mode)
-
+(electric-pair-mode)
 ;; Pretty symbols.
 (setq prettify-symbols-alist '(("lambda" . ?λ)
                                ("function" . ?𝑓)))
@@ -121,6 +119,9 @@
                                          try-complete-lisp-symbol-partially
                                          try-complete-lisp-symbol))
 (global-set-key [remap dabbrev-expand] 'hippie-expand)
+
+(add-hook 'prog-mode-hook 'outline-minor-mode)
+
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here

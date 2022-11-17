@@ -32,7 +32,9 @@
             (group (:title . "Books")
                    (:elements (query . book)))
             (group (:title . "Finance")
-                   (:elements (query . finance)))))
+                   (:elements (query . finance)))
+            (group (:title . "Youtube")
+                   (:elements (query . video)))))
 
     (advice-add 'elfeed-summary :after 'elfeed-summary-update)
 
@@ -42,15 +44,15 @@
      :non-normal-prefix "M-SPC"
      "E" '(elfeed-summary :wk "Elfeed"))))
 
-  (defun my/rss-source ()
-    "Open elfeed config file."
-    (interactive)
-    (find-file (car rmh-elfeed-org-files)))
+(defun my/rss-source ()
+  "Open elfeed config file."
+  (interactive)
+  (find-file (car rmh-elfeed-org-files)))
 
 
-  (with-eval-after-load 'evil
-    (evil-set-initial-state 'elfeed-search-mode 'emacs)
-    (evil-set-initial-state 'elfeed-show-mode 'emacs))
+(with-eval-after-load 'evil
+  (evil-set-initial-state 'elfeed-search-mode 'emacs)
+  (evil-set-initial-state 'elfeed-show-mode 'emacs))
 
 
 (setq newsticker-url-list
@@ -61,6 +63,22 @@
         ("Emacs TIL" "https://emacstil.com/feed.xml")
         ("Emacs Reddit" "https://www.reddit.com/r/emacs.rss")))
 
+
+(when (maybe-require-package 'elfeed-tube)
+  (run-with-idle-timer 1 nil (lambda ()
+                               (require 'elfeed-tube)
+                               (elfeed-tube-setup)))
+  (with-eval-after-load 'elfeed
+    (define-key elfeed-show-mode-map (kbd "F") 'elfeed-tube-fetch)
+    (define-key elfeed-show-mode-map [remap save-buffer] 'elfeed-tube-save)
+    (define-key elfeed-search-mode-map (kbd "F") 'elfeed-tube-fetch)
+    (define-key elfeed-search-mode-map [remap save-buffer] 'elfeed-tube-save)
+
+    (require-package 'elfeed-tube-mpv)
+    (with-eval-after-load 'elfeed
+      (require 'elfeed-tube-mpv)
+      (define-key elfeed-show-mode-map (kbd "C-c C-f") 'elfeed-tube-mpv-follow-mode)
+      (define-key elfeed-show-mode-map (kbd "C-c C-w") 'elfeed-tube-mpv-where))))
 
 (provide 'init-rss)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -25,16 +25,14 @@
       (setq url-proxy-services nil))
   (message "Proxy disabled!"))
 
-(run-with-idle-timer 1 nil (lambda ()
-                             (proxy-enable)))
+(proxy-enable)
 
 (general-define-key
  :keymaps '(normal visual emacs)
  :prefix "SPC"
  :non-normal-prefix "M-SPC"
  "t" '(:ignore t :wk "Toggles")
- "tp" '(proxy-enable :wk "Enable proxy")
- "tP" '(proxy-disable :wk "Disable proxy"))
+ "tp" '(toggle-proxy :wk "Proxy"))
 
 (provide 'init-proxy)
 ;;; init-proxy.el ends here

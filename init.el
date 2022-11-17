@@ -101,9 +101,12 @@ locate PACKAGE."
 (setq user-full-name "Duan Ning")
 (setq user-mail-address "duan_n@outlook.com")
 
+(setq initial-major-mode 'fundamental-mode)
 ;; Benchmark
 ;; https://github.com/purcell/emacs.d/blob/master/lisp/init-benchmarking.el
 (require 'init-benchmarking)
+
+(require 'init-dashboard)
 
 (require 'init-variables)
 (require 'init-evil)
@@ -115,9 +118,15 @@ locate PACKAGE."
 (require 'init-git)
 
 (require 'init-dired)
+(require 'init-bookmark)
 (require 'init-proxy)
-(require 'init-dashboard)
-(require 'init-modeline)
+
+;; Enable tray or modeline
+(setq tray-or-modeline nil)
+(if tray-or-modeline
+    (require 'init-tray)
+  (require 'init-modeline))
+
 (require 'init-minibuffer)
 (require 'init-completion)
 
@@ -126,6 +135,7 @@ locate PACKAGE."
 
 (require 'init-tempel)
 (require 'init-spell)
+(require 'init-dict)
 
 (require 'init-org)
 (require 'init-org+)
@@ -148,7 +158,9 @@ locate PACKAGE."
 (require 'init-shell)
 (require 'init-mail)
 (require 'init-telega)
+;; (require 'init-reddit)
 (require 'init-osm)
+(require 'init-fun)
 
 (when (file-exists-p custom-file)
   (load custom-file))

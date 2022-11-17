@@ -13,7 +13,9 @@
     (add-hook 'after-init-hook 'evil-collection-init))
 
   (when (maybe-require-package 'evil-surround)
-    (global-evil-surround-mode 1)))
+    (global-evil-surround-mode 1))
+
+  (require-package 'evil-anzu))
 
 (require-package 'general)
 

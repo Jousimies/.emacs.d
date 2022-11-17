@@ -1,4 +1,4 @@
-;;; init-python.el --- Python. -*- lexical-binding: t -*-
+;;; init-python.el --- Python. -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Commentary:
 ;;; Code:
 (setq python-shell-interpreter "python3")

@@ -8,6 +8,10 @@
       (set-fontset-font (frame-parameter nil 'font)
 			charset (font-spec :family "Source Han Serif SC" :height 160))))
 
+;; unicode font
+(require-package 'unicode-fonts)
+(unicode-fonts-setup)
+
 (require-package 'doom-themes)
 (defun my/apply-theme (appearance)
   "Load theme, taking current system APPEARANCE into consideration."
@@ -25,12 +29,11 @@
   (with-eval-after-load 'all-the-icons
     (set-fontset-font "fontset-default" 'unicode (font-spec :family "all-the-icons"))  ;;这里不能用 append，否则不工作。
     (set-fontset-font "fontset-default" 'unicode (font-spec :family "file-icons") nil 'append)
-    (set-fontset-font "fontset-default" 'unicode (font-spec :family "Material Icons") nil 'append)))
+    (set-fontset-font "fontset-default" 'unicode (font-spec :family "Material Icons") nil 'append))
 
-(when (maybe-require-package 'all-the-icons-completion)
-  (add-hook 'after-init-hook 'all-the-icons-completion-mode)
-  (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup))
-
+  (when (maybe-require-package 'all-the-icons-completion)
+    (add-hook 'after-init-hook 'all-the-icons-completion-mode)
+    (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)))
 
 ;; Do not show curly at fringe.
 (define-fringe-bitmap 'right-curly-arrow  [])

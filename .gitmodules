@@ -7,3 +7,12 @@
 [submodule "plantuml-emacs"]
 	path = site-lisp/plantuml-emacs
 	url = git@github.com:ginqi7/plantuml-emacs.git
+[submodule "awesome-tray"]
+	path = site-lisp/awesome-tray
+	url = git@github.com:manateelazycat/awesome-tray.git
+[submodule "websocket-bridge"]
+	path = site-lisp/websocket-bridge
+	url = git@github.com:ginqi7/websocket-bridge.git
+[submodule "dictionary-overlay"]
+	path = site-lisp/dictionary-overlay
+	url = git@github.com:ginqi7/dictionary-overlay.git

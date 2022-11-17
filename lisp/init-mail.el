@@ -115,7 +115,8 @@
                                                                :foreground 'mu4e-special-header-value-face)))))
 
   (when (maybe-require-package 'mu4e-alert)
-    (add-hook 'mu4e-index-updated-hook 'mu4e-alert-enable-notifications)
+    (mu4e-alert-set-default-style 'osx-notifier)
+    (mu4e-alert-enable-notifications)
     (mu4e-alert-enable-mode-line-display))
 
   (when (maybe-require-package 'mu4e-column-faces)

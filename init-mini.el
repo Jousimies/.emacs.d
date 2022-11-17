@@ -2,6 +2,85 @@
 ;;; Commentary:
 ;;; Code:
 
+;; Load path
+;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
+;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce the startup time.
+(defun update-load-path (&rest _)
+  "Update `load-path'."
+  (dolist (dir '("site-lisp" "lisp"))
+    (push (expand-file-name dir user-emacs-directory) load-path)))
+
+(defun add-subdirs-to-load-path (&rest _)
+  "Add subdirectories to `load-path'.
+Don't put large files in `site-lisp' directory, e.g. EAF.
+Otherwise the startup will be very slow."
+  (let ((default-directory (expand-file-name "site-lisp" user-emacs-directory)))
+    (normal-top-level-add-subdirs-to-load-path)))
+
+(advice-add #'package-initialize :after #'update-load-path)
+(advice-add #'package-initialize :after #'add-subdirs-to-load-path)
+
+(update-load-path)
+
+;; Shell Path
+;; https://www.emacswiki.org/emacs/ExecPath
+(defun set-exec-path-from-shell-PATH ()
+  "Set up Emacs' `exec-path' and PATH environment variable.
+To match that used by the user's shell.
+
+This is particularly useful under Mac OS X and macOS, where GUI
+apps are not started from a shell."
+  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string
+              "[ \t\n]*$" "" (shell-command-to-string
+                      "$SHELL --login -c 'echo $PATH'"
+                            ))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(set-exec-path-from-shell-PATH)
+;; Custom file
+(setq custom-file (locate-user-emacs-file "custom.el"))
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+;; https://github.com/purcell/emacs.d/blob/master/lisp/init-elpa.el
+(defun require-package (package &optional min-version no-refresh)
+  "Install given PACKAGE, optionally requiring MIN-VERSION.
+If NO-REFRESH is non-nil, the available package lists will not be
+re-downloaded in order to locate PACKAGE."
+  (when (stringp min-version)
+    (setq min-version (version-to-list min-version)))
+  (or (package-installed-p package min-version)
+      (let* ((known (cdr (assoc package package-archive-contents)))
+             (best (car (sort known (lambda (a b)
+                                      (version-list-<= (package-desc-version b)
+                                                       (package-desc-version a)))))))
+        (if (and best (version-list-<= min-version (package-desc-version best)))
+            (package-install best)
+          (if no-refresh
+              (error "No version of %s >= %S is available" package min-version)
+            (package-refresh-contents)
+            (require-package package min-version t)))
+        (package-installed-p package min-version))))
+
+(defun maybe-require-package (package &optional min-version no-refresh)
+  "Try to install PACKAGE, and return non-nil if successful.
+In the event of failure, return nil and print a warning message.
+Optionally require MIN-VERSION.  If NO-REFRESH is non-nil, the
+available package lists will not be re-downloaded in order to
+locate PACKAGE."
+  (condition-case err
+      (require-package package min-version no-refresh)
+    (error
+     (message "Couldn't install optional package `%s': %S" package err)
+     nil)))
+
 ;; Define variables.
 (defvar my-cloud "~/Nextcloud"
   "This folder is My cloud.")
@@ -24,25 +103,6 @@
   (with-eval-after-load 'marginalia
     (cl-pushnew 'epkg-marginalia-annotate-package
 		(alist-get 'package marginalia-annotator-registry))))
-
-;; Path
-;; https://www.emacswiki.org/emacs/ExecPath
-(defun set-exec-path-from-shell-PATH ()
-  "Set up Emacs' `exec-path' and PATH environment variable to match
-that used by the user's shell.
-
-This is particularly useful under Mac OS X and macOS, where GUI
-apps are not started from a shell."
-  (interactive)
-  (let ((path-from-shell (replace-regexp-in-string
-              "[ \t\n]*$" "" (shell-command-to-string
-                      "$SHELL --login -c 'echo $PATH'"
-                            ))))
-    (setenv "PATH" path-from-shell)
-    (setq exec-path (split-string path-from-shell path-separator))))
-
-(set-exec-path-from-shell-PATH)
-
 
 ;; Evil is better.
 (when (require-package 'evil)
@@ -81,8 +141,6 @@ apps are not started from a shell."
 
 ;; Recent file
 (add-hook 'after-init-hook 'recentf-mode)
-(run-with-idle-timer 1 nil (lambda ()
-                             (recentf-cleanup)))
 (with-eval-after-load 'recentf
   (setq recentf-max-saved-items 1000)
   (setq recentf-exclude nil))

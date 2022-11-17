@@ -40,6 +40,37 @@
  :non-normal-prefix "M-SPC"
  ";e" '(epkg-describe-package :wk "Epkg"))
 
+;; websocket-bridge
+;; (require 'websocket-bridge)
+
+(when (maybe-require-package 'bicycle)
+  (with-eval-after-load 'outline
+    (define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
+    (define-key outline-minor-mode-map (kbd "S-<tab>") 'bicycle-cycle-global)))
+
+;; (when (maybe-require-package 'parinfer-rust-mode)
+;;   (setq parinfer-rust-library (expand-file-name "parinfer-rust/libparinfer_rust.so" user-emacs-directory))
+;;   (add-hook 'emacs-lisp-mode-hook 'parinfer-rust-mode)
+;;   (with-eval-after-load 'parinfer-rust-mode
+;;     (global-hungry-delete-mode -1)
+;;     (electric-pair-mode -1)))
+
+(when (maybe-require-package 'demap)
+  (setq demap-minimap-window-side  'left)
+  (setq demap-minimap-window-width 15)
+  (general-define-key
+   :states '(normal visual emacs)
+   :prefix "SPC"
+   :non-normal-prefix "M-SPC"
+   "tm" '(demap-toggle :wk "Minimap")))
+
+;; (when (maybe-require-package 'reformatter)
+;;   (reformatter-define black :program "black" :args '("-")))
+
+(when (maybe-require-package 'format-all)
+  (add-hook 'prog-mode-hook 'format-all-mode)
+  (add-hook 'before-save-hook 'format-all-buffer))
+
 (provide 'init-utils)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init-utils.el ends here

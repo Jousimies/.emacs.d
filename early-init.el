@@ -30,10 +30,10 @@
 ;; when gccemacs is installed.
 (setq comp-deferred-compilation nil)
 ;; Disable mode-line, It's uglily after theme changed
-;; (setq-default mode-line-format nil)
-
+(setq-default mode-line-format nil)
 
 ;; https://github.com/Ergus/mini_dotemacs
+(defconst my/gc-cons-threshold (* 2 gc-cons-threshold))
 (defsubst my/unset-gc ()
   "Disable the gc."
   (setq gc-cons-threshold most-positive-fixnum   ;; Defer Garbage collection
