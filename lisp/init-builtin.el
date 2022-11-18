@@ -90,17 +90,17 @@
   (add-hook 'after-init-hook 'so-long-enable))
 
 ;; Display time in modeline.
-(with-eval-after-load 'time
-  (setq display-time-24hr-format t)
-  (setq display-time-format "%m/%d %H:%M %a")
-  (setq display-time-load-average-threshold nil))
+;; (with-eval-after-load 'time
+;;   (setq display-time-24hr-format t)
+;;   (setq display-time-format "%m/%d %H:%M %a")
+;;   (setq display-time-load-average-threshold nil))
 
-(add-hook 'after-init-hook 'display-time-mode 20)
+;; (add-hook 'after-init-hook 'display-time-mode 20)
 
 ;; Display battery in modeline.
-(setq battery-load-critical 15)
-(setq battery-mode-line-format " %b%p% ")
-(add-hook 'after-init-hook 'display-battery-mode 10)
+;; (setq battery-load-critical 15)
+;; (setq battery-mode-line-format " %b%p% ")
+;; (add-hook 'after-init-hook 'display-battery-mode 10)
 
 ;; Auto insert pair.
 (electric-pair-mode)
@@ -122,6 +122,8 @@
 
 (add-hook 'prog-mode-hook 'outline-minor-mode)
 
-
+;; pixel-scroll-precision-mode
+(if (version< "29" emacs-version)
+    (pixel-scroll-precision-mode))
 (provide 'init-builtin)
 ;;; init-builtin.el ends here

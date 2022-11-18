@@ -1,6 +1,7 @@
 ;;; init-calibre.el --- Book management.  -*- lexical-binding: t no-byte-compile: t -*-
-;;; Code:
 ;;; Commentary:
+;; Export catalog need to use argument: set entry type to mixed, default is book.
+;;; Code:
 (when (maybe-require-package 'calibredb)
   (setq calibredb-root-dir "~/Nextcloud/L.Calibre/")
   (setq calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))

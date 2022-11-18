@@ -15,7 +15,12 @@
   (when (maybe-require-package 'evil-surround)
     (global-evil-surround-mode 1))
 
-  (require-package 'evil-anzu))
+  (require-package 'evil-anzu)
+
+  (when (maybe-require-package 'evil-embrace)
+    (add-hook 'org-mode-hook 'embrace-org-mode-hook)
+    (with-eval-after-load 'evil
+      (evil-embrace-enable-evil-surround-integration))))
 
 (require-package 'general)
 

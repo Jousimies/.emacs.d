@@ -433,14 +433,23 @@ A prefix `ARG' forces clock in of the default task."
   (global-set-key (kbd "<f12>") 'my/org-agenda)
 
   (general-define-key
-   :states '(normal visual emacs)
+   :states '(normal visual insert emacs)
    :prefix "SPC"
    :non-normal-prefix "M-SPC"
    "o" '(:ignore t :wk "Org")
-   "oa" '(my/org-agenda :wk "Agenda")
-   "ot" '(org-todo-list :wk "Todo list")
-   "ov" '(org-search-view :wk "View search")))
+   "oa" '(:ignore t :wk "Agenda")
+   "oaa" '(my/org-agenda :wk "Agenda")
+   "oat" '(org-todo-list :wk "Todo list")
+   "oav" '(org-search-view :wk "View search")
 
+   "ot" '(:ignore t :wk "Toggle")
+   "ota" '(org-toggle-archive-tag :wk "Archive Tag")
+   "oth" '(org-toggle-heading :wk "Heading")
+   "oti" '(org-toggle-item :wk "Item")))
+
+;; (with-eval-after-load 'org
+;;   (when (maybe-require-package 'idle-org-agenda)
+;;     (add-hook 'org-mode-hook 'idle-org-agenda-mode)))
 
 
 (provide 'init-org)

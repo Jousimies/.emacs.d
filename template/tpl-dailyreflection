@@ -1,0 +1,18 @@
++ Tasks [/]
+  - [ ]
+  - [ ]
+  - [ ]
++ clock report
+#+BEGIN: clocktable :scope agenda :maxlevel 9 :emphasize t :fileskip0 t :hidefiles t :block today
+
+#+END:
++ Reflection
+  1. Description: What Happened ?
+
+  2. Feeling: What are you thinking and feeling ?
+
+  3. Evaluation: What was good and bad about the experience ?
+
+  4. Analysis: What sense can you make of this situation ?
+
+  5. Conclusion: What else could you have done ?

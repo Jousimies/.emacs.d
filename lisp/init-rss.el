@@ -65,10 +65,10 @@
 
 
 (when (maybe-require-package 'elfeed-tube)
-  (run-with-idle-timer 1 nil (lambda ()
-                               (require 'elfeed-tube)
-                               (elfeed-tube-setup)))
   (with-eval-after-load 'elfeed
+    (require 'elfeed-tube)
+    (elfeed-tube-setup)
+  
     (define-key elfeed-show-mode-map (kbd "F") 'elfeed-tube-fetch)
     (define-key elfeed-show-mode-map [remap save-buffer] 'elfeed-tube-save)
     (define-key elfeed-search-mode-map (kbd "F") 'elfeed-tube-fetch)

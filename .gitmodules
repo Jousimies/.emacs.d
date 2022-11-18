@@ -16,3 +16,6 @@
 [submodule "dictionary-overlay"]
 	path = site-lisp/dictionary-overlay
 	url = git@github.com:ginqi7/dictionary-overlay.git
+[submodule "site-lisp/blink-search"]
+	path = site-lisp/blink-search
+	url = git@github.com:manateelazycat/blink-search.git

@@ -14,15 +14,15 @@
     (defengine github "https://github.com/search?ref=simplesearch&q=%s"
       :keybinding "h"
       :docstring "Search GitHub.")
-    (defengine baidu "https://www.baidu.com/s?ie=utf-8&wd="
-      :keybinding "b"
-      :docstring "Search Baidu.")
     (defengine youtube "http://www.youtube.com/results?aq=f&oq=&search_query=%s"
       :keybinding "y"
       :docstring "Search YouTube.")
     (defengine moviedouban "https://search.douban.com/movie/subject_search?search_text=%s"
       :keybinding "m"
       :docstring "Search Moive DouBan.")
+    (defengine bookdouban "https://search.douban.com/book/subject_search?search_text=%s"
+      :keybinding "b"
+      :docstring "Search Book DouBan.")
     (defengine zhihu "https://www.zhihu.com/search?type=content&q=%s"
       :keybinding "z"
       :docstring "Search Zhihu.")
@@ -33,7 +33,7 @@
      :prefix "SPC"
      :non-normal-prefix "M-SPC"
      "s" '(:ignore t :wk "Search")
-     "sb" '(engine/search-baidu :wk "Baidu")
+     "sb" '(engine/search-bookdouban :wk "Book DouBan")
      "ss" '(engine/search-google :wk "Google")
      "sG" '(engine/search-github :wk "Github")
      "sy" '(engine/search-youtube :wk "Youtube")
@@ -78,51 +78,51 @@
 ;; Set youtube link time.
 ;; http://mbork.pl/2022-10-10_Adding_timestamps_to_youtube_links
 (defun yt-set-time (time)
-  "Set TIME in the YouTube link at point.
+  "Set TIME in the YouTube link at point.)
 TIME is number of seconds if called from Lisp, and a string if
 called interactively.
 Supported formats:
 - seconds
 - minutes:seconds
 - number of seconds with the \"s\" suffix."
-  (interactive (list
-                (if current-prefix-arg
-                    (prefix-numeric-value current-prefix-arg)
-                  (read-string "Time: "))))
-  (let ((url (thing-at-point-url-at-point)))
-    (if (and url
-             (string-match
-              (format "^%s"
-                      (regexp-opt
-                       '("https://www.youtube.com/"
-                         "https://youtu.be/")
-                       "\\(?:"))
-              url))
-        (let* ((bounds (thing-at-point-bounds-of-url-at-point))
-               (time-present-p (string-match "t=[0-9]+" url))
-               (question-mark-present-p (string-search "?" url))
-               (seconds (cond
-                         ((numberp time)
-                          time)
-                         ((string-match
-                           "^\\([0-9]+\\):\\([0-9]\\{2\\}\\)$" time)
-                          (+ (* 60 (string-to-number
-                                    (match-string 1 time)))
-                             (string-to-number (match-string 2 time))))
-                         ((string-match "^\\([0-9]+\\)s?$" time)
-                          (string-to-number (match-string 1 time)))
-                         (t (error "Wrong argument format"))))
-               (new-url (if time-present-p
-                            (replace-regexp-in-string
-                             "t=[0-9]+"
-                             (format "t=%i" seconds)
-                             url)
-                          (concat url
-                                  (if question-mark-present-p "&" "?")
-                                  (format "t=%i" seconds)))))
-          (delete-region (car bounds) (cdr bounds))
-          (insert new-url))
-      (error "Not on a Youtube link"))))
+(interactive (list
+              (if current-prefix-arg
+                  (prefix-numeric-value current-prefix-arg)
+                (read-string "Time: "))))
+(let ((url (thing-at-point-url-at-point)))
+  (if (and url
+           (string-match
+            (format "^%s"
+                    (regexp-opt
+                     '("https://www.youtube.com/"
+                       "https://youtu.be/")
+                     "\\(?:")))
+            url))
+      (let* ((bounds (thing-at-point-bounds-of-url-at-point))
+             (time-present-p (string-match "t=[0-9]+" url))
+             (question-mark-present-p (string-search "?" url))
+             (seconds (cond
+                       ((numberp time)
+                        time)
+                       ((string-match
+                         "^\\([0-9]+\\):\\([0-9]\\{2\\}\\)$" time)
+                        (+ (* 60 (string-to-number
+                                  (match-string 1 time)))
+                           (string-to-number (match-string 2 time))))
+                       ((string-match "^\\([0-9]+\\)s?$" time)
+                        (string-to-number (match-string 1 time)))
+                       (t (error "Wrong argument format"))))
+             (new-url (if time-present-p
+                          (replace-regexp-in-string
+                           "t=[0-9]+"
+                           (format "t=%i" seconds)
+                           url)
+                        (concat url
+                                (if question-mark-present-p "&" "?")
+                                (format "t=%i" seconds)))))
+        (delete-region (car bounds) (cdr bounds))
+        (insert new-url))
+    (error "Not on a Youtube link")))
 
 (general-define-key
  :keymaps '(normal visual emacs)
@@ -137,6 +137,7 @@ Supported formats:
    :prefix "SPC"
    :non-normal-prefix "M-SPC"
    "fR" '(browse-at-remote :wk "Browse remote")))
+
 
 (provide 'init-browser)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

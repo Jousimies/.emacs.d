@@ -106,34 +106,35 @@ locate PACKAGE."
 ;; https://github.com/purcell/emacs.d/blob/master/lisp/init-benchmarking.el
 (require 'init-benchmarking)
 
-(require 'init-dashboard)
-
 (require 'init-variables)
-(require 'init-evil)
-(require 'init-builtin)
-(require 'init-recentf)
 
 (require 'init-ui)
-(require 'init-utils)
-(require 'init-git)
-
-(require 'init-dired)
-(require 'init-bookmark)
-(require 'init-proxy)
-
+(require 'init-dashboard)
 ;; Enable tray or modeline
 (setq tray-or-modeline nil)
 (if tray-or-modeline
     (require 'init-tray)
   (require 'init-modeline))
 
+(require 'init-evil)
+
+(require 'init-builtin)
+(require 'init-recentf)
+
+(require 'init-utils)
+(require 'init-git)
+(require 'init-dired)
+(require 'init-bookmark)
+(require 'init-proxy)
+
 (require 'init-minibuffer)
 (require 'init-completion)
 
 (require 'init-rime)
 (require 'init-browser)
-
+(require 'init-rg)
 (require 'init-tempel)
+
 (require 'init-spell)
 (require 'init-dict)
 
@@ -158,9 +159,12 @@ locate PACKAGE."
 (require 'init-shell)
 (require 'init-mail)
 (require 'init-telega)
+(require 'init-eaf)
 ;; (require 'init-reddit)
+
 (require 'init-osm)
 (require 'init-fun)
+
 
 (when (file-exists-p custom-file)
   (load custom-file))

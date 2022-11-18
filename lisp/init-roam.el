@@ -58,7 +58,7 @@
                                                          "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
                                       :unnarrowed t))))
 (general-define-key
- :states '(normal visual emacs)
+ :states '(normal visual insert emacs)
  :prefix "SPC"
  :non-normal-prefix "M-SPC"
  "n" '(:ignore t :wk "Notes")
@@ -141,23 +141,24 @@
       (require 'websocket)))
 
   (general-define-key
-   :states '(normal visual emacs)
+   :states '(normal visual insert emacs)
    :prefix "SPC"
    :non-normal-prefix "M-SPC"
    "nu" '(org-roam-ui-open :wk "Random node")))
 
 (when (maybe-require-package 'consult-org-roam)
   (general-define-key
-   :states '(normal visual emacs)
+   :states '(normal visual insert emacs)
    :prefix "SPC"
    :non-normal-prefix "M-SPC"
    "ns" '(consult-org-roam-search :wk "Search")
-   "nb" '(consult-org-roam-backlinks :wk "Open Backlinks")
-   "nf" '(consult-org-roam-forward-links :wk "Open Links")))
+   "nl" '(:ignore t :wk "Open Links")
+   "nlb" '(consult-org-roam-backlinks :wk "Backlinks")
+   "nlf" '(consult-org-roam-forward-links :wk "Forward Links")))
 
 (when (maybe-require-package 'consult-notes)
   (general-define-key
-   :states '(normal visual emacs)
+   :states '(normal visual insert emacs)
    :prefix "SPC"
    :non-normal-prefix "M-SPC"
    "nv" '(consult-notes-org-roam-find-node-relation :wk "Node navigation")))
@@ -177,7 +178,7 @@
                  'face-override-spec)
 
   (general-define-key
-   :states '(normal visual emacs)
+   :states '(normal visual insert emacs)
    :keymaps 'org-mode-map
    :prefix "SPC m"
    :non-normal-prefix "M-SPC m"
@@ -342,6 +343,19 @@ tasks."
     (require-package 'citar-org-roam)
     (add-hook 'org-mode-hook 'citar-org-roam-mode)))
 
+;; https://org-roam.discourse.group/t/opening-url-in-roam-refs-field/2564/4?u=jousimies
+(defun gpc/open-node-roam-ref-url ()
+  "Open the URL in this node's ROAM_REFS property, if one exists"
+  (interactive)
+  (when-let ((ref-url (org-entry-get-with-inheritance "ROAM_REFS")))
+    (browse-url ref-url)))
+
+(general-define-key
+ :states '(normal visual insert emacs)
+ :prefix "SPC"
+ :non-normal-prefix "M-SPC"
+ "n" '(:ignore t :wk "Notes")
+ "nlr" '(gpc/open-node-roam-ref-url :wk "Ref link"))
 
 (provide 'init-roam)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

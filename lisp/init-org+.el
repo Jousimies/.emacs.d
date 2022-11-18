@@ -1,4 +1,4 @@
-;;; init-org+.el --- Enhance org. 	-*- lexical-binding: t no-byte-compile: t -*-
+;;; init-org+.el --- Enhance org.   -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Code:
 ;;; Commentary:
 
@@ -15,6 +15,7 @@
 (when (maybe-require-package 'toc-org)
   (add-hook 'org-mode-hook 'toc-org-mode))
 
+
 ;; Star.
 (when (maybe-require-package 'org-superstar)
   (add-hook 'org-mode-hook 'org-superstar-mode))
@@ -22,20 +23,19 @@
 ;; Attachment and download.
 (when (maybe-require-package 'org-download)
   (add-hook 'org-mode-hook 'org-download-enable)
-  (with-eval-after-load 'org-download
-    (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
-    (setq org-download-screenshot-method 'screencapture)
-    (setq org-download-abbreviate-filename-function 'expand-file-name)
-    (setq org-download-timestamp "%Y%m%d%H%M%S")
-    (setq org-download-display-inline-images nil)
-    (setq org-download-heading-lvl nil)
-    (setq org-download-annotate-function (lambda (_link) ""))
-    (setq org-download-image-attr-list '("#+NAME: fig: "
-                                         "#+CAPTION: "
-                                         "#+ATTR_ORG: :width 500px"
-                                         "#+ATTR_LATEX: :width 10cm :placement [!htpb]"
-                                         "#+ATTR_HTML: :width 600px"))
-    (setq org-download-screenshot-basename ".png"))
+  (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
+  (setq org-download-screenshot-method 'screencapture)
+  (setq org-download-abbreviate-filename-function 'expand-file-name)
+  (setq org-download-timestamp "%Y%m%d%H%M%S")
+  (setq org-download-display-inline-images nil)
+  (setq org-download-heading-lvl nil)
+  (setq org-download-annotate-function (lambda (_link) ""))
+  (setq org-download-image-attr-list '("#+NAME: fig: "
+                                       "#+CAPTION: "
+                                       "#+ATTR_ORG: :width 500px"
+                                       "#+ATTR_LATEX: :width 10cm :placement [!htpb]"
+                                       "#+ATTR_HTML: :width 600px"))
+  (setq org-download-screenshot-basename ".png")
 
   (general-define-key
    :states '(normal visual emacs)
@@ -61,15 +61,7 @@
 (when (maybe-require-package 'math-preview)
   (setq math-preview-scale 1.1)
   (setq math-preview-raise 0.3)
-  (setq math-preview-margin '(1 . 0))
-
-  (general-define-key
-   :states '(normal visual emacs)
-   :prefix "SPC m"
-   :non-normal-prefix "M-SPC m"
-   "p" '(math-preview-all :wk "Math preveiw")
-   "P" '(math-preview-clear-all :wk "Math preveiw")))
-
+  (setq math-preview-margin '(1 . 0)))
 
 ;; Plantuml
 (add-hook 'org-mode-hook (lambda ()
@@ -81,22 +73,22 @@
           (shell-command-to-string "readlink -f $(brew --prefix plantuml)"))
          "/libexec/plantuml.jar")))
 (general-define-key
-   :states '(normal visual emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "op" '(:ignore t :wk "Plantuml")
-   "opm" '(plantuml-org-to-mindmap-open :wk "Mindmap")
-   "ops" '(plantuml-org-to-wbs-open :wk "Work Breakdown Structure"))
+ :states '(normal visual emacs)
+ :prefix "SPC"
+ :non-normal-prefix "M-SPC"
+ "op" '(:ignore t :wk "Plantuml")
+ "opm" '(plantuml-org-to-mindmap-open :wk "Mindmap")
+ "ops" '(plantuml-org-to-wbs-open :wk "Work Breakdown Structure"))
 
 (when (maybe-require-package 'org-rainbow-tags)
   (add-hook 'org-mode-hook 'org-rainbow-tags-mode))
 
 (require-package 'boxy-headings)
 (general-define-key
-   :states '(normal visual emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "oh" '(boxy-headings :wk "Boxy heading"))
+ :states '(normal visual emacs)
+ :prefix "SPC"
+ :non-normal-prefix "M-SPC"
+ "oh" '(boxy-headings :wk "Boxy heading"))
 
 (with-eval-after-load 'company
   (require-package 'company-org-block)
@@ -104,6 +96,16 @@
             (lambda ()
               (add-to-list (make-local-variable 'company-backends)
                            'company-org-block))))
+
+(when (maybe-require-package 'org-alert)
+  (run-with-idle-timer 2 nil (lambda ()
+                              (require 'org-alert)))
+  (with-eval-after-load 'org-alert
+    (setq org-alert-interval 300)
+    (setq org-alert-notify-cutoff 10)
+    (setq org-alert-notify-after-event-cutoff 10)
+    (setq org-alert-notification-title "Org Agenda Reminder!")
+    (org-alert-enable)))
 
 (provide 'init-org+)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
