@@ -34,6 +34,9 @@
   (when (maybe-require-package 'citar-embark)
     (add-hook 'after-init-hook 'citar-embark-mode))
 
+  (with-eval-after-load 'org-roam
+    (require-package 'org-roam-bibtex))
+
   (general-define-key
    :states '(normal visual emacs)
    :prefix "SPC"
@@ -44,6 +47,11 @@
    "bl" '(citar-open-links :wk "Open links")))
 
 (require-package 'biblio)
+
+(when (maybe-require-package 'scihub)
+  (setq scihub-download-directory "~/Downloads/")
+  (setq scihub-open-after-download t))
+
 (provide 'init-bibtex)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init-bibtex.el ends here
