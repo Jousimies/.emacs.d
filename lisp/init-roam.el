@@ -62,7 +62,8 @@
  :prefix "SPC"
  :non-normal-prefix "M-SPC"
  "n" '(:ignore t :wk "Notes")
- "nb" '(org-roam-buffer-toggle :wk "Roam buffer")
+ ;; org-roam-buffer cannot been toggle by handy, auto done.
+ ;; "nb" '(org-roam-buffer-toggle :wk "Roam buffer")
  "nr" '(org-roam-node-random :wk "Random node")
  "nn" '(org-roam-node-find :wk "Find node")
  "ni" '(org-roam-node-insert :wk "Insert node")
@@ -337,11 +338,6 @@
 
   (advice-add 'org-agenda :before #'vulpea-agenda-files-update)
   (advice-add 'org-todo-list :before #'vulpea-agenda-files-update))
-
-(when (maybe-require-package 'citar)
-  (when (maybe-require-package 'org-roam)
-    (require-package 'citar-org-roam)
-    (add-hook 'org-mode-hook 'citar-org-roam-mode)))
 
 ;; https://org-roam.discourse.group/t/opening-url-in-roam-refs-field/2564/4?u=jousimies
 (defun gpc/open-node-roam-ref-url ()
