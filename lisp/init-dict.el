@@ -23,6 +23,10 @@
 
 ;;; Commentary:
 
+;; Dict source
+;; https://github.com/skywind3000/ECDICT
+;; http://download.huzheng.org/dict.org/
+
 ;;
 
 ;;; Code:
