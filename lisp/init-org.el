@@ -447,6 +447,55 @@ A prefix `ARG' forces clock in of the default task."
    "oth" '(org-toggle-heading :wk "Heading")
    "oti" '(org-toggle-item :wk "Item")))
 
+;; Calendar
+(with-eval-after-load 'calendar
+  (setq calendar-view-diary-initially-flag t)
+  (setq calendar-mark-diary-entries-flag t)
+  (setq calendar-mode-line-format nil)
+
+  (setq calendar-date-style 'iso)
+  (setq calendar-date-display-form calendar-iso-date-display-form)
+
+  (setq calendar-time-display-form
+        '(24-hours ":" minutes
+                   (when time-zone
+                     (format "(%s)" time-zone))))
+
+  (add-hook 'calendar-today-visible-hook #'calendar-mark-today))
+
+;; Use diary-lib to write diary.
+(with-eval-after-load 'diary-lib
+  (add-hook 'diary-list-entries-hook 'diary-sort-entries t)
+  (add-hook 'diary-mode-hook #'goto-address-mode)
+
+  (setq diary-date-forms diary-iso-date-forms)
+  (setq diary-display-function #'diary-fancy-display)
+  (setq diary-header-line-format nil)
+  (setq diary-list-include-blanks nil)
+  (setq diary-abbreviated-year-flag nil)
+  (setq diary-number-of-entries 7)
+  (setq diary-comment-start ");;")
+  (setq diary-comment-end "")
+  (setq diary-nonmarking-symbol "!")
+
+  (setq diary-file (expand-file-name "diary/diary.org" my-galaxy))
+  (general-define-key
+     :states '(normal visual insert emacs)
+     :prefix "SPC"
+     :non-normal-prefix "M-SPC"
+     "C" '(calendar :wk "Calendar")))
+
+;; Appt
+(with-eval-after-load 'appt
+  (setq appt-display-diary nil)
+  (setq appt-disp-window-function #'appt-disp-window)
+  (setq appt-display-mode-line t)
+  (setq appt-display-interval 3)
+  (setq appt-audible nil)
+  (setq appt-warning-time-regexp "appt \\([0-9]+\\)")
+  (setq appt-message-warning-time 6))
+
+(run-at-time 10 nil #'appt-activate 1)
 ;; (with-eval-after-load 'org
 ;;   (when (maybe-require-package 'idle-org-agenda)
 ;;     (add-hook 'org-mode-hook 'idle-org-agenda-mode)))
