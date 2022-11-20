@@ -8,6 +8,7 @@
   - [[#how-to-use-my-configuration][How to use my configuration]]
 - [[#about-note-taking][About note taking]]
 - [[#acknowledgment][Acknowledgment]]
+- [[#elisp-学习][ELISP 学习]]
 - [[#the-difference-between-with-setq-and-setq-default][The difference between with setq and setq-default]]
 
 * Interface Show
@@ -97,6 +98,13 @@ If I have seen further, it is by standing on the shoulders of giants. ---- Sir I
 + https://sachachua.com/dotemacs/
 + https://github.com/raxod502/radian
 + https://tecosaur.github.io/emacs-config/config.html
+* ELISP 学习
+- [[https://manateelazycat.github.io/emacs/2022/11/18/write-emacs-plugin.html][Emacs 插件开发手册]]
+- [[http://smacs.github.io/elisp/][Emacs Lisp 简明教程 - 水木社区Emacs版]]
+- [[https://www.youtube.com/watch?v=RQK_DaaX34Q&list=PLEoMzSkcN8oPQtn7FQEF3D7sroZbXuPZ7][Introduction to Emacs Lisp - Learning Emacs Lisp #1 - YouTube]]
+
+
+看完以上3个的内容Emacs-lisp 就算入门了。
 
 * The difference between with setq and setq-default
 - source ::[[https://stackoverflow.com/questions/18172728/the-difference-between-setq-and-setq-default-in-emacs-lisp][elisp - The difference between setq and setq-default in Emacs Lisp - Stack Overflow]]
