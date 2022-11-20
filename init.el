@@ -107,6 +107,7 @@ locate PACKAGE."
 (require 'init-benchmarking)
 
 (require 'init-variables)
+(require 'on)
 
 (require 'init-ui)
 (require 'init-dashboard)
