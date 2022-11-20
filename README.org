@@ -5,7 +5,6 @@
 - [[#interface-show][Interface Show]]
 - [[#why-emacs][Why Emacs]]
 - [[#how-i-manage-my-packages][How I manage my packages]]
-  - [[#how-to-use-my-configuration][How to use my configuration]]
 - [[#about-note-taking][About note taking]]
 - [[#acknowledgment][Acknowledgment]]
 - [[#elisp-学习][ELISP 学习]]
@@ -47,28 +46,10 @@ Emacs 的学习曲线很特别。现在看这个图，Emacs 会在那转圈圈�
 * How I manage my packages
 我尝试过的 Emacs 配置方式有多种，尝试过的 Emacs 包管理方法有 ~package.el~ ~straight.el~ ~git submodule~ ~borg.el~ 。
 
-最开始使的 Emacs 时，将所有的配置文件放到 ~init.el~ 文件中。后来学习了别人的配置方法，将配置分解到以 ~init-~ 为前缀的多个子文件中。现在我使用 org-mode （见[[https://en.wikipedia.org/wiki/Literate_programming][文学编程]]）组织 Emacs 配置文件。
+兜兜转转又回到了使用 ~package.el~ 管理自己的配置上来，~use-package~ 还是不用，虽然它进行了 ~elpa~ ，但是总是觉得它并没有把配置变的简单。
 
-使用 org-mode 管理自己的配置文件也经历了多个阶段。最开始是直接写在 org 文档中，加载 Emacs 的时候，自动检测该文件的状态，自动解析 org 文档到 el 文件中，这种方式导致 Emacs 启动较慢。后来使用函数在关闭 Emacs 时将 org 文档 tangle 到 el 文件中。现在我使用 org-auto-tangle 这个包，当配置文件发生变动时就自动的 tangle 配置文档。
+原先我使用 Borg 管理自己的配置，Borg 使用的体验总体上还是很棒，但是我现在不需要追 package 的最新状态，使用 Melpa 更简单轻量一些。
 
-原来我将 org 文档 tangle 到多个以 ~init-~ 为前缀的子文件中，这样的好处是，可以使用 git 对配置进行更精细化的版本管理。但是在尝试了用了几次后，发现，Emacs 的启动速度慢了很多。
-
-关于包的管理，我使用 git submodule 进行。使用 git submodule 进行包的管理，个人具有最大的可控制性。[[https://github.com/emacscollective/borg][Borg]] 是对 git submodule 的一个包裹，相对完全使用 git submodule 的方式更方便一些。关于此包的详细的使用方法见 [[https://emacsmirror.net/manual/borg/][Borg官方手册]]。
-
-是否需要使用 use-package 类的包？我的回答是不需要。使用 Borg 管理有个好处是， ~borg-assimilate~ 后的包和 Emacs 的内置包一样，不需要使用 use-package 或 leaf 此类包对配置文件进行包裹。在配置中不需要使用 ~require~ 调用某个包，Borg 的方式不会增超 Emacs 的启动时间，我目前有一百六十多个包，启动时间在  +1.6s+ 0.7s 左右（MacOS M1, Emacs 28.1）。
-
-** How to use my configuration
-我不建议直接使用我的这个配置文件，此文件是我自己用的，不能保证你 clone 后能成功跑起来没有问题。我的建议是看看我的配置内容，择你需要的部份，使用你自己的管理方式进行配置。
-
-若你要尝试使用我的配置，进行下面的操作：
-#+begin_src bash
-  git clone --depth=1 git@github.com:Jousimies/.emacs.d.git
-  cd .emacs.d
-  make bootstrap-borg
-  make bootstrap
-#+end_src
-
-执行完上面的操作后，要使用 Emacs 打开  ~README.org~  文件，执行一次  ~org-babel-tangle~  生成  ~init.el~ 。
 * About note taking
 作为一名非程序员，使用 Emacs 就是奔着 org-mode 来的。Emacs 中能进行任务管理，财务管理，笔记管理都是建立在 org-mode 之上的。Org-mode 在这方面的确很强大。
 
