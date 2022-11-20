@@ -39,9 +39,6 @@
  :non-normal-prefix "M-SPC"
  ";e" '(epkg-describe-package :wk "Epkg"))
 
-;; websocket-bridge
-;; (require 'websocket-bridge)
-
 (when (maybe-require-package 'bicycle)
   (with-eval-after-load 'outline
     (define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)

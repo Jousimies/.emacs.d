@@ -66,56 +66,15 @@
   (setq mu4e-compose-format-flowed nil)
   (setq mu4e-compose-signature-auto-include nil)
   (setq mu4e-compose-dont-reply-to-self t)
+
   (with-eval-after-load 'mu4e-headers
     (setq mu4e-use-fancy-chars t)
-    (setq mu4e-headers-list-mark `("s" . ,(propertize
-                                           (all-the-icons-material "list")
-                                           'face `(:family ,(all-the-icons-material-family)))))
-    (setq mu4e-headers-seen-mark `("S" . ,(propertize
-                                           (all-the-icons-material "mail_outline")
-                                           'face `(:family ,(all-the-icons-material-family)))))
+    (when (maybe-require-package 'mu4e-marker-icons)
+      (add-hook 'mu4e-view-mode-hook 'mu4e-marker-icons-mode)))
 
-    (setq mu4e-headers-new-mark `("N" . ,(propertize
-                                          (all-the-icons-material "markunread")
-                                          'face `(:family ,(all-the-icons-material-family)))))
-
-    (setq mu4e-headers-unread-mark `("u" . ,(propertize
-                                             (all-the-icons-material "notifications_none")
-                                             'face `(:family ,(all-the-icons-material-family)))))
-    (setq mu4e-headers-signed-mark `("s" . ,(propertize
-                                             (all-the-icons-material "check")
-                                             'face `(:family ,(all-the-icons-material-family)))))
-
-    (setq mu4e-headers-encrypted-mark `("x" . ,(propertize
-                                                (all-the-icons-material "enhanced_encryption")
-                                                'face `(:family ,(all-the-icons-material-family)))))
-
-    (setq mu4e-headers-draft-mark `("D" . ,(propertize
-                                            (all-the-icons-material "drafts")
-                                            'face `(:family ,(all-the-icons-material-family)))))
-    (setq mu4e-headers-attach-mark `("a" . ,(propertize
-                                             (all-the-icons-material "attachment")
-                                             'face `(:family ,(all-the-icons-material-family)))))
-    (setq mu4e-headers-passed-mark `("P" . ,(propertize ; ❯ (I'm participated in thread)
-                                             (all-the-icons-material "center_focus_weak")
-                                             'face `(:family ,(all-the-icons-material-family)))))
-    (setq mu4e-headers-flagged-mark `("F" . ,(propertize
-                                              (all-the-icons-material "flag")
-                                              'face `(:family ,(all-the-icons-material-family)))))
-    (setq mu4e-headers-replied-mark `("R" . ,(propertize
-                                              (all-the-icons-material "reply_all")
-                                              'face `(:family ,(all-the-icons-material-family)))))
-    (setq mu4e-headers-trashed-mark `("T" . ,(propertize
-                                              (all-the-icons-material "cancel")
-                                              'face `(:family ,(all-the-icons-material-family)))))
-
-    (setq mu4e-headers-personal-mark `("p" . ,(propertize
-                                               (all-the-icons-material "person")
-                                               'face `(:family ,(all-the-icons-material-family)
-                                                               :foreground 'mu4e-special-header-value-face)))))
 
   (when (maybe-require-package 'mu4e-alert)
-    (mu4e-alert-set-default-style 'osx-notifier)
+    (mu4e-alert-set-default-style 'notifier)
     (mu4e-alert-enable-notifications)
     (mu4e-alert-enable-mode-line-display))
 
@@ -133,3 +92,49 @@
 (provide 'init-mail)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init-mail.el ends here
+
+;; (setq mu4e-headers-list-mark `("s" . ,(propertize
+;;                                        (all-the-icons-material "list")
+;;                                        'face `(:family ,(all-the-icons-material-family)))))
+;; (setq mu4e-headers-seen-mark `("S" . ,(propertize
+;;                                        (all-the-icons-material "mail_outline")
+;;                                        'face `(:family ,(all-the-icons-material-family)))))
+
+;; (setq mu4e-headers-new-mark `("N" . ,(propertize
+;;                                       (all-the-icons-material "markunread")
+;;                                       'face `(:family ,(all-the-icons-material-family)))))
+
+;; (setq mu4e-headers-unread-mark `("u" . ,(propertize
+;;                                          (all-the-icons-material "notifications_none")
+;;                                          'face `(:family ,(all-the-icons-material-family)))))
+;; (setq mu4e-headers-signed-mark `("s" . ,(propertize
+;;                                          (all-the-icons-material "check")
+;;                                          'face `(:family ,(all-the-icons-material-family)))))
+
+;; (setq mu4e-headers-encrypted-mark `("x" . ,(propertize
+;;                                             (all-the-icons-material "enhanced_encryption")
+;;                                             'face `(:family ,(all-the-icons-material-family)))))
+
+;; (setq mu4e-headers-draft-mark `("D" . ,(propertize
+;;                                         (all-the-icons-material "drafts")
+;;                                         'face `(:family ,(all-the-icons-material-family)))))
+;; (setq mu4e-headers-attach-mark `("a" . ,(propertize
+;;                                          (all-the-icons-material "attachment")
+;;                                          'face `(:family ,(all-the-icons-material-family)))))
+;; (setq mu4e-headers-passed-mark `("P" . ,(propertize ; ❯ (I'm participated in thread)
+;;                                          (all-the-icons-material "center_focus_weak")
+;;                                          'face `(:family ,(all-the-icons-material-family)))))
+;; (setq mu4e-headers-flagged-mark `("F" . ,(propertize
+;;                                           (all-the-icons-material "flag")
+;;                                           'face `(:family ,(all-the-icons-material-family)))))
+;; (setq mu4e-headers-replied-mark `("R" . ,(propertize
+;;                                           (all-the-icons-material "reply_all")
+;;                                           'face `(:family ,(all-the-icons-material-family)))))
+;; (setq mu4e-headers-trashed-mark `("T" . ,(propertize
+;;                                           (all-the-icons-material "cancel")
+;;                                           'face `(:family ,(all-the-icons-material-family)))))
+
+;; (setq mu4e-headers-personal-mark `("p" . ,(propertize
+;;                                            (all-the-icons-material "person")
+;;                                            'face `(:family ,(all-the-icons-material-family)
+;;                                                            :foreground 'mu4e-special-header-value-face))))

@@ -85,7 +85,7 @@
 
 (require-package 'boxy-headings)
 (general-define-key
- :states '(normal visual emacs)
+ :states '(normal visual insert emacs)
  :prefix "SPC"
  :non-normal-prefix "M-SPC"
  "oh" '(boxy-headings :wk "Boxy heading"))
@@ -98,14 +98,15 @@
                            'company-org-block))))
 
 (when (maybe-require-package 'org-alert)
-  (run-with-idle-timer 2 nil (lambda ()
-                              (require 'org-alert)))
+  (run-with-idle-timer 20 nil (lambda ()
+                               (require 'org-alert)))
   (with-eval-after-load 'org-alert
     (setq org-alert-interval 300)
     (setq org-alert-notify-cutoff 10)
     (setq org-alert-notify-after-event-cutoff 10)
     (setq org-alert-notification-title "Org Agenda Reminder!")
     (org-alert-enable)))
+
 
 (provide 'init-org+)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

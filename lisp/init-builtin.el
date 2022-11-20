@@ -1,4 +1,4 @@
-;;; init-builtin.el --- Builtin Emacs. 	-*- lexical-binding: t no-byte-compile: t -*-
+;;; init-builtin.el --- Builtin Emacs.     -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Commentary:
 ;;; Code:
 
@@ -37,7 +37,7 @@
               ;; Improve the performance of rendering long lines.
               bidi-display-reordering nil)
 
-
+(setq ffap-machine-p-known 'reject)
 ;; profiler
 (add-hook 'profiler-report-mode-hook #'hl-line-mode)
 
@@ -63,7 +63,9 @@
 
 ;; Auto revert file.
 (setq-default revert-without-query t)
-(add-hook 'after-init-hook 'global-auto-revert-mode)
+(add-hook 'text-mode-hook 'auto-revert-mode)
+(add-hook 'org-mode-hook 'auto-revert-mode)
+(add-hook 'prog-mode-hook 'auto-revert-mode)
 
 ;; Save history.
 (setq-default history-length 1000

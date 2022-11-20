@@ -6,11 +6,19 @@
                                        :type (:@type "proxyTypeHttp"))))
   (setq telega-server-libs-prefix "/opt/homebrew/Cellar/tdlib/1.8.0/include/")
 
+  (setq telega-root-show-avatars nil)
+  (setq telega-user-show-avatars nil)
+  (setq telega-chat-show-avatars nil)
+
   (general-define-key
-   :states '(normal visual emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "T" '(telega :wk "Telega")))
+     :states '(normal visual emacs)
+     :prefix "SPC"
+     :non-normal-prefix "M-SPC"
+     "T" '(telega :wk "Telega"))
+  (with-eval-after-load 'telega
+    (require 'telega-alert)
+    (telega-alert-mode)))
+
 
 (provide 'init-telega)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

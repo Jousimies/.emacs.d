@@ -31,7 +31,7 @@
 (require-package 'sudoku)
 
 ;; Make your Emacs sound like a proper typewriter.
-(require-package 'selectric-mode)
+;; (require-package 'selectric-mode)
 ;; (selectric-mode)
 
 (provide 'init-fun)

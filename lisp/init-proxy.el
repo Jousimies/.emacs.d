@@ -25,7 +25,7 @@
       (setq url-proxy-services nil))
   (message "Proxy disabled!"))
 
-(proxy-enable)
+(add-hook 'on-first-input-hook 'proxy-enable)
 
 (general-define-key
  :keymaps '(normal visual emacs)

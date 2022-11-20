@@ -25,16 +25,18 @@
 
 ;;
 (when (maybe-require-package 'rg)
-  (setq rg-group-result t)
-  (setq rg-show-columns t)
-  (add-hook 'after-init-hook 'rg-enable-default-bindings)
+  (add-hook 'on-first-input-hook 'rg-enable-default-bindings)
   (with-eval-after-load 'rg
-    (define-key rg-global-map (kbd "d") 'rg-dwim-current-dir)
-    (define-key rg-global-map (kbd "f") 'rg-dwim-current-file)
-    (define-key rg-global-map (kbd "m") 'rg-menu)))
+    (setq rg-group-result t)
+    (setq rg-show-columns t))
+  (general-define-key
+   :states '(normal visual insert emacs)
+   :prefix "SPC"
+   :non-normal-prefix "M-SPC"
+   "sr" '(rg :wk "rg")))
 
 
-(require 'blink-search)
+;; (require 'blink-search)
 ;;; Code:
 
 (provide 'init-rg)

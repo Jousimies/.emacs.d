@@ -1,4 +1,4 @@
-;;; init-denote.el --- Denote. -*- lexical-binding: t -*-
+;;; init-denote.el --- Denote. -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Commentary:
 ;;; Code:
 (when (maybe-require-package 'denote)
@@ -9,7 +9,7 @@
     (setq consult-notes-sources `(("Books" ?b ,(expand-file-name "books" denote-directory))
                                   ("Professional" ?p ,(expand-file-name "professional" denote-directory))))
     (when (locate-library "denote")
-      (consult-notes-denote-mode)))
+      (add-hook 'on-first-file-hook 'consult-notes-denote-mode)))
 
   (general-define-key
    :states '(normal visual emacs)

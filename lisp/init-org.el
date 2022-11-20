@@ -1,4 +1,4 @@
-;;; init-org.el ---  Org.	-*- lexical-binding: t no-byte-compile: t -*-
+;;; init-org.el ---  Org.  -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Code:
 ;;; Commentary:
 ;; Better default.
@@ -80,12 +80,12 @@
                                 ("lm" "Movie"
                                  entry (file+headline (lambda () (concat my-galaxy "/roam/main/movie.org")) "Movie list")
                                  "* %?
-  :PROPERTIES:
-  :GENRE: %^{Film genre|Action|Adventure|Comedy|Drama|Fantasy|Horror|Musicals|Mystery|Romance|Science fiction|Sports|Thriller}
-  :COUNTRY:
-  :SCORE:
-  :PLOT: %^{PLOT}
-  :END:")))
+                                 :PROPERTIES:
+                                 :GENRE: %^{Film genre|Action|Adventure|Comedy|Drama|Fantasy|Horror|Musicals|Mystery|Romance|Science fiction|Sports|Thriller}
+                                 :COUNTRY:
+                                 :SCORE:
+                                 :PLOT: %^{PLOT}
+                                 :END:")))
 
   (global-set-key (kbd "<f10>") 'org-capture)
   (general-define-key
@@ -185,6 +185,7 @@
    "ocj" '(org-clock-goto :wk "Clock goto")
    "oci" '(org-clock-in :wk "Clock In")
    "oco" '(org-clock-out :wk "Clock Out")
+   "ocl" '(org-clock-in-last :wk "Clock In Last")
    "ocr" '(org-mru-clock-select-recent-task :wk "Recent")))
 
 ;; Punch In and Punch Out.
@@ -230,7 +231,7 @@
       parent-task)))
 (defun bh/is-project-subtree-p ()
   "Any task with a todo keyword that is in a project subtree.
-Callers of this function already widen the buffer view."
+ Callers of this function already widen the buffer view."
   (let ((task (save-excursion (org-back-to-heading 'invisible-ok)
                               (point))))
     (save-excursion
@@ -240,8 +241,8 @@ Callers of this function already widen the buffer view."
         t))))
 (defun bh/clock-in-to-next (kw) ;; kw should not been deleted.
   "Switch a task from TODO to NEXT when clocking in.
-Skips capture tasks, projects, and subprojects.
-Switch projects and subprojects from NEXT back to TODO"
+ Skips capture tasks, projects, and subprojects.
+ Switch projects and subprojects from NEXT back to TODO"
   (when (not (and (boundp 'org-capture-mode) org-capture-mode))
     (cond
      ((and (member (org-get-todo-state) (list "TODO"))
@@ -252,8 +253,8 @@ Switch projects and subprojects from NEXT back to TODO"
       "TODO"))))
 (defun bh/punch-in (arg)
   "Start continuous clocking and set the default task to the selected task.
-If `ARG' is nil, set the Organization task
-as the default task."
+ If `ARG' is nil, set the Organization task
+ as the default task."
   (interactive "p")
   (setq bh/keep-clock-running t)
   (if (equal major-mode 'org-agenda-mode)
@@ -318,8 +319,8 @@ as the default task."
 
 (defun bh/clock-in-last-task (arg)
   "Clock in the interrupted task if there is one.
-Skip the default task and get the next one.
-A prefix `ARG' forces clock in of the default task."
+ Skip the default task and get the next one.
+ A prefix `ARG' forces clock in of the default task."
   (interactive "p")
   (let ((clock-in-to-task
          (cond

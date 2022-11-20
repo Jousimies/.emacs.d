@@ -47,7 +47,7 @@
     (grab-mac-link-dwim 'safari))
 
   (general-define-key
-   :keymaps '(normal visual emacs)
+   :keymaps '(normal visual insert emacs)
    :prefix "SPC"
    :non-normal-prefix "M-SPC"
    "l" '(:ignore t :wk "Link/Language")

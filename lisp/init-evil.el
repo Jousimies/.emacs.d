@@ -4,16 +4,18 @@
 (when (require-package 'evil)
   (setq evil-want-keybinding nil)
   (setq evil-undo-system 'undo-fu)
-  (evil-mode 1)
+  (add-hook 'on-first-buffer-hook 'evil-mode)
 
   (when (maybe-require-package 'evil-commentary)
-    (evil-commentary-mode 1))
+    (add-hook 'on-first-input-hook 'evil-commentary-mode))
 
   (when (maybe-require-package 'evil-collection)
-    (add-hook 'after-init-hook 'evil-collection-init))
+    (with-eval-after-load 'evil
+      (evil-collection-init)))
+    ;; (add-hook 'after-init-hook 'evil-collection-init))
 
   (when (maybe-require-package 'evil-surround)
-    (global-evil-surround-mode 1))
+    (add-hook 'on-first-input-hook 'global-evil-surround-mode))
 
   (require-package 'evil-anzu)
 

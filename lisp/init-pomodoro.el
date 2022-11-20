@@ -7,7 +7,8 @@
     (pomm-mode-line-mode 1)))
 
 (with-eval-after-load 'alert
-  (setq alert-default-style 'osx-notifier))
+  (setq alert-default-style 'notifier))
+
 
 (provide 'init-pomodoro)
 ;;; init-pomodoro.el ends here
