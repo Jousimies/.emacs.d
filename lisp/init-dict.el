@@ -115,6 +115,7 @@
 ;; websocket-bridge and dictionary-overlay can be used to learn english words.
 (require 'websocket-bridge)
 (require 'dictionary-overlay)
+(add-hook 'after-init-hook 'dictionary-overlay-start)
 (with-eval-after-load 'dictionary-overlay
   (setq dictionary-overlay-user-data-directory (expand-file-name "var/dictionary-overlay" user-emacs-directory))
   (with-eval-after-load 'osx-dictionary
@@ -123,6 +124,7 @@
    :keymaps '(normal visual insert emacs)
    :prefix "SPC"
    :non-normal-prefix "M-SPC"
+   "br" '(dictionary-overlay-render-buffer :wk "Render buffer")
    "lk" '(dictionary-overlay-mark-word-known :wk "Mark word known"))
 
 
