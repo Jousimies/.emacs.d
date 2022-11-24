@@ -15,7 +15,12 @@
 
   (when (maybe-require-package 'elfeed-org)
     (advice-add 'elfeed-summary :before 'elfeed-org)
-    (setq rmh-elfeed-org-files `(,(concat my-galaxy "/rss/elfeed.org"))))
+    (setq rmh-elfeed-org-files `(,(concat my-galaxy "/rss/elfeed.org")))
+    (defun my/elfeed-file ()
+     "Open elfeed file."
+     (interactive)
+     (find-file (car rmh-elfeed-org-files))))
+
 
   (when (maybe-require-package 'elfeed-summary)
     (setq elfeed-summary-other-window t)
@@ -36,19 +41,13 @@
             (group (:title . "Youtube")
                    (:elements (query . video)))))
 
-    (advice-add 'elfeed-summary :after 'elfeed-summary-update)
+    (advice-add 'elfeed-summary :after 'elfeed-summary-update)))
 
-    (general-define-key
-     :states '(normal visual emacs)
-     :prefix "SPC"
-     :non-normal-prefix "M-SPC"
-     "E" '(elfeed-summary :wk "Elfeed"))))
 
 (defun my/rss-source ()
   "Open elfeed config file."
   (interactive)
   (find-file (car rmh-elfeed-org-files)))
-
 
 (with-eval-after-load 'evil
   (evil-set-initial-state 'elfeed-search-mode 'emacs)
@@ -68,7 +67,7 @@
   (with-eval-after-load 'elfeed
     (require 'elfeed-tube)
     (elfeed-tube-setup)
-  
+
     (define-key elfeed-show-mode-map (kbd "F") 'elfeed-tube-fetch)
     (define-key elfeed-show-mode-map [remap save-buffer] 'elfeed-tube-save)
     (define-key elfeed-search-mode-map (kbd "F") 'elfeed-tube-fetch)

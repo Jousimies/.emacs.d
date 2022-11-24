@@ -1,8 +1,13 @@
 ;;; init-browser.el --- Quick search. -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Commentary:
 ;;; Code:
+
+;; Browse at remove
+(require-package 'browse-at-remote)
+
+;; Search engine
 (when (maybe-require-package 'engine-mode)
-  (add-hook 'after-init-hook 'engine-mode)
+  (add-hook 'on-first-input-hook 'engine-mode)
 
   (with-eval-after-load 'engine-mode
     (defengine google "https://google.com/search?q=%s"
@@ -25,33 +30,13 @@
       :docstring "Search Book DouBan.")
     (defengine zhihu "https://www.zhihu.com/search?type=content&q=%s"
       :keybinding "z"
-      :docstring "Search Zhihu.")
+      :docstring "Search Zhihu.")))
 
-
-    (general-define-key
-     :states '(normal visual emacs)
-     :prefix "SPC"
-     :non-normal-prefix "M-SPC"
-     "s" '(:ignore t :wk "Search")
-     "sb" '(engine/search-bookdouban :wk "Book DouBan")
-     "ss" '(engine/search-google :wk "Google")
-     "sG" '(engine/search-github :wk "Github")
-     "sy" '(engine/search-youtube :wk "Youtube")
-     "sw" '(engine/search-wikipedia :wk "Wikipedia")
-     "sm" '(engine/search-moviedouban :wk "Movie DouBan")
-     "sz" '(engine/search-zhihu :wk "Zhihu"))))
-
-(when (maybe-require-package 'grab-mac-link)
-  (defun my/link-safari ()
-    (interactive)
-    (grab-mac-link-dwim 'safari))
-
-  (general-define-key
-   :keymaps '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "l" '(:ignore t :wk "Link/Language")
-   "ls" '(my/link-safari :wk "Grab Safari Link")))
+;; Grab link
+(require-package 'grab-mac-link)
+(defun my/link-safari ()
+  (interactive)
+  (grab-mac-link-dwim 'safari))
 
 ;; Remove url link.
 ;; https://github.com/jeremyf/dotemacs/blob/main/emacs.d/jf-org-mode.el
@@ -68,12 +53,6 @@
           (let ((content (buffer-substring-no-properties content-begin content-end)))
             (delete-region link-begin link-end)
             (insert content)))))))
-
-(general-define-key
- :keymaps '(normal visual emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- "lr" '(jf/org-link-remove-link :wk "Link Remove"))
 
 ;; Set youtube link time.
 ;; http://mbork.pl/2022-10-10_Adding_timestamps_to_youtube_links
@@ -123,20 +102,6 @@ Supported formats:
         (delete-region (car bounds) (cdr bounds))
         (insert new-url))
     (error "Not on a Youtube link")))
-
-(general-define-key
- :keymaps '(normal visual emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- "lt" '(yt-set-time :wk "Set Youtube link time"))
-
-;; Browse at remove
-(when (maybe-require-package 'browse-at-remote)
-  (general-define-key
-   :states '(normal insert visual emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "fR" '(browse-at-remote :wk "Browse remote")))
 
 
 (provide 'init-browser)

@@ -5,13 +5,6 @@
 (server-mode)
 (require-package 'restart-emacs)
 
-(general-define-key
- :keymaps '(normal visual insert emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- "q" '(:ignore t :wk "Quit/Restart")
- "qR" '(restart-emacs :wk "Restart emacs"))
-
 (when (maybe-require-package 'helpful)
   (global-set-key [remap describe-function] 'helpful-callable)
   (global-set-key [remap describe-variable] 'helpful-variable)
@@ -33,33 +26,23 @@
     (cl-pushnew 'epkg-marginalia-annotate-package
                 (alist-get 'package marginalia-annotator-registry))))
 
-(general-define-key
- :states '(normal visual insert emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- ";e" '(epkg-describe-package :wk "Epkg"))
-
 (when (maybe-require-package 'bicycle)
   (with-eval-after-load 'outline
     (define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
     (define-key outline-minor-mode-map (kbd "S-<tab>") 'bicycle-cycle-global)))
 
-(when (maybe-require-package 'parinfer-rust-mode)
-  (setq parinfer-rust-library (expand-file-name "parinfer-rust/libparinfer_rust.so" user-emacs-directory))
-  (add-hook 'emacs-lisp-mode-hook 'parinfer-rust-mode)
-  (with-eval-after-load 'parinfer-rust-mode
-    (progn
-      (hungry-delete-mode -1)
-      (electric-pair-mode -1))))
+;; 有时候会搞乱符号位置，存在 bug 需要解决。
+;; (when (maybe-require-package 'parinfer-rust-mode)
+;;   (setq parinfer-rust-library (expand-file-name "parinfer-rust/libparinfer_rust.so" user-emacs-directory))
+;;   (add-hook 'emacs-lisp-mode-hook 'parinfer-rust-mode)
+;;   (with-eval-after-load 'parinfer-rust-mode
+;;     (progn
+;;       (hungry-delete-mode -1)
+;;       (electric-pair-mode -1))))
 
 (when (maybe-require-package 'demap)
   (setq demap-minimap-window-side  'left)
-  (setq demap-minimap-window-width 15)
-  (general-define-key
-   :states '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "tm" '(demap-toggle :wk "Minimap")))
+  (setq demap-minimap-window-width 15))
 
 (when (maybe-require-package 'reformatter)
   (reformatter-define black-format :program "black" :args '("-")))
@@ -72,16 +55,9 @@
 (when (maybe-require-package 'pangu-spacing)
   (add-hook 'org-mode-hook 'pangu-spacing-mode))
 
-(require-package 'alarm-clock)
-(setq alarm-clock-cache-file (expand-file-name "var/.alarm-clock.cache" user-emacs-directory))
-(general-define-key
- :states '(normal visual insert emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- "u" '(:ignore t :wk "Utils")
- "ua" '(:ignore t :wk "Alarm")
- "uas" '(alarm-clock-set :wk "Set")
- "uav" '(alarm-clock-list-view :wk "View"))
+(when (maybe-require-package 'whitespace-cleanup-mode)
+  (add-hook 'on-first-file-hook 'whitespace-cleanup-mode))
+
 
 (provide 'init-utils)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

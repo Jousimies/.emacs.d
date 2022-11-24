@@ -1,4 +1,4 @@
-;;; init-rg.el --- rg -*- lexical-binding: t no-byte-compile: t -*-
+;;; init-persp.el --- Persp Mode -*- lexical-binding: t no-byte-compile: t -*-
 
 ;; Copyright (C) 2022 Duan Ning
 
@@ -24,16 +24,11 @@
 ;;; Commentary:
 
 ;;
+
 ;;; Code:
 
-(when (maybe-require-package 'rg)
-  (add-hook 'on-first-input-hook 'rg-enable-default-bindings)
-  (with-eval-after-load 'rg
-    (setq rg-group-result t)
-    (setq rg-show-columns t)))
+(when (maybe-require-package 'persp-mode)
+  (add-hook 'after-init-hook 'persp-mode))
 
-;; (require 'blink-search)
-
-
-(provide 'init-rg)
-;;; init-rg.el ends here
+(provide 'init-persp)
+;;; init-persp.el ends here

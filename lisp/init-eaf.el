@@ -4,7 +4,7 @@
 
 ;; Author: Duan Ning <duan_n@outlook.com>
 ;; Version: 1.0.0
-;; Keywords: 
+;; Keywords:
 
 ;; This file is not part of GNU Emacs.
 
@@ -27,7 +27,7 @@
 ;; https://emacs-china.org/t/emacs-linux-windows-mac-bsd/6199/2468
 ;; EAF 和 emacsclient 不能混着用。
 
-;; 
+;;
 
 ;;; Code:
 
@@ -41,15 +41,17 @@
 (with-eval-after-load 'eaf
   (with-eval-after-load 'evil-collection
     (evil-collection-define-key 'normal 'eaf-pdf-outline-mode-map
-      [return] 'eaf-pdf-outline-jump)))
+      [return] 'eaf-pdf-outline-jump)
+    (evil-collection-define-key 'normal 'eaf-pdf-outline-mode-map
+      "q" 'quit-window)))
 
 (setq eaf-mode-line-format '("%e"
                              (:eval
                               (doom-modeline-format--main))))
 
-;; (require 'eaf-browser)
 (require 'eaf-pdf-viewer)
 
+;; Combine evil and eaf, auto change eaf-buffer to insert state.
 ;; https://emacs-china.org/t/eaf-evil/13089
 (eval-after-load "evil"
   '(progn
@@ -69,7 +71,12 @@
 
      (add-hook 'buffer-list-update-hook #'buffer-focus-handler)))
 
+;; eaf-browser can not login google account.
+;; (require 'eaf-browser)
+
 ;; eaf-git make emacs startup very slow.
 ;; (require 'eaf-git)
+
+
 (provide 'init-eaf)
 ;;; init-eaf.el ends here

@@ -63,6 +63,12 @@
   (setq org-capture-templates '(("i" "Inbox"
                                  plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/inbox.org")))
                                  "**** %?\n%U\n" :time-prompt t :tree-type week)
+                                ("p" "Daily Plan"
+                                 plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/plan.org")))
+                                 "- [ ] %?\n%U\n" :time-prompt t :tree-type week)
+                                ("r" "Reflection"
+                                 plain (file+olp+datetree (lambda () (concat my-galaxy "/roam/main/reflection.org")))
+                                 "- [ ] %?\n%U\n" :time-prompt t :tree-type week)
                                 ("a" "Anki Deck")
                                 ("ae" "Deck: English"
                                  entry (file (lambda ()
@@ -87,18 +93,7 @@
                                  :PLOT: %^{PLOT}
                                  :END:")))
 
-  (global-set-key (kbd "<f10>") 'org-capture)
-  (general-define-key
-   :keymaps 'org-capture-mode-map
-   [remap evil-save-and-close]          'org-capture-finalize
-   [remap evil-save-modified-and-close] 'org-capture-finalize
-   [remap evil-quit]                    'org-capture-kill)
-
-  (general-define-key
-   :states 'normal
-   :keymaps 'org-capture-mode-map
-   "RET" "C-c C-c"
-   "SPC k" '(org-capture-kill :which-key "abort capture")))
+  (global-set-key (kbd "<f10>") 'org-capture))
 
 ;; Refile
 (with-eval-after-load 'org
@@ -170,23 +165,14 @@
   (setq org-clock-in-switch-to-state 'bh/clock-in-to-next)
   (setq bh/keep-clock-running nil)
 
-  (org-clock-persistence-insinuate)
+  (org-clock-persistence-insinuate))
 
   ;; (when (maybe-require-package 'org-mru-clock)
   ;;   (setq org-mru-clock-how-many 100)
   ;;   (with-eval-after-load 'embark
   ;;     (add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook)))
 
-  (general-define-key
-   :states '(normal visual emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "oc" '(:ignore t :wk "Clock")
-   "ocj" '(org-clock-goto :wk "Clock goto")
-   "oci" '(org-clock-in :wk "Clock In")
-   "oco" '(org-clock-out :wk "Clock Out")
-   "ocl" '(org-clock-in-last :wk "Clock In Last")
-   "ocr" '(org-mru-clock-select-recent-task :wk "Recent")))
+
 
 ;; Punch In and Punch Out.
 (defun bh/is-task-p ()
@@ -335,13 +321,6 @@
     (org-with-point-at clock-in-to-task
       (org-clock-in nil))))
 
-(general-define-key
- :keymaps '(normal visual emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- "ti" '(bh/punch-in :wk "Punch In")
- "to" '(bh/punch-out :wk "Punch Out"))
-
 ;; Agenda
 (with-eval-after-load 'org
   (setq org-agenda-files (directory-files-recursively (expand-file-name "todos" my-galaxy) "org$\\|archive$"))
@@ -352,15 +331,12 @@
     (interactive)
     (find-file (expand-file-name "todos/gtd.org" my-galaxy)))
 
+
+
   (add-hook 'org-agenda-finalize-hook #'org-agenda-find-same-or-today-or-agenda 90)
 
   (define-key org-mode-map (kbd "C-,") nil)
   (define-key org-mode-map (kbd "C-'") nil)
-
-  (general-define-key
-   :states 'normal
-   :keymaps 'org-mode-map
-   "RET" "C-c C-o")
 
   (setq org-agenda-custom-commands
         '(("A" "Archive"
@@ -431,22 +407,7 @@
     (interactive)
     (org-agenda "" " "))
 
-  (global-set-key (kbd "<f12>") 'my/org-agenda)
-
-  (general-define-key
-   :states '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "o" '(:ignore t :wk "Org")
-   "oa" '(:ignore t :wk "Agenda")
-   "oaa" '(my/org-agenda :wk "Agenda")
-   "oat" '(org-todo-list :wk "Todo list")
-   "oav" '(org-search-view :wk "View search")
-
-   "ot" '(:ignore t :wk "Toggle")
-   "ota" '(org-toggle-archive-tag :wk "Archive Tag")
-   "oth" '(org-toggle-heading :wk "Heading")
-   "oti" '(org-toggle-item :wk "Item")))
+  (global-set-key (kbd "<f12>") 'my/org-agenda))
 
 ;; Calendar
 (with-eval-after-load 'calendar
@@ -479,12 +440,7 @@
   (setq diary-comment-end "")
   (setq diary-nonmarking-symbol "!")
 
-  (setq diary-file (expand-file-name "diary/diary.org" my-galaxy))
-  (general-define-key
-     :states '(normal visual insert emacs)
-     :prefix "SPC"
-     :non-normal-prefix "M-SPC"
-     "C" '(calendar :wk "Calendar")))
+  (setq diary-file (expand-file-name "diary/diary.org" my-galaxy)))
 
 ;; Appt
 (with-eval-after-load 'appt
@@ -497,9 +453,6 @@
   (setq appt-message-warning-time 6))
 
 (run-at-time 10 nil #'appt-activate 1)
-;; (with-eval-after-load 'org
-;;   (when (maybe-require-package 'idle-org-agenda)
-;;     (add-hook 'org-mode-hook 'idle-org-agenda-mode)))
 
 
 (provide 'init-org)

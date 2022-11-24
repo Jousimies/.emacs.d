@@ -17,7 +17,7 @@
               tab-width 4
               make-backup-files nil
               create-lockfiles nil
-              confirm-kill-processes nil
+              confirm-kill-processes t
               confirm-kill-emacs nil
               recenter-redisplay nil
               load-prefer-newer t
@@ -45,7 +45,7 @@
 (add-hook 'after-init-hook 'column-number-mode)
 
 ;; Delete selection
-(add-hook 'after-init-hook 'delete-selection-mode)
+(add-hook 'on-first-input-hook 'delete-selection-mode)
 
 ;; Winner.
 (setq-default winner-dont-bind-my-keys t)
@@ -62,10 +62,7 @@
                               "*esh command on file*"))
 
 ;; Auto revert file.
-(setq-default revert-without-query t)
-(add-hook 'text-mode-hook 'auto-revert-mode)
-(add-hook 'org-mode-hook 'auto-revert-mode)
-(add-hook 'prog-mode-hook 'auto-revert-mode)
+(add-hook 'after-init-hook 'global-auto-revert-mode)
 
 ;; Save history.
 (setq-default history-length 1000
@@ -106,6 +103,7 @@
 
 ;; Auto insert pair.
 (electric-pair-mode)
+
 ;; Pretty symbols.
 (setq prettify-symbols-alist '(("lambda" . ?λ)
                                ("function" . ?𝑓)))
@@ -127,5 +125,7 @@
 ;; pixel-scroll-precision-mode
 (if (version< "29" emacs-version)
     (pixel-scroll-precision-mode))
+
+
 (provide 'init-builtin)
 ;;; init-builtin.el ends here

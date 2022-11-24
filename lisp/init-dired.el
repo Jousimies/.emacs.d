@@ -23,16 +23,9 @@
                               ("n" "~/Nextcloud/"                "Nextcloud"))))
 
   (with-eval-after-load 'evil-collection
-    (evil-collection-define-key 'normal 'dirvish-mode-map (kbd "q") 'dirvish-quit))
+    (evil-collection-define-key 'normal 'dirvish-mode-map (kbd "q") 'dirvish-quit)))
 
-  (global-set-key [remap dired] 'dirvish)
-
-  (general-define-key
-   :states '(normal visual emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   ";a" '(dirvish-quick-access :wk "Quick access")))
-
+(global-set-key [remap dired] 'dirvish)
 
 
 (provide 'init-dired)

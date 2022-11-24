@@ -1,6 +1,8 @@
-;;; init.el --- Emacs configuration.	-*- lexical-binding: t no-byte-compile: t -*-
-;;; Code:
+;;; init.el --- Emacs configuration.   -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Commentary:
+;;; Code:
+
+
 ;; Speedup Emacs
 ;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
 (setq auto-mode-case-fold nil)
@@ -17,6 +19,7 @@
 
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
+
 
 ;; Load path
 ;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
@@ -37,37 +40,35 @@ Otherwise the startup will be very slow."
 (advice-add #'package-initialize :after #'add-subdirs-to-load-path)
 
 (update-load-path)
+
 
 ;; Shell Path
 ;; https://www.emacswiki.org/emacs/ExecPath
 (defun set-exec-path-from-shell-PATH ()
-  "Set up Emacs' `exec-path' and PATH environment variable.
-To match that used by the user's shell.
-
-This is particularly useful under Mac OS X and macOS, where GUI
-apps are not started from a shell."
+  "This is particularly useful under Mac OS X and macOS."
   (interactive)
   (let ((path-from-shell (replace-regexp-in-string
-              "[ \t\n]*$" "" (shell-command-to-string
-                      "$SHELL --login -c 'echo $PATH'"
-                            ))))
+                          "[ \t\n]*$" "" (shell-command-to-string
+                                          "$SHELL --login -c 'echo $PATH'"))))
+
     (setenv "PATH" path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
 
 (set-exec-path-from-shell-PATH)
-;; Custom file
-(setq custom-file (locate-user-emacs-file "custom.el"))
 
+
+;; package.el
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
 (when (not package-archive-contents)
   (package-refresh-contents))
+
 
 ;; https://github.com/purcell/emacs.d/blob/master/lisp/init-elpa.el
 (defun require-package (package &optional min-version no-refresh)
-  "Install given PACKAGE, optionally requiring MIN-VERSION.
+  "Install given PACKAGE, optionally requiring MIN-VERSION.)
 If NO-REFRESH is non-nil, the available package lists will not be
 re-downloaded in order to locate PACKAGE."
   (when (stringp min-version)
@@ -86,7 +87,7 @@ re-downloaded in order to locate PACKAGE."
         (package-installed-p package min-version))))
 
 (defun maybe-require-package (package &optional min-version no-refresh)
-  "Try to install PACKAGE, and return non-nil if successful.
+  "Try to install PACKAGE, and return non-nil if successful.)
 In the event of failure, return nil and print a warning message.
 Optionally require MIN-VERSION.  If NO-REFRESH is non-nil, the
 available package lists will not be re-downloaded in order to
@@ -101,7 +102,7 @@ locate PACKAGE."
 (setq user-full-name "Duan Ning")
 (setq user-mail-address "duan_n@outlook.com")
 
-(setq initial-major-mode 'fundamental-mode)
+;; (profiler-start 'cpu)
 ;; Benchmark
 ;; https://github.com/purcell/emacs.d/blob/master/lisp/init-benchmarking.el
 (require 'init-benchmarking)
@@ -110,15 +111,15 @@ locate PACKAGE."
 (require 'on)
 
 (require 'init-ui)
-(require 'init-dashboard)
+;; (require 'init-dashboard)
 ;; Enable tray or modeline
-(setq tray-or-modeline nil)
-(if tray-or-modeline
-    (require 'init-tray)
-  (require 'init-modeline))
+;; (require 'init-tray)
+(require 'init-modeline)
 
 (require 'init-evil)
-
+;; (require 'init-meow)
+;; (require 'init-key)
+(require 'init-general)
 (require 'init-builtin)
 (require 'init-recentf)
 
@@ -130,6 +131,7 @@ locate PACKAGE."
 
 (require 'init-minibuffer)
 (require 'init-completion)
+;; (require 'init-persp)
 
 (require 'init-rime)
 (require 'init-browser)
@@ -147,7 +149,6 @@ locate PACKAGE."
 (require 'init-bibtex)
 (require 'init-blog)
 (require 'init-latex)
-(require 'init-pomodoro)
 
 (require 'init-flymake)
 (require 'init-markdown)
@@ -160,21 +161,32 @@ locate PACKAGE."
 (require 'init-mail)
 (require 'init-telega)
 (require 'init-eaf)
-;; (require 'init-reddit)
 
 (require 'init-osm)
 (require 'init-fun)
 
-
+;; Custom file
+(setq custom-file (locate-user-emacs-file "custom.el"))
 (when (file-exists-p custom-file)
   (load custom-file))
+
 
 ;; Gcmh
 (when (maybe-require-package 'gcmh)
-  (add-hook 'after-init-hook 'gcmh-mode)
+  (gcmh-mode)
   (setq gcmh-idle-delay 'auto)
   (setq gcmh-auto-idle-delay-factor 10)
   (setq gcmh-high-cons-threshold #x1000000))
+
+;; Message startup time if init-dashboard not activated.
+
+(let ((package-count 0) (time (emacs-init-time)))
+  (when (bound-and-true-p package-alist)
+    (setq package-count (length package-activated-list)))
+  (if (zerop package-count)
+      (message "Emacs started in %s" time)
+    (message "%d packages loaded in %s" package-count time)))
+
 
 (provide 'init)
 ;;; init.el ends here.

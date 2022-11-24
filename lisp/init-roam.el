@@ -1,13 +1,10 @@
 ;;; init-roam.el --- Note taking.  -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Commentary:
 ;;; Code:
+
+(setq org-roam-directory (file-truename (expand-file-name "roam" my-galaxy)))
+
 (when (maybe-require-package 'org-roam)
-  (add-hook 'org-roam-mode-hook 'turn-on-visual-line-mode)
-  (add-hook 'after-init-hook 'org-roam-db-autosync-enable)
-
-  (setq org-roam-db-gc-threshold most-positive-fixnum)
-  (setq org-roam-directory (file-truename (expand-file-name "roam" my-galaxy)))
-
   ;; There is another package org-roam-timestamp.
   (add-hook 'org-mode-hook (lambda ()
                              (setq-local time-stamp-active t
@@ -16,67 +13,56 @@
                                          time-stamp-format "\[%Y-%m-%d %3a %H:%M\]")
                              (add-hook 'before-save-hook 'time-stamp nil 'local)))
 
-  (add-to-list 'display-buffer-alist
-               '("\\*org-roam\\*"
-                 (display-buffer-in-side-window)
-                 (side . right)
-                 (window-width . 0.25)))
-  (defun tim/org-roam-buffer-show (_)
-    (if (and
-         ;; Don't do anything if we're in the minibuffer or in the calendar
-         (not (minibufferp))
-         (not (derived-mode-p 'calendar-mode))
-         ;; Show org-roam buffer iff the current buffer has a org-roam file
-         (xor (org-roam-file-p) (eq 'visible (org-roam-buffer--visibility))))
-        (org-roam-buffer-toggle)))
-  (add-hook 'window-buffer-change-functions 'tim/org-roam-buffer-show)
-  ;; org-roam-capture
-  (setq org-roam-capture-templates '(("a" "articles" plain "%?"
-                                      :target (file+head "articles/${slug}.org"
-                                                         "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
-                                      :unnarrowed t)
-                                     ("b" "Books" plain (file "~/.emacs.d/template/readinglog")
-                                      :target (file+head "books/${slug}.org"
-                                                         "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
-                                      :unnarrowed t)
-                                     ("d" "Diary" plain "%?"
-                                      :target (file+datetree "daily/<%Y-%m>.org" day))
-                                     ("m" "main" plain "%?"
-                                      :target (file+head "main/${slug}.org"
-                                                         "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
-                                      :unnarrowed t)
-                                     ("p" "people" plain (file "~/.emacs.d/template/crm")
-                                      :target (file+head "crm/${slug}.org"
-                                                         "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
-                                      :unnarrowed t)
-                                     ("r" "reference" plain (file "~/.emacs.d/template/reference")
-                                      :target (file+head "ref/${citekey}.org"
-                                                         "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
-                                      :unnarrowed t)
-                                     ("w" "work" plain "%?"
-                                      :target (file+head "work/${slug}.org"
-                                                         "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
-                                      :unnarrowed t))))
-(general-define-key
- :states '(normal visual insert emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- "n" '(:ignore t :wk "Notes")
- ;; org-roam-buffer cannot been toggle by handy, auto done.
- ;; "nb" '(org-roam-buffer-toggle :wk "Roam buffer")
- "nr" '(org-roam-node-random :wk "Random node")
- "nn" '(org-roam-node-find :wk "Find node")
- "ni" '(org-roam-node-insert :wk "Insert node")
- "ns" '(org-roam-db-sync :wk "Sync DB")
+  (with-eval-after-load 'org-roam
+    (turn-on-visual-line-mode)
+    (org-roam-db-autosync-mode)
 
- "na" '(org-roam-alias-add :wk "Add alias")
- "nA" '(org-roam-alias-remove :wk "Remove alias")
- "nt" '(org-roam-tag-add :wk "Add tag")
- "nT" '(org-roam-tag-remove :wk "Remove tag")
+    (setq org-roam-db-gc-threshold most-positive-fixnum)
 
- "nc" '(org-roam-dailies-capture-today :wk "Capture today")
- "nd" '(org-roam-dailies-goto-today :wk "Goto today")
- "nD" '(org-roam-dailies-goto-date :wk "Goto date"))
+    (add-to-list 'display-buffer-alist
+                 '("\\*org-roam\\*"
+                   (display-buffer-in-side-window)
+                   (side . right)
+                   (window-width . 0.25))))
+
+  (with-eval-after-load 'org-roam
+    (defun tim/org-roam-buffer-show (_)
+      (if (and
+           ;; Don't do anything if we're in the minibuffer or in the calendar
+           (not (minibufferp))
+           (not (derived-mode-p 'calendar-mode))
+           ;; Show org-roam buffer iff the current buffer has a org-roam file
+           (xor (org-roam-file-p) (eq 'visible (org-roam-buffer--visibility))))
+          (org-roam-buffer-toggle)))
+    (add-hook 'window-buffer-change-functions 'tim/org-roam-buffer-show)
+
+    ;; org-roam-capture
+    (setq org-roam-capture-templates '(("a" "articles" plain "%?"
+                                        :target (file+head "articles/${slug}.org"
+                                                           "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
+                                        :unnarrowed t)
+                                       ("b" "Books" plain (file "~/.emacs.d/template/readinglog")
+                                        :target (file+head "books/${slug}.org"
+                                                           "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
+                                        :unnarrowed t)
+                                       ("d" "Diary" plain "%?"
+                                        :target (file+datetree "daily/<%Y-%m>.org" day))
+                                       ("m" "main" plain "%?"
+                                        :target (file+head "main/${slug}.org"
+                                                           "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
+                                        :unnarrowed t)
+                                       ("p" "people" plain (file "~/.emacs.d/template/crm")
+                                        :target (file+head "crm/${slug}.org"
+                                                           "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
+                                        :unnarrowed t)
+                                       ("r" "reference" plain (file "~/.emacs.d/template/reference")
+                                        :target (file+head "ref/${citekey}.org"
+                                                           "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
+                                        :unnarrowed t)
+                                       ("w" "work" plain "%?"
+                                        :target (file+head "work/${slug}.org"
+                                                           "#+TITLE: ${title}\n#+CREATED: %U\n#+MODIFIED: \n")
+                                        :unnarrowed t)))))
 
 (with-eval-after-load 'org-roam
   (cl-defmethod org-roam-node-type ((node org-roam-node))
@@ -139,30 +125,10 @@
 
   (when (maybe-require-package 'websocket)
     (with-eval-after-load 'org-roam-ui
-      (require 'websocket)))
+      (require 'websocket))))
 
-  (general-define-key
-   :states '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "nu" '(org-roam-ui-open :wk "Random node")))
-
-(when (maybe-require-package 'consult-org-roam)
-  (general-define-key
-   :states '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "ns" '(consult-org-roam-search :wk "Search")
-   "nl" '(:ignore t :wk "Open Links")
-   "nlb" '(consult-org-roam-backlinks :wk "Backlinks")
-   "nlf" '(consult-org-roam-forward-links :wk "Forward Links")))
-
-(when (maybe-require-package 'consult-notes)
-  (general-define-key
-   :states '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "nv" '(consult-notes-org-roam-find-node-relation :wk "Node navigation")))
+(require-package 'consult-org-roam)
+(require-package 'consult-notes)
 
 (when (maybe-require-package 'org-transclusion)
   (face-spec-set 'org-transclusion-fringe
@@ -176,22 +142,7 @@
                     :foreground "black")
                    (t
                     :foreground "white"))
-                 'face-override-spec)
-
-  (general-define-key
-   :states '(normal visual insert emacs)
-   :keymaps 'org-mode-map
-   :prefix "SPC m"
-   :non-normal-prefix "M-SPC m"
-   "t" '(:ignore t :wk "Transclusion")
-   "ta" '(org-transclusion-add :wk "Add")
-   "tA" '(org-transclusion-add-all :wk "Add all")
-   "tr" '(org-transclusion-remove :wk "Remove")
-   "tR" '(org-transclusion-remove-all :wk "Remove all")
-   "tg" '(org-transclusion-refresh :wk "Refresh")
-   "tm" '(org-transclusion-make-from-link :wk "Make link")
-   "to" '(org-transclusion-open-source :wk "Open source")
-   "te" '(org-transclusion-live-sync-start :wk "Edit live")))
+                 'face-override-spec))
 
 ;; dynamic agenda combine with org and org-roam.
 ;; (defun vulpea-agenda-files-update (&rest _)
@@ -346,12 +297,6 @@
   (when-let ((ref-url (org-entry-get-with-inheritance "ROAM_REFS")))
     (browse-url ref-url)))
 
-(general-define-key
- :states '(normal visual insert emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- "n" '(:ignore t :wk "Notes")
- "nlr" '(gpc/open-node-roam-ref-url :wk "Ref link"))
 
 (provide 'init-roam)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

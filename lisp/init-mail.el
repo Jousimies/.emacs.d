@@ -1,8 +1,10 @@
 ;;; init-mail.el --- Mail.   -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Code:
 ;;; Commentary:
-(setq display-time-mail-icon `(,(propertize (all-the-icons-material "mail")
-                                            'face `(:family ,(all-the-icons-material-family)))))
+(with-eval-after-load 'all-the-icons
+  (setq display-time-mail-icon `(,(propertize
+                                   (all-the-icons-material "mail")
+                                   'face `(:family ,(all-the-icons-material-family))))))
 (setq message-sendmail-envelope-from 'header)
 (setq message-kill-buffer-query nil)
 (setq message-sendmail-extra-arguments '("-a" "outlook"))
@@ -80,13 +82,6 @@
 
   (when (maybe-require-package 'mu4e-column-faces)
     (mu4e-column-faces-mode)))
-
-(general-define-key
- :states '(normal visual emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- "M" '(mu4e :wk "MAIL"))
-
 
 
 (provide 'init-mail)

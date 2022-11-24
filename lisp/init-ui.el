@@ -3,6 +3,7 @@
 ;;; Commentary:
 ;; Fonts and themes
 (set-frame-font "Iosevka Fixed 16" nil t)
+;; (set-frame-font "Latin Modern Mono 16" nil t)
 (if (display-graphic-p)
     (dolist (charset '(kana han cjk-misc bopomofo))
       (set-fontset-font (frame-parameter nil 'font)
@@ -51,18 +52,22 @@
                                              (blue . "#FFFFFF")
                                              (magenta-nuanced-bg . "#343435")))
 
+;; emacs-plus can switch themes by system.
 (defun my/apply-theme (appearance)
   "Load theme, taking current system APPEARANCE into consideration."
   (mapc #'disable-theme custom-enabled-themes)
   (pcase appearance
     ('light (load-theme 'modus-operandi t))
     ('dark (load-theme 'doom-one t))))
-(add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
+;; (add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
+
+;; ef-spring nice.
+(require-package 'ef-themes)
+(load-theme 'ef-spring t)
 
 (setq ns-use-native-fullscreen nil)
 (setq ns-use-fullscreen-animation nil)
-;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-;; (toggle-frame-fullscreen)
+
 (toggle-frame-maximized)
 
 (when (maybe-require-package 'all-the-icons)
@@ -72,7 +77,7 @@
 
   (with-eval-after-load 'all-the-icons
     (let ((extension-icon-alist
-	   '(("bat"  all-the-icons-alltheicon "terminal" :face all-the-icons-lsilver)
+           '(("bat"  all-the-icons-alltheicon "terminal" :face all-the-icons-lsilver)
              ("cmd"  all-the-icons-alltheicon "terminal" :face all-the-icons-lsilver)
              ("conf" all-the-icons-octicon "settings"    :v-adjust 0.0 :face all-the-icons-yellow)
              ("eln"  all-the-icons-octicon "file-binary" :v-adjust 0.0 :face all-the-icons-dsilver)
@@ -84,7 +89,7 @@
              ("tsx"  all-the-icons-fileicon "tsx"        :height 1.0 :v-adjust -0.1 :face all-the-icons-cyan-alt)
              ("xpm"  all-the-icons-octicon "file-media"  :v-adjust 0.0 :face all-the-icons-dgreen))))
       (dolist (icon extension-icon-alist)
-	(add-to-list 'all-the-icons-extension-icon-alist icon)))
+        (add-to-list 'all-the-icons-extension-icon-alist icon)))
 
     (let ((regexp-icon-alist
            '(("\\.[bB][iI][nN]$"               all-the-icons-octicon "file-binary" :v-adjust 0.0 :face all-the-icons-yellow)
@@ -97,7 +102,7 @@
              ("NEWS$"                          all-the-icons-faicon "newspaper-o"  :height 0.9 :v-adjust -0.2)
              ("^Rakefile$"                     all-the-icons-alltheicon "ruby-alt" :face all-the-icons-red))))
       (dolist (icon regexp-icon-alist)
-	(add-to-list 'all-the-icons-regexp-icon-alist icon)))
+        (add-to-list 'all-the-icons-regexp-icon-alist icon)))
 
     (let ((mode-icon-alist
            '((xwidget-webkit-mode           all-the-icons-faicon "chrome"          :v-adjust -0.1 :face all-the-icons-blue)
@@ -135,7 +140,7 @@
              (youdao-dictionary-mode        all-the-icons-material "library_books" :face all-the-icons-lblue)
              (fanyi-mode                    all-the-icons-material "library_books" :face all-the-icons-lblue))))
       (dolist (icon mode-icon-alist)
-	(add-to-list 'all-the-icons-mode-icon-alist icon)))
+        (add-to-list 'all-the-icons-mode-icon-alist icon)))
 
     (when (maybe-require-package 'all-the-icons-completion)
       (add-hook 'after-init-hook 'all-the-icons-completion-mode)
@@ -150,14 +155,18 @@
 
 ;; Keep line numbers inside a narrow
 (setq-default display-line-numbers-widen t)
+
 ;; Menu bar
 (add-hook 'org-mode-hook 'menu-bar--wrap-long-lines-window-edge)
 (add-hook 'text-mode-hook 'menu-bar--display-line-numbers-mode-relative)
 (add-hook 'prog-mode-hook 'menu-bar--display-line-numbers-mode-relative)
+
 ;; Show fill column indicator.
 (setq-default fill-column 90)
-;; (global-display-fill-column-indicator-mode t)
+
+;; only show fill indicator in prog mode.
 (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
+
 ;; Show paren.
 (setq show-paren-style 'parenthesis)
 (setq show-paren-context-when-offscreen 'overlay)
@@ -165,8 +174,8 @@
 (add-hook 'text-mode-hook 'show-paren-mode)
 
 ;;
-(when (maybe-require-package 'rainbow-mode)
-  (add-hook 'prog-mode-hook 'rainbow-mode))
+(require-package 'rainbow-mode)
+(add-hook 'prog-mode-hook 'rainbow-mode)
 
 ;;
 (when (maybe-require-package 'rainbow-delimiters)

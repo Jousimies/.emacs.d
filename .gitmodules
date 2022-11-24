@@ -22,3 +22,9 @@
 [submodule "sdcv"]
 	path = site-lisp/sdcv
 	url = git@github.com:manateelazycat/sdcv.git
+[submodule "beancount-mode"]
+	path = site-lisp/beancount-mode
+	url = git@github.com:beancount/beancount-mode.git
+[submodule "one-key"]
+	path = site-lisp/one-key
+	url = git@github.com:manateelazycat/one-key.git

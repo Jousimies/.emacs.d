@@ -1,6 +1,7 @@
 ;;; init-blog.el --- Blog.   -*- lexical-binding: t no-byte-compile: t -*-
-;;; Code:
 ;;; Commentary:
+;; Emacs write blog, try it with ox-hugo or ox-publish, both are good enough.
+;;; Code:
 (when (maybe-require-package 'ox-hugo)
   (with-eval-after-load 'ox
     (require 'ox-hugo)))
@@ -10,12 +11,12 @@
   (setq org-html-preamble t)
   (setq org-html-preamble-format
         '(("en" "<a href=\"/index.html\" class=\"button\">Home</a>
-<a href=\"/notes/index.html\" class=\"button\">Notes</a>
-<a href=\"/engineering/index.html\" class=\"button\">Engineering</a>
-<a href=\"/movies/index.html\" class=\"button\">Movies</a>
-<a href=\"/books/index.html\" class=\"button\">Books</a>
-<a href=\"/about.html\" class=\"button\">About</a>
-<hr>")))
+           <a href=\"/notes/index.html\" class=\"button\">Notes</a>
+           <a href=\"/engineering/index.html\" class=\"button\">Engineering</a>
+           <a href=\"/movies/index.html\" class=\"button\">Movies</a>
+           <a href=\"/books/index.html\" class=\"button\">Books</a>
+           <a href=\"/about.html\" class=\"button\">About</a>
+           <hr>")))
 
   (setq org-html-postamble t)
 
@@ -34,8 +35,8 @@
            :base-extension "org"
            :recursive nil
            :publishing-directory ,my/publish-directory
-           :publishing-function org-html-publish-to-html
-           )
+           :publishing-function org-html-publish-to-html)
+
           ("notes"
            :base-directory ,(expand-file-name "notes" website-directory)
            :base-extension "org"
@@ -81,6 +82,7 @@
 
           ("personal-website" :components ("site" "notes" "books"
                                            "movies" "engineering" "static")))))
+
 
 (provide 'init-blog)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

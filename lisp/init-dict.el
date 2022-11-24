@@ -43,12 +43,8 @@
                                   :picker (gts-noprompt-picker)
                                   :engines (list
                                             (gts-google-engine :parser (gts-google-summary-parser)))
-                                  :render (gts-buffer-render))))
-  (general-define-key
-   :keymaps '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "ll" '(gts-do-translate :wk "Translate")))
+                                  :render (gts-buffer-render)))))
+
 
 ;; google-translate 没有 go-translate 好使。
 ;; (when (maybe-require-package 'google-translate)
@@ -58,17 +54,11 @@
 ;; lingva
 ;; go-translate 的备用。
 (when (maybe-require-package 'lingva)
-  (setq lingva-target "zh")
-
-  (general-define-key
-   :keymaps '(normal insert visual emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "lL" '(lingva-translate :wk "Lingva")))
+  (setq lingva-target "zh"))
 
 ;; sdcv
 ;; 其反回的结果有点乱糟糟，我更喜欢使用 osx-dictionary。
-(require 'sdcv)
+;; (require 'sdcv)
 (setq sdcv-dictionary-data-dir (expand-file-name "sdcv-dict" user-emacs-directory))
 (setq sdcv-program "/opt/homebrew/bin/sdcv")
 (setq sdcv-dictionary-simple-list    ;星际译王屏幕取词词典, 简单, 快速
@@ -93,39 +83,24 @@
         "牛津英汉双解美化版"
         "21世纪双语科技词典"
         "quick_eng-zh_CN"))
-(general-define-key
-   :keymaps '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "lp" '(sdcv-search-pointer :wk "Search Point")
-   "li" '(sdcv-search-input :wk "Search Input"))
 
 (with-eval-after-load 'evil-collection
   (evil-collection-define-key 'normal 'sdcv-mode-map
    "q" 'quit-window))
 
 ;; osx-dictionary
-(when (maybe-require-package 'osx-dictionary)
-  (general-define-key
-   :keymaps '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "ld" '(osx-dictionary-search-pointer :wk "OSX dictionary")))
+(require-package 'osx-dictionary)
 
 ;; websocket-bridge and dictionary-overlay can be used to learn english words.
-(require 'websocket-bridge)
-(require 'dictionary-overlay)
-(add-hook 'after-init-hook 'dictionary-overlay-start)
+(run-with-idle-timer 10 nil (lambda ()
+                             (require 'websocket-bridge)
+                             (require 'dictionary-overlay)
+                             (dictionary-overlay-start)))
+
 (with-eval-after-load 'dictionary-overlay
   (setq dictionary-overlay-user-data-directory (expand-file-name "var/dictionary-overlay" user-emacs-directory))
   (with-eval-after-load 'osx-dictionary
     (advice-add 'osx-dictionary-search-pointer :after 'dictionary-overlay-mark-word-unknown)))
-(general-define-key
-   :keymaps '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "br" '(dictionary-overlay-render-buffer :wk "Render buffer")
-   "lk" '(dictionary-overlay-mark-word-known :wk "Mark word known"))
 
 
 (provide 'init-dict)

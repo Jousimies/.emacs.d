@@ -8,7 +8,7 @@
 
 (defvar sanityinc/require-times nil
   "A list of (FEATURE LOAD-START-TIME LOAD-DURATION).
-LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
+ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 
 (defun sanityinc/require-times-wrapper (orig feature &rest args)
   "Note in `sanityinc/require-times' the time taken to require each feature."
@@ -66,12 +66,11 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 
 
 
+;; (defun sanityinc/show-init-time ()
+;;   (message "init completed in %.2fms"
+;;            (sanityinc/time-subtract-millis after-init-time before-init-time)))
 
-(defun sanityinc/show-init-time ()
-  (message "init completed in %.2fms"
-           (sanityinc/time-subtract-millis after-init-time before-init-time)))
-
-(add-hook 'after-init-hook 'sanityinc/show-init-time)
+;; (add-hook 'after-init-hook 'sanityinc/show-init-time)
 
 
 (provide 'init-benchmarking)

@@ -1,4 +1,4 @@
-;;; init-proxy.el --- 	-*- lexical-binding: t no-byte-compile: t -*-
+;;; init-proxy.el ---  -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Commentary:
 ;;; Code:
 
@@ -13,9 +13,9 @@
   "Enable proxy."
   (interactive)
   (setq url-proxy-services
-	'(("http" . "127.0.0.1:8889")
-	  ("https" . "127.0.0.1:8889")
-	  ("no_proxy" . "0.0.0.0")))
+        '(("http" . "127.0.0.1:8889")
+          ("https" . "127.0.0.1:8889")
+          ("no_proxy" . "0.0.0.0")))
   (message "Proxy enabled! %s" (car url-proxy-services)))
 
 (defun proxy-disable ()
@@ -25,14 +25,12 @@
       (setq url-proxy-services nil))
   (message "Proxy disabled!"))
 
-(add-hook 'on-first-input-hook 'proxy-enable)
-
-(general-define-key
- :keymaps '(normal visual emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- "t" '(:ignore t :wk "Toggles")
- "tp" '(toggle-proxy :wk "Proxy"))
+;; enable proxy before run these functions.
+(advice-add 'gts-do-translate :before 'proxy-enable)
+(advice-add 'lingva-translate :before 'proxy-enable)
+(advice-add 'telega :before 'proxy-enable)
+(advice-add 'magit-status :before 'proxy-enable)
+(advice-add 'dictionary-overlay-start :before 'proxy-enable)
 
 (provide 'init-proxy)
 ;;; init-proxy.el ends here

@@ -3,18 +3,11 @@
 ;;; Commentary:
 
 ;; Zen
-(when (maybe-require-package 'writeroom-mode)
-
-  (general-define-key
-   :states '(normal visual emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "tz" '(writeroom-mode :wk "Zen mode")))
+(when (maybe-require-package 'writeroom-mode))
 
 ;; Table of content of org files.
 (when (maybe-require-package 'toc-org)
   (add-hook 'org-mode-hook 'toc-org-mode))
-
 
 ;; Star.
 (when (maybe-require-package 'org-superstar)
@@ -35,17 +28,9 @@
                                        "#+ATTR_ORG: :width 500px"
                                        "#+ATTR_LATEX: :width 10cm :placement [!htpb]"
                                        "#+ATTR_HTML: :width 600px"))
-  (setq org-download-screenshot-basename ".png")
+  (setq org-download-screenshot-basename ".png"))
 
-  (general-define-key
-   :states '(normal visual emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "od" '(:ignore t :wk "Download")
-   "odc" '(org-download-clipboard :wk "Download Clipboard")
-   "ody" '(org-download-yank :wk "Download Yank")
-   "odr" '(org-download-rename-last-file :wk "Rename last file")
-   "odR" '(org-download-rename-at-point :wk "Rename point")))
+
 
 ;; Appear link
 (when (maybe-require-package 'org-appear)
@@ -72,23 +57,20 @@
          (string-trim
           (shell-command-to-string "readlink -f $(brew --prefix plantuml)"))
          "/libexec/plantuml.jar")))
-(general-define-key
- :states '(normal visual emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- "op" '(:ignore t :wk "Plantuml")
- "opm" '(plantuml-org-to-mindmap-open :wk "Mindmap")
- "ops" '(plantuml-org-to-wbs-open :wk "Work Breakdown Structure"))
+
 
 (when (maybe-require-package 'org-rainbow-tags)
   (add-hook 'org-mode-hook 'org-rainbow-tags-mode))
 
 (require-package 'boxy-headings)
-(general-define-key
- :states '(normal visual insert emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- "oh" '(boxy-headings :wk "Boxy heading"))
+
+;; (with-eval-after-load 'org
+;;   (when (maybe-require-package 'idle-org-agenda)
+;;     (add-hook 'org-mode-hook 'idle-org-agenda-mode)))
+
+(require-package 'alarm-clock)
+(with-eval-after-load 'alarm-clock
+  (setq alarm-clock-cache-file (expand-file-name "var/.alarm-clock.cache" user-emacs-directory)))
 
 (with-eval-after-load 'company
   (require-package 'company-org-block)
@@ -106,6 +88,14 @@
     (setq org-alert-notify-after-event-cutoff 10)
     (setq org-alert-notification-title "Org Agenda Reminder!")
     (org-alert-enable)))
+
+(when (maybe-require-package 'pomm)
+  (with-eval-after-load 'pomm
+    (setq pomm-state-file-location (expand-file-name "pomm" no-littering-var-directory))
+    (pomm-mode-line-mode 1)))
+
+(with-eval-after-load 'alert
+  (setq alert-default-style 'notifier))
 
 
 (provide 'init-org+)

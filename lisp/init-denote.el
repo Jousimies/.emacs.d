@@ -11,12 +11,7 @@
     (when (locate-library "denote")
       (add-hook 'on-first-file-hook 'consult-notes-denote-mode)))
 
-  (general-define-key
-   :states '(normal visual emacs)
-   :prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   "nN" '(denote-open-or-create :wk "Denote open or create")
-   "nM" '(consult-notes :wk "Find notes")))
+  )
 
 (provide 'init-denote)
 ;;; init-denote.el ends here

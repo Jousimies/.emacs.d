@@ -1,6 +1,9 @@
 ;;; init-telega.el --- Telegram client.   -*- lexical-binding: t no-byte-compile: t -*-
-;;; Code:
+
 ;;; Commentary:
+
+;;; Code:
+
 (when (maybe-require-package 'telega)
   (setq telega-proxies (list '(:server "127.0.0.1" :port 8889 :enable t
                                        :type (:@type "proxyTypeHttp"))))
@@ -10,11 +13,6 @@
   (setq telega-user-show-avatars nil)
   (setq telega-chat-show-avatars nil)
 
-  (general-define-key
-     :states '(normal visual emacs)
-     :prefix "SPC"
-     :non-normal-prefix "M-SPC"
-     "T" '(telega :wk "Telega"))
   (with-eval-after-load 'telega
     (require 'telega-alert)
     (telega-alert-mode)))

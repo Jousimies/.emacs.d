@@ -5,12 +5,13 @@
 ;; Magit, a better git.
 
 (when (maybe-require-package 'magit)
-  (require-package 'git-timemachine)
+ (require-package 'git-timemachine)
 
-  (general-define-key
-   :states 'normal
-   :keymaps 'with-editor-mode-map
-   "RET" "C-c C-c"))
+ (with-eval-after-load 'consult
+   (require-package 'consult-git-log-grep)
+   (with-eval-after-load 'consult-git-log-grep
+     (setq consult-git-log-grep-open-function #'magit-show-commit))))
+
 
 (provide 'init-git)
 ;;; init-git.el ends here

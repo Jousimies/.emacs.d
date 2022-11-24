@@ -14,9 +14,8 @@
 (setq inhibit-splash-screen t)
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
-(if (version<= "29" emacs-version)
-    (push '(undecorated . t) default-frame-alist))
+(push '(vertical-scroll-bars . 0) default-frame-alist)
+(push '(undecorated . t) default-frame-alist)
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the
 ;; font. By inhibiting this, we easily halve startup times with fonts that are
 ;; larger than the system default.
@@ -38,11 +37,11 @@
 (defsubst my/unset-gc ()
   "Disable the gc."
   (setq gc-cons-threshold most-positive-fixnum   ;; Defer Garbage collection
-	    gc-cons-percentage 1.0))
+        gc-cons-percentage 1.0))
 
 (defsubst my/restore-gc ()
   "Restore the gc."
   (setq gc-cons-threshold my/gc-cons-threshold
-	    gc-cons-percentage 0.1))
+        gc-cons-percentage 0.1))
 
 ;;; early-init.el ends here

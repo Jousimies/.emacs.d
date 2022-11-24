@@ -76,11 +76,10 @@
       (global-set-key (kbd "C-x C-d") 'consult-dir)
       (with-eval-after-load 'vertico
         (define-key vertico-map (kbd "C-x C-d") 'consult-dir)
-        (define-key vertico-map (kbd "C-x C-j") 'consult-dir-jump-file)))))
-
+        (define-key vertico-map (kbd "C-x C-j") 'consult-dir-jump-file))))
 
   (when (maybe-require-package 'marginalia)
-    (add-hook 'minibuffer-setup-hook 'marginalia-mode))
+    (add-hook 'minibuffer-setup-hook 'marginalia-mode)))
 
 (provide 'init-minibuffer)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
