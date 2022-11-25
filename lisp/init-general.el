@@ -280,7 +280,10 @@
  :non-normal-prefix "M-SPC"
  "q" '(:ignore t :wk "Quit/Restart")
  "qR" '(restart-emacs :wk "Restart emacs")
- "qq" '(server-force-delete :wk "Server Delete"))
+ "qq" '(server-force-delete :wk "Server Delete")
+
+ "e" '(:ignore t :wk "Enhance Emacs")
+ "ep" '(epkg-describe-package :wk "Epkg describe package"))
 
 ;; ==============================specific mode map====================
 (general-define-key
