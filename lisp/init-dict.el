@@ -57,8 +57,13 @@
   (setq lingva-target "zh"))
 
 ;; sdcv
-;; 其反回的结果有点乱糟糟，我更喜欢使用 osx-dictionary。
-;; (require 'sdcv)
+(face-spec-set 'sdcv-tooltip-face
+                 '((((background light))
+                    :foreground "#000000" :background "#f6fff9")
+                   (t
+                    :foreground "#000000" :background "#f6fff9"))
+                 'face-override-spec)
+(setq sdcv-tooltip-border-width 2)
 (setq sdcv-dictionary-data-dir (expand-file-name "sdcv-dict" user-emacs-directory))
 (setq sdcv-program "/opt/homebrew/bin/sdcv")
 (setq sdcv-dictionary-simple-list    ;星际译王屏幕取词词典, 简单, 快速
