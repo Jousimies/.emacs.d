@@ -14,8 +14,8 @@
                              (add-hook 'before-save-hook 'time-stamp nil 'local)))
 
   (with-eval-after-load 'org-roam
-    (turn-on-visual-line-mode)
-    (org-roam-db-autosync-mode)
+    (add-hook 'org-roam-mode-hook 'turn-on-visual-line-mode)
+    (add-hook 'org-roam-mode-hook 'org-roam-db-autosync-mode)
 
     (setq org-roam-db-gc-threshold most-positive-fixnum)
 
