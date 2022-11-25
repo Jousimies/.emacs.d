@@ -29,8 +29,7 @@
 
 (when (require-package 'which-key)
   (which-key-mode 1)
-  (with-eval-after-load 'which-key
-    (setq which-key-idle-delay 0.3)))
+  (setq which-key-idle-delay 0.1))
 
 (require-package 'general)
 
@@ -88,6 +87,7 @@
  "fo" '(:ignore t :wk "Open file")
  "foe" '(my/elfeed-file :wk "Elfeed file")
  "foi" '(my/inbox-file :wk "Inbox file")
+ "foI" '(my/index-file :wk "Index file")
  "fop" '(my/plan-file :wk "Plan file")
  "fof" '(my/finance-file :wk "Finance file")
  "for" '(my/reflection-file :wk "Reflection file")
@@ -100,6 +100,7 @@
  "b" '(:ignore t :wk "Buffer/Bibtex")
  "bb" '(switch-to-buffer :wk "Switch buffer")
  "be" '(eval-buffer :wk "Eval buffer")
+ "bk" '(kill-this-buffer :wk "Kill This Buffer")
  "bs" '(switch-to-scratch :wk "Swtich to scratch")
  "bm" '(switch-to-message :wk "Swtich to message")
  "br" '(dictionary-overlay-render-buffer :wk "Render buffer"))
@@ -292,13 +293,6 @@
  [remap evil-quit]                    'org-capture-kill
  "RET" "C-c C-c"
  "SPC k" '(org-capture-kill :which-key "abort capture"))
-
-(general-define-key
- :states '(normal visual insert emacs)
- :prefix "SPC"
- :non-normal-prefix "M-SPC"
- :keymaps 'ledger-mode-map
- "R" '(ledger-report :wk "Finance file"))
 
 
 (provide 'init-general)

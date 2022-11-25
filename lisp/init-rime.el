@@ -26,12 +26,7 @@
                                                   (activate-input-method "rime"))))
     (add-hook 'evil-insert-state-exit-hook #'evil-deactivate-input-method)))
 
-(add-hook 'on-first-input-hook (lambda ()
-                                 (toggle-input-method)))
-(with-eval-after-load 'rime
-  (require 'rime-regexp)
-  (rime-regexp-mode))
-
+(add-hook 'on-first-input-hook 'rime-regexp-mode)
 
 (provide 'init-rime)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

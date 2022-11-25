@@ -33,6 +33,7 @@
 
 ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
 (require 'eaf)
+(setq eaf-start-python-process-when-require nil)
 (setq eaf-config-location (concat user-emacs-directory "var/eaf"))
 ;; (setq eaf-proxy-type "socks5")
 ;; (setq eaf-proxy-host "127.0.0.1")

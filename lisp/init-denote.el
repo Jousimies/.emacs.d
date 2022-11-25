@@ -9,9 +9,7 @@
     (setq consult-notes-sources `(("Books" ?b ,(expand-file-name "books" denote-directory))
                                   ("Professional" ?p ,(expand-file-name "professional" denote-directory))))
     (when (locate-library "denote")
-      (add-hook 'on-first-file-hook 'consult-notes-denote-mode)))
-
-  )
+      (add-hook 'on-first-file-hook 'consult-notes-denote-mode))))
 
 (provide 'init-denote)
 ;;; init-denote.el ends here

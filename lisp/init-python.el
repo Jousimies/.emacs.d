@@ -1,15 +1,14 @@
 ;;; init-python.el --- Python. -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Commentary:
 ;;; Code:
-(setq python-shell-interpreter "python3")
 
 (require-package 'pip-requirements)
 
 (when (maybe-require-package 'toml-mode)
   (add-to-list 'auto-mode-alist '("poetry\\.lock\\'" . toml-mode)))
 
-(when (maybe-require-package 'reformatter)
-  (reformatter-define black :program "black" :args '("-")))
+;; (when (maybe-require-package 'reformatter)
+;;   (reformatter-define black :program "black" :args '("-")))
 
 
 (provide 'init-python)

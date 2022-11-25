@@ -17,7 +17,7 @@
               tab-width 4
               make-backup-files nil
               create-lockfiles nil
-              confirm-kill-processes t
+              confirm-kill-processes nil
               confirm-kill-emacs nil
               recenter-redisplay nil
               load-prefer-newer t
@@ -28,8 +28,6 @@
               auto-save-list-file-name nil
               kill-do-not-save-duplicates t
               kill-ring-max (* kill-ring-max 2)
-              help-window-select t
-              help-window-keep-selected t
               history-delete-duplicates t
               view-read-only t
               kill-read-only-ok t
@@ -42,14 +40,14 @@
 (add-hook 'profiler-report-mode-hook #'hl-line-mode)
 
 ;; show column number in modeline.
-(add-hook 'after-init-hook 'column-number-mode)
+(add-hook 'prog-mode-hook 'column-number-mode)
 
 ;; Delete selection
 (add-hook 'on-first-input-hook 'delete-selection-mode)
 
 ;; Winner.
 (setq-default winner-dont-bind-my-keys t)
-(add-hook 'after-init-hook 'winner-mode)
+(add-hook 'on-first-buffer-hook 'winner-mode)
 (setq winner-boring-buffers '("*Completions*"
                               "*Compile-Log*"
                               "*inferior-lisp*"
@@ -62,7 +60,7 @@
                               "*esh command on file*"))
 
 ;; Auto revert file.
-(add-hook 'after-init-hook 'global-auto-revert-mode)
+(add-hook 'on-first-file-hook 'global-auto-revert-mode)
 
 ;; Save history.
 (setq-default history-length 1000
@@ -71,8 +69,9 @@
                                               search-ring
                                               regexp-search-ring)
               history-delete-duplicates t)
-(run-with-idle-timer 1 nil (lambda ()
-                             (savehist-mode)))
+;; (run-with-idle-timer 1 nil (lambda ()
+;;                              (savehist-mode)))
+(add-hook 'on-first-file-hook 'savehist-mode)
 
 ;; Save place.
 (add-hook 'after-init-hook 'save-place-mode)
@@ -102,7 +101,8 @@
 ;; (add-hook 'after-init-hook 'display-battery-mode 10)
 
 ;; Auto insert pair.
-(electric-pair-mode)
+(add-hook 'prog-mode-hook 'electric-pair-mode)
+(add-hook 'org-mode-hook 'electric-pair-mode)
 
 ;; Pretty symbols.
 (setq prettify-symbols-alist '(("lambda" . ?λ)
@@ -120,6 +120,7 @@
                                          try-complete-lisp-symbol))
 (global-set-key [remap dabbrev-expand] 'hippie-expand)
 
+;; outline-mode
 (add-hook 'prog-mode-hook 'outline-minor-mode)
 
 ;; pixel-scroll-precision-mode

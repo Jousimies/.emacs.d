@@ -26,8 +26,7 @@
   (add-hook 'org-mode-hook 'hungry-delete-mode))
 
 ;; Auto save
-(add-to-list 'load-path (expand-file-name "site-lisp/auto-save" user-emacs-directory))
-(require 'auto-save)
+;; (require 'auto-save)
 (auto-save-enable)
 (setq auto-save-silent t)
 (setq auto-save-delete-trailing-whitespace t)

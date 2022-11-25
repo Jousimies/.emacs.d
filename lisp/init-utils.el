@@ -2,16 +2,18 @@
 ;;; Commentary:
 ;;; Code:
 ;; Server and restart-emacs
-(server-mode)
+(add-hook 'on-first-input-hook 'server-start)
+
 (require-package 'restart-emacs)
 
 (when (maybe-require-package 'helpful)
+  (setq help-window-select t)
+  (setq help-window-keep-selected t)
   (global-set-key [remap describe-function] 'helpful-callable)
   (global-set-key [remap describe-variable] 'helpful-variable)
   (global-set-key [remap describe-key] 'helpful-key))
 
-(when (maybe-require-package 'browse-kill-ring)
-  (browse-kill-ring-default-keybindings))
+(require-package 'browse-kill-ring)
 
 (require-package 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
@@ -44,8 +46,8 @@
   (setq demap-minimap-window-side  'left)
   (setq demap-minimap-window-width 15))
 
-(when (maybe-require-package 'reformatter)
-  (reformatter-define black-format :program "black" :args '("-")))
+;; (when (maybe-require-package 'reformatter)
+;;   (reformatter-define black-format :program "black" :args '("-")))
 
 ;; Sometimes warning no format
 ;; (when (maybe-require-package 'format-all)

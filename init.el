@@ -107,6 +107,7 @@ locate PACKAGE."
 ;; https://github.com/purcell/emacs.d/blob/master/lisp/init-benchmarking.el
 (require 'init-benchmarking)
 
+(require 'init-autoload)
 (require 'init-variables)
 (require 'on)
 

@@ -15,7 +15,7 @@
           ("payee" "%(binary) -f %(ledger-file) reg @%(payee)"))))
 
 ;; Beancount has more plugin than ledger-cli.
-(require 'beancount)
+;; (require 'beancount)
 (add-to-list 'auto-mode-alist '("\\.bean\\'" . beancount-mode))
 (add-hook 'beancount-mode-hook
           (lambda () (setq-local electric-indent-chars nil)))
