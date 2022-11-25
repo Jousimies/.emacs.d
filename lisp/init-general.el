@@ -74,11 +74,13 @@
 
 ;; ==============================files/buffer==============================
 (general-define-key
- :states '(normal visual emacs)
+ :states '(normal visual insert emacs)
  :prefix "SPC"
  :non-normal-prefix "M-SPC"
  "f" '(:ignore t :wk "Files")
+ "fd" '(dirvish-quick-access :wk "Directory")
  "ff" '(find-file :wk "Find file")
+ "fe" '(xah-show-in-desktop :wk "Open externally")
  "fi" '(my/emacs-config :wk "Emacs configuration")
  "fr" '(recentf-open-files :wk "Recent files")
 
@@ -257,7 +259,7 @@
 
 ;; ==============================Toggles==============================
 (general-define-key
- :keymaps '(normal visual emacs)
+ :keymaps '(normal visual insert emacs)
  :prefix "SPC"
  :non-normal-prefix "M-SPC"
  "t" '(:ignore t :wk "Toggles")

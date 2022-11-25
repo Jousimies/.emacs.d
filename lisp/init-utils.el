@@ -60,6 +60,32 @@
 (when (maybe-require-package 'whitespace-cleanup-mode)
   (add-hook 'on-first-file-hook 'whitespace-cleanup-mode))
 
+;; Open externally.
+;; http://xahlee.info/emacs/emacs/emacs_dired_open_file_in_ext_apps.html
+(defun xah-show-in-desktop ()
+  "Show current file in desktop.
+This command can be called when in a file buffer or in `dired'."
+  (interactive)
+  (let (($path (if (buffer-file-name) (buffer-file-name) default-directory)))
+    (cond
+     ((string-equal system-type "windows-nt")
+      (shell-command
+       (format "PowerShell -Command Start-Process Explorer -FilePath %s"
+               (shell-quote-argument default-directory))))
+     ((string-equal system-type "darwin")
+      (if (eq major-mode 'dired-mode)
+          (let (($files (dired-get-marked-files )))
+            (if (eq (length $files) 0)
+                (shell-command (concat "open " (shell-quote-argument (expand-file-name default-directory ))))
+              (shell-command (concat "open -R " (shell-quote-argument (car (dired-get-marked-files )))))))
+        (shell-command
+         (concat "open -R " (shell-quote-argument $path)))))
+     ((string-equal system-type "gnu/linux")
+      (let ((process-connection-type nil)
+            (openFileProgram (if (file-exists-p "/usr/bin/gvfs-open")
+                                 "/usr/bin/gvfs-open"
+                               "/usr/bin/xdg-open")))
+        (start-process "" nil openFileProgram (shell-quote-argument $path)))))))
 
 (provide 'init-utils)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
