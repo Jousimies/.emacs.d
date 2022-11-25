@@ -400,14 +400,7 @@
                   ((org-agenda-block-separator nil)
                    (org-agenda-prefix-format " %i")
                    (org-agenda-hide-tags-regexp "project")
-                   (org-agenda-overriding-header "Tasks on hold")))))))
-
-  (defun my/org-agenda ()
-    "Open my org-agenda."
-    (interactive)
-    (org-agenda "" " "))
-
-  (global-set-key (kbd "<f12>") 'my/org-agenda))
+                   (org-agenda-overriding-header "Tasks on hold"))))))))
 
 ;; Calendar
 (with-eval-after-load 'calendar

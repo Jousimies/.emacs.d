@@ -290,9 +290,18 @@
   (advice-add 'org-agenda :before #'vulpea-agenda-files-update)
   (advice-add 'org-todo-list :before #'vulpea-agenda-files-update))
 
+(defun my/org-agenda ()
+  "Open my `org-agenda'.
+Run `org-roam-db-sync' to get full lists of org agenda files."
+  (interactive)
+  (org-roam-db-sync)
+  (org-agenda "" " "))
+
+(global-set-key (kbd "<f12>") 'my/org-agenda)
+
 ;; https://org-roam.discourse.group/t/opening-url-in-roam-refs-field/2564/4?u=jousimies
 (defun gpc/open-node-roam-ref-url ()
-  "Open the URL in this node's ROAM_REFS property, if one exists"
+  "Open the URL in this node's ROAM_REFS property, if one exists."
   (interactive)
   (when-let ((ref-url (org-entry-get-with-inheritance "ROAM_REFS")))
     (browse-url ref-url)))
