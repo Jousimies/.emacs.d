@@ -135,6 +135,8 @@
  "lL" '(ingva-translate :wk "Lingva")
 
  "ld" '(osx-dictionary-search-pointer :wk "OSX dictionary")
+ "lp" '(sdcv-search-pointer :wk "SDCV Point")
+ "li" '(sdcv-search-input+ :wk "SDCV Input")
 
  "lk" '(dictionary-overlay-mark-word-unknown :wk "Mark word unknown")
  "lK" '(dictionary-overlay-mark-word-known :wk "Mark word known"))

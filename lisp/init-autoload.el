@@ -29,6 +29,9 @@
 (autoload 'auto-save-enable "auto-save" "" t)
 (autoload 'beancount-mode "beancount" "" t)
 (autoload 'rime-regexp-mode "rime-regexp" "Enable search with pinyin" t)
+(autoload 'sdcv-search-pointer "sdcv" "show word explanation in buffer" t)
+(autoload 'sdcv-search-input+ "sdcv" "show word explanation in tooltip" t)
+
 
 (provide 'init-autoload)
 ;;; init-autoload.el ends here
