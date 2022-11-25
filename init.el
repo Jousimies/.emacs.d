@@ -1,5 +1,36 @@
 ;;; init.el --- Emacs configuration.   -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Commentary:
+
+;; emacs-plus auto inject PATH value into Emacs.app/Contents/Info.plist.
+;; Otherwise, use below function to do the job.
+;; https://www.emacswiki.org/emacs/ExecPath
+;; (defun set-exec-path-from-shell-PATH ()
+;;   "This is particularly useful under Mac OS X and macOS."
+;;   (interactive)
+;;   (let ((path-from-shell (replace-regexp-in-string
+;;                           "[ \t\n]*$" "" (shell-command-to-string
+;;                                           "$SHELL --login -c 'echo $PATH'"))))
+
+;;     (setenv "PATH" path-from-shell)
+;;     (setq exec-path (split-string path-from-shell path-separator))))
+
+;; (set-exec-path-from-shell-PATH)
+
+;; Enable tray or modeline
+;; (require 'init-tray)
+
+;; Evil, Meow or origin.
+;; (require 'init-meow)
+;; (require 'init-key)
+
+;; Message startup time if init-dashboard not activated.
+;; (let ((package-count 0) (time (emacs-init-time)))
+;;   (when (bound-and-true-p package-alist)
+;;     (setq package-count (length package-activated-list)))
+;;   (if (zerop package-count)
+;;       (message "Emacs started in %s" time)
+;;     (message "%d packages loaded in %s" package-count time)))
+
 ;;; Code:
 
 
@@ -40,21 +71,6 @@ Otherwise the startup will be very slow."
 (advice-add #'package-initialize :after #'add-subdirs-to-load-path)
 
 (update-load-path)
-
-
-;; Shell Path
-;; https://www.emacswiki.org/emacs/ExecPath
-(defun set-exec-path-from-shell-PATH ()
-  "This is particularly useful under Mac OS X and macOS."
-  (interactive)
-  (let ((path-from-shell (replace-regexp-in-string
-                          "[ \t\n]*$" "" (shell-command-to-string
-                                          "$SHELL --login -c 'echo $PATH'"))))
-
-    (setenv "PATH" path-from-shell)
-    (setq exec-path (split-string path-from-shell path-separator))))
-
-(set-exec-path-from-shell-PATH)
 
 
 ;; package.el
@@ -102,7 +118,10 @@ locate PACKAGE."
 (setq user-full-name "Duan Ning")
 (setq user-mail-address "duan_n@outlook.com")
 
+;; Startup test.
 ;; (profiler-start 'cpu)
+;; (toggle-debug-on-error)
+
 ;; Benchmark
 ;; https://github.com/purcell/emacs.d/blob/master/lisp/init-benchmarking.el
 (require 'init-benchmarking)
@@ -112,14 +131,11 @@ locate PACKAGE."
 (require 'on)
 
 (require 'init-ui)
-;; (require 'init-dashboard)
-;; Enable tray or modeline
-;; (require 'init-tray)
+(require 'init-dashboard)
 (require 'init-modeline)
 
 (require 'init-evil)
-;; (require 'init-meow)
-;; (require 'init-key)
+
 (require 'init-general)
 (require 'init-builtin)
 (require 'init-recentf)
@@ -178,15 +194,6 @@ locate PACKAGE."
   (setq gcmh-idle-delay 'auto)
   (setq gcmh-auto-idle-delay-factor 10)
   (setq gcmh-high-cons-threshold #x1000000))
-
-;; Message startup time if init-dashboard not activated.
-
-(let ((package-count 0) (time (emacs-init-time)))
-  (when (bound-and-true-p package-alist)
-    (setq package-count (length package-activated-list)))
-  (if (zerop package-count)
-      (message "Emacs started in %s" time)
-    (message "%d packages loaded in %s" package-count time)))
 
 
 (provide 'init)
