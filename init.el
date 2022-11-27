@@ -177,6 +177,7 @@ locate PACKAGE."
 (require 'init-shell)
 (require 'init-mail)
 (require 'init-telega)
+(require 'init-lsp)
 (require 'init-eaf)
 
 (require 'init-osm)
