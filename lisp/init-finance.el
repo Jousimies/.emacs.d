@@ -21,6 +21,11 @@
           (lambda () (setq-local electric-indent-chars nil)))
 (add-hook 'beancount-mode-hook #'outline-minor-mode)
 
+(with-eval-after-load 'evil-collection
+    (evil-collection-define-key 'normal 'beancount-mode-map
+      "zf" 'beancount-fava))
+
+
 (provide 'init-finance)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init-finance.el ends here
