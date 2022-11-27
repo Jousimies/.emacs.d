@@ -12,6 +12,7 @@
    (with-eval-after-load 'consult-git-log-grep
      (setq consult-git-log-grep-open-function #'magit-show-commit))))
 
+(require-package 'forge)
 
 (provide 'init-git)
 ;;; init-git.el ends here
