@@ -72,6 +72,12 @@
   (interactive)
   (find-file (expand-file-name "finance/finance.bean" my-galaxy)))
 
+(defun my/start-server ()
+  (interactive)
+  (if (not (server-running-p))
+      (server-start))
+  (message "Server has started"))
+
 ;; ==============================files/buffer==============================
 (general-define-key
  :states '(normal visual insert emacs)
@@ -137,6 +143,7 @@
  "lL" '(ingva-translate :wk "Lingva")
 
  "ld" '(osx-dictionary-search-pointer :wk "OSX dictionary")
+ "lh" '(lsp-bridge-toggle-sdcv-helper :wk "Sdcv help")
  "lp" '(sdcv-search-pointer :wk "SDCV Point")
  "li" '(sdcv-search-input+ :wk "SDCV Input")
 
@@ -283,6 +290,7 @@
  "q" '(:ignore t :wk "Quit/Restart")
  "qR" '(restart-emacs :wk "Restart emacs")
  "qq" '(server-force-delete :wk "Server Delete")
+ "qs" '(my/start-server :wk "Server Delete")
 
  "e" '(:ignore t :wk "Enhance Emacs")
  "ep" '(epkg-describe-package :wk "Epkg describe package"))
