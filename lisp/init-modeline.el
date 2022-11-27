@@ -10,6 +10,7 @@
 
   (when (maybe-require-package 'hide-mode-line)
     (add-hook 'completion-list-mode-hook #'hide-mode-line-mode)
+    (add-hook 'eaf-pdf-outline-mode-hook #'hide-mode-line-mode)
     (add-hook 'org-roam-mode-hook #'hide-mode-line-mode))
 
   (when (maybe-require-package 'mode-line-bell)
