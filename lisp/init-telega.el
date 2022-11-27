@@ -19,8 +19,8 @@
 
   ;; activated input method.
   (add-hook 'evil-insert-state-entry-hook (lambda ()
-                                          (if (eq major-mode 'telega-chat-mode)
-                                              (activate-input-method "rime")))))
+                                            (if (eq major-mode 'telega-chat-mode)
+                                                (activate-input-method "rime")))))
 
 
 (provide 'init-telega)
