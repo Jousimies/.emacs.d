@@ -82,6 +82,28 @@
     (with-eval-after-load 'org-roam
       (require-package 'org-roam-bibtex))))
 
+;; Ebib
+;; A replace of zotero, But I think zotero is better to use.
+;; Only use ebib to filter reference in Emacs.
+(when (maybe-require-package 'ebib)
+  (setq ebib-index-mode-line nil)
+  (setq ebib-entry-mode-line nil)
+
+  (setq ebib-preload-bib-files bibtex-completion-bibliography)
+
+  (setq ebib-keywords (concat org-roam-directory "/bibtexs/keywords.txt"))
+  (setq ebib-notes-directory (concat org-roam-directory "/ref"))
+  (setq ebib-filters-default-file (concat org-roam-directory "/bibtexs/ebib-filters"))
+  (setq ebib-reading-list-file (concat org-roam-directory "/bibtexs/reading_list.org"))
+
+  (setq ebib-keywords-field-keep-sorted t)
+  (setq ebib-keywords-file-save-on-exit 'always)
+
+  (setq ebib-index-columns '(("Entry Key" 30 t) ("Note" 1 nil) ("Year" 6 t) ("Title" 50 t)))
+  (setq ebib-file-associations '(("ps" . "gv"))))
+
+(global-set-key (kbd "<f2>") 'ebib)
+
 ;; == Can do, but not useful.
 ;; use biblio to search bibtex.
 ;; 不怎么使用这个功能，Zotero 在这个方面更好使。
