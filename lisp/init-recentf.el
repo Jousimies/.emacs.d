@@ -1,12 +1,18 @@
 ;;; init-recentf.el --- Recentf. -*- lexical-binding: t no-byte-compile: t -*-
 ;;; Commentary:
 ;;; Code:
-(add-hook 'after-init-hook 'recentf-mode)
-;; (run-with-idle-timer 1 nil (lambda ()
-;;                              (recentf-cleanup)))
 (with-eval-after-load 'recentf
+  (add-hook 'after-init-hook 'recentf-mode)
+
+  (add-hook 'before-save-hook (lambda ()
+                                (recentf-cleanup)))
+
   (setq recentf-max-saved-items 1000)
-  (setq recentf-exclude nil))
+
+  (with-eval-after-load 'org-roam
+    (add-to-list 'recentf-exclude org-roam-directory))
+
+  (add-to-list 'recentf-exclude "\\.pdf\\'"))
 
 ;;Undo-fu, undo-fu-session and vundo
 (require-package 'undo-fu)
