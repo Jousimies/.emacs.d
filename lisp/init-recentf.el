@@ -29,6 +29,7 @@
 (when (maybe-require-package 'hungry-delete)
   (setq-default hungry-delete-chars-to-skip " \t\n\r\f\v")
   (add-hook 'text-mode-hook 'hungry-delete-mode)
+  (add-hook 'prog-mode-hook 'hungry-delete-mode)
   (add-hook 'org-mode-hook 'hungry-delete-mode))
 
 ;; Auto save
