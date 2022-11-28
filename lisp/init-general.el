@@ -230,7 +230,7 @@
  :non-normal-prefix "M-SPC"
  "n" '(:ignore t :wk "Notes")
 
- "nr" '(org-roam-node-random :wk "Random node")
+ ;; "nr" '(org-roam-node-random :wk "Random node")
 
  "nf" '(org-roam-node-find :wk "Find node")
  "ni" '(org-roam-node-insert :wk "Insert node")
@@ -249,21 +249,30 @@
  "ns" '(consult-org-roam-search :wk "Search")
  "nv" '(consult-notes-org-roam-find-node-relation :wk "Node navigation")
 
- "nl" '(:ignore t :wk "Open Links")
- "nlb" '(consult-org-roam-backlinks :wk "Backlinks")
- "nlf" '(consult-org-roam-forward-links :wk "Forward Links")
- "nlr" '(gpc/open-node-roam-ref-url :wk "Ref link")
+ ;; "nl" '(:ignore t :wk "Open Links")
+ ;; "nlb" '(consult-org-roam-backlinks :wk "Backlinks")
+ ;; "nlf" '(consult-org-roam-forward-links :wk "Forward Links")
+ ;; "nlr" '(gpc/open-node-roam-ref-url :wk "Ref link")
 
- "nb" '(:ignore t :wk "Bibtex")
- "nbp" '(citar-open-files :wk "Open files")
- "nbe" '(citar-open-entry :wk "Open entry")
- "nbn" '(citar-open-notes :wk "Open/Create note")
- "nbl" '(citar-open-links :wk "Open links")
- "nbc" '(citar-org-roam-cited :wk "Cited Roam Node")
+ "nr" '(:ignore t :wk "Reference")
+ "nrf" '(org-roam-ref-find :wk "Ref find")
+ "nra" '(org-roam-ref-add :wk "Ref add")
+ "nrr" '(org-roam-ref-remove :wk "Ref remove")
+
+ "nrp" '(citar-open-files :wk "Open files")
+ "nre" '(citar-open-entry :wk "Open entry")
+ "nrn" '(citar-open-notes :wk "Open/Create note")
+ "nrl" '(citar-open-links :wk "Open links")
+ "nrc" '(citar-org-roam-cited :wk "Cited Roam Node")
 
  "nN" '(denote-open-or-create :wk "Denote open or create")
  "nM" '(consult-notes :wk "Find notes"))
 
+(with-eval-after-load 'evil-collection
+    (evil-collection-define-key 'normal 'org-mode-map
+      "zb" 'consult-org-roam-backlinks
+      "zr" 'gpc/open-node-roam-ref-url
+      "zf" 'consult-org-roam-forward-links))
 ;; ==============================Toggles==============================
 (general-define-key
  :keymaps '(normal visual insert emacs)
