@@ -1,0 +1,99 @@
+#+TITLE: Jousimies's Personal Emacs Configuration
+#+DATE: 2022-05-21
+
+* Interface Show
+#+ATTR_ORG: :width 800px
+#+ATTR_HTML: :width 1000px
+[[file:src/interface.png]]
+上面的图生成方式如下。如果你打算使用下面的命令，需要对相应的尺寸进行修改。
+#+begin_src bash
+  magick convert -size 2880x1800 xc:black -fill white -draw "path 'M 0,100 C 1000,200 800,1600 2880,1700 V 1800 H 2880 V 0 H 0'" mask.png
+  magick composite dark.png light.png mask.png -alpha Off shot.png
+  rm mask.png
+#+end_src
+* Why Emacs
+我是怎么知道 Emacs 的？来自编辑器之战，神之编辑器（Emacs）和编辑器之神（VIM）。最先知道的是 VI，因为这个在 Linux 系统中是标配，装上 Linux 系统后怎么都得用到 VI 进行文件配置。寻着一丝丝的线索，VI -> VIM -> sublime -> Atom -> Emacs -> Code . 在这个长长的编辑器上，最终留在了 Emacs 上。至于为什么停留在 Emacs 上，那是因为 Emacs 的强大啊，对于文本的操作强出其他的软件很大一截。Emacs 和 Vim 是大浪淘沙留下来的，也是这个时代最强大的编辑器之一。
+
+本人前前后后尝试过多种的软件来参与到自己的个人事务管理当中。在遇到 Emacs 之前，在各系统中最喜欢尝鲜，每当遇到一个新的应用，总是会主动去试用。每当试用一个新的软件时，总是认为它会很有用。但是这么长时间以来，高效的软件在多年的使用中留下来的很少，直到我遇到了 Emacs 。现在是个电子的时代，试用的软件多了，对于软件的隐私性保护持保留的态度。虽然现在是网上无个人隐私可言，但是我还是不想把自己的信息随便给别人。Emacs 是一个本地的软件，所有的数据只在本地，数据永远在自己的手中。此外，Emacs 具有强大的生态，可以进行文件管理，财务管理，事务管理，邮件管理，还可以用来听音乐，看视频。
+
+
+#+NAME: Awesome emacs
+#+CAPTION: What Emacs can do
+#+ATTR_ORG: :width 500px
+#+ATTR_HTML: :width 500px
+[[file:src/emacscando.png]]
+
+* How I manage my packages
+尝试过的 Emacs 配置方式有多种，有 ~package.el~ ~straight.el~ ~git submodule~ ~borg.el~ 。
+
+目前使用 [[https://github.com/emacscollective/borg][emacscollective/borg: Assimilate Emacs packages as Git submodules]] 管理第三方包。
+
+* About note taking
+作为一名非程序员，使用 Emacs 就是奔着 org-mode 来的。Emacs 中能进行任务管理，财务管理，笔记管理都是建立在 org-mode 之上的。Org-mode 在这方面的确很强大。
+
+笔记的作用：存储信息、帮助思考和理解信息、创造知识之间的链接。大脑的优势在于思考，而不是信息的存储。当下最火的笔记管理方式非 Zettelkasten 默属。关于 Zettelkasten 的概念可以看 How to take smart notes 这本书。
+
+我使用过的笔记软件有很多，在遇到 Emacs 前，尝试过的有 PKM 软件，Mediawiki，Tiddly wiki，Onenote，印象笔记，蚂蚁笔记，Simplenote，Joplin 等等。Onenote 是私有格式，意味着当我需要夸平台时，其专有格式会给我带来麻烦。印象笔记也是如此，而且印象笔记的付费一言难尽。在这些软件中来回尝试了多次之后，发现没有一个能长久使用的，或多或少的存在痛点。
+
+在了解过 markdown，org-mode 等概念后，结合以上软件的使用体验，我确立了对于笔记管理的要求：​*本地储存，格式可控* 。这个要求 markdown 和 org-mode 都可以满足，这两种语言之上都有着相对应的软件实现，obsidian 和 org-roam。当然除了 org-roam 之外，还有其他的实现，但是我只使用 org-roam。
+
+Org-mode 相比 markdown，特性还是要丰富很多， markdown 相对比较简陋。 org-mode 写完之后可以根据需要将其转化为其他的格式，我需要的如 =html= =docx= =latex= 。
+
+Org-mode 是 Emacs 上最强大的笔记应用，如果不是为了进行笔记管理，我很大概率是不使用 Emacs 的（难调较，需要大量的时间，众多的特性中迷失自我）。
+
+* Keybindings
+[[./src/keybinding.png]]
+
+此图片通过 Tex 生成，该文件的模版来自 [[https://github.com/bbatsov/prelude][bbatsov/prelude: Prelude is an enhanced Emacs 25.1+ distribution that should make your experience with Emacs both more pleasant and more powerful.]]
+
+* Acknowledgment
+#+begin_quote
+If I have seen further, it is by standing on the shoulders of giants. ---- Sir Isaac Newton
+#+end_quote
+谢谢以下配置的作者，从他们那学到了很多关于 Emacs 的知识。排名不分先后。
++ https://github.com/bbatsov/prelude
++ https://github.com/syl20bnr/spacemacs
++ https://github.com/seagle0128/.emacs.d
++ https://github.com/hlissner/doom-emacs
++ https://github.com/remacs/remacs
++ https://github.com/redguardtoo/emacs.d
++ https://github.com/manateelazycat/lazycat-emacs
++ https://github.com/purcell/emacs.d
++ https://github.com/MatthewZMD/.emacs.d
++ https://sachachua.com/dotemacs/
++ https://github.com/raxod502/radian
++ https://tecosaur.github.io/emacs-config/config.html
+
+* ELISP 学习
+- [[https://manateelazycat.github.io/emacs/2022/11/18/write-emacs-plugin.html][Emacs 插件开发手册]]
+- [[http://smacs.github.io/elisp/][Emacs Lisp 简明教程 - 水木社区Emacs版]]
+- [[https://www.youtube.com/watch?v=RQK_DaaX34Q&list=PLEoMzSkcN8oPQtn7FQEF3D7sroZbXuPZ7][Introduction to Emacs Lisp - Learning Emacs Lisp #1 - YouTube]]
+
+
+看完以上3个的内容Emacs-lisp 就算入门了。
+
+* The difference between with setq and setq-default
+
++ [[https://stackoverflow.com/questions/18172728/the-difference-between-setq-and-setq-default-in-emacs-lisp][elisp - The difference between setq and setq-default in Emacs Lisp - Stack Overflow]]
+
+If a variable is buffer-local, then setq sets its local value in the current buffer
+and setq-default sets the global default value.
+
+If a variable is not buffer-local, then setq and setq-default do the same thing.
+
+* Org-mode
+
++ [[https://irreal.org/blog/?p=11123][Code vs. Verbatim in Org Mode | Irreal]]
+
+* Differences
+
+** ~emacs-startup-hook~ vs ~after-init-hook~
+The difference between the two hooks is that ~emacs-startup-hook~ runs after the user's init file has been loaded, while ~after-init-hook~ runs after Emacs has finished initializing the packages and variables.
+
+** ~with-eval-after-load~ vs ~add-hook~
+#+begin_src emacs-lisp
+  (with-eval-after-load 'evil
+    (evil-collection-init))
+  (add-hook 'evil-mode-hook #'evil-collection-init)
+#+end_src
+The first approach will load and initialize =evil-collection= as soon as evil is loaded, while the second approach will only load and initialize =evil-collection= when =evil-mode= is enabled.
