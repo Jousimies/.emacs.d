@@ -1,0 +1,11 @@
+;;; `(buffer-name)` --- ${1:Description} -*- lexical-binding: t; -*-
+
+;;; Commentary:
+;;
+;;; Code:
+;;
+
+$0
+(provide '`(substring (buffer-name) 0  (- (length (buffer-name)) 3))`)
+
+;;; `(buffer-name)` ends here

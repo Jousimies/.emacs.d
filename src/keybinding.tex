@@ -1,0 +1,348 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.5cm,landscape,a3paper]{geometry}
+\pagestyle{empty}
+
+\usepackage{textcomp}
+\usepackage{multicol}
+\usepackage{menukeys}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{xpatch}
+\usepackage{xparse}
+\usepackage{calc}
+\usepackage{tcolorbox}
+
+\definecolor{default}{HTML}{333333}
+\definecolor{heading}{HTML}{000000}
+\definecolor{command}{HTML}{666666}
+\definecolor{key}{HTML}{268BD2}
+
+\renewcommand\section[1]{\bigskip\par\textbf{\color{heading}\large#1}\smallskip}
+\renewcommand\subsection[1]{\smallskip\par\textbf{\color{heading}#1}}
+\renewcommand\subsubsection[1]{\smallskip\par\textbf{\color{heading}\small#1}}
+\newcommand\humanreadable[1]{{\par\color{default}\small\sffamily#1}}
+\newcommand\meta[1]{\textlangle\textit{#1}\textrangle}
+\newcommand\keyify[1]{\color{key}\ttfamily#1}
+\newlist{keylist}{description}{1}
+\setlist[keylist]{
+  topsep      = 1pt,
+  labelindent = 1pt,
+  itemsep     = -1ex,
+  labelwidth  = \widthof{xxxxxxxxxxxxxx},
+  font        = \keyify,
+  leftmargin  = !,
+  before      = \color{command}\sffamily
+}
+
+\setlength\parindent{0em}
+\setlength\parsep{0ex}
+\renewcommand\baselinestretch{1.2}
+
+\begin{document}
+\author{Jousimies}
+\begin{multicols}{4}
+
+  \setlength{\columnsep}{1cm}
+  \begin{center}
+    \LARGE\color{heading}\textbf{My Emacs Cheat Sheet}
+  \end{center}
+
+  \section{Getting Help in Emacs}
+  \begin{keylist}
+    \item[C-h k \meta{key}] \humanreadable{describe function bound to \meta{key}}
+    \item[C-h b] \humanreadable{list key-bindings for focused buffer}
+    \item[C-h m] \humanreadable{describe mode}
+    \item[C-h l] \humanreadable{show the keys you have pressed}
+    \item[C-h f] \humanreadable{describe function}
+  \end{keylist}
+
+  \section{Global and Local keymaps}
+  \subsection{Global keymap}
+  \begin{keylist}
+    \item[C-x u] vundo
+    \item[C-x o] ace-window
+    \item[M-\#] dictionary-lookup-definition
+    \item[M-*] tempel-insert
+    \item[M-+] tempel-complete
+    \item[M-n] my/scroll-other-windown
+    \item[M-p] my/scroll-other-windown-down
+    \item[C-.] embark-act
+    \item[C-;] embark-dwim
+    \item[f1] calibredb
+    \item[f2] ebib
+    \item[f7] my/copy-idlink
+    \item[f9] my/link-grab
+    \item[f10] my/org-capture
+    \item[f12] my/org-agenda
+    \item[s-n] my/make-or-delete-frame
+    \item[s-~] other-frame
+    \item[s-/] evil-commentary-line
+  \end{keylist}
+  \subsection{vertico-map}
+  \begin{keylist}
+    \item[C-j] vertico-next
+    \item[C-k] vertico-previous
+    \item[C-u] vertico-directory-up
+    \item[C-c C-o] embark-export
+    \item[C-c C-c] embark-act
+  \end{keylist}
+  \subsection{minibuffer-local-map}
+  \begin{keylist}
+    \item[C-r] consult-history
+  \end{keylist}
+  \subsection{evil-insert-state-map}
+  \begin{keylist}
+    \item[C-e] move-end-of-line
+    \item[C-k] kill-line
+  \end{keylist}
+  \subsection{with-editor-mode-map}
+  \begin{keylist}
+    \item[RET] C-c C-c
+  \end{keylist}
+
+  \subsection{dirvish-mode-map/dired-mode-map}
+  \begin{keylist}
+    \item[.] dired-hide-dotfiles-mode
+    \item[q] dirvishq-quit
+    \item[e] xah-show-in-desktop
+  \end{keylist}
+
+  \subsection{rime-mode-map}
+  \begin{keylist}
+    \item[M-j] rime-force-enable
+  \end{keylist}
+
+  \subsection{evil-visual-state-map}
+  \begin{keylist}
+    \item[v] er/expand-region
+  \end{keylist}
+  \subsection{symbol-overlay-mode-map}
+  \begin{keylist}
+    \item[M-i] symbol-overlay-put
+    \item[M-I] symbol-overlay-remove-all
+    \item[M-n] symbol-overlay-jump-next
+    \item[M-p] symbol-overlay-jump-prev
+    \item[s-r] symbol-overlay-renameput
+  \end{keylist}
+
+  \subsection{outline-minor-mode-map}
+  \begin{keylist}
+    \item[C-<tab>] bicycle-cycle
+    \item[S-<tab>] bicycle-cycle-global
+  \end{keylist}
+
+  \subsection{flyspell-mode-map}
+  \begin{keylist}
+    \item[C-;] flyspell-correct-wrapper
+  \end{keylist}
+
+  \subsection{dired-mode-map}
+  \begin{keylist}
+    \item[C-'] my/org-attach-visit-headline-from-dired
+  \end{keylist}
+
+  \subsection{org-mode-map}
+  \begin{keylist}
+    \item[C-c l] org-store-link
+    \item[C-c C-x @] citar-insert-citation
+    \item[RET] org-return
+    \item[z w] olivetti-mode
+    \item[z r] gpc/open-node-roam-ref-url
+    \item[z b] consult-org-roam-backlinks
+    \item[z f] consult-org-roam-forward-links
+    \item[z m] orb-note-actions
+    \item[SPC/M-SPC t a] org-transclusion-add
+    \item[SPC/M-SPC t A] org-transclusion-add-all
+    \item[SPC/M-SPC t r] org-transclusion-remove
+    \item[SPC/M-SPC t R] org-transclusion-remove-all
+    \item[SPC/M-SPC t g] org-transclusion-refresh
+    \item[SPC/M-SPC t m] org-transclusion-make-from-link
+    \item[SPC/M-SPC t o] org-transclusion-open-source
+    \item[SPC/M-SPC t e] org-transclusion-live-sync-start
+    \item[SPC/M-SPC p a] math-preview-all
+    \item[SPC/M-SPC p A] math-preview-clear-all
+    \item[SPC/M-SPC p p] math-preview-at-point
+    \item[SPC/M-SPC p r] math-preview-region
+    \item[SPC/M-SPC p R] math-preview-clear-region
+  \end{keylist}
+
+  \subsection{calibredb-search-mode-map}
+  \begin{keylist}
+    \item[C-c l] calibredb-copy-as-org-link
+  \end{keylist}
+
+  \subsection{mu4e-headers-mode-map}
+  \begin{keylist}
+    \item[C-c l] org-store-link
+  \end{keylist}
+
+  \subsection{org-agenda-mode-map}
+  \begin{keylist}
+    \item[C-j] org-agenda-next-line
+    \item[C-k] org-agenda-previous-line
+  \end{keylist}
+
+  \subsection{beacount-mode-map}
+  \begin{keylist}
+    \item[z f] beancount-fava
+  \end{keylist}
+
+
+  \section{Space leader keys}
+  \subsection{Package management}
+  \begin{keylist}
+    \item[SPC p a] borg-assimilate
+    \item[SPC p r] borg-remove
+    \item[SPC p b] borg-build
+    \item[SPC p c] borg-clone
+    \item[SPC p p] epkg-describe-package
+  \end{keylist}
+
+  \section{Emacs Server and windows}
+  \begin{keylist}
+    \item[SPC q R] restart-emacs
+    \item[SPC q q] server-force-delete
+    \item[SPC q s] my/start-server
+    \item[SPC w u] winner-undo
+    \item[SPC w r] winner-redo
+  \end{keylist}
+
+  \subsection{Buffer related}
+  \begin{keylist}
+    \item[SPC b b] switch-to-buffer
+    \item[SPC b e] eval-buffer
+    \item[SPC b k] kill-this-buffer
+    \item[SPC b r] dictionary-overlay-toggle
+    \item[SPC b s] switch-to-scratch
+    \item[SPC b m] switch-to-message
+  \end{keylist}
+
+  \subsection{File related}
+  \begin{keylist}
+    \item[SPC f a] dirvish-quick-access
+    \item[SPC f f] find-file
+    \item[SPC f r] recentf-open-files
+    \item[SPC f s] file-info-show
+    \item[SPC f d] xah-show-in-desktop
+    \item[SPC f o b] my/reading-record
+    \item[SPC f o e] my/rss-source
+    \item[SPC f o i] my/inbox-file
+    \item[SPC f o I] my/index-file
+    \item[SPC f o p] my/plan-file
+    \item[SPC f o r] my/reflection-file
+    \item[SPC f o g] my/gtd-file
+  \end{keylist}
+
+
+  \subsection{Language or Links}
+  \subsubsection{Dictionary and translation}
+  \begin{keylist}
+    \item[SPC l l] gts-do-translate
+    \item[SPC l L] lingva-translate
+    \item[SPC l p] sdcv-search-pointer
+    \item[SPC l i] sdcv-search-input+
+    \item[SPC l d] osx-dictionary-search-pointer
+    \item[SPC l s l] powerthesaurus-lookup-dwim
+    \item[SPC l s s] powerthesaurus-lookup-synonyms-dwim
+    \item[SPC l s a] powerthesaurus-lookup-antonyms-dwim
+    \item[SPC l s d] powerthesaurus-lookup-definitions-dwim
+    \item[SPC l s j] powerthesaurus-lookup-sentences-dwim
+    \item[SPC l k] dictionary-overlay-mark-word-unknown
+    \item[SPC l K] dictionary-overlay-mark-word-known
+    \item[SPC l h] lsp-bridge-toggle-sdcv-helper
+  \end{keylist}
+  \subsubsection{Links}
+  \begin{keylist}
+    \item[SPC l o] browse-url
+    \item[SPC l r] jf/org-link-remove-link
+    \item[SPC l t] yt-set-time
+  \end{keylist}
+  \subsection{Notes: org-mode and org-roam}
+  \subsubsection{Org-mode}
+  \begin{keylist}
+    \item[SPC o a a] my/org-agenda
+    \item[SPC o a q] my/org-agenda-query
+    \item[SPC o a t] org-todo-list
+    \item[SPC o a v] org-search-view
+    \item[SPC o a i] my/org-inprogress-tasks
+    \item[SPC o t a] org-toggle-archive-tag
+    \item[SPC o t h] org-toggle-heading
+    \item[SPC o t i] org-toggle-item
+    \item[SPC o c i] org-clock-in
+    \item[SPC o c o] org-clock-out
+    \item[SPC o c j] org-clock-goto
+    \item[SPC o c l] org-clock-in-last
+    \item[SPC o c a] alarm-clock-set
+    \item[SPC o c v] alarm-clock-list-view
+    \item[SPC o d c] org-download-clipboard
+    \item[SPC o d y] org-download-yank
+    \item[SPC o d r] org-download-rename-last-file
+    \item[SPC o d R] org-download-rename-at-point
+    \item[SPC o p m] plantuml-org-to-mindmap-open
+    \item[SPC o p s] plantuml-org-to-wbs-open
+    \item[SPC o i] org-id-get-create
+    \item[SPC o h] boxy-headings
+  \end{keylist}
+  \subsubsection{Org-roam}
+  \begin{keylist}
+    \item[SPC n r] org-roam-node-random
+    \item[SPC n f] org-roam-node-find
+    \item[SPC n i] org-roam-node-insert
+    \item[SPC n a] org-roam-alias-add
+    \item[SPC n A] org-roam-alias-remove
+    \item[SPC n t] org-roam-tag-add
+    \item[SPC n T] org-roam-tag-remove
+    \item[SPC n d] org-roam-dailies-goto-today
+    \item[SPC n c] my/new-article
+    \item[SPC n n] consult-notes
+    \item[SPC n s] consult-org-roam-search
+    \item[SPC n v] consult-notes-org-roam-find-node-relation
+    \item[SPC n u u] org-roam-ui-open
+    \item[SPC n u z] org-roam-ui-node-zoom
+  \end{keylist}
+  \subsubsection{References}
+  \begin{keylist}
+    \item[SPC r a] org-roam-ref-add
+    \item[SPC r c] citar-org-roam-cited
+    \item[SPC r d] my/biblio-lookup-crossref
+    \item[SPC r e] citar-open-entry
+    \item[SPC r f] org-roam-ref-find
+    \item[SPC r r] org-roam-ref-remove
+    \item[SPC r p] citar-open-files
+    \item[SPC r i] citar-insert-bibtex
+    \item[SPC r n] citar-open-notes
+    \item[SPC r l] citar-open-links
+  \end{keylist}
+  \section{Comma leader key}
+  \begin{keylist}
+    \item[; c] calendar
+    \item[; C] calc
+    \item[; r] elfeed-summary
+    \item[; e] mu4e
+    \item[; v] vterm
+    \item[; g c] avy-goto-char
+    \item[; g C] avy-goto-char-2
+    \item[; g w] avy-goto-word-0
+    \item[; m] demap-toggle
+    \item[; o] my/ocr
+    \item[; p] toggle-proxy
+    \item[; i] my/toggle-punch-in-or-out
+    \item[; s b] engine/search-bookdouban
+    \item[; s s] engine/search-google
+    \item[; s g] engine/search-github
+    \item[; s y] engine/search-youtube
+    \item[; s w] engine/search-wikipedia
+    \item[; s z] engine/search-zhihu
+    \item[; s r] rg
+    \item[; s l] consult-git-log-grep
+    \item[; h] my/pdf-extract-highlight
+    \item[; j] mac-launchpad
+  \end{keylist}
+
+\end{multicols}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

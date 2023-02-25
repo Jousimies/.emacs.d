@@ -1,0 +1,202 @@
+;; -*- mode: lisp -*-
+
+fundamental-mode ;; Available everywhere
+
+(today (format-time-string "%Y-%m-%d"))
+(time (format-time-string "%Y-%m-%d %H:%m"))
+
+prog-mode
+
+(fixme (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "FIXME ")
+(todo (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "TODO ")
+(bug (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "BUG ")
+(hack (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "HACK ")
+
+latex-mode
+
+(begin "\\begin{" (s env) "}" > n> r> "\\end{" (s env) "}")
+(frac "\\frac{" p "}{" p "}")
+(enumerate "\\begin{enumerate}\n\\item " r> n> "\\end{enumerate}")
+(itemize "\\begin{itemize}\n\\item " r> n> "\\end{itemize}")
+
+(fig* "\\begin{figure*}[" p "]" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\textwidth]{" p "}" n>
+      "\\caption{" p "} " n>
+      "\\label{fig:" p"}" n
+      "\\end{figure*}")
+
+emacs-lisp-mode
+
+(lambda "(lambda (" p ")" n> r> ")")
+(var "(defvar " p "\n  \"" p "\")")
+(const "(defconst " p "\n  \"" p "\")")
+(custom "(defcustom " p "\n  \"" p "\"" n> ":type '" p ")")
+(face "(defface " p " '((t :inherit " p "))\n  \"" p "\")")
+(group "(defgroup " p " nil\n  \"" p "\"" n> ":group '" p n> ":prefix \"" p "-\")")
+(macro "(defmacro " p " (" p ")\n  \"" p "\"" n> r> ")")
+(fun "(defun " p " (" p ")\n  \"" p "\"" n> r> ")")
+(let "(let (" p ")" n> r> ")")
+(star "(let* (" p ")" n> r> ")")
+(rec "(letrec (" p ")" n> r> ")")
+(command "(defun " p " (" p ")\n  \"" p "\"" n> "(interactive)" n> r> ")")
+
+text-mode
+
+(cut "--8<---------------cut here---------------start------------->8---" n r n
+     "--8<---------------cut here---------------end--------------->8---" n)
+(asciibox "+-" (make-string (length str) ?-) "-+" n
+          "| " (s str)                       " |" n
+          "+-" (make-string (length str) ?-) "-+" n)
+
+rst-mode
+
+(title (make-string (length title) ?=) n (p "Title: " title) n (make-string (length title) ?=) n)
+
+java-mode
+
+(class "public class " (p (file-name-base (or (buffer-file-name) (buffer-name)))) " {" n> r> n "}")
+
+org-mode
+
+(title "#+title: " p n>
+       "#+author: Jousimies" n>
+       "#+language: zh" n n)
+
+(quote "#+begin_quote" n> r> n> "#+end_quote")
+
+(example "#+begin_example" n> r> n> "#+end_example")
+
+(center "#+begin_center" n> r> n> "#+end_center")
+
+(comment "#+begin_comment" n> r> n> "#+end_comment")
+
+(verse "#+begin_verse" n> r> n> "#+end_verse")
+
+(src "#+begin_src " p n> r> n> "#+end_src" :post (org-edit-src-code))
+
+(elisp "#+begin_src emacs-lisp" n> r> n "#+end_src")
+
+(frac "\\frac{" p "}{" p "}")
+
+(hugo
+ "#+DESCRIPTION: " p n>
+ "#+DATE: " (format-time-string "%Y-%m-%d %H:%m") p n>
+ "#+OPTIONS: author:nil" p n>
+ "#+HUGO_BASE_DIR: ~/Documents/hugo-source" n>
+ "#+HUGO_AUTO_SET_LASTMOD: t" n>
+ "#+HUGO_TAGS:" n>)
+
+(tikz
+ "#+HEADER: :file " p ".png :fit yes :noweb yes :cache yes :output-dir ~/Downloads/" n>
+ "#+HEADER: :imagemagick yes :iminoptions -density 600 :imoutoptions -geometry 400" n>
+ "#+HEADER: :results (if (and (boundp 'backend) (eq backend 'latex)) \"latex\" \"file link\")" " :headers '(\"\\\\usepackage{tikz}\")" n>
+ "#+begin_src latex" n>
+ p n>
+ "#+end_src")
+
+(attr_code
+ "#+ATTR_LATEX: :options frame=lines, fontsize=\small, baselinestretch=1, linenos")
+
+(fig "#+NAME: fig:" p n>
+     "#+CAPTION:" p n>
+     "#+ATTR_ORG: :width 500px" n>
+     "#+ATTR_LaTeX: :width 12cm :placement [!htpb]" n>
+     "#+ATTR_HTML: :width 600px" n>
+     "[[~/Nextcloud/L.Personal.Galaxy/roam/pic/" p "]]")
+
+(fig2 "#+begin_latex" n>
+      "\\begin{figure}[htbp]" n>
+      "\\centering" n>
+      "\\subfigure[" p "]{" n>
+      "\\begin{minipage}[t]{0.5\\linewidth}" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\linewidth]{" p "}" n>
+      "\\end{minipage}" n>
+      "}" n>
+      "\\subfigure[" p "]{" n>
+      "\\begin{minipage}[t]{0.5\\linewidth}" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\linewidth]{" p "}" n>
+      "\\end{minipage}" n>
+      "}" n>
+      "\\centering" n>
+      "\\caption{fig:" p "}" n>
+      "\\end{figure}" n>
+      "#+end_latex")
+
+(equ-latex-env
+ "#+begin_export latex" n>
+ "\\begin{equation}" n>
+ p n>
+ "\\end{equation}" n>
+ "#+end_export" n>)
+
+(fig4 "#+begin_latex" n>
+      "\\begin{figure}[htbp]" n>
+      "\\centering" n>
+      "\\subfigure[" p "]{" n>
+      "\\begin{minipage}[t]{0.5\\linewidth}" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\linewidth]{" p "}" n>
+      "\\end{minipage}}" n>
+      "\\subfigure[" p "]{" n>
+      "\\begin{minipage}[t]{0.5\\linewidth}" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\linewidth]{" p "}" n>
+      "\\end{minipage}}" n>
+      "\\subfigure[" p "]{" n>
+      "\\begin{minipage}[t]{0.5\\linewidth}" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\linewidth]{" p "}" n>
+      "\\end{minipage}}" n>
+      "\\subfigure[" p "]{" n>
+      "\\begin{minipage}[t]{0.5\\linewidth}" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\linewidth]{" p "}" n>
+      "\\end{minipage}}" n>
+      "\\centering" n>
+      "\\caption{fig:" p "}" n>
+      "\\end{figure}" n>
+      "#+end_latex")
+
+python-mode
+
+(plot-header-mac
+ "import pandas as pd" n>
+ "import numpy as np"
+ "import matplotlib.pyplot as plt" n>
+ "# 显示中文字体" n>
+ "plt.rcParams[\"font.family\"] = [\"Source Han Serif SC\"]" n>
+ "# 显示负号" n>
+ "plt.rcParams[\"axes.unicode_minus\"] = False" n>
+ "如果使用希腊字体，插入 latin-font " n>)
+
+(plot-basic
+ "fig,ax = plt.subplots(figsize=(5,5))" n>
+ "ax.set_title('Title')" n>
+ "ax.set_xlabel('xlabel')" n>
+ "ax.set_ylabel('ylabel')" n>
+ "ax.minorticks_on()"  n>
+ "ax.legend(frameon=False)" n>
+ "ax.set_xlim(xmin,xmax)" n>
+ "ax.set_ylim(ymin,ymax)" n>
+ "plt.savefig('figname.svg', dpi=400, bbox_inches='tight')" n>
+ "plt.savefig('figname.png', dpi=400, bbox_inches='tight')")
+
+(plot-scatter
+ "ax.scatter(x1,y1,color='black')")
+
+(plot-plot
+ "ax.plot(x1,y1,color='black', label="label")")
+
+(plot-hline
+ "plt.axhline(y=y_value,ls='--',color='r')")
+
+(plot-latin-font
+ "import matplotlib"
+ "matplotlib.use('pgf')"
+ "# 显示中文字体"
+ "plt.rcParams["font.family"] = ["Source Han Serif SC"]"
+ "# 显示负号"
+ "plt.rcParams["axes.unicode_minus"] = False")

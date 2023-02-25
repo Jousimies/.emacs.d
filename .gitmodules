@@ -1,0 +1,318 @@
+[submodule "on"]
+	path = packages/on
+	url = https://github.com/ajgrf/on.el.git
+[submodule "packages/magit"]
+	path = packages/magit
+	url = https://github.com/magit/magit.git
+[submodule "packages/no-littering"]
+	path = packages/no-littering
+	url = https://github.com/emacscollective/no-littering.git
+[submodule "packages/compat"]
+	path = packages/compat
+	url = https://github.com/emacs-compat/compat.git
+[submodule "packages/dash.el"]
+	path = packages/dash.el
+	url = https://github.com/magnars/dash.el.git
+[submodule "packages/with-editor"]
+	path = packages/with-editor
+	url = https://github.com/magit/with-editor.git
+[submodule "packages/evil"]
+	path = packages/evil
+	url = https://github.com/emacs-evil/evil.git
+[submodule "packages/epkg"]
+	path = packages/epkg
+	url = https://github.com/emacscollective/epkg.git
+[submodule "packages/general.el"]
+	path = packages/general.el
+	url = https://github.com/noctuid/general.el.git
+[submodule "packages/llama"]
+	path = packages/llama
+	url = https://git.sr.ht/~tarsius/llama
+[submodule "packages/closql"]
+	path = packages/closql
+	url = https://github.com/magit/closql.git
+[submodule "packages/emacsql"]
+	path = packages/emacsql
+	url = https://github.com/magit/emacsql.git
+[submodule "packages/evil-collection"]
+	path = packages/evil-collection
+	url = https://github.com/emacs-evil/evil-collection.git
+[submodule "packages/annalist.el"]
+	path = packages/annalist.el
+	url = https://github.com/noctuid/annalist.el.git
+[submodule "packages/modus-themes"]
+	path = packages/modus-themes
+	url = https://git.sr.ht/~protesilaos/modus-themes
+[submodule "packages/auto-save"]
+	path = packages/auto-save
+	url = https://github.com/manateelazycat/auto-save.git
+[submodule "packages/evil-commentary"]
+	path = packages/evil-commentary
+	url = https://github.com/linktohack/evil-commentary.git
+[submodule "packages/org-auto-tangle"]
+	path = packages/org-auto-tangle
+	url = https://github.com/yilkalargaw/org-auto-tangle.git
+[submodule "packages/emacs-which-key"]
+	path = packages/emacs-which-key
+	url = https://github.com/justbur/emacs-which-key.git
+[submodule "packages/emacs-async"]
+	path = packages/emacs-async
+	url = https://github.com/jwiegley/emacs-async.git
+[submodule "packages/forge"]
+	path = packages/forge
+	url = https://github.com/magit/forge.git
+[submodule "packages/markdown-mode"]
+	path = packages/markdown-mode
+	url = https://github.com/jrblevin/markdown-mode.git
+[submodule "packages/yaml.el"]
+	path = packages/yaml.el
+	url = https://github.com/zkry/yaml.el.git
+[submodule "packages/ghub"]
+	path = packages/ghub
+	url = https://github.com/magit/ghub.git
+[submodule "packages/treepy.el"]
+	path = packages/treepy.el
+	url = https://github.com/volrath/treepy.el.git
+[submodule "packages/tabspaces"]
+	path = packages/tabspaces
+	url = https://github.com/mclear-tools/tabspaces.git
+[submodule "packages/browse-at-remote"]
+	path = packages/browse-at-remote
+	url = https://github.com/rmuslimov/browse-at-remote.git
+[submodule "packages/f.el"]
+	path = packages/f.el
+	url = https://github.com/rejeep/f.el.git
+[submodule "packages/s.el"]
+	path = packages/s.el
+	url = https://github.com/magnars/s.el.git
+[submodule "packages/rainbow-mode"]
+	path = packages/rainbow-mode
+	url = https://github.com/emacsmirror/rainbow-mode.git
+[submodule "packages/rainbow-delimiters"]
+	path = packages/rainbow-delimiters
+	url = https://github.com/Fanael/rainbow-delimiters.git
+[submodule "packages/color-identifiers-mode"]
+	path = packages/color-identifiers-mode
+	url = https://github.com/ankurdave/color-identifiers-mode.git
+[submodule "packages/helpful"]
+	path = packages/helpful
+	url = https://github.com/Wilfred/helpful.git
+[submodule "packages/elisp-demos"]
+	path = packages/elisp-demos
+	url = https://github.com/xuchunyang/elisp-demos.git
+[submodule "packages/elisp-refs"]
+	path = packages/elisp-refs
+	url = https://github.com/Wilfred/elisp-refs.git
+[submodule "packages/expand-region.el"]
+	path = packages/expand-region.el
+	url = https://github.com/magnars/expand-region.el.git
+[submodule "packages/ctrlf"]
+	path = packages/ctrlf
+	url = https://github.com/radian-software/ctrlf.git
+[submodule "packages/vertico"]
+	path = packages/vertico
+	url = https://github.com/minad/vertico.git
+[submodule "packages/corfu"]
+	path = packages/corfu
+	url = https://github.com/minad/corfu.git
+[submodule "packages/kind-icon"]
+	path = packages/kind-icon
+	url = https://github.com/jdtsmith/kind-icon.git
+[submodule "packages/cape"]
+	path = packages/cape
+	url = https://github.com/minad/cape.git
+[submodule "packages/orderless"]
+	path = packages/orderless
+	url = https://github.com/oantolin/orderless.git
+[submodule "packages/consult"]
+	path = packages/consult
+	url = https://github.com/minad/consult.git
+[submodule "packages/gcmh"]
+	path = packages/gcmh
+	url = https://gitlab.com/koral/gcmh.git
+[submodule "packages/file-info.el"]
+	path = packages/file-info.el
+	url = https://github.com/Artawower/file-info.el.git
+[submodule "packages/emacs-disk-usage"]
+	path = packages/emacs-disk-usage
+	url = https://gitlab.com/ambrevar/emacs-disk-usage.git
+[submodule "packages/hydra"]
+	path = packages/hydra
+	url = https://github.com/abo-abo/hydra.git
+[submodule "packages/posframe"]
+	path = packages/posframe
+	url = https://github.com/tumashu/posframe.git
+[submodule "packages/emacs-undo-fu"]
+	path = packages/emacs-undo-fu
+	url = https://codeberg.org/ideasman42/emacs-undo-fu.git
+[submodule "packages/undo-fu-session"]
+	path = packages/undo-fu-session
+	url = https://github.com/emacsmirror/undo-fu-session.git
+[submodule "packages/vundo"]
+	path = packages/vundo
+	url = https://github.com/casouri/vundo.git
+[submodule "packages/hungry-delete"]
+	path = packages/hungry-delete
+	url = https://github.com/nflath/hungry-delete.git
+[submodule "packages/emacs-gc-buffers"]
+	path = packages/emacs-gc-buffers
+	url = https://codeberg.org/akib/emacs-gc-buffers.git
+[submodule "packages/ace-window"]
+	path = packages/ace-window
+	url = https://github.com/abo-abo/ace-window.git
+[submodule "packages/avy"]
+	path = packages/avy
+	url = https://github.com/abo-abo/avy.git
+[submodule "packages/emacs-rime"]
+	path = packages/emacs-rime
+	url = https://github.com/DogLooksGood/emacs-rime.git
+[submodule "packages/rime-regexp.el"]
+	path = packages/rime-regexp.el
+	url = https://github.com/colawithsauce/rime-regexp.el.git
+[submodule "packages/dired-hide-dotfiles"]
+	path = packages/dired-hide-dotfiles
+	url = https://github.com/mattiasb/dired-hide-dotfiles.git
+[submodule "packages/dirvish"]
+	path = packages/dirvish
+	url = https://github.com/alexluigit/dirvish.git
+[submodule "packages/consult-dir"]
+	path = packages/consult-dir
+	url = https://github.com/karthink/consult-dir.git
+[submodule "packages/epkg-marginalia"]
+	path = packages/epkg-marginalia
+	url = https://github.com/emacscollective/epkg-marginalia.git
+[submodule "packages/marginalia"]
+	path = packages/marginalia
+	url = https://github.com/minad/marginalia.git
+[submodule "packages/org-roam"]
+	path = packages/org-roam
+	url = https://github.com/org-roam/org-roam.git
+[submodule "packages/org-roam-ui"]
+	path = packages/org-roam-ui
+	url = https://github.com/org-roam/org-roam-ui.git
+[submodule "packages/org-transclusion"]
+	path = packages/org-transclusion
+	url = https://github.com/nobiot/org-transclusion.git
+[submodule "packages/consult-org-roam"]
+	path = packages/consult-org-roam
+	url = https://github.com/jgru/consult-org-roam.git
+[submodule "packages/emacs-web-server"]
+	path = packages/emacs-web-server
+	url = https://github.com/skeeto/emacs-web-server.git
+[submodule "packages/emacs-websocket"]
+	path = packages/emacs-websocket
+	url = https://github.com/ahyatt/emacs-websocket.git
+[submodule "packages/vulpea"]
+	path = packages/vulpea
+	url = https://github.com/d12frosted/vulpea.git
+[submodule "packages/consult-notes"]
+	path = packages/consult-notes
+	url = https://github.com/mclear-tools/consult-notes.git
+[submodule "packages/beancount-mode"]
+	path = packages/beancount-mode
+	url = https://github.com/beancount/beancount-mode.git
+[submodule "packages/olivetti"]
+	path = packages/olivetti
+	url = https://github.com/rnkn/olivetti.git
+[submodule "packages/toc-org"]
+	path = packages/toc-org
+	url = https://github.com/snosov1/toc-org.git
+[submodule "packages/org-superstar-mode"]
+	path = packages/org-superstar-mode
+	url = https://github.com/integral-dw/org-superstar-mode.git
+[submodule "packages/org-download"]
+	path = packages/org-download
+	url = https://github.com/abo-abo/org-download.git
+[submodule "packages/org-appear"]
+	path = packages/org-appear
+	url = https://github.com/awth13/org-appear.git
+[submodule "packages/math-preview"]
+	path = packages/math-preview
+	url = https://gitlab.com/matsievskiysv/math-preview.git
+[submodule "packages/plantuml-emacs"]
+	path = packages/plantuml-emacs
+	url = https://github.com/ginqi7/plantuml-emacs.git
+[submodule "packages/org-rainbow-tags"]
+	path = packages/org-rainbow-tags
+	url = https://github.com/KaratasFurkan/org-rainbow-tags.git
+[submodule "packages/biblio.el"]
+	path = packages/biblio.el
+	url = https://github.com/cpitclaudel/biblio.el.git
+[submodule "packages/citar"]
+	path = packages/citar
+	url = https://github.com/emacs-citar/citar.git
+[submodule "packages/parsebib"]
+	path = packages/parsebib
+	url = https://github.com/joostkremers/parsebib.git
+[submodule "packages/citar-org-roam"]
+	path = packages/citar-org-roam
+	url = https://github.com/emacs-citar/citar-org-roam.git
+[submodule "packages/embark"]
+	path = packages/embark
+	url = https://github.com/oantolin/embark.git
+[submodule "packages/ebib"]
+	path = packages/ebib
+	url = https://github.com/joostkremers/ebib.git
+[submodule "packages/org-roam-bibtex"]
+	path = packages/org-roam-bibtex
+	url = https://github.com/org-roam/org-roam-bibtex.git
+[submodule "packages/helm-bibtex"]
+	path = packages/helm-bibtex
+	url = https://github.com/tmalsburg/helm-bibtex.git
+[submodule "packages/scihub.el"]
+	path = packages/scihub.el
+	url = https://github.com/emacs-pe/scihub.el.git
+[submodule "packages/auctex"]
+	path = packages/auctex
+	url = https://github.com/emacsmirror/auctex.git
+[submodule "packages/cdlatex"]
+	path = packages/cdlatex
+	url = https://github.com/cdominik/cdlatex.git
+[submodule "packages/auctex-latexmk"]
+	path = packages/auctex-latexmk
+	url = https://github.com/emacsmirror/auctex-latexmk.git
+[submodule "packages/ox-hugo"]
+	path = packages/ox-hugo
+	url = https://github.com/kaushalmodi/ox-hugo.git
+[submodule "packages/tomelr"]
+	path = packages/tomelr
+	url = https://github.com/kaushalmodi/tomelr.git
+[submodule "packages/ekg"]
+	path = packages/ekg
+	url = https://github.com/ahyatt/ekg.git
+[submodule "packages/triples"]
+	path = packages/triples
+	url = https://github.com/ahyatt/triples.git
+[submodule "packages/engine-mode"]
+	path = packages/engine-mode
+	url = https://github.com/hrs/engine-mode.git
+[submodule "packages/grab-mac-link.el"]
+	path = packages/grab-mac-link.el
+	url = https://github.com/xuchunyang/grab-mac-link.el.git
+[submodule "packages/elfeed"]
+	path = packages/elfeed
+	url = https://github.com/skeeto/elfeed.git
+[submodule "packages/elfeed-org"]
+	path = packages/elfeed-org
+	url = https://github.com/remyhonig/elfeed-org.git
+[submodule "packages/elfeed-summary"]
+	path = packages/elfeed-summary
+	url = https://github.com/SqrtMinusOne/elfeed-summary.git
+[submodule "packages/emacs-libvterm"]
+	path = packages/emacs-libvterm
+	url = https://github.com/akermu/emacs-libvterm.git
+[submodule "packages/calibredb.el"]
+	path = packages/calibredb.el
+	url = https://github.com/chenyanming/calibredb.el.git
+[submodule "packages/esxml"]
+	path = packages/esxml
+	url = https://github.com/tali713/esxml.git
+[submodule "packages/pdf-tools"]
+	path = packages/pdf-tools
+	url = https://github.com/vedang/pdf-tools.git
+[submodule "packages/tablist"]
+	path = packages/tablist
+	url = https://github.com/politza/tablist.git
+[submodule "packages/nov.el"]
+	path = packages/nov.el
+	url = https://depp.brause.cc/nov.el.git
