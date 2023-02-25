@@ -26,8 +26,19 @@
 * How I manage my packages
 尝试过的 Emacs 配置方式有多种，有 ~package.el~ ~straight.el~ ~git submodule~ ~borg.el~ 。
 
-目前使用 [[https://github.com/emacscollective/borg][emacscollective/borg: Assimilate Emacs packages as Git submodules]] 管理第三方包。
+2023-02-26 目前升级到 Emacs 29.0.60，使用 git submodule 和 use-package 相结合的方式管理 Packages。
 
+使用 git submodule 是为了更好的管理 package 的版本，相比较直接使用 elpa 和 melpa 上面的包，可以追踪上游的状态。不再使用 borg，是最近在使用 make bootstrap 时出现了报错的问题，So Sad！只好重新开始克隆所有的包。希望使用 git submodule 能有更好的稳定性。
+
+#+begin_src shell
+  git clone --depth=1 https://github.com/Jousimies/.emacs.d.git -b master
+
+  git submodule update --init --recursive
+
+  git submodule foreach git reset --hard
+
+  git submodule foreach git checkout master
+#+end_src
 * About note taking
 作为一名非程序员，使用 Emacs 就是奔着 org-mode 来的。Emacs 中能进行任务管理，财务管理，笔记管理都是建立在 org-mode 之上的。Org-mode 在这方面的确很强大。
 
