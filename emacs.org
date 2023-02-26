@@ -1,9 +1,12 @@
 #+TITLE: Personal emacs configuration
-#+DATE: 2023-01-10
+#+DATE: [2023-02-27 Mon 00:56]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
 #+DESCRIPTION: Personal emacs configuration
+#+HUGO_BASE_DIR: ~/Documents/hugo-source
+#+HUGO_AUTO_SET_LASTMOD: t
+#+HUGO_TAGS: Emacs
 
 * Early Init
 #+begin_src emacs-lisp :tangle "~/.emacs.d/early-init.el"
@@ -879,6 +882,9 @@ Decimal digits after the % specify field width to which to pad.
 #+begin_src emacs-lisp
   (use-package hide-mode-line
     :config
+        ;;:hook (dashboard-mode . hide-mode-line-mode)
+    (add-hook 'dashboard-mode-hook 'hide-mode-line-mode)
+
     (if (string= (buffer-name) "*scratch*")
         (hide-mode-line-mode)))
 #+end_src
@@ -916,7 +922,7 @@ Decimal digits after the % specify field width to which to pad.
                      evil-delete-line))
     (advice-add command :after #'pulse-line))
 #+end_src
-** COMMENT dashboard
+** dashboard
 Dashboard 可以让启动界面看起来比 scratch 界面更 fancy, 但是会比较明显的增加启动时间，有明显的迟顿感。
 
 Dashboard 界面的 banner 使用的是 ~ascii art~, 可以通过 [[https://ascii.co.uk/][ASCII.co.uk - The home of all things ASCII]] 生成。
@@ -926,29 +932,44 @@ Dashboard 界面的 banner 使用的是 ~ascii art~, 可以通过 [[https://asci
 也可以结合 [[https://www.emacswiki.org/emacs/TipOfTheDay][EmacsWiki: Tip Of The Day]].
 
 #+begin_src emacs-lisp
-  (setq dashboard-center-content t)
-  (setq dashboard-set-init-info t)
-  (setq dashboard-set-footer nil)
-  (setq dashboard-banner-logo-title nil)
-  (setq dashboard-week-agenda nil)
-  (setq dashboard-heading-icons nil)
-  (setq dashboard-items nil)
-  (dashboard-setup-startup-hook)
+  (use-package dashboard
+    :config
+    (setq dashboard-center-content t)
+    (setq dashboard-set-init-info t)
+    (setq dashboard-set-footer nil)
+    (setq dashboard-banner-logo-title nil)
+    (setq dashboard-heading-icons t)
+    (dashboard-setup-startup-hook)
+    (setq dashboard-items '((recents  . 5)
+                            (bookmarks . 5)
+                            (agenda . 5)))
+    (require 'cal-china)
+    (let* ((ny (calendar-gregorian-from-absolute
+                (cadr (assoc 1 (calendar-chinese-year
+                                (string-to-number
+                                 (format-time-string "%Y" (current-time))))))))
+           (m (string-to-number (format-time-string "%m" (current-time))))
+           (d (string-to-number (format-time-string "%d" (current-time)))))
+      (if (and (= d (cadr ny))
+               (= m (car ny)))
+          (setq dashboard-startup-banner (expand-file-name "src/banner2.txt" user-emacs-directory))
+        (setq dashboard-startup-banner (expand-file-name "src/banner.txt" user-emacs-directory))))
+    (setq dashboard-set-navigator t)
+    (with-eval-after-load 'all-the-icons
+      (setq dashboard-navigator-buttons
+            `(((,(all-the-icons-octicon "mark-github" :height 1 :v-adjust 0.0)
+                "Emacs Configuration" "Browse homepage"
+                (lambda (&rest _) (browse-url "https://github.com/Jousimies/.emacs.d")))
+               (,(all-the-icons-octicon "law" :height 1 :v-adjust 0.0)
+                "Blog" "Browse blog"
+                (lambda (&rest _) (browse-url "https://github.com/Jousimies/.emacs.d"))))))))
 
-  (add-hook 'dashboard-mode-hook 'hide-mode-line-mode)
-#+end_src
-#+begin_src emacs-lisp
-  (require 'cal-china)
-  (let* ((ny (calendar-gregorian-from-absolute
-              (cadr (assoc 1 (calendar-chinese-year
-                              (string-to-number
-                               (format-time-string "%Y" (current-time))))))))
-         (m (string-to-number (format-time-string "%m" (current-time))))
-         (d (string-to-number (format-time-string "%d" (current-time)))))
-    (if (and (= d (cadr ny))
-             (= m (car ny)))
-        (setq dashboard-startup-banner (expand-file-name "src/banner2.txt" user-emacs-directory))
-      (setq dashboard-startup-banner (expand-file-name "src/banner.txt" user-emacs-directory))))
+  (with-eval-after-load 'evil
+    (evil-define-key 'motion 'dashboard-mode-map
+      "gf" 'find-file
+      "gb" 'consult-buffer))
+
+  (run-with-idle-timer 300 t #'dashboard-open)
 #+end_src
 
 ** color-identifiers-mode
@@ -1522,6 +1543,7 @@ Evil 模式编辑需要设置 undo system.
 ** helpful
 #+begin_src emacs-lisp
   (use-package helpful
+    :commands helpful-update
     :bind (([remap describe-function] . helpful-callable)
            ([remap describe-variable] . helpful-variable)
            ([remap describe-key] . helpful-key))
@@ -1538,10 +1560,8 @@ Evil 模式编辑需要设置 undo system.
                    (slot . 0))))
 #+end_src
 #+begin_src emacs-lisp
-  (use-package elisp-demos
-    :commands (elisp-demos-advice-helpful-update)
-    :config
-    (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
+  (autoload #'elisp-demos-advice-helpful-update "elisp-demos" nil t)
+  (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
 #+end_src
 ** expand-region
 这个用于扩展选区，有时候比 Evil 的 Visual 好用。最新的配置中己经使用 =v= 替代了 =C-== 这个快捷键。
@@ -1601,9 +1621,9 @@ Evil 模式编辑需要设置 undo system.
 
 ** tempel
 #+begin_src emacs-lisp
-  (use-package temple
+  (use-package tempel
     :bind (("M-+" . tempel-complete)
-           ("M-*" . temple-insert))
+           ("M-*" . tempel-insert))
     :config
     (setq tempel-path `("~/.emacs.d/template/tempel"
                         ,(expand-file-name "template/tempel" my-galaxy))))
@@ -2190,7 +2210,7 @@ go-translate 的备用。
 ** flycheck
 #+begin_src emacs-lisp
   (use-package flycheck
-    :hook (on-first-file . global-flycheck-mode))
+    :hook (prog-mode . flycheck-mode))
 #+end_src
 ** flycheck-grammarly
 langtool 也可以检查语法，相比较 grammarly，不需要连网，所以速度较快。
@@ -2617,30 +2637,6 @@ POST：[[https://fuco1.github.io/2023-02-08-Visit-the-org-headline-from-the-atta
     "ocl" '(org-clock-in-last :wk "Clock In Last"))
 #+end_src
 
-这个用于 clocktable 进行任务时间的汇总比较，目前我用它来统计一年的读书时长计录，及一年读了哪些书。
-#+begin_src emacs-lisp
-  ;; https://200ok.ch/posts/2022-12-07_streamline_your_org_mode_workflow_with_automatic_clock_table_recalculation.html
-  ;; Need add #+AUTOCALC_CLOCK_TABLES to org file.
-  (with-eval-after-load 'org
-    (add-to-list 'org-options-keywords "AUTOCALC_CLOCK_TABLES:"))
-
-  (defun autocalc-clocktable ()
-    "Auto update clock table."
-    (when (derived-mode-p 'org-mode)
-      (save-excursion
-        (goto-char 0)
-        (if (string-equal (car
-                           (cdr
-                            (car
-                             (org-collect-keywords '("AUTOCALC_CLOCK_TABLES")))))
-                          "t")
-            (progn
-              (goto-char (search-forward "clocktable"))
-              (org-ctrl-c-ctrl-c))))))
-
-  (add-hook 'before-save-hook 'autocalc-clocktable)
-#+end_src
-
 Punch in or out.
 #+begin_src emacs-lisp
   (setq bh/keep-clock-running nil)
@@ -2827,6 +2823,73 @@ Punch in or out.
                                  (file . find-file)
                                  (wl . wl-other-frame))))
 #+end_src
+*** org-header
+**** Auto calc clock tables
+这个用于 clocktable 进行任务时间的汇总比较，目前我用它来统计一年的读书时长计录，及一年读了哪些书。
+#+begin_src emacs-lisp
+  ;; https://200ok.ch/posts/2022-12-07_streamline_your_org_mode_workflow_with_automatic_clock_table_recalculation.html
+  ;; Need add #+AUTOCALC_CLOCK_TABLES to org file.
+  (with-eval-after-load 'org
+    (add-to-list 'org-options-keywords "AUTOCALC_CLOCK_TABLES:"))
+
+  (defun autocalc-clocktable ()
+    "Auto update clock table."
+    (when (derived-mode-p 'org-mode)
+      (save-excursion
+        (goto-char 0)
+        (if (string-equal (car
+                           (cdr
+                            (car
+                             (org-collect-keywords '("AUTOCALC_CLOCK_TABLES")))))
+                          "t")
+            (progn
+              (goto-char (search-forward "clocktable"))
+              (org-ctrl-c-ctrl-c))))))
+
+  (add-hook 'before-save-hook 'autocalc-clocktable)
+#+end_src
+**** Auto update DATE
+#+begin_src emacs-lisp
+  (defun my/org-find-time-file-property (property &optional anywhere)
+    "Return the position of the time file PROPERTY if it exists.
+  When ANYWHERE is non-nil, search beyond the preamble."
+    (save-excursion
+      (goto-char (point-min))
+      (let ((first-heading
+             (save-excursion
+               (re-search-forward org-outline-regexp-bol nil t))))
+        (when (re-search-forward (format "^#\\+%s:" property)
+                                 (if anywhere nil first-heading)
+                                 t)
+          (point)))))
+
+  (defun my/org-set-time-file-property (property &optional anywhere pos)
+    "Set the time file PROPERTY in the preamble.
+  When ANYWHERE is non-nil, search beyond the preamble.
+  If the position of the file PROPERTY has already been computed,
+  it can be passed in POS.
+
+  https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/lisp/zp-org.el#L194"
+    (when-let ((pos (or pos
+                        (my/org-find-time-file-property property))))
+      (save-excursion
+        (goto-char pos)
+        (if (looking-at-p " ")
+            (forward-char)
+          (insert " "))
+        (delete-region (point) (line-end-position))
+        (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
+          (insert now)))))
+
+  (defun my/org-set-date ()
+    "Update the LAST_MODIFIED file property in the preamble.
+  https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/lisp/zp-org.el#L212"
+    (when (and (derived-mode-p 'org-mode)
+               (buffer-modified-p))
+      (my/org-set-time-file-property "DATE")))
+
+  (add-hook 'before-save-hook 'my/org-set-date)
+#+end_src
 ** ekg
 轻度尝试，目前还有很多的不足，日常使用不太够。
 和其他的模块不能很好的合作，如 org-agenda，math-preview。
@@ -2873,12 +2936,12 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
     :commands org-roam-node-find
     :init
     (setq org-roam-directory (file-truename (expand-file-name "roam" my-galaxy)))
-    :hook ((org-mode . (lambda () (setq-local time-stamp-active t
-                                        time-stamp-start "#\\+MODIFIED:[ \t]*"
-                                        time-stamp-end "$"
-                                        time-stamp-format "\[%Y-%m-%d %3a %H:%M\]")
+    :hook ((on-first-input . org-roam-db-autosync-mode)
+           (org-mode . (lambda () (setq-local time-stamp-active t
+                                         time-stamp-start "#\\+MODIFIED:[ \t]*"
+                                         time-stamp-end "$"
+                                         time-stamp-format "\[%Y-%m-%d %3a %H:%M\]")
                          (add-hook 'before-save-hook 'time-stamp nil 'local)))
-           (on-first-input . org-roam-db-autosync-mode)
            (org-roam-mode . hide-mode-line-mode))
     :config
     (setq org-roam-database-connector 'sqlite)
@@ -2998,27 +3061,27 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
                    (slot . 0)
                    (window-width . 0.35)
                    (window-parameters . ((no-other-window . t)
-                                         (no-delete-other-windows . t)))))
-    (my/space-leader-def
-      "n" '(:ignore t :wk "Notes")
-      "nr" '(org-roam-node-random :wk "Random node")
+                                         (no-delete-other-windows . t))))))
+  (my/space-leader-def
+    "n" '(:ignore t :wk "Notes")
+    "nr" '(org-roam-node-random :wk "Random node")
 
-      "nf" '(org-roam-node-find :wk "Find node")
-      "ni" '(org-roam-node-insert :wk "Insert node")
+    "nf" '(org-roam-node-find :wk "Find node")
+    "ni" '(org-roam-node-insert :wk "Insert node")
 
-      "na" '(org-roam-alias-add :wk "Add alias")
-      "nA" '(org-roam-alias-remove :wk "Remove alias")
+    "na" '(org-roam-alias-add :wk "Add alias")
+    "nA" '(org-roam-alias-remove :wk "Remove alias")
 
-      "nt" '(org-roam-tag-add :wk "Add tag")
-      "nT" '(org-roam-tag-remove :wk "Remove tag")
+    "nt" '(org-roam-tag-add :wk "Add tag")
+    "nT" '(org-roam-tag-remove :wk "Remove tag")
 
-      "nd" '(org-roam-dailies-goto-today :wk "Goto today"))
+    "nd" '(org-roam-dailies-goto-today :wk "Goto today"))
 
-    (my/space-leader-def
-      "r" '(:ignore t :wk "References")
-      "ra" '(org-roam-ref-add :wk "Ref add")
-      "rf" '(org-roam-ref-find :wk "Ref find")
-      "rr" '(org-roam-ref-remove :wk "Ref remove")))
+  (my/space-leader-def
+    "r" '(:ignore t :wk "References")
+    "ra" '(org-roam-ref-add :wk "Ref add")
+    "rf" '(org-roam-ref-find :wk "Ref find")
+    "rr" '(org-roam-ref-remove :wk "Ref remove"))
 #+end_src
 #+begin_src emacs-lisp
   (use-package org
@@ -3448,18 +3511,13 @@ Zen Mode 或者叫禅模式，其目的是为了降低不相关因素对于心�
 [[https://github.com/integral-dw/org-superstar-mode][integral-dw/org-superstar-mode: Make org-mode stars a little more super]]
 
 #+begin_src emacs-lisp
-  (use-package org
-    :hook ((org-mode . org-num-mode)
-           (org-mode . org-indent-mode))
-    :config
-    (setq org-hide-leading-stars t))
-
   (use-package org-superstar
+    :hook (org-mode . org-superstar-mode)
     :config
-    ;; (setq org-superstar-headline-bullets-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼"))
+    (setq org-superstar-headline-bullets-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼"))
     ;; (setq org-superstar-headline-bullets-list '("1" "2" "3" "4" "5" "6" "7"))
     ;; (setq org-superstar-headline-bullets-list '("①" "②" "③" "④" "⑤" "⑥"))
-    :hook (org-mode . org-superstar-mode))
+    (setq org-hide-leading-stars t))
 #+end_src
 ** org-download
 用于管理图片。
@@ -3705,36 +3763,39 @@ Org-cite 目前是 org 内置的进行文献引用的包。
 eaf-pdf-viewer 存在的问题还是安装较难，对于系统环境要求较高，如 Emacs 29 上就不能使用，存在问题。
 #+begin_src emacs-lisp
   (use-package citar
-    :after oc
-    :commands (citar-open citar-open-entry citar-open-files citar-open-notes citar-open-links)
-    :bind (:map org-mode-map
-                ("C-c C-x @" . citar-insert-citation))
+    :commands citar-open citar-open-entry citar-open-files citar-open-notes citar-open-links
     :config
     (setq citar-bibliography org-cite-global-bibliography)
     (setq citar-notes-paths `(,(expand-file-name "roam/ref" my-galaxy)))
     (setq citar-library-file-extensions '("pdf" "jpg" "epub"))
-    (setq citar-at-point-function 'embark-act)
     (setq citar-templates '((main . "${author editor:30} ${date year issued:4} ${title:48}")
                             (suffix . "${=key= id:15} ${=type=:12} ${tags keywords:*}")
                             (preview . "${author editor} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.\n")
                             (note . "${title}")))
     (setq citar-symbol-separator "  ")
     (setq citar-file-additional-files-separator "-")
+    (setq citar-at-point-function 'embark-act))
 
-    ;; (setq org-cite-insert-processor 'citar)
-    ;; (setq org-cite-follow-processor 'citar)
-    ;; (setq org-cite-activate-processor 'citar)
+  (use-package citar
+    :after all-the-icons
+    :config
+    (setq citar-symbols
+          `((file ,(all-the-icons-faicon "file-pdf-o" :face 'all-the-icons-dred :v-adjust -0.1) . " ")
+            (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
+            (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))))
 
-    (with-eval-after-load 'all-the-icons
-      (setq citar-symbols
-            `((file ,(all-the-icons-faicon "file-pdf-o" :face 'all-the-icons-dred :v-adjust -0.1) . " ")
-              (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-              (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " ")))))
+  (use-package citar-capf
+    :hook ((LaTeX-mode . citar-capf-setup)
+           (org-mode . citar-capf-setup)))
 
   (use-package citar-org
-    :commands citar-org-local-bib-files citar-org-key-at-point
-    :bind (:map citar-org-citation-map
-                ("RET" . org-open-at-point)))
+    :config
+    (setq org-cite-insert-processor 'citar)
+    (setq org-cite-follow-processor 'citar)
+    (setq org-cite-activate-processor 'citar)
+
+    (with-eval-after-load 'citar-org
+      (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point)))
 
   (use-package citar-embark
     :commands citar-embark-mode
@@ -3812,9 +3873,9 @@ org-roam-bibtex 的主要作用是当创建文献笔记时，会在文件的头�
 这样文献检索就有了另外一个方法，就是通过己有的文献来查找文献，这也是阅读文献的一个重要方法。别人引用了啥，捡重要的看哈。
 #+begin_src emacs-lisp
   (use-package org-roam-bibtex
-    :commands orb-note-actions
-    :after evil
-    :config
+    :commands orb-note-actions)
+
+  (with-eval-after-load 'evil
     (evil-define-key 'normal 'org-mode-map
       "zm" 'orb-note-actions))
 #+end_src
@@ -4822,7 +4883,7 @@ Save mail to html as backup.
 ** Report
 我使用 [[Calibredb]] 管理书籍，使用 org-roam 下的 books 文件夹管理读书笔记内容。凡是读书必建立对应的笔记内容，在笔记内容中会使用 org-clock 的功能记录读书的时长。
 
-读书笔记通过 [[org-roam-capture]] 中的 books 一项创建。
+读书笔记通过 org-roam-capture 中的 books 一项创建。
 
 然后在读书记录笔记中可以通过 org report 功能生成一年的读书记录。
 
