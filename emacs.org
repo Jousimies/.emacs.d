@@ -25,10 +25,11 @@
   (push '(undecorated . t) default-frame-alist)
   (push '(fullscreen . maximized) initial-frame-alist)
 
-  (setq-default initial-major-mode 'fundamental-mode)
+  ;; (setq-default initial-major-mode 'fundamental-mode)
   ;; Disable mode-line when emacs startup.
   (setq-default mode-line-format nil)
 
+  (setq byte-compile-warnings nil)
   ;;; early-init.el ends here
 #+end_src
 
@@ -70,7 +71,7 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 #+begin_src emacs-lisp
   (add-hook 'window-setup-hook
             (lambda ()
-              ;; (garbage-collect)
+              (garbage-collect)
               (let ((curtime (current-time)))
                 (message "Times: init:%.06f total:%.06f gc-done:%d"
                          (float-time (time-subtract after-init-time before-init-time))
@@ -142,8 +143,6 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
   (defun sanityinc/show-init-time ()
     (message "init completed in %.2fms"
              (sanityinc/time-subtract-millis after-init-time before-init-time)))
-
-  (add-hook 'after-init-hook 'sanityinc/show-init-time)
 #+end_src
 ** PATH
 如果使用 emacs-plus, 会自动的添加到 path 当中，或者使用[[https://github.com/purcell/exec-path-from-shell][purcell/exec-path-from-shell: Make Emacs use the $PATH set up by the user's shell]]. 或者使用下面的配置.
@@ -201,7 +200,7 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 
 更多参见：[[https://github.com/emacs-magus][emacs-magus]].
 #+begin_src emacs-lisp
-  (require 'on)
+  (use-package on)
 #+end_src
 
 ** Variables
@@ -221,7 +220,7 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 [[https://github.com/emacscollective/no-littering][https://github.com/emacscollective/no-littering]], 会将一些包产生的文件集中放置到 etc 和 var 两个文件夹中，而不是散落在 user-emacs-directory 当中。
 
 #+begin_src emacs-lisp
-  (require 'no-littering)
+  (use-package no-littering)
 #+end_src
 
 ** Evil modal edit
@@ -235,34 +234,28 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 *** evil
 #+begin_src emacs-lisp
   (use-package evil
-    :hook (after-init . evil-mode)
-    :hook (after-change-major-mode . (lambda ()
-                       (setq-local evil-shift-width tab-width)))
+    :bind (:map evil-insert-state-map
+                ("C-e" . move-end-of-line)
+                ("C-k" . kill-line))
+    :hook ((after-init . evil-mode)
+           (after-change-major-mode . (lambda ()
+                                        (setq-local evil-shift-width tab-width))))
     :init
     (setq evil-want-keybinding nil)
     :config
     (setq evil-undo-system 'undo-fu)
     (setq evil-respect-visual-line-mode t)
-    (setq evil-visual-state-cursor 'hollow))
-#+end_src
-#+begin_src emacs-lisp
-  (setq evil-normal-state-tag " 𝐍 ")
-  (setq evil-insert-state-tag " 𝐈 ")
-  (setq evil-motion-state-tag " 𝐌 ")
-  (setq evil-visual-state-tag " 𝐕 ")
-  (setq evil-replace-state-tag " 𝐑 ")
-  (setq evil-operator-state-tag " O ")
-  (setq evil-emacs-state-tag " E ")
+    (setq evil-visual-state-cursor 'hollow)
+
+    (setq evil-normal-state-tag " 𝐍 ")
+    (setq evil-insert-state-tag " 𝐈 ")
+    (setq evil-motion-state-tag " 𝐌 ")
+    (setq evil-visual-state-tag " 𝐕 ")
+    (setq evil-replace-state-tag " 𝐑 ")
+    (setq evil-operator-state-tag " O ")
+    (setq evil-emacs-state-tag " E "))
 #+end_src
 下面的配置来源：[[https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-evil.el][emacs.d/init-evil.el at master · redguardtoo/emacs.d]]
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'evil
-    (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
-    (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
-    (evil-global-set-key 'normal (kbd "/") 'ctrlf-forward-default))
-#+end_src
-
 *** evil-collection
 [[https://github.com/emacs-evil/evil-collection][emacs-evil/evil-collection: A set of keybindings for evil-mode]] 设置 Major mode 下的按键绑定，比自己一一设置要方便。若没有你使用的，可以提 PR.
 
@@ -285,24 +278,26 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 
 #+begin_src emacs-lisp
   (use-package evil-commentary
-    :hook (evil-mode . evil-commentary-mode))
+    :hook (on-first-file . evil-commentary-mode))
 #+end_src
 
-*** COMMENT evil-surround
+*** evil-surround
 [[https://github.com/emacs-evil/evil-surround][emacs-evil/evil-surround: you will be surrounded (surround.vim for evil, the extensible vi layer)]] 可以在指定的区域添加成对的符号，具体使用参见以上页面。
 
 具体的使用是对于 visual 状态，使用 ~S =~ 来插入成对的等于号，其他的符号同理。若要修改的话，使用 ~cs = *~ 来将等于号改为星号，其他的符号同理。
 
 #+begin_src emacs-lisp
-  (add-hook 'on-first-input-hook 'global-evil-surround-mode)
+  (use-package evil-surround
+    :hook (on-first-file . global-evil-surround-mode))
 #+end_src
 
-*** COMMENT evil-embrace
+*** evil-embrace
 [[https://github.com/cute-jumper/evil-embrace.el][cute-jumper/evil-embrace.el: Evil integration of embrace.el]] 具有和 evil-surround 相似的功能。
 
 #+begin_src emacs-lisp
-  (add-hook 'org-mode-hook 'embrace-org-mode-hook)
-  (with-eval-after-load 'evil
+  (use-package evil-embrace
+    :hook ((org-mode . embrace-org-mode-hook))
+    :config
     (evil-embrace-enable-evil-surround-integration))
 #+end_src
 
@@ -318,7 +313,7 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     (setq which-key-idle-secondary-delay 0.05))
 #+end_src
 
-*** leader key
+*** general
 [[https://github.com/noctuid/general.el][noctuid/general.el: More convenient key definitions in emacs]] 结合 Evil 可以设置一系列的按键绑定，相对于 Emacs 原生的按键方式，序列化的按键比较友好。
 
 具体的使用方式见 package 的 README 文件。
@@ -326,13 +321,13 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
   (use-package general
     :config
     (general-create-definer my/space-leader-def
-			    :prefix "SPC"
-			    :non-normal-prefix "M-SPC"
-			    :states '(normal visual insert emacs))
+                :prefix "SPC"
+                :non-normal-prefix "M-SPC"
+                :states '(normal visual insert emacs))
     (general-create-definer my/comma-leader-def
-			    :prefix ","
-			    :non-normal-prefix "M-,"
-			    :states '(normal visual insert emacs)))
+                :prefix ","
+                :non-normal-prefix "M-,"
+                :states '(normal visual insert emacs)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -362,16 +357,17 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
                 (alist-get 'package marginalia-annotator-registry)))
 #+end_src
 
-** Auto Save File
+** auto-save
 [[https://github.com/manateelazycat/auto-save][auto-save/auto-save.el at master · manateelazycat/auto-save]] 我使用这个包进行文件的自动保存，Emacs 自带 `auto-save-visited-mode', 但是没有 auto-save 这个包好用。
 
 主要的问题是 auto-save-visited-mode 在 org-capture 当中不能关闭自动删除空格。
 
 #+begin_src emacs-lisp
-  (require 'auto-save)
-  (auto-save-enable)
-  (setq auto-save-silent t)
-  (setq auto-save-delete-trailing-whitespace t)
+  (use-package auto-save
+    :hook (on-first-file . auto-save-enable)
+    :config
+    (setq auto-save-silent t)
+    (setq auto-save-delete-trailing-whitespace t))
 #+end_src
 
 ** Auto tangle
@@ -428,6 +424,7 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     :bind ("C-x g" . magit)
     :general (:keymaps 'with-editor-mode-map
                "RET" "C-c C-c")
+    :hook (magit-status-mode . hide-mode-line-mode)
     :config
     (magit-add-section-hook 'magit-status-sections-hook
                 'magit-insert-modules
@@ -480,42 +477,42 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     (setq modus-themes-italic-constructs t)
 
     (setq modus-themes-common-palette-overrides
-	  '(;; mode-line
-	    (border-mode-line-active unspecified)
-	    (border-mode-line-inactive unspecified)
-	    (bg-mode-line-active bg-main)
-	    (fg-mode-line-active fg-main)
+      '(;; mode-line
+        (border-mode-line-active unspecified)
+        (border-mode-line-inactive unspecified)
+        (bg-mode-line-active bg-main)
+        (fg-mode-line-active fg-main)
 
-	    ;; line-number
-	    (fg-line-number-inactive "gray50")
-	    (fg-line-number-active red-cooler)
-	    (bg-line-number-inactive unspecified)
-	    (bg-line-number-active unspecified)
-	    ;; link
-	    (underline-link border)
-	    (underline-link-visited border)
-	    (underline-link-symbolic border)
+        ;; line-number
+        (fg-line-number-inactive "gray50")
+        (fg-line-number-active red-cooler)
+        (bg-line-number-inactive unspecified)
+        (bg-line-number-active unspecified)
+        ;; link
+        (underline-link border)
+        (underline-link-visited border)
+        (underline-link-symbolic border)
 
-	    ;; org agenda
-	    (date-common cyan)   ; default value (for timestamps and more)
-	    (date-deadline red-warmer)
-	    (date-event magenta-warmer)
-	    (date-holiday blue) ; for M-x calendar
-	    (date-now yellow-warmer)
-	    (date-scheduled magenta-cooler)
-	    (date-weekday cyan-cooler)
-	    (date-weekend blue-faint)
+        ;; org agenda
+        (date-common cyan)   ; default value (for timestamps and more)
+        (date-deadline red-warmer)
+        (date-event magenta-warmer)
+        (date-holiday blue) ; for M-x calendar
+        (date-now yellow-warmer)
+        (date-scheduled magenta-cooler)
+        (date-weekday cyan-cooler)
+        (date-weekend blue-faint)
 
-	    ;; org heading
-	    (fg-heading-1 blue-warmer)
-	    (fg-heading-2 yellow-cooler)
-	    (fg-heading-3 cyan-cooler)))
+        ;; org heading
+        (fg-heading-1 blue-warmer)
+        (fg-heading-2 yellow-cooler)
+        (fg-heading-3 cyan-cooler)))
 
     (setq modus-themes-prompts '(extrabold italic))
 
     (setq modus-themes-completions
-	  '((matches . (extrabold))
-	    (selection . (semibold italic text-also)))))
+      '((matches . (extrabold))
+        (selection . (semibold italic text-also)))))
 #+end_src
 
 *** Theme switch
@@ -534,8 +531,7 @@ emacs-plus can switch themes by system. 通过增加的补定实现的此功能�
   (add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
 #+end_src
 
-** Icons
-
+** all-the-icons
 这里使用了[[https://github.com/domtronn/all-the-icons.el][domtronn/all-the-icons.el: A utility package to collect various Icon Fonts and propertize them within Emacs.]]
 
 需要自己执行 all-the-icons-install-fonts 来安装对应的字体。
@@ -548,7 +544,8 @@ emacs-plus can switch themes by system. 通过增加的补定实现的此功能�
 这部份的配置来源：[[https://github.com/seagle0128/.emacs.d][seagle0128/.emacs.d: Centaur Emacs - A Fancy and Fast Emacs Configuration]]
 
 #+begin_src emacs-lisp
-  (with-eval-after-load 'all-the-icons
+  (use-package all-the-icons
+    :config
     (let ((extension-icon-alist
            '(("bat"  all-the-icons-alltheicon "terminal" :face all-the-icons-lsilver)
              ("cmd"  all-the-icons-alltheicon "terminal" :face all-the-icons-lsilver)
@@ -613,12 +610,14 @@ emacs-plus can switch themes by system. 通过增加的补定实现的此功能�
              (youdao-dictionary-mode        all-the-icons-material "library_books" :face all-the-icons-lblue)
              (fanyi-mode                    all-the-icons-material "library_books" :face all-the-icons-lblue))))
       (dolist (icon mode-icon-alist)
-        (add-to-list 'all-the-icons-mode-icon-alist icon))
-
-        (add-hook 'after-init-hook 'all-the-icons-completion-mode)
-        (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)))
+        (add-to-list 'all-the-icons-mode-icon-alist icon))))
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package all-the-icons-completion
+    :hook ((minibuffer-setup . all-the-icons-completion-mode)
+           (marginalia-mode . all-the-icons-completion-marginalia-setup)))
+#+end_src
 ** fringe-mode
 因为我要使用 [[org-transclusion]], 所以不能默认不显示 fringe. 将其设置为最小模式。
 
@@ -705,19 +704,20 @@ fringe-mode 需要跟一个 cons cell, 直接使用 minimal 会报错。
 [[https://emacs-china.org/t/topic/17717/42][切换输入法时自动更换光标颜色 - Emacs-general - Emacs China]] 提到了 ~post-command-hook~ 的开销比较大，调用频繁。
 
 使用 evil 内置的 hook 也可以达到切换光标颜色的功能，同时避免 ~post-command-hook~ 的巨大开销。
+
 #+begin_src emacs-lisp
   (defun im--chinese-p ()
-      "Check if the current input state is Chinese."
-      (if (featurep 'rime)
-          (and (rime--should-enable-p)
-               (not (rime--should-inline-ascii-p))
-               current-input-method)
-        current-input-method))
+    "Check if the current input state is Chinese."
+    (if (featurep 'rime)
+        (and (rime--should-enable-p)
+             (not (rime--should-inline-ascii-p))
+             current-input-method)
+      current-input-method))
 
   (add-hook 'evil-insert-state-entry-hook
             (lambda ()
-              (if (im--chinese-p)
-                  (set-cursor-color "red"))))
+              (when (im--chinese-p)
+                (set-cursor-color "red"))))
 
   (add-hook 'evil-insert-state-exit-hook
             (lambda ()
@@ -874,35 +874,20 @@ fringe-mode 需要跟一个 cons cell, 直接使用 minimal 会报错。
   %% -- print %.   %- -- print infinitely many dashes.
 Decimal digits after the % specify field width to which to pad.
 #+end_quote
-*** COMMENT doom-modeline
-[[https://github.com/seagle0128/doom-modeline][seagle0128/doom-modeline: A fancy and fast mode-line inspired by minimalism design.]] 相比较原生的 modeline 要好太多啦。
-
-另一种方式是将 modeline 和 echo area 结合起来使用，可见：[[https://github.com/manateelazycat/awesome-tray][manateelazycat/awesome-tray: Hide mode-line, display necessary information at right of minibuffer.]]
-
-#+begin_src emacs-lisp
-  (add-hook 'after-init-hook 'doom-modeline-mode)
-  (setq doom-modeline-icon nil)
-  (setq doom-modeline-mu4e t)
-  (setq doom-modeline-height 25)
-#+end_src
-
-*** COMMENT hide-mode-line
+*** hide-mode-line
 [[https://github.com/hlissner/emacs-hide-mode-line][hlissner/emacs-hide-mode-line: An Emacs plugin that hides (or masks) the current buffer's mode-line]] 在有些情况下需要隐藏对应 buffer 的 modeline.
 #+begin_src emacs-lisp
-  (if (string= (buffer-name) "*scratch*")
-      (hide-mode-line-mode))
-  (add-hook 'completion-list-mode-hook #'hide-mode-line-mode)
-  (add-hook 'eaf-pdf-outline-mode-hook #'hide-mode-line-mode)
-  (add-hook 'org-roam-mode-hook #'hide-mode-line-mode)
-  (add-hook 'magit-status-mode-hook #'hide-mode-line-mode)
-  (add-hook 'ebib-index-mode-hook 'hide-mode-line-mode)
-  (add-hook 'reftex-toc-mode-hook 'hide-mode-line-mode)
+  (use-package hide-mode-line
+    :config
+    (if (string= (buffer-name) "*scratch*")
+        (hide-mode-line-mode)))
 #+end_src
 
-*** COMMENT mode-line-bell
+*** mode-line-bell
 [[https://github.com/purcell/mode-line-bell][purcell/mode-line-bell: Flash the Emacs mode line instead of ringing the bell]] 如题。
 #+begin_src emacs-lisp
-  (add-hook 'after-init-hook 'mode-line-bell-mode)
+  (use-package mode-line-bell
+    :hook (on-first-buffer . mode-line-bell-mode))
 #+end_src
 
 ** rainbow-mode
@@ -1049,18 +1034,13 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
       "zx" 'kill-current-buffer))
 #+end_src
 
-** calendar
-#+begin_src emacs-lisp
-  (my/comma-leader-def
-    "c" '(calendar :wk "Calendar"))
-#+end_src
-
 ** calculator
 #+begin_src emacs-lisp
-  (add-hook 'calc-mode-hook 'hide-mode-line-mode)
-  (add-hook 'calc-trail-mode-hook 'hide-mode-line-mode)
-#+end_src
-#+begin_src emacs-lisp
+  (use-package calc
+    :commands calc
+    :hook ((clac-mode . hide-mode-line-mode)
+           (clac-trail-mode . hide-mode-line-mode)))
+
   (my/comma-leader-def
     "C" '(calc :wk "calc"))
 #+end_src
@@ -1261,11 +1241,11 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
   (add-hook 'prog-mode-hook 'outline-minor-mode)
 #+end_src
 
-** COMMENT pixel-scroll-precision-mode
+** pixel-scroll-precision-mode
 这个 mode 不好用，使用触摸板大幅度滚动屏幕后，会自动回到原先的位置。
 #+begin_src emacs-lisp
-  (if (version< "29" emacs-version)
-      (add-hook 'on-first-file-hook 'pixel-scroll-precision-mode))
+  (use-package loaddefs
+    :hook (on-first-file . pixel-scroll-precision-mode))
 #+end_src
 
 ** recentf-mode
@@ -1289,21 +1269,6 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
   (add-hook 'LaTeX-mode-hook #'turn-on-visual-line-mode)
 #+end_src
 
-** COMMENT display-time-mode
-在 MacOs 上屏幕左上角就会显示时间，所以在使用 Emacs 的时候就不需要再开 =display-time-mode= 。
-#+begin_src emacs-lisp
-  (add-hook 'on-first-buffer-hook 'display-time-mode)
-  (setq display-time-use-mail-icon t)
-  (setq display-time-string-forms
-         '((emacs-uptime)))
-#+end_src
-
-** display-batter-mode
-#+begin_src emacs-lisp
-  (setq battery-mode-line-format "%b%p%% ")
-  ;; (add-hook 'on-first-buffer-hook 'display-battery-mode)
-#+end_src
-
 ** word-wrap-whitespace-mode
 这个是 Emacs 29 中的功能，具体见：[[https://github.com/emacs-mirror/emacs/commit/c789430331948e76b38091aa95bb9a9602a08289][Add new minor mode word-wrap-whitespace-mode · emacs-mirror/emacs@c789430]]
 
@@ -1316,6 +1281,7 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
 ** dired
 #+begin_src emacs-lisp
   (use-package dired
+    :bind ("C-x d" . dired)
     :config
     (setq insert-directory-program "/opt/homebrew/bin/gls")
     (setq dired-use-ls-dired t)
@@ -1330,9 +1296,9 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
 
 *** dired-hide-dotfiles
 #+begin_src emacs-lisp
-  (with-eval-after-load 'evil-collection
-    (evil-collection-define-key 'normal 'dirvish-mode-map
-      "." 'dired-hide-dotfiles-mode))
+  (use-package dired-hide-dotfiles
+    :bind (:map dired-mode-map
+                ("s-." . dired-hide-dotfiles-mode)))
 #+end_src
 
 *** dirvish
@@ -1410,7 +1376,7 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
                    'face-override-spec)
     (setq window-divider-default-bottom-width 1)
     (setq window-divider-default-places 'bottom-only)
-    :hook (on-init-ui . window-divider-mode))
+    :hook (after-init . window-divider-mode))
 #+end_src
 
 ** doc-view
@@ -1431,7 +1397,7 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
     "fm" 'bookmark-jump)
 #+end_src
 
-** Clipboard
+** clipboard
 #+begin_src emacs-lisp
   (setq select-enable-primary t)
 #+end_src
@@ -1499,10 +1465,23 @@ Evil 模式编辑需要设置 undo system.
     :bind ("C-x o" . ace-window))
 #+end_src
 
+** COMMENT sis
+[[https://www.sheerwill.live/posts/main/20220723211325-vanilla_emacs_with_purcell/#init-sis-dot-el][Vanilla Emacs with Purcell | Lucius | Braindump]]
+#+begin_src emacs-lisp
+  (use-package sis
+    :config
+    (setq sis-other-cursor-color "red")
+    (setq sis-english-source "com.apple.keylayout.ABC")
+    (setq sis-other-source "im.rime.inputmethod.Squirrel.Hans")
+    (add-hook 'evil-insert-state-exit-hook #'sis-set-english)
+    (sis-global-cursor-color-mode t)
+    (sis-global-context-mode t)
+    (sis-global-respect-mode t)
+    (sis-global-inline-mode t))
+#+end_src
 ** rime
 #+begin_src emacs-lisp
   (use-package rime
-    :commands rime-force-enable
     :init
     (setq rime-title "𝐑 ")
     :config
@@ -1511,7 +1490,7 @@ Evil 模式编辑需要设置 undo system.
     (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
     (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
     (setq rime-show-candidate 'minibuffer)
-    (setq rime-posframe-properties '(:internal-border-width 0))
+    ;; (setq rime-posframe-properties '(:internal-border-width 0))
     (setq rime-disable-predicates '(rime-predicate-prog-in-code-p
                                     rime-predicate-org-in-src-block-p
                                     rime-predicate-org-latex-mode-p
@@ -1537,7 +1516,7 @@ Evil 模式编辑需要设置 undo system.
 [[https://github.com/colawithsauce/rime-regexp.el/tree/main/][rime-regexp-mode]], 通过此包可以使用输入法进行文件的检索，若使用拼音输入法则可以通过拼音进行文件名的检索。我使用三郑输入法，则可以使用形码进行检索。
 #+begin_src emacs-lisp
   (use-package rime-regexp
-    :hook (after-init . rime-regexp-mode))
+    :hook (on-first-input . rime-regexp-mode))
 #+end_src
 
 ** helpful
@@ -1597,7 +1576,10 @@ Evil 模式编辑需要设置 undo system.
 ** ctrlf
 #+begin_src emacs-lisp
   (use-package ctrlf
-    :hook (on-first-file . ctrlf-mode))
+    :after evil
+    :hook (on-first-buffer . ctrlf-mode)
+    :config
+    (evil-global-set-key 'normal (kbd "/") 'ctrlf-forward-default))
 #+end_src
 ** avy
 #+begin_src emacs-lisp
@@ -1608,102 +1590,115 @@ Evil 模式编辑需要设置 undo system.
     "gl" '(avy-goto-line :wk "Goto Line")
     "gw" '(avy-goto-word-0 :wk "Goto Line"))
 #+end_src
-** COMMENT demap
-这个的作用就是在 buffer 边显示一个缩略图，聊胜于无。在 vscode, sublime 等软件中较常见。
+** whitespace-cleanup-mode
 #+begin_src emacs-lisp
-  (setq demap-minimap-window-side  'left)
-  (setq demap-minimap-window-width 15)
-#+end_src
-#+begin_src emacs-lisp
-  (my/comma-leader-def
-    "m" '(demap-toggle :wk "Minimap"))
-#+end_src
-
-** COMMENT whitespace-cleanup-mode
-#+begin_src emacs-lisp
-  (add-hook 'on-first-file-hook 'whitespace-cleanup-mode)
+  (use-package whitespace-cleanup-mode
+    :hook (on-first-file . whitespace-cleanup-mode))
 #+end_src
 
 ** elisp-demos
 [[https://github.com/xuchunyang/elisp-demos][xuchunyang/elisp-demos: Demonstrate Emacs Lisp APIs]] 用于查查函数的用法很方便。
 
-** COMMENT tempel
+** tempel
 #+begin_src emacs-lisp
-  (setq tempel-path `("~/.emacs.d/template/tempel"
-                      ,(expand-file-name "template/tempel" my-galaxy)))
-
-  (global-set-key (kbd "M-+") 'tempel-complete)
-  (global-set-key (kbd "M-*") 'tempel-insert)
+  (use-package temple
+    :bind (("M-+" . tempel-complete)
+           ("M-*" . temple-insert))
+    :config
+    (setq tempel-path `("~/.emacs.d/template/tempel"
+                        ,(expand-file-name "template/tempel" my-galaxy))))
 #+end_src
 
-** COMMENT yasnippet
+** yasnippet
 #+begin_src emacs-lisp
-  (add-hook 'on-first-file-hook 'yas-global-mode)
+  (use-package yasnippet
+    :hook (on-first-file . yas-global-mode))
+  (use-package yasnippet-snippets
+    :after yasnippet)
 #+end_src
-** COMMENT rg
-#+begin_src emacs-lisp
-  (add-hook 'on-first-input-hook 'rg-enable-default-bindings)
 
-  (with-eval-after-load 'rg
+** rg
+#+begin_src emacs-lisp
+  (use-package rg
+    :hook (on-first-input . rg-enable-default-bindings)
+    :config
     (setq rg-group-result t)
     (setq rg-show-columns t))
 #+end_src
 
 ** Minibuffer and completion
-*** vertico
+*** minibuffer
 #+begin_src emacs-lisp
-  (setq read-file-name-completion-ignore-case t
-        read-buffer-completion-ignore-case t
-        completion-ignore-case t)
-
-  (setq-default read-extended-command-predicate #'command-completion-default-include-p)
-
+  (setq read-buffer-completion-ignore-case t)
+  (setq completion-ignore-case t)
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
 
+  (use-package simple
+    :config
+    (setq-default read-extended-command-predicate #'command-completion-default-include-p))
+
+  (use-package minibuffer
+    :config
+    (setq completion-category-overrides '((file (styles basic partial-completion))))
+    (setq read-file-name-completion-ignore-case t)
+
+    (setq-local completion-in-region-function
+                (lambda (&rest args)
+                  (apply (if vertico-mode
+                             #'consult-completion-in-region
+                           #'completion--in-region)
+                         args))))
+#+end_src
+*** orderless
+#+begin_src emacs-lisp
+  (setq tab-always-indent 'complete)
+
+  (use-package orderless
+    :config
+    (setq completion-styles '(orderless partial-completion)))
+#+end_src
+
+*** vertico
+#+begin_src emacs-lisp
   (use-package vertico
+    :load-path "~/.emacs.d/packages/vertico"
     :hook (after-init . vertico-mode)
     :config
     (setq vertico-cycle t)
     :bind (:map vertico-map
-                ("C-j" . vertico-next)
-                ("C-k" . vertico-previous)))
+        ("C-j" . vertico-next)
+        ("C-k" . vertico-previous)))
 
   (use-package vertico-directory
     :after vertico
     :bind (:map vertico-map
-              ("C-u" . vertico-directory-up)))
-
-  (setq completion-in-region-function
-        (lambda (&rest args)
-          (apply (if vertico-mode
-                     #'consult-completion-in-region
-                   #'completion--in-region)
-                 args)))
+          ("C-u" . vertico-directory-up)))
 #+end_src
 *** marginalia
 #+begin_src emacs-lisp
   (use-package marginalia
-    :hook (minibuffer-setup . marginalia-mode))
+    :hook ((minibuffer-setup . marginalia-mode)))
 #+end_src
 
 *** embark
 #+begin_src emacs-lisp
   (use-package embark
-    :commands embark-open-externally
     :bind (("C-." . embark-act)
-           ("C-;" . embark-dwim)
+           ("M-." . embark-dwim)
            (:map vertico-map
                  ("C-c C-o" . embark-export)
                  ("C-c C-c" . embark-act)))
-    :config
+    :init
     (setq prefix-help-command #'embark-prefix-help-command)
+    :config
     (add-to-list 'display-buffer-alist
                  '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                    nil
-                   (window-parameters (mode-line-format . none))))
-    (my/space-leader-def
-      "fe" '(embark-open-externally :wk "Open externally")))
+                   (window-parameters (mode-line-format . none)))))
+
+  (my/space-leader-def
+    "fe" '(embark-open-externally :wk "Open externally"))
 #+end_src
 *** consult
 #+begin_src emacs-lisp
@@ -1730,16 +1725,6 @@ Evil 模式编辑需要设置 undo system.
       "gh" 'consult-outline)
     (evil-declare-key 'normal LaTeX-mode-map
       "gh" 'consult-outline))
-#+end_src
-
-*** orderless
-#+begin_src emacs-lisp
-  (setq tab-always-indent 'complete)
-
-  (use-package orderless
-    :custom
-    (completion-styles '(orderless partial-completion))
-    (completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 
 *** corfu
@@ -1827,13 +1812,16 @@ Evil 模式编辑需要设置 undo system.
   ;; and behaves as a pure `completion-at-point-function'.
   (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify)
 #+end_src
-*** COMMENT prescient
+*** prescient
 #+begin_src emacs-lisp
-  (use-package prescient
-    :commands prescient-persist-mode
-    :hook ((after-init . perscient-persist-mode)
-           (vertico-mode . vertico-persist-mode)
-           (corfu-mode . corfu-persist-mode))
+  (autoload 'prescient-persist-mode "prescient" "" t)
+  (add-hook 'after-init-hook 'prescient-persist-mode)
+
+  (use-package vertico-prescient
+    :hook (vertico-mode . vertico-prescient-mode))
+
+  (use-package corfu-prescient
+    :hook (corfu-mode . corfu-prescient-mode)
     :config
     (setq vertico-prescient-completion-styles '(orderless prescient partial-completion)))
 #+end_src
@@ -1872,18 +1860,6 @@ Company-quickhelp
     '(define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin))
 #+end_src
 
-** COMMENT posframe
-#+begin_src emacs-lisp
-  (setq vertico-posframe-border-width 1)
-  (setq vertico-posframe-min-width (window-width))
-
-  (face-spec-set 'vertico-posframe-border
-                 '((((background light))
-                    (:background "#0000b0"))
-                   (t
-                    (:background "#00bcff")))
-                 'face-override-spec)
-#+end_src
 * Misc
 ** gcmh
 Emacs 的拉圾回收太影响性能，此包的作用是当 Emacs 处于 idle 状态时进行拉圾回收，正常使用的时候设置一个较高的阈值，降低垃圾回收。
@@ -1914,18 +1890,20 @@ Emacs 的拉圾回收太影响性能，此包的作用是当 Emacs 处于 idle �
 ** disk-usage
 #+begin_src emacs-lisp
   (use-package disk-usage
-    :bind ("C-c d u")
-    :config
-    (my/space-leader-def
-      "d" '(:ignore t :wk "Disk")
-      "du" '(disk-usage :wk "usage")))
+    :bind ("C-c d u" . disk-usage))
+  (my/space-leader-def
+    "d" '(:ignore t :wk "Disk")
+    "du" '(disk-usage :wk "usage"))
 #+end_src
-** COMMENT youtube-dl
+** youtube-dl
 #+begin_src emacs-lisp
-  (setq youtube-dl-directory "~/Downloads/")
-  (setq youtube-dl-program "/opt/homebrew/bin/youtube-dl")
-  (setq youtube-dl-arguments
-          '("--no-mtime" "--restrict-filenames" "--format" "best" "--mark-watched"))
+  (use-package youtube-dl
+    :commands youtube-dl
+    :config
+    (setq youtube-dl-directory "~/Downloads/")
+    (setq youtube-dl-program "/opt/homebrew/bin/youtube-dl")
+    (setq youtube-dl-arguments
+          '("--no-mtime" "--restrict-filenames" "--format" "best" "--mark-watched")))
 #+end_src
 ** OCR
 #+begin_src emacs-lisp
@@ -1938,7 +1916,7 @@ Emacs 的拉圾回收太影响性能，此包的作用是当 Emacs 处于 idle �
   (my/comma-leader-def
     "o" '(my/ocr :wk "OCR"))
 #+end_src
-* proxy
+** proxy
 #+begin_src emacs-lisp
   (defun toggle-proxy ()
     "Toggle proxy for the url.el library."
@@ -1971,7 +1949,7 @@ Emacs 的拉圾回收太影响性能，此包的作用是当 Emacs 处于 idle �
   (my/comma-leader-def
     "p" '(toggle-proxy :wk "Proxy"))
 #+end_src
-* COMMENT Emacs Works with Multiple Language, Piece of Cake
+* Emacs Works with Multiple Language, Piece of Cake
 Emacs 在英文的学习、使用方面具有很大的帮助。
 
 使用 Emacs 写文档可以自动检查拼写，需要用到的有 ~ispell~, ~flyspell~ 或者 ~wucuo-mode~. 对于具有错误的单词会有下划线提示，使用 ~flyspell-correct~ 进行修正。
@@ -1986,7 +1964,8 @@ Emacs 在英文的学习、使用方面具有很大的帮助。
 
 ** Ispell
 #+begin_src emacs-lisp
-  (with-eval-after-load 'ispell
+  (use-package ispell
+    :config
     (setq ispell-program-name "/opt/homebrew/bin/aspell")
     (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together"))
     (setq ispell-aspell-dict-dir
@@ -2012,37 +1991,34 @@ Emacs 在英文的学习、使用方面具有很大的帮助。
                   (shut-up (apply orig args)))))
 #+end_src
 
-** wucuo
+** flyspell
+Wucuo 在某个版本有提示 warning, 不知道产生的原因是什么。
+#+begin_src emacs-lisp
+  (use-package flyspell
+    :hook (org-mode . flyspell-mode))
+#+end_src
+
+** COMMENT wucuo
 Wucuo 的性能比 flyspell 好，其默认检查可见区域，而 flyspell 是检查整个 buffer, 这导致在比较大的文档中会产生较严重的卡顿，性能不行。
 
 #+begin_src emacs-lisp
   (add-hook 'org-mode-hook #'wucuo-start)
 #+end_src
-
-** flyspell
-Wucuo 在某个版本有提示 warning, 不知道产生的原因是什么。
-#+begin_src emacs-lisp
-  ;; (if (not (featurep 'wucuo))
-  ;;     (add-hook 'org-mode-hook 'flyspell-mode))
-
-  (with-eval-after-load 'flyspell
-    (define-key flyspell-mode-map (kbd "C-;") nil)
-    (define-key flyspell-mode-map (kbd "C-,") nil)
-    (define-key flyspell-mode-map (kbd "C-.") nil))
-#+end_src
-
 ** flyspell-correct
 #+begin_src emacs-lisp
-  (with-eval-after-load 'flyspell
-    (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-wrapper))
+  (use-package flyspell-correct
+    :commands flyspell-correct-wrapper
+    :bind ([remap flyspell-auto-correct-previous-word] . flyspell-correct-wrapper))
 #+end_src
-
 ** langtool
 MacOS 上使用需要安装 languagetool.
 #+begin_src emacs-lisp
-  (setq langtool-http-server-host "localhost")
-  (setq langtool-http-server-port 8081)
-  (setq langtool-autoshow-message-function #'langtool-popup-autoshow)
+  (use-package langtool
+    :commands langtool-check-buffer
+    :config
+    (setq langtool-http-server-host "localhost")
+    (setq langtool-http-server-port 8081)
+    (setq langtool-autoshow-message-function #'langtool-popup-autoshow))
 #+end_src
 
 ** dictionary
@@ -2058,7 +2034,9 @@ Emacs 内置了 dictionary，默认是查询的 dict.org。
 #+end_src
 ** go-translate
 #+begin_src emacs-lisp
-  (with-eval-after-load 'go-translate
+  (use-package go-translate
+    :commands gts-do-translate
+    :config
     (setq gts-buffer-follow-p t)
     (setq gts-translate-list '(("en" "zh")))
     (setq gts-default-translator (gts-translator
@@ -2066,8 +2044,6 @@ Emacs 内置了 dictionary，默认是查询的 dict.org。
                                   :engines (list
                                             (gts-google-engine :parser (gts-google-summary-parser)))
                                   :render (gts-buffer-render))))
-#+end_src
-#+begin_src emacs-lisp
   (my/space-leader-def
    "l" '(:ignore t :wk "Language")
    "ll" '(gts-do-translate :wk "Translate"))
@@ -2075,11 +2051,13 @@ Emacs 内置了 dictionary，默认是查询的 dict.org。
 ** lingva
 go-translate 的备用。
 #+begin_src emacs-lisp
-  (setq lingva-target "zh")
-#+end_src
-#+begin_src emacs-lisp
+  (use-package lingva
+    :commands lingva-translate
+    :config
+    (setq lingva-target "zh"))
+
   (my/space-leader-def
-     "lL" '(lingva-translate :wk "Lingva"))
+    "lL" '(lingva-translate :wk "Lingva"))
 #+end_src
 
 ** sdcv
@@ -2089,48 +2067,46 @@ go-translate 的备用。
 
 默认的颜色不喜欢可以通过 ~face-spec-set~ 函数进行设置。
 #+begin_src emacs-lisp
-  (face-spec-set 'sdcv-tooltip-face
-                 '((((background light))
-                    :foreground "#000000" :background "#ffffff")
-                   (t
-                    :foreground "#ffffff" :background "#000000"))
-                 'face-override-spec)
-#+end_src
+  (use-package sdcv
+    :commands sdcv-search-pointer sdcv-search-input+
+    :config
+    (face-spec-set 'sdcv-tooltip-face
+                   '((((background light))
+                      :foreground "#000000" :background "#ffffff")
+                     (t
+                      :foreground "#ffffff" :background "#000000"))
+                   'face-override-spec)
 
-#+begin_src emacs-lisp
-  (setq sdcv-tooltip-border-width 2)
-  (setq sdcv-dictionary-data-dir (expand-file-name "sdcv-dict" user-emacs-directory))
-  (setq sdcv-program "/opt/homebrew/bin/sdcv")
-  (setq sdcv-dictionary-simple-list    ;星际译王屏幕取词词典, 简单, 快速
-        '("懒虫简明英汉词典"
-          "懒虫简明汉英词典"
-          "KDic11万英汉词典"))
-  (setq sdcv-dictionary-complete-list     ;星际译王的词典, 完全, 详细
-        '("牛津英汉双解美化版"
-          "懒虫简明英汉词典"
-          "英汉汉英专业词典"
-          "XDICT英汉辞典"
-          "stardict1.3英汉辞典"
-          "WordNet"
-          "XDICT汉英辞典"
-          "Jargon"
-          "懒虫简明汉英词典"
-          "FOLDOC"
-          "新世纪英汉科技大词典"
-          "KDic11万英汉词典"
-          "朗道汉英字典5.0"
-          "CDICT5英汉辞典"
-          "新世纪汉英科技大词典"
-          "21世纪双语科技词典"
-          "quick_eng-zh_CN"))
-#+end_src
-#+begin_src emacs-lisp
+    (setq sdcv-tooltip-border-width 2)
+    (setq sdcv-dictionary-data-dir (expand-file-name "sdcv-dict" user-emacs-directory))
+    (setq sdcv-program "/opt/homebrew/bin/sdcv")
+    (setq sdcv-dictionary-simple-list    ;星际译王屏幕取词词典, 简单, 快速
+          '("懒虫简明英汉词典"
+            "懒虫简明汉英词典"
+            "KDic11万英汉词典"))
+    (setq sdcv-dictionary-complete-list     ;星际译王的词典, 完全, 详细
+          '("牛津英汉双解美化版"
+            "懒虫简明英汉词典"
+            "英汉汉英专业词典"
+            "XDICT英汉辞典"
+            "stardict1.3英汉辞典"
+            "WordNet"
+            "XDICT汉英辞典"
+            "Jargon"
+            "懒虫简明汉英词典"
+            "FOLDOC"
+            "新世纪英汉科技大词典"
+            "KDic11万英汉词典"
+            "朗道汉英字典5.0"
+            "CDICT5英汉辞典"
+            "新世纪汉英科技大词典"
+            "21世纪双语科技词典"
+            "quick_eng-zh_CN")))
+
   (my/space-leader-def
     "lp" '(sdcv-search-pointer :wk "SDCV Point")
     "li" '(sdcv-search-input+ :wk "SDCV Input"))
-#+end_src
-统一关闭窗口的行为，使用 =q=.
-#+begin_src emacs-lisp
+
   (with-eval-after-load 'evil-collection
     (evil-collection-define-key 'normal 'sdcv-mode-map
       "q" 'quit-window))
@@ -2142,6 +2118,9 @@ go-translate 的备用。
 这个是使用 MacOS 上自带的 dictionary 进行单词的查询，需要让 dictionary 后台运行，否则无结果显示。
 
 #+begin_src emacs-lisp
+  (use-package osx-dictionary
+    :commands osx-dictionary-search-pointer)
+
   (my/space-leader-def
     "ld" '(osx-dictionary-search-pointer :wk "OSX dictionary"))
 #+end_src
@@ -2150,6 +2129,14 @@ go-translate 的备用。
 
 需要实时在线查询，有时候结果返回的较慢。
 #+begin_src emacs-lisp
+  (use-package powerthesaurus
+    :commands (powerthesaurus-lookup-dwim
+               powerthesaurus-lookup-related-dwim
+               powerthesaurus-lookup-synonyms-dwim
+               powerthesaurus-lookup-antonyms-dwim
+               powerthesaurus-lookup-definitions-dwim
+               powerthesaurus-lookup-sentences-dwim))
+
   (my/space-leader-def
     "ls" '(:ignore t :wk "synosaurus")
     "lsl" '(powerthesaurus-lookup-dwim :wk "Dwim")
@@ -2159,7 +2146,7 @@ go-translate 的备用。
     "lsd" '(powerthesaurus-lookup-definitions-dwim :wk "Definitions")
     "lsj" '(powerthesaurus-lookup-sentences-dwim :wk "Sentences"))
 #+end_src
-** dictionary-overlay
+** COMMENT dictionary-overlay
 [[https://github.com/ginqi7/websocket-bridge][websocket-bridge]] and [[https://github.com/ginqi7/dictionary-overlay][dictionary-overlay]] can be used to learn English words.
 
 我的日常使用流程是使用 ~SPC b r~ 来渲染 buffer, 使用 ~SPC l k~ 标记不认识的单词，使用 ~SPC l K~ 将单词标记为己知。
@@ -2168,37 +2155,50 @@ go-translate 的备用。
 
 这个功能在阅读 [[RSS]] 的时候十分的方便。
 #+begin_src emacs-lisp
-  (add-to-list 'load-path "~/.emacs.d/lib/dictionary-overlay/")
-  (add-to-list 'load-path "~/.emacs.d/lib/websocket-bridge")
-  (run-with-idle-timer 2 nil (lambda ()
-                                   (require 'websocket-bridge)
-                                   (require 'dictionary-overlay)
-                                   (dictionary-overlay-start)))
-
-  (with-eval-after-load 'dictionary-overlay
+  (use-package dictonary-overlay
+    :load-path "~/.emacs.d/packages/dictionary-overlay/"
+    :commands (dictionary-overlay-mark-word-unknown
+               dictionary-overlay-mark-word-known
+               dictionary-overlay-toggle)
+    :config
     (setq dictionary-overlay-translators '("local" "darwin" "sdcv" "web"))
-    (setq dictionary-overlay-user-data-directory (expand-file-name "var/dictionary-overlay" user-emacs-directory))
-    (with-eval-after-load 'osx-dictionary
-      (advice-add 'osx-dictionary-search-pointer :after 'dictionary-overlay-mark-word-unknown))
-    (with-eval-after-load 'sdcv
-      (advice-add 'sdcv-search-input+ :after 'dictionary-overlay-mark-word-unknown)
-      (advice-add 'sdcv-search-pointer :after 'dictionary-overlay-mark-word-unknown)))
-#+end_src
+    (setq dictionary-overlay-user-data-directory
+          (expand-file-name "var/dictionary-overlay" user-emacs-directory)))
 
-#+begin_src emacs-lisp
+  ;; (add-to-list 'load-path "~/.emacs.d/lib/dictionary-overlay/")
+  ;; (add-to-list 'load-path "~/.emacs.d/lib/websocket-bridge")
+  ;; (run-with-idle-timer 2 nil (lambda ()
+  ;;                                  (require 'websocket-bridge)
+  ;;                                  (require 'dictionary-overlay)
+  ;;                                  (dictionary-overlay-start)))
+
+  ;; (with-eval-after-load 'dictionary-overlay
+  ;;   (setq dictionary-overlay-translators '("local" "darwin" "sdcv" "web"))
+  ;;   (setq dictionary-overlay-user-data-directory (expand-file-name "var/dictionary-overlay" user-emacs-directory))
+  ;;   (with-eval-after-load 'osx-dictionary
+  ;;     (advice-add 'osx-dictionary-search-pointer :after 'dictionary-overlay-mark-word-unknown))
+  ;;   (with-eval-after-load 'sdcv
+  ;;     (advice-add 'sdcv-search-input+ :after 'dictionary-overlay-mark-word-unknown)
+  ;;     (advice-add 'sdcv-search-pointer :after 'dictionary-overlay-mark-word-unknown)))
+
   (my/space-leader-def
     "lk" '(dictionary-overlay-mark-word-unknown :wk "Mark word unknown")
     "lK" '(dictionary-overlay-mark-word-known :wk "Mark word known")
     "br" '(dictionary-overlay-toggle :wk "Toggle Render buffer"))
 #+end_src
 
-** COMMENT grammarly
+** flycheck
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :hook (on-first-file . global-flycheck-mode))
+#+end_src
+** flycheck-grammarly
+langtool 也可以检查语法，相比较 grammarly，不需要连网，所以速度较快。
 自动开启此功能导致在文档较大时有明显的卡顿感，手动开启语法检查较好。
 #+begin_src emacs-lisp
-  (add-hook 'text-mode-hook 'flymake-grammarly-load)
-  (add-hook 'latex-mode-hook 'flymake-grammarly-load)
-  (add-hook 'org-mode-hook 'flymake-grammarly-load)
-  (add-hook 'markdown-mode-hook 'flymake-grammarly-load)
+  (use-package flycheck-grammarly
+    :after flycheck
+    :commands flycheck-grammarly-setup)
 #+end_src
 
 ** shortcut
@@ -2244,7 +2244,7 @@ go-translate 的备用。
   (with-eval-after-load 'yasnippet
     (add-hook 'LaTeX-mode-hook 'eglot-ensure))
 #+end_src
-*** lsp-bridge
+*** COMMENT lsp-bridge
 #+begin_src emacs-lisp
   ;; lsp-bridge-toggle-sdcv-helper use pinyin to search english words,
   ;; need to deactivate rime input method before search words.
@@ -2266,26 +2266,20 @@ go-translate 的备用。
   (my/space-leader-def
     "lh" '(lsp-bridge-toggle-sdcv-helper :wk "Sdcv help"))
 #+end_src
-** flymake
-在所有的模式中开启 flymake 会导致在部份文件中特别卡。
-
-Org 文件中开启 flymake 是因为使用 grammarly 进行语法检查。实际使用时，手动开启比较好，不要使用自动开启。
-#+begin_src emacs-lisp
-  (add-hook 'prog-mode-hook 'flymake-mode)
-  ;; (add-hook 'org-mode-hook 'flymake-mode)
-#+end_src
-
 ** markdown
 #+begin_src emacs-lisp
-  (add-to-list 'auto-mode-alist
-               '("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+  (use-package markdown-mode
+    :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
+           ("README\\.md\\'" . gfm-mode))
+    :init (setq markdown-command "multimarkdown")
+    :bind (:map markdown-mode-map
+           ("C-c C-e" . markdown-do)))
 
-  (with-eval-after-load 'whitespace-cleanup-mode
-    (add-to-list 'whitespace-cleanup-mode-ignore-modes 'markdown-mode))
+  ;; (with-eval-after-load 'whitespace-cleanup-mode
+  ;;   (add-to-list 'whitespace-cleanup-mode-ignore-modes 'markdown-mode))
 #+end_src
 
-** Python
+** COMMENT Python
 #+begin_src emacs-lisp
   (add-to-list 'auto-mode-alist '("poetry\\.lock\\'" . toml-mode))
 #+end_src
@@ -2326,8 +2320,8 @@ Org 文件中开启 flymake 是因为使用 grammarly 进行语法检查。实�
                   ("NEXT" ("WAIT") ("CNCL") ("SOMEDAY"))
                   ("DONE" ("WAIT") ("CNCL") ("SOMEDAY")))))
     :bind (:map org-mode-map
-                ("C-c l" . org-store-link)
-                ("<return>" . org-return)))
+                ("C-c l" . org-store-link)))
+                ;; ("<return>" . org-return)))
 #+end_src
 *** Babel
 以下配置来源：https://emacs-china.org/t/org-babel/18699
@@ -2492,6 +2486,7 @@ POST：[[https://fuco1.github.io/2023-02-08-Visit-the-org-headline-from-the-atta
 *** org-habit
 #+begin_src emacs-lisp
   (use-package org-habit
+    :after org-agenda
     :config
     (add-to-list 'org-modules 'org-habit t))
 #+end_src
@@ -2875,7 +2870,7 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
 
 #+begin_src emacs-lisp
   (use-package org-roam
-    :commands (org-roam-node-find)
+    :commands org-roam-node-find
     :init
     (setq org-roam-directory (file-truename (expand-file-name "roam" my-galaxy)))
     :hook ((org-mode . (lambda () (setq-local time-stamp-active t
@@ -2883,7 +2878,8 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
                                         time-stamp-end "$"
                                         time-stamp-format "\[%Y-%m-%d %3a %H:%M\]")
                          (add-hook 'before-save-hook 'time-stamp nil 'local)))
-           (on-first-file . org-roam-db-autosync-mode))
+           (on-first-input . org-roam-db-autosync-mode)
+           (org-roam-mode . hide-mode-line-mode))
     :config
     (setq org-roam-database-connector 'sqlite)
     (setq org-roam-db-gc-threshold most-positive-fixnum)
@@ -2989,6 +2985,7 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
              (not (minibufferp))
              (not (> 120 (frame-width)))
              (not (derived-mode-p 'calendar-mode))
+             (not (derived-mode-p 'org-agenda-mode))
              (xor (org-roam-file-p) (eq 'visible (org-roam-buffer--visibility))))
         (org-roam-buffer-toggle)))
 
@@ -2996,7 +2993,7 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
 
     (add-to-list 'display-buffer-alist
                  '("\\*org-roam\\*"
-                   (display-buffer-in-side-window)
+                   (display-buffer-reuse-window display-buffer-in-side-window)
                    (side . right)
                    (slot . 0)
                    (window-width . 0.35)
@@ -3057,10 +3054,12 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
 这个包提供了 3 个有用的函数，可以方便的进行链接的 forward 和 backlink 的跳转，以及进行内容的查找。
 #+begin_src emacs-lisp
   (use-package consult-org-roam
-    :after evil
-    :config
-    (my/space-leader-def
-        "ns" '(consult-org-roam-search :wk "Search"))
+    :commands (consult-org-roam-backlinks consult-org-roam-forward-links))
+
+  (my/space-leader-def
+    "ns" '(consult-org-roam-search :wk "Search"))
+
+  (with-eval-after-load 'evil
     (evil-collection-define-key 'normal 'org-mode-map
       "zb" 'consult-org-roam-backlinks
       "zf" 'consult-org-roam-forward-links))
@@ -3098,7 +3097,7 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
 这里需要结合 [[fringe-mode]] 使用，不能完全隐藏 fringe, 否则会没有效果。我设置的是 minimal.
 #+begin_src emacs-lisp
   (use-package org-transclusion
-    :after org
+    :commands (org-transclusion-make-from-link org-transclusion-add org-transclusion-add-all)
     :config
     (face-spec-set 'org-transclusion-fringe
                    '((((background light))
@@ -3319,8 +3318,9 @@ vulpea to build dynamic agenda.
       "Open my `org-agenda'.
   Run `org-roam-db-sync' to get full lists of org agenda files."
       (interactive)
-      (org-roam-db-sync)
-      (org-agenda "" " "))
+      (if (eq major-mode 'org-agenda-mode)
+          (org-agenda-redo-all)
+        (org-agenda "" " ")))
 
     (defun my/org-agenda-query ()
       "Open my `org-agenda' and `m'.
@@ -3349,9 +3349,10 @@ vulpea to build dynamic agenda.
                                (svg-clock)
                                (hide-mode-line-mode))))
 #+end_src
-#+begin_src emacs-lisp :tangle no
-  (use-package org
+#+begin_src emacs-lisp
+  (use-package org-agenda
     :after evil
+    :config
     (evil-set-initial-state 'org-agenda-mode 'motion)
     (evil-define-key 'motion org-agenda-mode-map
       (kbd "RET") 'org-agenda-switch-to
@@ -3369,6 +3370,7 @@ vulpea to build dynamic agenda.
 ** calendar and appt
 #+begin_src emacs-lisp
   (use-package calendar
+    :commands calendar
     :config
     (setq calendar-view-diary-initially-flag t)
     (setq calendar-mark-diary-entries-flag t)
@@ -3384,6 +3386,8 @@ vulpea to build dynamic agenda.
     (setq diary-date-forms diary-iso-date-forms)
     :hook (calendar-today-visible . #'calendar-mark-today))
 
+  (my/comma-leader-def
+    "c" '(calendar :wk "Calendar"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3397,16 +3401,16 @@ vulpea to build dynamic agenda.
     (setq appt-audible nil)
     (setq appt-warning-time-regexp "appt \\([0-9]+\\)")
     (setq appt-message-warning-time 6)
-    :hook (diary . #'appt-activate))
+    (add-hook 'diary-mode-hook #'appt-activate))
 #+end_src
 
 Use diary-lib to write diary. 关于这个的使用可以见：[[https://www.youtube.com/watch?v=NkhgIB64zgc][Emacs: Diary and Calendar - YouTube]]
 #+begin_src emacs-lisp
   (use-package diary-lib
     :after calendar
-    :hook ((diary-list-entries . #'diary-sort-entries)
-           (diary-mode . #'goto-address-mode))
     :config
+    (add-hook 'diary-list-entries-hook #'diary-sort-entries)
+    (add-hook 'diary-mode-hook #'goto-address-mode)
     (setq diary-display-function #'diary-fancy-display)
     (setq diary-header-line-format nil)
     (setq diary-list-include-blanks nil)
@@ -3425,8 +3429,9 @@ Zen Mode 或者叫禅模式，其目的是为了降低不相关因素对于心�
 在 Emacs 上有两个相关的包，一个是 ~olivetti~, 另外一个是 ~writeroom-mode~. ~olivetti~ 的功能更单一一些，但是足够使用。
 #+begin_src emacs-lisp
   (use-package olivetti
-    :after evil
-    :config
+    :commands olivetti-mode)
+
+  (with-eval-after-load 'evil
     (evil-define-key 'nromal 'org-mode-map
       "zw" 'olivetti-mode))
 #+end_src
@@ -3505,6 +3510,7 @@ Zen Mode 或者叫禅模式，其目的是为了降低不相关因素对于心�
 ** math-preview
 #+begin_src emacs-lisp
   (use-package math-preview
+    :commands (math-preview-all math-preview-at-point)
     :config
     (setq math-preview-scale 1.1)
     (setq math-preview-raise 0.3)
@@ -3522,6 +3528,7 @@ Zen Mode 或者叫禅模式，其目的是为了降低不相关因素对于心�
 ** plantuml
 #+begin_src emacs-lisp
   (use-package plantuml
+    :commands (plantuml-org-to-mindmap-open plantuml-org-to-wbs-open)
     :hook (org-mode . (lambda ()
                         (require 'plantuml)))
     :config
@@ -3529,6 +3536,10 @@ Zen Mode 或者叫禅模式，其目的是为了降低不相关因素对于心�
           (concat (string-trim
                    (shell-command-to-string "readlink -f $(brew --prefix plantuml)"))
                   "/libexec/plantuml.jar")))
+  (my/space-leader-def
+    "op" '(:ignore t :wk "Plantuml")
+    "opm" '(plantuml-org-to-mindmap-open :wk "Mindmap")
+    "ops" '(plantuml-org-to-wbs-open :wk "Work Breakdown Structure"))
 #+end_src
 
 ** org-rainbow-tags
@@ -3537,37 +3548,44 @@ Zen Mode 或者叫禅模式，其目的是为了降低不相关因素对于心�
     :hook (org-mode . org-rainbow-tags-mode))
 #+end_src
 
-** COMMENT alarm-clock
+** alarm-clock
 如其名，在 Emacs 中设置闹钟的。
 #+begin_src emacs-lisp
-  (with-eval-after-load 'alarm-clock
+  (use-package alarm-clock
+    :commands (alarm-clock-set alarm-clock-list-view)
+    :config
     (setq alarm-clock-cache-file (expand-file-name "var/.alarm-clock.cache" user-emacs-directory)))
 #+end_src
 
+** COMMENT alert
+#+begin_src emacs-lisp
+  (use-package alert
+    :defer t
+    :config
+    (setq alert-default-style 'osx-notifier))
+#+end_src
 ** COMMENT org-alert
 #+begin_src emacs-lisp
-  (with-eval-after-load 'alert
-    (setq alert-default-style 'osx-notifier))
-  ;; (run-with-idle-timer 20 nil (lambda ()
-  ;;                               (require 'org-alert)))
-  ;; (with-eval-after-load 'org-alert
-  ;;   (setq org-alert-interval 300)
-  ;;   (setq org-alert-notify-cutoff 10)
-  ;;   (setq org-alert-notify-after-event-cutoff 10)
-  ;;   (setq org-alert-notification-title "Org Agenda Reminder!")
-  ;;   (org-alert-enable))
-
+  (use-package org-alert
+    :hook (after-init . org-alert-enable)
+    :config
+    (setq org-alert-interval 300)
+    (setq org-alert-notify-cutoff 10)
+    (setq org-alert-notify-after-event-cutoff 10)
+    (setq org-alert-notification-title "Org Agenda Reminder!"))
 #+end_src
 
-** COMMENT pomm
+** pomm
 Emacs 中执行 Pomodoro 哲学。
 #+begin_src emacs-lisp
-  (with-eval-after-load 'pomm
+  (use-package pomm
+    :commands pomm
+    :config
     (setq pomm-state-file-location (expand-file-name "pomm" no-littering-var-directory))
     (pomm-mode-line-mode 1))
 #+end_src
 
-** COMMENT Pandoc
+** Pandoc
 将 org 文档转换为 word 文档，仅支持简单的文档，过于复杂的文档不行。
 #+begin_src emacs-lisp
   (defun org-export-docx ()
@@ -3703,9 +3721,9 @@ eaf-pdf-viewer 存在的问题还是安装较难，对于系统环境要求较�
     (setq citar-symbol-separator "  ")
     (setq citar-file-additional-files-separator "-")
 
-    (setq org-cite-insert-processor 'citar)
-    (setq org-cite-follow-processor 'citar)
-    (setq org-cite-activate-processor 'citar)
+    ;; (setq org-cite-insert-processor 'citar)
+    ;; (setq org-cite-follow-processor 'citar)
+    ;; (setq org-cite-activate-processor 'citar)
 
     (with-eval-after-load 'all-the-icons
       (setq citar-symbols
@@ -3714,7 +3732,7 @@ eaf-pdf-viewer 存在的问题还是安装较难，对于系统环境要求较�
               (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " ")))))
 
   (use-package citar-org
-    :commands citar-org-local-bib-files
+    :commands citar-org-local-bib-files citar-org-key-at-point
     :bind (:map citar-org-citation-map
                 ("RET" . org-open-at-point)))
 
@@ -3770,6 +3788,7 @@ eaf-pdf-viewer 存在的问题还是安装较难，对于系统环境要求较�
 bibtex-completion 这个包是 org-roam-bibtex 的依赖。
 #+begin_src emacs-lisp
   (use-package bibtex-completion
+    :after org-roam-bibtex
     :config
     (setq bibtex-completion-bibliography org-cite-global-bibliography)
     (setq bibtex-completion-notes-path (expand-file-name "roam/ref" my-galaxy))
@@ -3812,6 +3831,7 @@ Ebib 是 Emacs 中的文献管理软件，类似于 zotero, 但是我感觉 Zote
 #+begin_src emacs-lisp
   (use-package ebib
     :bind ("<f2>" . ebib)
+    :hook (ebib-index-mode . hide-mode-line-mode)
     :config
     (setq ebib-index-mode-line nil)
     (setq ebib-entry-mode-line nil)
@@ -3839,6 +3859,7 @@ Ebib 是 Emacs 中的文献管理软件，类似于 zotero, 但是我感觉 Zote
 使用 scihub 需要提供 DOI 或者完整的文献题目。
 #+begin_src emacs-lisp
   (use-package scihub
+    :commands scihub
     :config
     (setq scihub-download-directory "~/Downloads/")
     (setq scihub-open-after-download t)
@@ -3851,6 +3872,7 @@ Ebib 是 Emacs 中的文献管理软件，类似于 zotero, 但是我感觉 Zote
 我默认使用 crossref 作为后端，通过 ~SPC n r d~ 调用，若要使用其他的后端，通过 ~M-x biblio-lookup~ 进行。
 #+begin_src emacs-lisp
   (use-package biblio
+    :commands biblio-lookup
     :general
     (:states 'normal
              "SPC rd" 'my/biblio-lookup-crossref :no-autoload t)
@@ -4016,7 +4038,8 @@ Hide mode line see [[hide-mode-line]].
 #+begin_src emacs-lisp
   (use-package reftex
     :hook ((LaTeX-mode . turn-on-reftex)
-           (reftex-toc-mode . menu-bar--visual-line-mode-enable))
+           (reftex-toc-mode . menu-bar--visual-line-mode-enable)
+           (reftex-toc-mode . hide-mode-line-mode))
     :config
     (setq reftex-toc-split-windows-horizontally t)
     (setq reftex-toc-split-windows-fraction 0.25))
@@ -4029,7 +4052,7 @@ Hide mode line see [[hide-mode-line]].
     (setq org-highlight-latex-and-related '(latex script)))
 
   (use-package ox-latex
-    :after org
+    :defer 3
     :config
     (setq org-latex-src-block-backend 'minted)
     (setq org-latex-minted-options '(("breaklines" "true")
@@ -4154,6 +4177,7 @@ Hide mode line see [[hide-mode-line]].
 *** ox-beamer
 #+begin_src emacs-lisp
   (use-package ox-beamer
+    :defer 3
     :after org)
 #+end_src
 *** COMMENT org-elp
@@ -4179,11 +4203,13 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 *** ox-hugo
 #+begin_src emacs-lisp
   (use-package ox-hugo
+    :defer 3
     :after ox)
 #+end_src
 *** ox-html
 #+begin_src emacs-lisp
   (use-package ox-html
+    :after ox
     :config
     (setq org-html-preamble t)
     (setq org-html-preamble-format
@@ -4208,6 +4234,7 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 *** ox-publish
 #+begin_src emacs-lisp
   (use-package ox-publish
+    :after ox
     :config
     (defvar my/publish-directory "~/shuyi.github.io")
 
@@ -4319,6 +4346,7 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 
 #+begin_src emacs-lisp
   (use-package grab-mac-link
+    :commands grab-mac-link-dwim
     :preface
     (defun my/link-grab ()
       (interactive)
@@ -4329,6 +4357,7 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 [[https://github.com/skeeto/elfeed][https://github.com/skeeto/elfeed]]
 #+begin_src emacs-lisp
   (use-package elfeed
+    :bind ("C-c , r" . elfeed)
     :preface
     (defun elfeed-display-buffer (buf &optional act)
       (pop-to-buffer buf '((display-buffer-reuse-window display-buffer-in-side-window)
@@ -4349,12 +4378,14 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 [[https://github.com/remyhonig/elfeed-org][remyhonig/elfeed-org: Configure the Elfeed RSS reader with an Orgmode file]] 通过 org 集中管理 elfeed 源。
 #+begin_src emacs-lisp
   (use-package elfeed-org
-    :config
-    (setq rmh-elfeed-org-files `(,(concat my-galaxy "/rss/elfeed.org")))
-    (defun my/rss-source ()
-      "Open elfeed config file."
-      (interactive)
-      (find-file (car rmh-elfeed-org-files))))
+    :after elfeed
+    :init
+    (setq rmh-elfeed-org-files `(,(concat my-galaxy "/rss/elfeed.org"))))
+
+  (defun my/rss-source ()
+    "Open elfeed config file."
+    (interactive)
+    (find-file (car rmh-elfeed-org-files)))
 
   (my/space-leader-def
     "foe" '(my/rss-source :wk "Elfeed file"))
@@ -4363,6 +4394,7 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 [[https://github.com/SqrtMinusOne/elfeed-summary][SqrtMinusOne/elfeed-summary: Feed summary interface for elfeed]]
 #+begin_src emacs-lisp
   (use-package elfeed-summary
+    :bind ("C-c , r" . elfeed-summary)
     :config
     (setq elfeed-summary-other-window t)
     (setq elfeed-summary-settings
@@ -4408,78 +4440,80 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 升级 pdf-tools 后要重新生成 =epdfinfo= 文件，最好的方式就是重装 pdf-tools，以免有问题。
 
 #+begin_src emacs-lisp
-    (use-package pdf-tools
-      :hook ((doc-view-mode . pdf-tools-install)
-             (dirvish-setup . pdf-tools-install)
-             (pdf-tools-enabled . pdf-view-themed-minor-mode)))
+  (use-package pdf-tools
+    :hook ((doc-view-mode . pdf-tools-install)
+           (dirvish-setup . pdf-tools-install)
+           (pdf-tools-enabled . pdf-view-themed-minor-mode)))
 
-    (use-package pdf-view
-      :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
-      :magic ("%PDF" . pdf-view-mode)
-      :config
-      (pdf-tools-install t nil t nil)
-      (evil-declare-key 'normal pdf-view-mode-map
-        "gh" 'pdf-annot-add-highlight-markup-annotation
-        "ga" 'pdf-annot-add-text-annotation
-        "gd" 'pdf-annot-delete)
-      :init
-      (setq pdf-view-display-size 'fit-width)
-      (setq pdf-view-use-unicode-ligther nil)
-      (setq pdf-view-use-scaling t)
-      (setq pdf-view-use-imagemagick nil)
-      (setq pdf-annot-activate-created-annotations nil))
+  (use-package pdf-view
+    :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
+    :magic ("%PDF" . pdf-view-mode)
+    :config
+    (pdf-tools-install t nil t nil)
+    (evil-declare-key 'normal pdf-view-mode-map
+      "gh" 'pdf-annot-add-highlight-markup-annotation
+      "ga" 'pdf-annot-add-text-annotation
+      "gd" 'pdf-annot-delete)
+    :init
+    (setq pdf-view-display-size 'fit-width)
+    (setq pdf-view-use-unicode-ligther nil)
+    (setq pdf-view-use-scaling t)
+    (setq pdf-view-use-imagemagick nil)
+    (setq pdf-annot-activate-created-annotations nil))
 
-    (use-package pdf-occur
-      :hook (pdf-view-mode . pdf-occur-global-minor-mode))
+  (use-package pdf-occur
+    :hook (pdf-view-mode . pdf-occur-global-minor-mode))
 
-    (use-package pdf-history
-      :hook (pdf-view-mode . pdf-history-minor-mode))
+  (use-package pdf-history
+    :hook (pdf-view-mode . pdf-history-minor-mode))
 
-    (use-package pdf-links
-      :hook (pdf-view-mode . pdf-links-minor-mode))
+  (use-package pdf-links
+    :hook (pdf-view-mode . pdf-links-minor-mode))
 
-    (defun my/get-file-name ()
-      "Copy pdf file name."
-      (interactive)
-      (kill-new (file-name-base (buffer-file-name)))
-      (message "Copied %s" (file-name-base (buffer-file-name))))
+  (defun my/get-file-name ()
+    "Copy pdf file name."
+    (interactive)
+    (kill-new (file-name-base (buffer-file-name)))
+    (message "Copied %s" (file-name-base (buffer-file-name))))
 
-    (use-package pdf-outline
-      :hook (pdf-view-mode . pdf-outline-minor-mode)
-      :bind (:map pdf-outline-buffer-mode-map
-                  ("RET" . pdf-outline-follow-link-and-quit)))
+  (use-package pdf-outline
+    :hook ((pdf-view-mode . pdf-outline-minor-mode)
+           (pdf-outline-buffer-mode . hide-mode-line-mode))
+    :bind (:map pdf-outline-buffer-mode-map
+                ("RET" . pdf-outline-follow-link-and-quit)))
 
-    (use-package pdf-annot
-      :hook (pdf-view-mode . pdf-annot-minor-mode)
-      :bind (:map pdf-annot-edit-contents-minor-mode-map
-                  ("<return>" . pdf-annot-edit-contents-commit)
-                  ("<S-return>" . newline)))
+  (use-package pdf-annot
+    :hook (pdf-view-mode . pdf-annot-minor-mode)
+    :bind (:map pdf-annot-edit-contents-minor-mode-map
+                ("<return>" . pdf-annot-edit-contents-commit)
+                ("<S-return>" . newline)))
 
-    (use-package pdf-sync
-      :hook (pdf-view-mode . pdf-sync-minor-mode))
+  (use-package pdf-sync
+    :hook (pdf-view-mode . pdf-sync-minor-mode))
 
-    (use-package pdf-cache
-      :config
-      (define-pdf-cache-function pagelabels))
+  (use-package pdf-cache
+    :after pdf-view
+    :config
+    (define-pdf-cache-function pagelabels))
 
-    (use-package pdf-misc
-      :after pdf-view
-      :config
-      (setq pdf-misc-print-program-executable "/usr/bin/lp")
+  (use-package pdf-misc
+    :after pdf-view
+    :config
+    (setq pdf-misc-print-program-executable "/usr/bin/lp")
 
-      (defun mrb/pdf-misc-print-pages(filename pages &optional interactive-p)
-        "Wrapper for `pdf-misc-print-document` to add page selection support."
-        (interactive (list (pdf-view-buffer-file-name)
-                           (read-string "Page range (empty for all pages): "
-                                        (number-to-string (pdf-view-current-page)))
-                           t) pdf-view-mode)
-        (let ((pdf-misc-print-program-args
-               (if (not (string-blank-p pages))
-                   (cons (concat "-P " pages) pdf-misc-print-program-args)
-                 pdf-misc-print-program-args)))
-          (pdf-misc-print-document filename)))
-      :bind (:map pdf-view-mode-map
-                  ([remap pdf-misc-print-document] . mrb/pdf-misc-print-pages)))
+    (defun mrb/pdf-misc-print-pages(filename pages &optional interactive-p)
+      "Wrapper for `pdf-misc-print-document` to add page selection support."
+      (interactive (list (pdf-view-buffer-file-name)
+                         (read-string "Page range (empty for all pages): "
+                                      (number-to-string (pdf-view-current-page)))
+                         t) pdf-view-mode)
+      (let ((pdf-misc-print-program-args
+             (if (not (string-blank-p pages))
+                 (cons (concat "-P " pages) pdf-misc-print-program-args)
+               pdf-misc-print-program-args)))
+        (pdf-misc-print-document filename)))
+    :bind (:map pdf-view-mode-map
+                ([remap pdf-misc-print-document] . mrb/pdf-misc-print-pages)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -4551,8 +4585,6 @@ Nov 用于阅读 epub 文件。
 Calibre 用于管理书籍，Calibredb 可以在 Emacs 中管理而不需要打开 Calibre 软件。
 #+begin_src emacs-lisp
   ;; Export catalog need to use argument: set entry type to mixed, default is book.
-  (use-package esxml-query)
-
   (use-package calibredb
     :bind (("<f1>" . calibredb)
            :map calibredb-search-mode-map
@@ -4811,12 +4843,21 @@ clocktable 中的 scope 可以是自定义的函数，下面的函数将 books �
               (file-expand-wildcards (expand-file-name "roam/books/*.org" my-galaxy)))))
 #+end_src
 
-** COMMENT Achive
+** Achive
 #+begin_src emacs-lisp
-  (setq achive-language 'zh)
-  (setq achive-cache-path (expand-file-name ".achive" no-littering-var-directory))
+  (use-package achive
+    :commands achive
+    :config
+    (setq achive-language 'zh)
+    (setq achive-cache-path (expand-file-name ".achive" no-littering-var-directory)))
+
   (my/comma-leader-def
     "a" '(achive :wk "A-share"))
+
+  (with-eval-after-load 'evil-collection
+    (evil-collection-define-key 'normal 'achive-visual-mode-map
+      "q" 'quit-window))
+
 #+end_src
 * Easy use, Code snippets
 ** Open APP within Emacs

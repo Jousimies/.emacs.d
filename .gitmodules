@@ -316,3 +316,105 @@
 [submodule "packages/nov.el"]
 	path = packages/nov.el
 	url = https://depp.brause.cc/nov.el.git
+[submodule "packages/emacs-hide-mode-line"]
+	path = packages/emacs-hide-mode-line
+	url = https://github.com/hlissner/emacs-hide-mode-line.git
+[submodule "packages/mode-line-bell"]
+	path = packages/mode-line-bell
+	url = https://github.com/purcell/mode-line-bell.git
+[submodule "packages/evil-surround"]
+	path = packages/evil-surround
+	url = https://github.com/emacs-evil/evil-surround.git
+[submodule "packages/evil-embrace.el"]
+	path = packages/evil-embrace.el
+	url = https://github.com/cute-jumper/evil-embrace.el.git
+[submodule "packages/embrace.el"]
+	path = packages/embrace.el
+	url = https://github.com/cute-jumper/embrace.el.git
+[submodule "packages/whitespace-cleanup-mode"]
+	path = packages/whitespace-cleanup-mode
+	url = https://github.com/purcell/whitespace-cleanup-mode.git
+[submodule "packages/tempel"]
+	path = packages/tempel
+	url = https://github.com/minad/tempel.git
+[submodule "packages/rg.el"]
+	path = packages/rg.el
+	url = https://github.com/dajva/rg.el.git
+[submodule "packages/yasnippet"]
+	path = packages/yasnippet
+	url = https://github.com/joaotavora/yasnippet.git
+[submodule "packages/Emacs-wgrep"]
+	path = packages/Emacs-wgrep
+	url = https://github.com/mhayashi1120/Emacs-wgrep.git
+[submodule "packages/yasnippet-snippets"]
+	path = packages/yasnippet-snippets
+	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
+[submodule "packages/youtube-dl-emacs"]
+	path = packages/youtube-dl-emacs
+	url = https://github.com/skeeto/youtube-dl-emacs.git
+[submodule "packages/pomm.el"]
+	path = packages/pomm.el
+	url = https://github.com/SqrtMinusOne/pomm.el.git
+[submodule "packages/alert"]
+	path = packages/alert
+	url = https://github.com/jwiegley/alert.git
+[submodule "packages/org-alert"]
+	path = packages/org-alert
+	url = https://github.com/spegoraro/org-alert.git
+[submodule "packages/alarm-clock"]
+	path = packages/alarm-clock
+	url = https://github.com/wlemuel/alarm-clock.git
+[submodule "packages/achive"]
+	path = packages/achive
+	url = https://github.com/zakudriver/achive.git
+[submodule "packages/flyspell-correct"]
+	path = packages/flyspell-correct
+	url = https://github.com/d12frosted/flyspell-correct.git
+[submodule "packages/Emacs-langtool"]
+	path = packages/Emacs-langtool
+	url = https://github.com/mhayashi1120/Emacs-langtool.git
+[submodule "packages/go-translate"]
+	path = packages/go-translate
+	url = https://github.com/lorniu/go-translate.git
+[submodule "packages/lingva.el"]
+	path = packages/lingva.el
+	url = https://codeberg.org/martianh/lingva.el.git
+[submodule "packages/sdcv"]
+	path = packages/sdcv
+	url = https://github.com/manateelazycat/sdcv.git
+[submodule "packages/osx-dictionary.el"]
+	path = packages/osx-dictionary.el
+	url = https://github.com/xuchunyang/osx-dictionary.el.git
+[submodule "packages/emacs-powerthesaurus"]
+	path = packages/emacs-powerthesaurus
+	url = https://github.com/SavchenkoValeriy/emacs-powerthesaurus.git
+[submodule "packages/websocket-bridge"]
+	path = packages/websocket-bridge
+	url = https://github.com/ginqi7/websocket-bridge.git
+[submodule "packages/dictionary-overlay"]
+	path = packages/dictionary-overlay
+	url = https://github.com/ginqi7/dictionary-overlay.git
+[submodule "packages/grammarly"]
+	path = packages/grammarly
+	url = https://github.com/emacs-grammarly/grammarly.git
+[submodule "packages/flycheck-grammarly"]
+	path = packages/flycheck-grammarly
+	url = https://github.com/emacs-grammarly/flycheck-grammarly.git
+[submodule "packages/flycheck"]
+	path = packages/flycheck
+	url = https://github.com/flycheck/flycheck.git
+[submodule "packages/emacs-request"]
+	path = packages/emacs-request
+	url = https://github.com/tkf/emacs-request.git
+[submodule "packages/all-the-icons.el"]
+	path = packages/all-the-icons.el
+	url = https://github.com/domtronn/all-the-icons.el.git
+[submodule "packages/all-the-icons-completion"]
+	path = packages/all-the-icons-completion
+	url = https://github.com/iyefrat/all-the-icons-completion.git
+[submodule "packages/prescient.el"]
+	path = packages/prescient.el
+	url = https://github.com/radian-software/prescient.el.git
+[submodule "packages/emacs-smart-input-source"]
+	path = packages/emacs-smart-input-source
+	url = https://github.com/laishulu/emacs-smart-input-source.git
