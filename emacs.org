@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-02-27 Mon 13:46]
+#+DATE: [2023-02-27 Mon 14:04]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -1158,46 +1158,39 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
       "gs" 'tab-switch))
 #+end_src
 #+begin_src emacs-lisp
-    (add-to-list 'display-buffer-alist
-                 '((or (derived-mode . org-mode))
-                   (display-buffer-in-tab)
-                   (tab-name . "Org")
-                   (tab-group . "Org")))
+  (add-to-list 'display-buffer-alist
+               '("^.*\\.\\(org\\|md\\|tex\\|log\\)$"
+                 (display-buffer-in-tab)
+                 (tab-name . "Edit")
+                 (tab-group . "Edit")))
 
-    (add-to-list 'display-buffer-alist
-                 '((or (derived-mode . latex-mode)
-                       (derived-mode . LaTeX-mode))
-                   (display-buffer-in-tab)
-                   (tab-name . "TEX")
-                   (tab-group . "TEX")))
+  (add-to-list 'display-buffer-alist
+               '((or (derived-mode . dired-mode)
+                     (derived-mode . dirvish-mode))
+                 (display-buffer-in-tab)
+                 (tab-name . "Dired")
+                 (tab-group . "Dired")))
 
-    (add-to-list 'display-buffer-alist
-                 '((or (derived-mode . dired-mode)
-                       (derived-mode . dirvish-mode))
-                   (display-buffer-in-tab)
-                   (tab-name . "Dired")
-                   (tab-group . "Dired")))
+  (add-to-list 'display-buffer-alist
+               '((derived-mode . image-mode)
+                 (display-buffer-in-tab)
+                 (tab-name . "Pic")
+                 (tab-group . "Pic")))
 
-    (add-to-list 'display-buffer-alist
-                 '((derived-mode . image-mode)
-                   (display-buffer-in-tab)
-                   (tab-name . "Pic")
-                   (tab-group . "Pic")))
+  (add-to-list 'display-buffer-alist
+               '((derived-mode . emacs-lisp-mode)
+                 (display-buffer-in-tab)
+                 (tab-name . "Prog")
+                 (tab-group . "Prog")))
 
-    (add-to-list 'display-buffer-alist
-                 '((derived-mode . emacs-lisp-mode)
-                   (display-buffer-in-tab)
-                   (tab-name . "Prog")
-                   (tab-group . "Prog")))
-
-    (add-to-list 'display-buffer-alist
-                 `(,(rx (| "*scratch*"
-                           "*dashboard*"
-                           "*Messages*"))
-                   (display-buffer-in-tab)
-                   (tab-name . "Home")
-                   (tab-group . "Home")
-                   (window-parameters . ((mode-line-format . none)))))
+  (add-to-list 'display-buffer-alist
+               `(,(rx (| "*scratch*"
+                         "*dashboard*"
+                         "*Messages*"))
+                 (display-buffer-in-tab)
+                 (tab-name . "Home")
+                 (tab-group . "Home")
+                 (window-parameters . ((mode-line-format . none)))))
 #+end_src
 ** savehist-mode
 #+begin_src emacs-lisp
@@ -4526,6 +4519,10 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
     (setq pdf-view-use-imagemagick nil)
     (setq pdf-annot-activate-created-annotations nil))
 
+  (add-to-list 'display-buffer-alist '("\\.pdf"
+                                       (display-buffer-in-tab)
+                                       (tab-name . "PDF")
+                                       (tab-group . "PDF")))
   (use-package pdf-occur
     :hook (pdf-view-mode . pdf-occur-global-minor-mode))
 
