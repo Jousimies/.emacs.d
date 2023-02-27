@@ -1,5 +1,5 @@
 #+TITLE: Jousimies's Personal Emacs Configuration
-#+DATE: 2022-05-21
+#+DATE: [2023-02-27 Mon 14:13]
 
 * Interface Show
 #+ATTR_ORG: :width 800px
@@ -108,3 +108,10 @@ The difference between the two hooks is that ~emacs-startup-hook~ runs after the
   (add-hook 'evil-mode-hook #'evil-collection-init)
 #+end_src
 The first approach will load and initialize =evil-collection= as soon as evil is loaded, while the second approach will only load and initialize =evil-collection= when =evil-mode= is enabled.
+
+* About Emacs startup
+Emacs 29.0.60 不开 dashboard 情况下启动时间 0.5s 左右，实际启动时间约 2s. 如果开启 dashboard，等所有的界面准备结束约 3.5s.
+
+不要太在意 Emacs 的启动时间，只有在启动电脑或者升级 Emacs 的时候才要重启 Emacs。
+
+https://irreal.org/blog/?p=11176
