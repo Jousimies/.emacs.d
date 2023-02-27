@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-02-27 Mon 14:14]
+#+DATE: [2023-02-27 Mon 14:18]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -2936,6 +2936,18 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
           '((org-roam-backlinks-section :unique t)
             org-roam-reflinks-section
             org-roam-unlinked-references-section))
+
+    (defun my/org-roam-node-read--to-candidate (node template)
+      "Return a minibuffer completion candidate given NODE.
+    TEMPLATE is the processed template used to format the entry."
+      (let ((candidate-main (org-roam-node--format-entry
+                             template
+                             node
+                             (1- (if (minibufferp)
+                                     (window-width) (frame-width))))))
+        (cons (propertize candidate-main 'node node) node)))
+
+    (advice-add 'org-roam-node-read--to-candidate :override #'my/org-roam-node-read--to-candidate)
 
     (cl-defmethod org-roam-node-type ((node org-roam-node))
       "Return the TYPE of NODE."
