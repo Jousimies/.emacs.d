@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-02-27 Mon 14:04]
+#+DATE: [2023-02-27 Mon 14:14]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -442,10 +442,6 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-upstream)
     (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote))
 
-  (add-to-list 'display-buffer-alist '("^\\magit"
-                                       (display-buffer-reuse-window)
-                                       (window-parameters
-                                        (mode-line-format . none))))
   (use-package forge
     :after magit)
 #+end_src
