@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-02-27 Mon 12:29]
+#+DATE: [2023-02-27 Mon 13:29]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -417,7 +417,7 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     "qs" '(my/start-server :wk "Server Delete"))
 #+end_src
 
-** COMMENT Magit
+** Magit
 [[https://github.com/magit/magit][magit/magit: It's Magit! A Git Porcelain inside Emacs.]] 是 Emacs 上的一大杀器应用，相对于命令行的方式使用 git 友好的很多。
 
 通过 borg 安装 Magit 需要增加两行 load-path 的配置。使用时通过 ~C-x g~ 即可调用 Magit.
@@ -433,11 +433,11 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     :commands (magit magit-status magit-submodule-add)
     :bind ("C-x g" . magit)
     :general (:keymaps 'with-editor-mode-map
-               "RET" "C-c C-c")
+                       "RET" "C-c C-c")
     :config
     (magit-add-section-hook 'magit-status-sections-hook
-                'magit-insert-modules
-                'magit-insert-unpulled-from-upstream)
+                            'magit-insert-modules
+                            'magit-insert-unpulled-from-upstream)
     (remove-hook 'magit-module-sections-hook 'magit-insert-modules-overview)
     (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpulled-from-pushremote)
     (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-upstream)
@@ -961,7 +961,10 @@ Dashboard 界面的 banner 使用的是 ~ascii art~, 可以通过 [[https://asci
                 (lambda (&rest _) (browse-url "https://github.com/Jousimies/.emacs.d")))
                (,(all-the-icons-octicon "law" :height 1 :v-adjust 0.0)
                 "Blog" "Browse blog"
-                (lambda (&rest _) (browse-url "https://github.com/Jousimies/.emacs.d"))))))))
+                (lambda (&rest _) (browse-url "https://jousimies.github.io"))))))))
+
+  (my/space-leader-def
+    "bd" '(dashboard-open :wk "Dashboard"))
 
   (with-eval-after-load 'evil
     (evil-define-key 'motion 'dashboard-mode-map
@@ -970,7 +973,6 @@ Dashboard 界面的 banner 使用的是 ~ascii art~, 可以通过 [[https://asci
 
   (run-with-idle-timer 300 t #'dashboard-open)
 #+end_src
-
 ** color-identifiers-mode
 #+begin_src emacs-lisp
   (use-package color-identifiers-mode
@@ -1945,6 +1947,11 @@ Emacs 的拉圾回收太影响性能，此包的作用是当 Emacs 处于 idle �
 #+begin_src emacs-lisp :tangle no
   (my/comma-leader-def
     "p" '(toggle-proxy :wk "Proxy"))
+#+end_src
+** word-count
+#+begin_src emacs-lisp
+  (use-package advance-words-count
+    :bind ("M-=" . advance-words-count))
 #+end_src
 * Emacs Works with Multiple Language, Piece of Cake
 Emacs 在英文的学习、使用方面具有很大的帮助。

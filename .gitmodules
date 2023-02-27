@@ -421,3 +421,6 @@
 [submodule "packages/svg-clock"]
 	path = packages/svg-clock
 	url = https://github.com/emacsmirror/svg-clock.git
+[submodule "packages/advance-words-count.el"]
+	path = packages/advance-words-count.el
+	url = https://github.com/LdBeth/advance-words-count.el.git
