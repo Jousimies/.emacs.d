@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-02-27 Mon 13:29]
+#+DATE: [2023-02-27 Mon 13:46]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -347,8 +347,7 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     (find-file (expand-file-name "emacs.org" user-emacs-directory)))
 
   (my/space-leader-def
-    "f" '(:ignore t :wk "Files")
-    "fi" '(my/emacs-config :wk "Emacs configuration"))
+    "f" '(:ignore t :wk "Files"))
 #+end_src
 
 ** epkg
@@ -964,7 +963,7 @@ Dashboard 界面的 banner 使用的是 ~ascii art~, 可以通过 [[https://asci
                 (lambda (&rest _) (browse-url "https://jousimies.github.io"))))))))
 
   (my/space-leader-def
-    "bd" '(dashboard-open :wk "Dashboard"))
+    "bo" '(dashboard-open :wk "*Dashboard*"))
 
   (with-eval-after-load 'evil
     (evil-define-key 'motion 'dashboard-mode-map
@@ -1045,7 +1044,7 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
 #+end_src
 #+begin_src emacs-lisp
   (my/space-leader-def
-    "b" '(:ignore t :wk "Buffer/Bibtex")
+    "b" '(:ignore t :wk "Buffer/Bookmark")
     "be" '(eval-buffer :wk "Eval buffer")
     "bk" '(kill-this-buffer :wk "Kill This Buffer"))
 
@@ -1271,16 +1270,15 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
 
 ** recentf-mode
 #+begin_src emacs-lisp
-  (add-hook 'on-first-input-hook 'recentf-mode)
-
-  (with-eval-after-load 'recentf
+  (use-package recentf
+    :hook (on-first-buffer . recentf-mode)
+    :config
     (setq recentf-auto-cleanup 300)
-    (setq recentf-max-saved-items 1000)
+    (setq recentf-max-saved-items 1000))
 
-    (add-to-list 'recentf-exclude "\\.pdf\\'"))
-
-  (my/space-leader-def
-    "fr" '(recentf-open-files :wk "Recent files"))
+  (with-eval-after-load 'evil
+    (evil-define-key 'normal 'global
+      "gr" 'recentf-open-files))
 #+end_src
 
 ** visual-line-mode
@@ -1394,7 +1392,10 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
 ** bookmark
 #+begin_src emacs-lisp
   (my/space-leader-def
-    "fm" 'bookmark-jump)
+    "ba" 'bookmark-set
+    "br" 'bookmark-rename
+    "bd" 'bookmark-delete
+    "bj" 'bookmark-jump)
 #+end_src
 
 ** clipboard
@@ -5085,8 +5086,8 @@ clocktable 中的 scope 可以是自定义的函数，下面的函数将 books �
     (switch-to-buffer "*scratch*"))
 
   (my/space-leader-def
-    "bs" '(switch-to-scratch :wk "Swtich to scratch")
-    "bm" '(switch-to-message :wk "Swtich to message"))
+    "bs" '(switch-to-scratch :wk "*scratch*")
+    "bm" '(switch-to-message :wk "*message*"))
 
   (defun my/inbox-file ()
     "Open inbox file."
