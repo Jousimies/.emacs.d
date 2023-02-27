@@ -424,3 +424,12 @@
 [submodule "packages/advance-words-count.el"]
 	path = packages/advance-words-count.el
 	url = https://github.com/LdBeth/advance-words-count.el.git
+[submodule "packages/org-msg"]
+	path = packages/org-msg
+	url = https://github.com/jeremy-compostella/org-msg.git
+[submodule "packages/emacs-htmlize"]
+	path = packages/emacs-htmlize
+	url = https://github.com/hniksic/emacs-htmlize.git
+[submodule "packages/ef-themes"]
+	path = packages/ef-themes
+	url = https://git.sr.ht/~protesilaos/ef-themes

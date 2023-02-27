@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-02-27 Mon 14:18]
+#+DATE: [2023-02-28 Tue 00:28]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -28,11 +28,18 @@
   (push '(undecorated . t) default-frame-alist)
   (push '(fullscreen . maximized) initial-frame-alist)
 
-  ;; (setq-default initial-major-mode 'fundamental-mode)
+  ;; To suppress flashing at startup
+  (setq-default inhibit-redisplay t
+                inhibit-message t)
+
+  (add-hook 'window-setup-hook
+            (lambda ()
+              (setq-default inhibit-redisplay nil
+                            inhibit-message nil)
+              (redisplay)))
+
   ;; Disable mode-line when emacs startup.
   (setq-default mode-line-format nil)
-
-  (setq initial-buffer-choice nil)
 
   (setq byte-compile-warnings nil)
   ;;; early-init.el ends here
@@ -306,7 +313,7 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 
 #+begin_src emacs-lisp
   (use-package evil-embrace
-    :hook ((org-mode . embrace-org-mode-hook))
+    :hook (org-mode . embrace-org-mode-hook)
     :config
     (evil-embrace-enable-evil-surround-integration))
 #+end_src
@@ -316,7 +323,7 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 
 #+begin_src emacs-lisp
   (use-package which-key
-    :hook (on-first-input . which-key-mode)
+    :hook (after-init . which-key-mode)
     :config
     (setq which-key-show-early-on-C-h t)
     (setq which-key-idle-delay 10000)
@@ -331,13 +338,13 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
   (use-package general
     :config
     (general-create-definer my/space-leader-def
-                :prefix "SPC"
-                :non-normal-prefix "M-SPC"
-                :states '(normal visual insert emacs))
-    (general-create-definer my/comma-leader-def
-                :prefix ","
-                :non-normal-prefix "M-,"
-                :states '(normal visual insert emacs)))
+      :prefix "SPC"
+      :non-normal-prefix "M-SPC"
+      :states '(normal visual insert emacs)))
+  ;; (general-create-definer my/comma-leader-def
+  ;;               :prefix ","
+  ;;               :non-normal-prefix "M-,"
+  ;;               :states '(normal visual insert emacs))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -349,15 +356,18 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
   (my/space-leader-def
     "f" '(:ignore t :wk "Files"))
 #+end_src
-
+为了重用 g 绑定的按键，需要先将其上的键绑定取消掉。
+#+begin_src emacs-lisp
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) 'global
+      "gt" nil
+      "gs" nil
+      "ge" nil))
+#+end_src
 ** epkg
 #+begin_src emacs-lisp
   (use-package epkg
     :commands (epkg-describe-package))
-
-  (my/space-leader-def
-    "p" '(:ignore t :wk "Package management")
-    "pp" '(epkg-describe-package :wk "Epkg describe package"))
 
   (use-package epkg-marginalia
     :after (epkg marginalia)
@@ -448,10 +458,10 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 *** browse-at-remote
 #+begin_src emacs-lisp
   (use-package browse-at-remote
-    :bind ("C-c f b" . browse-at-remote)
-    :config
-    (my/space-leader-def
-      "fb" '(browse-at-remote :wk "Browse remote")))
+    :commands browse-at-remote)
+
+  (my/space-leader-def
+      "or" '(browse-at-remote :wk "Open remote"))
 #+end_src
 
 ** Custom
@@ -521,9 +531,11 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     (setq modus-themes-completions
       '((matches . (extrabold))
         (selection . (semibold italic text-also)))))
+
+  (load-theme 'modus-operandi t)
 #+end_src
 
-*** Theme switch
+*** COMMENT Theme switch
 
 emacs-plus can switch themes by system. 通过增加的补定实现的此功能，若是不使用这种方法，还有 [[https://github.com/LionyxML/auto-dark-emacs][auto-dark-emacs]] 可以使用。
 
@@ -735,7 +747,7 @@ fringe-mode 需要跟一个 cons cell, 直接使用 minimal 会报错。
 ** Frame
 窗口透明，更多见：[[https://emacs-china.org/t/emacs/2405/11][Emacs 透明窗口 - Emacs-general - Emacs China]]
 #+begin_src emacs-lisp
-  (set-frame-parameter nil 'alpha '(100 . 100))
+  (set-frame-parameter nil 'alpha '(90 . 100))
 #+end_src
 
 在 MacOS 上新建的 frame 总是位于屏幕的左上角。解决方案：[[https://christiantietze.de/posts/2021/06/emacs-center-window/][Automatically Center New Emacs Windows (Aka Frames) on Screen • Christian Tietze]].
@@ -1061,7 +1073,7 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
     :config
     (setq calc-window-height 15))
 
-  (my/comma-leader-def
+  (my/space-leader-def
     "C" '(calc :wk "calc"))
 #+end_src
 
@@ -1102,12 +1114,6 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
                                 "*Ibuffer*"
                                 "*esh command on file*"))
 #+end_src
-#+begin_src emacs-lisp
-  (my/space-leader-def
-    "w" '(:ignore t :wk "Window")
-    "wu" '(winner-undo :wk "Undo winner")
-    "wr" '(winner-redo :wk "Redo winner"))
-#+end_src
 
 ** auto-revert-mode
 #+begin_src emacs-lisp
@@ -1144,14 +1150,11 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
     "t" '(:ignore t :wk "Tabs")
     "tn" '(tab-new :wk "New")
     "tg" '(tab-group :wk "Group")
+    "ts" '(tab-switch :wk "switch")
     "tr" '(tab-bar-switch-to-recent-tab :wk "Recent")
     "tc" '(tab-close :wk "Close")
     "tC" '(tab-close-group :wk "Close group")
     "tO" '(tab-close-other :wk "Close other"))
-
-  (with-eval-after-load 'evil
-    (evil-define-key 'normal 'global
-      "gs" 'tab-switch))
 #+end_src
 #+begin_src emacs-lisp
   (add-to-list 'display-buffer-alist
@@ -1536,10 +1539,11 @@ Evil 模式编辑需要设置 undo system.
 这个用于扩展选区，有时候比 Evil 的 Visual 好用。最新的配置中己经使用 =v= 替代了 =C-== 这个快捷键。
 #+begin_src emacs-lisp
   (use-package expand-region
-    :after evil
-    :bind (("C-=" . er/expand-region)
-           (:map evil-visual-state-map
-                 ("v" . er/expand-region))))
+    :commands er/expand-region)
+
+  (with-eval-after-load 'evil
+      (evil-define-key 'visual 'evil-visual-state-map
+        "v" 'er/expand-region))
 #+end_src
 
 ** COMMENT symbol-overlay
@@ -1570,15 +1574,6 @@ Evil 模式编辑需要设置 undo system.
     :config
     (evil-global-set-key 'normal (kbd "/") 'ctrlf-forward-default))
 #+end_src
-** avy
-#+begin_src emacs-lisp
-  (my/comma-leader-def
-    "g" '(:ignore t :wk "Goto")
-    "gc" '(avy-goto-char :wk "Goto Char")
-    "gC" '(avy-goto-char-2 :wk "Goto Char 2")
-    "gl" '(avy-goto-line :wk "Goto Line")
-    "gw" '(avy-goto-word-0 :wk "Goto Line"))
-#+end_src
 ** whitespace-cleanup-mode
 #+begin_src emacs-lisp
   (use-package whitespace-cleanup-mode
@@ -1601,9 +1596,11 @@ Evil 模式编辑需要设置 undo system.
 ** yasnippet
 #+begin_src emacs-lisp
   (use-package yasnippet
-    :hook (on-first-file . yas-global-mode))
-  (use-package yasnippet-snippets
-    :after yasnippet)
+    :hook (on-first-file . yas-global-mode)
+    :config
+    (use-package yasnippet-snippets
+      :after yasnippet))
+
 #+end_src
 
 ** rg
@@ -1644,6 +1641,7 @@ Evil 模式编辑需要设置 undo system.
   (setq tab-always-indent 'complete)
 
   (use-package orderless
+    :defer 2
     :config
     (setq completion-styles '(orderless partial-completion)))
 #+end_src
@@ -1687,7 +1685,7 @@ Evil 模式编辑需要设置 undo system.
                    (window-parameters (mode-line-format . none)))))
 
   (my/space-leader-def
-    "fe" '(embark-open-externally :wk "Open externally"))
+    "oe" '(embark-open-externally :wk "Open externally"))
 #+end_src
 *** consult
 #+begin_src emacs-lisp
@@ -1727,22 +1725,18 @@ Evil 模式编辑需要设置 undo system.
     (setq corfu-preselect 'valid)
 
     (setq-default corfu-quit-no-match 'separator)
-    :init
+
     (defun corfu-enable-always-in-minibuffer ()
-    "Enable Corfu in the minibuffer if Vertico/Mct are not active."
-    (unless (or (bound-and-true-p mct--active)
-                (bound-and-true-p vertico--input)
-                (eq (current-local-map) read-passwd-map))
-      (setq-local corfu-auto nil) ;; Enable/disable auto completion
-      (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
-                  corfu-popupinfo-delay nil)
-      (corfu-mode 1)))
-    :hook ((on-first-buffer . global-corfu-mode)
-           (eshell-mode-hook . (lambda ()
-                                 (setq-local corfu-quit-at-boundary t
-                                             corfu-quit-no-match t
-                                             corfu-auto nil)
-                                 (corfu-mode)))))
+      "Enable Corfu in the minibuffer if Vertico/Mct are not active."
+      (unless (or (bound-and-true-p mct--active)
+                  (bound-and-true-p vertico--input)
+                  (eq (current-local-map) read-passwd-map))
+        (setq-local corfu-auto nil) ;; Enable/disable auto completion
+        (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
+                    corfu-popupinfo-delay nil)
+        (corfu-mode 1)))
+    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
+    :hook (after-init . global-corfu-mode))
 
   (use-package corfu-echo
     :hook (corfu-mode . corfu-echo-mode))
@@ -1754,11 +1748,10 @@ Evil 模式编辑需要设置 undo system.
 *** kind-icon
 #+begin_src emacs-lisp
   (use-package kind-icon
-    :after corfu
+    :commands kind-icon-margin-formatter
     :config
     (setq kind-icon-use-icons t)
-    (setq kind-icon-default-face 'corfu-default)
-    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+    (setq kind-icon-default-face 'corfu-default))
 #+end_src
 *** cape
 #+begin_src emacs-lisp
@@ -1864,26 +1857,28 @@ Emacs 的拉圾回收太影响性能，此包的作用是当 Emacs 处于 idle �
 ** file-info
 #+begin_src emacs-lisp
   (use-package file-info
-    :bind ("C-c f i" . file-info-show)
+    :commands file-info-show
     :config
     (setq hydra-hint-display-type 'posframe)
     (setq hydra-posframe-show-params `(:poshandler posframe-poshandler-frame-center
                                                    :internal-border-width 2
                                                    :internal-border-color "#61AFEF"
                                                    :left-fringe 16
-                                                   :right-fringe 16))
+                                                   :right-fringe 16)))
 
-    (my/space-leader-def
-      "fs" '(file-info-show :wk "File info")))
+  (my/space-leader-def
+    "mi" '(file-info-show :wk "File info"))
 #+end_src
+
 ** disk-usage
 #+begin_src emacs-lisp
   (use-package disk-usage
     :bind ("C-c d u" . disk-usage))
   (my/space-leader-def
-    "d" '(:ignore t :wk "Disk")
-    "du" '(disk-usage :wk "usage"))
+    "m" '(:ignore t :wk "Misc")
+    "md" '(disk-usage :wk "Disk usage"))
 #+end_src
+
 ** youtube-dl
 #+begin_src emacs-lisp
   (use-package youtube-dl
@@ -1902,8 +1897,8 @@ Emacs 的拉圾回收太影响性能，此包的作用是当 Emacs 处于 idle �
     (shell-command "shortcuts run \"OCR Selected Area\"")
     (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
 
-  (my/comma-leader-def
-    "o" '(my/ocr :wk "OCR"))
+  (my/space-leader-def
+    "mo" '(my/ocr :wk "OCR"))
 #+end_src
 ** proxy
 #+begin_src emacs-lisp
@@ -2034,13 +2029,13 @@ Emacs 内置了 dictionary，默认是查询的 dict.org。
     (setq gts-buffer-follow-p t)
     (setq gts-translate-list '(("en" "zh")))
     (setq gts-default-translator (gts-translator
-                                  :picker (gts-noprompt-picker)
-                                  :engines (list
-                                            (gts-google-engine :parser (gts-google-summary-parser)))
-                                  :render (gts-buffer-render))))
-  (my/space-leader-def
-   "l" '(:ignore t :wk "Language")
-   "ll" '(gts-do-translate :wk "Translate"))
+				  :picker (gts-noprompt-picker)
+				  :engines (list
+					    (gts-google-engine :parser (gts-google-summary-parser)))
+				  :render (gts-buffer-render))))
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) 'global
+      "gll" 'gts-do-translate))
 #+end_src
 ** lingva
 go-translate 的备用。
@@ -2050,8 +2045,9 @@ go-translate 的备用。
     :config
     (setq lingva-target "zh"))
 
-  (my/space-leader-def
-    "lL" '(lingva-translate :wk "Lingva"))
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) 'global
+      "glL" 'lingva-translate))
 #+end_src
 
 ** sdcv
@@ -2097,11 +2093,11 @@ go-translate 的备用。
             "21世纪双语科技词典"
             "quick_eng-zh_CN")))
 
-  (my/space-leader-def
-    "lp" '(sdcv-search-pointer :wk "SDCV Point")
-    "li" '(sdcv-search-input+ :wk "SDCV Input"))
-
   (with-eval-after-load 'evil-collection
+      (evil-define-key '(normal visual) 'global
+        "glp" 'sdcv-search-pointer
+        "gli" 'sdcv-search-input+)
+
     (evil-collection-define-key 'normal 'sdcv-mode-map
       "q" 'quit-window))
 #+end_src
@@ -2115,8 +2111,9 @@ go-translate 的备用。
   (use-package osx-dictionary
     :commands osx-dictionary-search-pointer)
 
-  (my/space-leader-def
-    "ld" '(osx-dictionary-search-pointer :wk "OSX dictionary"))
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) 'global
+      "gld" 'osx-dictionary-search-pointer))
 #+end_src
 ** powerthesaurus
 这个的好处是可以用于查询同义词、反义词等等，用于替换单词比较方便。
@@ -2131,16 +2128,11 @@ go-translate 的备用。
                powerthesaurus-lookup-definitions-dwim
                powerthesaurus-lookup-sentences-dwim))
 
-  (my/space-leader-def
-    "ls" '(:ignore t :wk "synosaurus")
-    "lsl" '(powerthesaurus-lookup-dwim :wk "Dwim")
-    "lsr" '(powerthesaurus-lookup-related-dwim :wk "Related")
-    "lss" '(powerthesaurus-lookup-synonyms-dwim :wk "Synonyms")
-    "lsa" '(powerthesaurus-lookup-antonyms-dwim :wk "Antonyms")
-    "lsd" '(powerthesaurus-lookup-definitions-dwim :wk "Definitions")
-    "lsj" '(powerthesaurus-lookup-sentences-dwim :wk "Sentences"))
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) 'global
+      "glt" 'powerthesaurus-lookup-dwim))
 #+end_src
-** COMMENT dictionary-overlay
+** dictionary-overlay
 [[https://github.com/ginqi7/websocket-bridge][websocket-bridge]] and [[https://github.com/ginqi7/dictionary-overlay][dictionary-overlay]] can be used to learn English words.
 
 我的日常使用流程是使用 ~SPC b r~ 来渲染 buffer, 使用 ~SPC l k~ 标记不认识的单词，使用 ~SPC l K~ 将单词标记为己知。
@@ -2149,36 +2141,21 @@ go-translate 的备用。
 
 这个功能在阅读 [[RSS]] 的时候十分的方便。
 #+begin_src emacs-lisp
-  (use-package dictonary-overlay
+  (use-package dictionary-overlay
+    :defer 5
     :load-path "~/.emacs.d/packages/dictionary-overlay/"
-    :commands (dictionary-overlay-mark-word-unknown
-               dictionary-overlay-mark-word-known
-               dictionary-overlay-toggle)
     :config
     (setq dictionary-overlay-translators '("local" "darwin" "sdcv" "web"))
     (setq dictionary-overlay-user-data-directory
-          (expand-file-name "var/dictionary-overlay" user-emacs-directory)))
+          (expand-file-name "var/dictionary-overlay" user-emacs-directory))
+    (setq dictionary-overlay-python "/opt/homebrew/bin/python3.10")
+    (dictionary-overlay-start))
 
-  ;; (add-to-list 'load-path "~/.emacs.d/lib/dictionary-overlay/")
-  ;; (add-to-list 'load-path "~/.emacs.d/lib/websocket-bridge")
-  ;; (run-with-idle-timer 2 nil (lambda ()
-  ;;                                  (require 'websocket-bridge)
-  ;;                                  (require 'dictionary-overlay)
-  ;;                                  (dictionary-overlay-start)))
-
-  ;; (with-eval-after-load 'dictionary-overlay
-  ;;   (setq dictionary-overlay-translators '("local" "darwin" "sdcv" "web"))
-  ;;   (setq dictionary-overlay-user-data-directory (expand-file-name "var/dictionary-overlay" user-emacs-directory))
-  ;;   (with-eval-after-load 'osx-dictionary
-  ;;     (advice-add 'osx-dictionary-search-pointer :after 'dictionary-overlay-mark-word-unknown))
-  ;;   (with-eval-after-load 'sdcv
-  ;;     (advice-add 'sdcv-search-input+ :after 'dictionary-overlay-mark-word-unknown)
-  ;;     (advice-add 'sdcv-search-pointer :after 'dictionary-overlay-mark-word-unknown)))
-
-  (my/space-leader-def
-    "lk" '(dictionary-overlay-mark-word-unknown :wk "Mark word unknown")
-    "lK" '(dictionary-overlay-mark-word-known :wk "Mark word known")
-    "br" '(dictionary-overlay-toggle :wk "Toggle Render buffer"))
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) 'global
+      "glr" 'dictionary-overlay-render-buffer
+      "glk" 'dictionary-overlay-mark-word-unknown
+      "glK" 'dictionary-overlay-mark-word-known))
 #+end_src
 
 ** flycheck
@@ -2419,14 +2396,15 @@ langtool 也可以检查语法，相比较 grammarly，不需要连网，所以�
   (use-package org-archive
     :after org
     :init
-    (setq org-archive-location (expand-file-name "todos/gtd_archive.org::datetree/" my-galaxy))
+    (setq org-archive-location (expand-file-name "todos/gtd_archive.org::datetree/" my-galaxy)))
 
-    (defun my/gtd-archive ()
-      "Archive tasks to specific file."
-      (interactive)
-      (find-file (expand-file-name "todos/gtd_archive.org" my-galaxy)))
-    (my/space-leader-def
-      "foa" '(my/gtd-archive :wk "Archive File")))
+  (defun my/gtd-archive ()
+    "Archive tasks to specific file."
+    (interactive)
+    (find-file (expand-file-name "todos/gtd_archive.org" my-galaxy)))
+
+  (my/space-leader-def
+    "fa" '(my/gtd-archive :wk "Archive File"))
 #+end_src
 
 *** org-attach
@@ -2498,20 +2476,22 @@ POST：[[https://fuco1.github.io/2023-02-08-Visit-the-org-headline-from-the-atta
     :after org
     :config
     (setq org-id-method 'ts)
-    (setq org-id-link-to-org-use-id 'create-if-interactive)
-    (defun my/copy-idlink ()
-      "Copy idlink to clipboard."
-      (interactive)
-      (when (eq major-mode 'org-agenda-mode) ;switch to orgmode
-        (org-agenda-show)
-        (org-agenda-goto))
-      (when (eq major-mode 'org-mode) ; do this only in org-mode buffers
-        (let* ((mytmphead (nth 4 (org-heading-components)))
-               (mytmpid (funcall 'org-id-get-create))
-               (mytmplink (format "- [ ] [[id:%s][%s]]" mytmpid mytmphead)))
-          (kill-new mytmplink)
-          (message "Copied %s to killring (clipboard)" mytmplink))))
-    :bind ("<f7>" . my/copy-idlink))
+    (setq org-id-link-to-org-use-id 'create-if-interactive))
+
+  (defun my/copy-idlink ()
+    "Copy idlink to clipboard."
+    (interactive)
+    (when (eq major-mode 'org-agenda-mode) ;switch to orgmode
+      (org-agenda-show)
+      (org-agenda-goto))
+    (when (eq major-mode 'org-mode) ; do this only in org-mode buffers
+      (let* ((mytmphead (nth 4 (org-heading-components)))
+             (mytmpid (funcall 'org-id-get-create))
+             (mytmplink (format "- [ ] [[id:%s][%s]]" mytmpid mytmphead)))
+        (kill-new mytmplink)
+        (message "Copied %s to killring (clipboard)" mytmplink))))
+
+  (global-set-key (kbd "<f7>") 'my/copy-idlink)
 
   (my/space-leader-def
     "oi" '(org-id-get-create :wk "Create ID"))
@@ -2767,7 +2747,9 @@ Punch in or out.
       (widen)
       (org-with-point-at clock-in-to-task
         (org-clock-in nil))))
+#+end_src
 
+#+begin_src emacs-lisp
   (defun my/toggle-punch-in-or-out ()
     "Start clock or stop it when there is a clocking."
     (interactive)
@@ -2779,10 +2761,9 @@ Punch in or out.
         (bh/punch-in nil)
         (alert "Start Working: Fighting" :title "Punch In" ))))
 
-  (my/comma-leader-def
-    "i" '(my/toggle-punch-in-or-out :wk "Punch In or Out"))
+  (my/space-leader-def
+    "op" '(my/toggle-punch-in-or-out :wk "Punch In or Out"))
 #+end_src
-
 *** org buffer
 #+begin_src emacs-lisp
   (add-to-list 'display-buffer-alist
@@ -2884,29 +2865,30 @@ Punch in or out.
                ekg-show-rename-tag
                ekg-browse-url)
     :bind (("<f9>" . ekg-capture)
-           ("M-<f9>" . ekg-capture-url))
-    :general
-    (evil-define-key 'motion ekg-notes-mode-map
-      "q" 'quit-window)
+           ("C-<f9>" . ekg-capture-url)
+           (:map ekg-notes-mode-map
+                 ("q" . quit-window)))
     :config
     (setq triples-default-database-filename (expand-file-name "ekg/triples.db" my-galaxy)))
 
   (add-to-list 'display-buffer-alist '("\\*EKG"
-                                         (display-buffer-pop-up-frame)
-                                         (window-parameters
-                                          (no-other-window . t)
-                                          (mode-line-format . none)
-                                          (no-delete-other-windows . t))))
-  (my/space-leader-def
-    "e" '(:ignore t :wk "EKG")
-    "ee" '(ekg-show-notes-with-tag :wk "With TAG")
-    "ed" '(ekg-show-notes-for-today :wk "Today")
-    "eA" '(ekg-show-notes-with-all-tags :wk "All TAG")
-    "ea" '(ekg-show-notes-with-any-tags :wk "Any TAG")
-    "et" '(ekg-show-notes-in-trash :wk "Trash")
-    "er" '(ekg-rename-tag :wk "Rename TAG")
-    "eb" '(ekg-browse-url :wk "Open URL"))
+                                       (display-buffer-pop-up-frame)
+                                       (window-parameters
+                                        (no-other-window . t)
+                                        (mode-line-format . none)
+                                        (no-delete-other-windows . t))))
+
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) 'global
+      "ged" 'ekg-show-notes-for-today
+      "gee" 'ekg-show-notes-with-tag
+      "gea" 'ekg-show-notes-with-any-tags
+      "geA" 'ekg-show-notes-with-all-tags
+      "geb" 'ekg-browse-url
+      "ger" 'ekg-rename-tag)
+    (evil-set-initial-state 'ekg-notes-mode 'emacs))
 #+end_src
+
 ** org-roam
 readinglog 和 reference 模板见 [[./template/]] 文件夹。
 
@@ -3190,13 +3172,6 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
 ** dynamic org-agenda
 vulpea to build dynamic agenda.
 #+begin_src emacs-lisp
-  ;; (autoload 'vulpea-buffer-tags-get "vulpea" "" t) ;
-  ;; (autoload 'vulpea-buffer-tags-add "vulpea" "" t)
-  ;; (autoload 'vulpea-buffer-tags-remove "vulpea" "" t)
-  ;; (autoload 'vulpea-buffer-prop-set "vulpea" "" t)
-  ;; (autoload 'vulpea-buffer-prop-get "vulpea" "" t)
-  ;; (autoload 'vulpea-buffer-prop-set-list "vulpea" "" t)
-  ;; (autoload 'vulpea-buffer-prop-get-list "vulpea" "" t)
   (use-package vulpea
     :after org-roam
     :config
@@ -3272,17 +3247,15 @@ vulpea to build dynamic agenda.
     (interactive)
     (find-file (expand-file-name "todos/gtd.org" my-galaxy)))
   (my/space-leader-def
-    "fog" '(my/gtd-file :wk "GTD file"))
+    "fg" '(my/gtd-file :wk "GTD file"))
 #+end_src
 
 #+begin_src emacs-lisp
   (use-package org-agenda
-    :after org
     :bind ("<f12>" . my/org-agenda)
     :hook (org-agenda-finalize . #'org-agenda-find-same-or-today-or-agenda)
-    :init
-    (setq org-agenda-files (directory-files-recursively (expand-file-name "todos" my-galaxy) "org$\\|archive$"))
     :config
+    (setq org-agenda-files (directory-files-recursively (expand-file-name "todos" my-galaxy) "org$\\|archive$"))
     (setq org-agenda-dim-blocked-tasks t)
     (setq org-agenda-compact-blocks t)
     (setq org-agenda-window-setup 'other-tab)
@@ -3376,35 +3349,35 @@ vulpea to build dynamic agenda.
                                          (:family "FontAwesome" :height 1.0)
                                          face
                                          (:family "FontAwesome" :height 1.0))))
-             nil nil :ascent center)))
+             nil nil :ascent center))))
 
-    (defun my/org-agenda ()
-      "Open my `org-agenda'.
+  (defun my/org-agenda ()
+    "Open my `org-agenda'.
   Run `org-roam-db-sync' to get full lists of org agenda files."
-      (interactive)
-      (if (eq major-mode 'org-agenda-mode)
-          (org-agenda-redo-all)
-        (org-agenda "" " ")))
+    (interactive)
+    (if (eq major-mode 'org-agenda-mode)
+        (org-agenda-redo-all)
+      (org-agenda "" " ")))
 
-    (defun my/org-agenda-query ()
-      "Open my `org-agenda' and `m'.
+  (defun my/org-agenda-query ()
+    "Open my `org-agenda' and `m'.
     Run `org-roam-db-sync' to get full lists of org agenda files."
-      (interactive)
-      (org-roam-db-sync)
-      (org-agenda "" "m"))
+    (interactive)
+    (org-roam-db-sync)
+    (org-agenda "" "m"))
 
-    (defun my/org-inprogress-tasks ()
-      (interactive)
-      (org-todo-list "INPROGRESS"))
+  (defun my/org-inprogress-tasks ()
+    (interactive)
+    (org-todo-list "INPROGRESS"))
 
-    (my/space-leader-def
-      "o" '(:ignore t :wk "Org")
-      "oa" '(:ignore t :wk "Agenda")
-      "oaa" '(my/org-agenda :wk "Agenda")
-      "oaq" '(my/org-agenda-query :wk "Query")
-      "oat" '(org-todo-list :wk "Todo list")
-      "oav" '(org-search-view :wk "View search")
-      "oai" '(my/org-inprogress-tasks :wk "Inprogess tasks")))
+  (my/space-leader-def
+    "o" '(:ignore t :wk "Org")
+    "oa" '(:ignore t :wk "Agenda")
+    "oaa" '(my/org-agenda :wk "Agenda")
+    "oaq" '(my/org-agenda-query :wk "Query")
+    "oat" '(org-todo-list :wk "Todo list")
+    "oav" '(org-search-view :wk "View search")
+    "oai" '(my/org-inprogress-tasks :wk "Inprogess tasks"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3444,7 +3417,7 @@ vulpea to build dynamic agenda.
     (setq diary-date-forms diary-iso-date-forms)
     :hook (calendar-today-visible . #'calendar-mark-today))
 
-  (my/comma-leader-def
+  (my/space-leader-def
     "c" '(calendar :wk "Calendar"))
 #+end_src
 
@@ -3570,29 +3543,27 @@ Zen Mode 或者叫禅模式，其目的是为了降低不相关因素对于心�
     (setq math-preview-margin '(1 . 0)))
 
   (my/space-leader-def
-    "mpa" '(math-preview-all :wk "All")
-    "mpA" '(math-preview-clear-all :wk "Clear All")
-    "mpp" '(math-preview-at-point :wk "Point")
-    "mpP" '(math-preview-clear-at-point :wk "Clear Point")
-    "mpr" '(math-preview-region :wk "Region")
-    "mpR" '(math-preview-clear-region :wk "Clear Region"))
+    "p" '(:ignore t :wk "Preview")
+    "pa" '(math-preview-all :wk "All")
+    "pA" '(math-preview-clear-all :wk "Clear All")
+    "pp" '(math-preview-at-point :wk "Point")
+    "pP" '(math-preview-clear-at-point :wk "Clear Point")
+    "pr" '(math-preview-region :wk "Region")
+    "pR" '(math-preview-clear-region :wk "Clear Region"))
 #+end_src
 
 ** plantuml
 #+begin_src emacs-lisp
   (use-package plantuml
     :commands (plantuml-org-to-mindmap-open plantuml-org-to-wbs-open)
-    :hook (org-mode . (lambda ()
-                        (require 'plantuml)))
     :config
     (setq plantuml-jar-path
           (concat (string-trim
                    (shell-command-to-string "readlink -f $(brew --prefix plantuml)"))
                   "/libexec/plantuml.jar")))
   (my/space-leader-def
-    "op" '(:ignore t :wk "Plantuml")
-    "opm" '(plantuml-org-to-mindmap-open :wk "Mindmap")
-    "ops" '(plantuml-org-to-wbs-open :wk "Work Breakdown Structure"))
+    "pm" '(plantuml-org-to-mindmap-open :wk "Mindmap")
+    "ps" '(plantuml-org-to-wbs-open :wk "Work Breakdown Structure"))
 #+end_src
 
 ** org-rainbow-tags
@@ -3610,17 +3581,18 @@ Zen Mode 或者叫禅模式，其目的是为了降低不相关因素对于心�
     (setq alarm-clock-cache-file (expand-file-name "var/.alarm-clock.cache" user-emacs-directory)))
 #+end_src
 
-** COMMENT alert
+** alert
 #+begin_src emacs-lisp
   (use-package alert
-    :defer t
+    :commands alert
     :config
     (setq alert-default-style 'osx-notifier))
 #+end_src
+
 ** COMMENT org-alert
 #+begin_src emacs-lisp
   (use-package org-alert
-    :hook (after-init . org-alert-enable)
+    :hook (on-first-file . org-alert-enable)
     :config
     (setq org-alert-interval 300)
     (setq org-alert-notify-cutoff 10)
@@ -3769,21 +3741,22 @@ eaf-pdf-viewer 存在的问题还是安装较难，对于系统环境要求较�
                             (note . "${title}")))
     (setq citar-symbol-separator "  ")
     (setq citar-file-additional-files-separator "-")
-    (setq citar-at-point-function 'embark-act))
-
-  (use-package citar
-    :after all-the-icons
-    :config
-    (setq citar-symbols
+    (setq citar-at-point-function 'embark-act)
+    (with-eval-after-load 'all-the-icons
+     (setq citar-symbols
           `((file ,(all-the-icons-faicon "file-pdf-o" :face 'all-the-icons-dred :v-adjust -0.1) . " ")
             (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-            (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))))
+            (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " ")))))
+
+  (use-package citar-latex
+    :after citar)
 
   (use-package citar-capf
     :hook ((LaTeX-mode . citar-capf-setup)
            (org-mode . citar-capf-setup)))
 
   (use-package citar-org
+    :after citar
     :config
     (setq org-cite-insert-processor 'citar)
     (setq org-cite-follow-processor 'citar)
@@ -4385,17 +4358,16 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
                :keybinding "z"
                :docstring "Search Zhihu."))
 
-  (my/comma-leader-def
-    "s" '(:ignore t :wk "Search")
-    "sb" '(engine/search-bookdouban :wk "Book DouBan")
-    "ss" '(engine/search-google :wk "Google")
-    "sg" '(engine/search-github :wk "Github")
-    "sy" '(engine/search-youtube :wk "Youtube")
-    "sw" '(engine/search-wikipedia :wk "Wikipedia")
-    "sm" '(engine/search-moviedouban :wk "Movie DouBan")
-    "sz" '(engine/search-zhihu :wk "Zhihu")
-    "sr" '(rg :wk "rg")
-    "sl" '(consult-git-log-grep :wk "Git Log Grep"))
+  (with-eval-after-load 'evil
+      (evil-define-key '(normal visual) 'global
+        "gsb" 'engine/search-bookdouban
+        "gss" 'engine/search-google
+        "gsg" 'engine/search-github
+        "gsw" 'engine/search-wikipedia
+        "gsm" 'engine/search-moviedouban
+        "gsz" 'engine/search-zhihu
+        "gsr" 'rg
+        "gsl" 'consult-git-grep))
 #+end_src
 
 [[https://github.com/xuchunyang/grab-mac-link.el][xuchunyang/grab-mac-link.el: Grab link from Mac Apps and insert it into Emacs]]. 很方便的在文件中增加当前浏览网页的链接，我使用 MacOS, 常用的是 Safari 浏览器。
@@ -4427,8 +4399,8 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
     :config
     (setq elfeed-show-entry-switch #'elfeed-display-buffer))
 
-  (my/comma-leader-def
-    "r" '(elfeed-summary :wk "Elfeed"))
+  (my/space-leader-def
+    "R" '(elfeed-summary :wk "Elfeed"))
 
   (add-to-list 'display-buffer-alist
                `(,(rx (| "*elfeed-search*"
@@ -4444,17 +4416,17 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 [[https://github.com/remyhonig/elfeed-org][remyhonig/elfeed-org: Configure the Elfeed RSS reader with an Orgmode file]] 通过 org 集中管理 elfeed 源。
 #+begin_src emacs-lisp
   (use-package elfeed-org
-    :after elfeed
-    :init
-    (setq rmh-elfeed-org-files `(,(concat my-galaxy "/rss/elfeed.org"))))
+    :after elfeed)
+
+  (setq rmh-elfeed-org-files `(,(concat my-galaxy "/rss/elfeed.org")))
 
   (defun my/rss-source ()
-    "Open elfeed config file."
-    (interactive)
-    (find-file (car rmh-elfeed-org-files)))
+      "Open elfeed config file."
+      (interactive)
+      (find-file (car rmh-elfeed-org-files)))
 
   (my/space-leader-def
-    "foe" '(my/rss-source :wk "Elfeed file"))
+    "fe" '(my/rss-source :wk "Elfeed file"))
 #+end_src
 *** elfeed-summary
 [[https://github.com/SqrtMinusOne/elfeed-summary][SqrtMinusOne/elfeed-summary: Feed summary interface for elfeed]]
@@ -4620,8 +4592,8 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
                  (message "PDF highlights added to org heading '%s'" org-heading))
              (message "Org heading '%s' not found" org-heading)))))))
 
-  (my/comma-leader-def
-    "h" '(my/pdf-extract-highlight :wk "Extract highlight"))
+  (my/space-leader-def
+    "mh" '(my/pdf-extract-highlight :wk "Extract highlight"))
 #+end_src
 #+begin_src emacs-lisp
   (defun my/dired-pdf-to-png ()
@@ -4698,7 +4670,7 @@ Calibre 用于管理书籍，Calibredb 可以在 Emacs 中管理而不需要打�
           (vterm)
           (evil-insert 1)))))
 
-  (my/comma-leader-def
+  (my/space-leader-def
     "v" '(toggle-vterm :wk "vterm"))
 #+end_src
 ** Mail
@@ -4792,7 +4764,7 @@ error in process sentinel: Mu server process ended with exit code 1
     (define-key mu4e-headers-mode-map (kbd "C-c l") 'org-store-link))
 #+end_src
 #+begin_src emacs-lisp
-  (my/comma-leader-def
+  (my/space-leader-def
     "e" '(mu4e :wk "MAIL"))
 #+end_src
 #+begin_src emacs-lisp
@@ -4880,26 +4852,27 @@ Save mail to html as backup.
   (setq mail-specify-envelope-from t)
   (setq mail-envelope-from 'header)
 #+end_src
-*** COMMENT org-msg
+*** org-msg
 使用 [[https://github.com/jeremy-compostella/org-msg][jeremy-compostella/org-msg: OrgMsg is a GNU/Emacs global minor mode mixing up Org mode and Message mode to compose and reply to emails in a Outlook HTML friendly style.]] 来编写 Email.
 
 需要添加附件时执行 C-c C-a.
 #+begin_src emacs-lisp
-    (setq org-msg-options "html-preamble:nil html-postamble:nil toc:nil author:nil email:nil")
-    (setq org-msg-greeting-fmt "\nHi%s,\n\n")
-    (setq org-msg-recipient-names `(,user-mail-address . ,user-full-name))
-    (setq org-msg-greeting-name-limit 3)
-    (setq org-msg-default-alternatives '((new		. (text html))
-                                         (reply-to-html	. (text html))
-                                         (reply-to-text	. (text))))
-    (setq org-msg-convert-citation t)
+  (use-package org-msg
+    :hook (mu4e-main-mode . org-msg-mode)
+    :config
+  (setq org-msg-options "html-preamble:nil html-postamble:nil toc:nil author:nil email:nil")
+  (setq org-msg-greeting-fmt "\nHi%s,\n\n")
+  (setq org-msg-recipient-names `(,user-mail-address . ,user-full-name))
+  (setq org-msg-greeting-name-limit 3)
+  (setq org-msg-default-alternatives '((new		. (text html))
+                                       (reply-to-html	. (text html))
+                                       (reply-to-text	. (text))))
+  (setq org-msg-convert-citation t)
 
-    (setq org-msg-signature (concat "Best Regards,\n\n#+begin_signature\n*"
-                                    user-full-name
-                                    "*\n\n" (format-time-string "%Y-%m-%d")
-                                    "\n#+end_signature"))
-
-    (add-hook 'mu4e-main-mode-hook 'org-msg-mode)
+  (setq org-msg-signature (concat "Best Regards,\n\n#+begin_signature\n*"
+                                  user-full-name
+                                  "*\n\n" (format-time-string "%Y-%m-%d")
+                                  "\n#+end_signature")))
 #+end_src
 
 ** Report
@@ -4934,9 +4907,13 @@ clocktable 中的 scope 可以是自定义的函数，下面的函数将 books �
     (setq achive-language 'zh)
     (setq achive-cache-path (expand-file-name ".achive" no-littering-var-directory)))
 
-  (my/comma-leader-def
-    "a" '(achive :wk "A-share"))
+  (my/space-leader-def
+    "ms" '(achive :wk "Share"))
 
+  (add-to-list 'display-buffer-alist '("\\*A Chive\\*"
+                                       (display-buffer-in-new-tab)
+                                       (tab-name . "Share")
+                                       (tab-group . "Misc")))
   (with-eval-after-load 'evil-collection
     (evil-collection-define-key 'normal 'achive-visual-mode-map
       "q" 'quit-window))
@@ -4967,8 +4944,8 @@ clocktable 中的 scope 可以是自定义的函数，下面的函数将 books �
       (shell-command (format "defaults read \"%s\"Contents/Info.plist CFBundleIdentifier | xargs open -b" to-launch))))
 #+end_src
 #+begin_src emacs-lisp
-  (my/comma-leader-def
-    "j" '(mac-launchpad :wk "Jump to App"))
+  (my/space-leader-def
+    "mj" '(mac-launchpad :wk "Jump to App"))
 #+end_src
 ** Open file with system file manager
 #+begin_src emacs-lisp
@@ -4998,7 +4975,7 @@ clocktable 中的 scope 可以是自定义的函数，下面的函数将 books �
           (start-process "" nil openFileProgram (shell-quote-argument $path)))))))
 
   (my/space-leader-def
-    "fd" '(xah-show-in-desktop :wk "Open in Finder"))
+    "of" '(xah-show-in-desktop :wk "Open Finder"))
 #+end_src
 
 ** Remove link
@@ -5076,7 +5053,7 @@ clocktable 中的 scope 可以是自定义的函数，下面的函数将 books �
 #+end_src
 #+begin_src emacs-lisp
   (my/space-leader-def
-    "lt" '(yt-set-time :wk "Set Youtube link time"))
+    "my" '(yt-set-time :wk "Youtube link time"))
 #+end_src
 ** self define function
 #+begin_src emacs-lisp
@@ -5123,14 +5100,14 @@ clocktable 中的 scope 可以是自定义的函数，下面的函数将 books �
     (find-file (expand-file-name "roam/main/reading-record.org" my-galaxy)))
 
   (my/space-leader-def
-    "fo" '(:ignore t :wk "Open file")
-    "fob" '(my/reading-record :wk "Reading record")
-    "foi" '(my/inbox-file :wk "Inbox file")
-    "foI" '(my/index-file :wk "Index file")
-    "fop" '(my/plan-file :wk "Plan file")
-    "fof" '(my/finance-file :wk "Finance file")
-    "for" '(my/reflection-file :wk "Reflection file")
-    "fog" '(my/gtd-file :wk "GTD file"))
+    "f" '(:ignore t :wk "Open files")
+    "fb" '(my/reading-record :wk "Reading record")
+    "fi" '(my/inbox-file :wk "Inbox file")
+    "fI" '(my/index-file :wk "Index file")
+    "fp" '(my/plan-file :wk "Plan file")
+    "ff" '(my/finance-file :wk "Finance file")
+    "fr" '(my/reflection-file :wk "Reflection file")
+    "fg" '(my/gtd-file :wk "GTD file"))
 
   (defun my/start-server ()
     (interactive)

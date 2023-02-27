@@ -81,7 +81,7 @@ org-mode
 
 (hugo
  "#+DESCRIPTION: " p n>
- "#+DATE: " (format-time-string "%Y-%m-%d %H:%m") p n>
+ "#+DATE: " p n>
  "#+OPTIONS: author:nil" p n>
  "#+HUGO_BASE_DIR: ~/Documents/hugo-source" n>
  "#+HUGO_AUTO_SET_LASTMOD: t" n>
