@@ -316,9 +316,6 @@
 [submodule "packages/nov.el"]
 	path = packages/nov.el
 	url = https://depp.brause.cc/nov.el.git
-[submodule "packages/emacs-hide-mode-line"]
-	path = packages/emacs-hide-mode-line
-	url = https://github.com/hlissner/emacs-hide-mode-line.git
 [submodule "packages/mode-line-bell"]
 	path = packages/mode-line-bell
 	url = https://github.com/purcell/mode-line-bell.git

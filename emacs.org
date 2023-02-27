@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-02-27 Mon 00:56]
+#+DATE: [2023-02-27 Mon 12:29]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -31,6 +31,8 @@
   ;; (setq-default initial-major-mode 'fundamental-mode)
   ;; Disable mode-line when emacs startup.
   (setq-default mode-line-format nil)
+
+  (setq initial-buffer-choice nil)
 
   (setq byte-compile-warnings nil)
   ;;; early-init.el ends here
@@ -245,6 +247,9 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
                                         (setq-local evil-shift-width tab-width))))
     :init
     (setq evil-want-keybinding nil)
+    (setq evil-want-integration t)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-h-delete t)
     :config
     (setq evil-undo-system 'undo-fu)
     (setq evil-respect-visual-line-mode t)
@@ -257,6 +262,8 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     (setq evil-replace-state-tag " 𝐑 ")
     (setq evil-operator-state-tag " O ")
     (setq evil-emacs-state-tag " E "))
+
+  (global-set-key (kbd "C-M-u") 'universal-argument)
 #+end_src
 下面的配置来源：[[https://github.com/redguardtoo/emacs.d/blob/master/lisp/init-evil.el][emacs.d/init-evil.el at master · redguardtoo/emacs.d]]
 *** evil-collection
@@ -410,7 +417,7 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     "qs" '(my/start-server :wk "Server Delete"))
 #+end_src
 
-** Magit
+** COMMENT Magit
 [[https://github.com/magit/magit][magit/magit: It's Magit! A Git Porcelain inside Emacs.]] 是 Emacs 上的一大杀器应用，相对于命令行的方式使用 git 友好的很多。
 
 通过 borg 安装 Magit 需要增加两行 load-path 的配置。使用时通过 ~C-x g~ 即可调用 Magit.
@@ -427,7 +434,6 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     :bind ("C-x g" . magit)
     :general (:keymaps 'with-editor-mode-map
                "RET" "C-c C-c")
-    :hook (magit-status-mode . hide-mode-line-mode)
     :config
     (magit-add-section-hook 'magit-status-sections-hook
                 'magit-insert-modules
@@ -437,6 +443,10 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-upstream)
     (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote))
 
+  (add-to-list 'display-buffer-alist '("^\\magit"
+                                       (display-buffer-reuse-window)
+                                       (window-parameters
+                                        (mode-line-format . none))))
   (use-package forge
     :after magit)
 #+end_src
@@ -877,17 +887,6 @@ fringe-mode 需要跟一个 cons cell, 直接使用 minimal 会报错。
   %% -- print %.   %- -- print infinitely many dashes.
 Decimal digits after the % specify field width to which to pad.
 #+end_quote
-*** hide-mode-line
-[[https://github.com/hlissner/emacs-hide-mode-line][hlissner/emacs-hide-mode-line: An Emacs plugin that hides (or masks) the current buffer's mode-line]] 在有些情况下需要隐藏对应 buffer 的 modeline.
-#+begin_src emacs-lisp
-  (use-package hide-mode-line
-    :config
-        ;;:hook (dashboard-mode . hide-mode-line-mode)
-    (add-hook 'dashboard-mode-hook 'hide-mode-line-mode)
-
-    (if (string= (buffer-name) "*scratch*")
-        (hide-mode-line-mode)))
-#+end_src
 
 *** mode-line-bell
 [[https://github.com/purcell/mode-line-bell][purcell/mode-line-bell: Flash the Emacs mode line instead of ringing the bell]] 如题。
@@ -1058,9 +1057,12 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
 ** calculator
 #+begin_src emacs-lisp
   (use-package calc
-    :commands calc
-    :hook ((clac-mode . hide-mode-line-mode)
-           (clac-trail-mode . hide-mode-line-mode)))
+    :hook ((calc-trail-mode . (lambda ()
+                                (setq-local mode-line-format nil)))
+           (calc-mode . (lambda ()
+                          (setq-local mode-line-format nil))))
+    :config
+    (setq calc-window-height 15))
 
   (my/comma-leader-def
     "C" '(calc :wk "calc"))
@@ -1127,7 +1129,7 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
   (use-package tab-bar
     :hook (on-first-file . tab-bar-mode)
     :config
-    (setq tab-bar-new-tab-choice "*scratch*")
+    (setq tab-bar-new-tab-choice "*dashboard*")
     (setq tab-bar-close-button-show nil)
     (setq tab-bar-tab-hints nil)
     (setq tab-bar-show nil))
@@ -1155,50 +1157,46 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
       "gs" 'tab-switch))
 #+end_src
 #+begin_src emacs-lisp
-  (add-to-list 'display-buffer-alist
-               '((or (derived-mode . org-mode))
-                 (display-buffer-in-tab)
-                 (tab-name . "Org")
-                 (tab-group . "Org")))
+    (add-to-list 'display-buffer-alist
+                 '((or (derived-mode . org-mode))
+                   (display-buffer-in-tab)
+                   (tab-name . "Org")
+                   (tab-group . "Org")))
 
-  (add-to-list 'display-buffer-alist
-               '((or (derived-mode . latex-mode)
-                     (derived-mode . LaTeX-mode))
-                 (display-buffer-in-tab)
-                 (tab-name . "TEX")
-                 (tab-group . "TEX")))
+    (add-to-list 'display-buffer-alist
+                 '((or (derived-mode . latex-mode)
+                       (derived-mode . LaTeX-mode))
+                   (display-buffer-in-tab)
+                   (tab-name . "TEX")
+                   (tab-group . "TEX")))
 
-  (add-to-list 'display-buffer-alist
-               '((or (derived-mode . dired-mode)
-                     (derived-mode . dirvish-mode))
-                 (display-buffer-in-tab)
-                 (tab-name . "Dired")
-                 (tab-group . "Dired")))
+    (add-to-list 'display-buffer-alist
+                 '((or (derived-mode . dired-mode)
+                       (derived-mode . dirvish-mode))
+                   (display-buffer-in-tab)
+                   (tab-name . "Dired")
+                   (tab-group . "Dired")))
 
-  (add-to-list 'display-buffer-alist
-               '((derived-mode . image-mode)
-                 (display-buffer-in-tab)
-                 (tab-name . "Pic")
-                 (tab-group . "Pic")))
+    (add-to-list 'display-buffer-alist
+                 '((derived-mode . image-mode)
+                   (display-buffer-in-tab)
+                   (tab-name . "Pic")
+                   (tab-group . "Pic")))
 
-  (add-to-list 'display-buffer-alist
-               '((derived-mode . emacs-lisp-mode)
-                 (display-buffer-in-tab)
-                 (tab-name . "Prog")
-                 (tab-group . "Prog")))
+    (add-to-list 'display-buffer-alist
+                 '((derived-mode . emacs-lisp-mode)
+                   (display-buffer-in-tab)
+                   (tab-name . "Prog")
+                   (tab-group . "Prog")))
 
-  (add-to-list 'display-buffer-alist
-               `(,(rx (| "*scratch*"
-                         "*dashboard*"
-                         "*elfeed-search*"
-                         "*mu4e-main"
-                         "*mu4e-headers"
-                         "*elfeed-summary*"
-                         "*elfeed-entry-"
-                         "*Messages*"))
-                 (display-buffer-in-tab)
-                 (tab-name . "Home")
-                 (tab-group . "Home")))
+    (add-to-list 'display-buffer-alist
+                 `(,(rx (| "*scratch*"
+                           "*dashboard*"
+                           "*Messages*"))
+                   (display-buffer-in-tab)
+                   (tab-name . "Home")
+                   (tab-group . "Home")
+                   (window-parameters . ((mode-line-format . none)))))
 #+end_src
 ** savehist-mode
 #+begin_src emacs-lisp
@@ -1364,27 +1362,6 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
                  ("C-x C-d" . consult-dir)
                  ("C-x C-j" . consult-dir-jump-file))))
 #+end_src
-** scratch
-以下配置来源：[[https://gitee.com/cxiaoc/emacs.d/blob/master/site-lisp/config/init-scratch.el][site-lisp/config/init-scratch.el · xiaoc/emacs.d - Gitee.com]].
-也可以尝试使用：[[https://github.com/Fanael/persistent-scratch/blob/master/persistent-scratch.el][persistent-scratch/persistent-scratch.el at master · Fanael/persistent-scratch]].
-#+begin_src emacs-lisp :tangle no
-  (defun my-scratch-save ()
-    (ignore-errors
-      (with-current-buffer "*scratch*"
-        (write-region nil nil "~/.emacs.d/var/scratch"))))
-
-  (defun my-scratch-restore ()
-    (let ((f "~/.emacs.d/var/scratch"))
-      (when (file-exists-p f)
-        (with-current-buffer "*scratch*"
-          (erase-buffer)
-          (insert-file-contents f)
-          (goto-char (point-max))))))
-
-  (add-hook 'kill-emacs-hook #'my-scratch-save)
-  (add-hook 'after-init-hook #'my-scratch-restore)
-#+end_src
-
 ** window-divider-mode
 #+begin_src emacs-lisp
   (use-package frame
@@ -2430,6 +2407,13 @@ langtool 也可以检查语法，相比较 grammarly，不需要连网，所以�
 
   (add-hook 'org-capture-after-finalize-hook 'delete-frame)
 
+  (add-to-list 'display-buffer-alist '("\\*Org Select\\*"
+                                       (display-buffer-pop-up-frame)
+                                       (window-parameters
+                                        (no-other-window . t)
+                                        (mode-line-format . none)
+                                        (no-delete-other-windows . t))))
+
   (global-set-key (kbd "<f10>") 'my/org-capture)
 #+end_src
 
@@ -2910,6 +2894,12 @@ Punch in or out.
     :config
     (setq triples-default-database-filename (expand-file-name "ekg/triples.db" my-galaxy)))
 
+  (add-to-list 'display-buffer-alist '("\\*EKG"
+                                         (display-buffer-pop-up-frame)
+                                         (window-parameters
+                                          (no-other-window . t)
+                                          (mode-line-format . none)
+                                          (no-delete-other-windows . t))))
   (my/space-leader-def
     "e" '(:ignore t :wk "EKG")
     "ee" '(ekg-show-notes-with-tag :wk "With TAG")
@@ -2941,8 +2931,7 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
                                          time-stamp-start "#\\+MODIFIED:[ \t]*"
                                          time-stamp-end "$"
                                          time-stamp-format "\[%Y-%m-%d %3a %H:%M\]")
-                         (add-hook 'before-save-hook 'time-stamp nil 'local)))
-           (org-roam-mode . hide-mode-line-mode))
+                         (add-hook 'before-save-hook 'time-stamp nil 'local))))
     :config
     (setq org-roam-database-connector 'sqlite)
     (setq org-roam-db-gc-threshold most-positive-fixnum)
@@ -2976,7 +2965,7 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
 
     (cl-defmethod org-roam-node-doom-filetitle ((node org-roam-node))
       "Return the value of \"#+title:\" (if any) from file that NODE resides in.
-         If there's no file-level title in the file, return empty string."
+           If there's no file-level title in the file, return empty string."
       (or (if (= (org-roam-node-level node) 0)
               (org-roam-node-title node)
             (org-roam-get-keyword "TITLE" (org-roam-node-file node)))
@@ -2984,7 +2973,7 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
 
     (cl-defmethod org-roam-node-doom-hierarchy ((node org-roam-node))
       "Return hierarchy for NODE, constructed of its file title, OLP and direct title.
-         If some elements are missing, they will be stripped out."
+           If some elements are missing, they will be stripped out."
       (let ((title     (org-roam-node-title node))
             (olp       (org-roam-node-olp   node))
             (level     (org-roam-node-level node))
@@ -3060,8 +3049,10 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
                    (side . right)
                    (slot . 0)
                    (window-width . 0.35)
-                   (window-parameters . ((no-other-window . t)
-                                         (no-delete-other-windows . t))))))
+                   (window-parameters
+                    (mode-line-format . none)
+                    (no-other-window . t)
+                    (no-delete-other-windows . t)))))
   (my/space-leader-def
     "n" '(:ignore t :wk "Notes")
     "nr" '(org-roam-node-random :wk "Random node")
@@ -3134,26 +3125,27 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
 因为我己经不使用 deft 而是使用 consult-notes 来管理自己写的博客。使用下面的函数来创建新的文章， consult-notes 只能用于查询，无新建文件的功能。
 #+begin_src emacs-lisp
   (use-package consult-notes
-    :after consult
+    :commands consult-notes
     :config
     (setq consult-notes-file-dir-sources
-          `(("Articles"  ?a  ,(concat my-galaxy "/articles"))))
-    (defun my/new-article (article)
+          `(("Articles"  ?a  ,(concat my-galaxy "/articles")))))
+  (defun my/new-article (article)
       (interactive "sTitle: ")
       (let ((filename (format "%s" article))
             (ext ".org"))
         (find-file (concat my-galaxy "/articles/" filename ext))
         (insert "#+TITLE: " article "\n")
         (tempel-insert 'hugo)))
-    (my/space-leader-def
+
+  (my/space-leader-def
       "nc" '(my/new-article :wk "Create article")
-      "nn" '(consult-notes :wk "Consult notes")))
+      "nn" '(consult-notes :wk "Consult notes"))
 
   (use-package consult-notes-org-roam
-    :commands consult-notes-org-roam-find-node-relation
-    :config
-    (my/space-leader-def
-      "nv" '(consult-notes-org-roam-find-node-relation :wk "Node navigation")))
+    :commands consult-notes-org-roam-find-node-relation)
+
+  (my/space-leader-def
+      "nv" '(consult-notes-org-roam-find-node-relation :wk "Node navigation"))
 #+end_src
 
 *** org-transclusion
@@ -3406,12 +3398,6 @@ vulpea to build dynamic agenda.
       "oai" '(my/org-inprogress-tasks :wk "Inprogess tasks")))
 #+end_src
 
-#+begin_src emacs-lisp :tangle no
-  (run-with-idle-timer 300 t (lambda ()
-                               (progn
-                               (svg-clock)
-                               (hide-mode-line-mode))))
-#+end_src
 #+begin_src emacs-lisp
   (use-package org-agenda
     :after evil
@@ -3892,11 +3878,7 @@ Ebib 是 Emacs 中的文献管理软件，类似于 zotero, 但是我感觉 Zote
 #+begin_src emacs-lisp
   (use-package ebib
     :bind ("<f2>" . ebib)
-    :hook (ebib-index-mode . hide-mode-line-mode)
     :config
-    (setq ebib-index-mode-line nil)
-    (setq ebib-entry-mode-line nil)
-
     (setq ebib-preload-bib-files org-cite-global-bibliography)
 
     (setq ebib-keywords (concat org-roam-directory "/bibtexs/keywords.txt"))
@@ -4095,16 +4077,20 @@ emacs 上有 =latex-mode= 和 =LaTeX-mode= 两个，使用哪个取决于是否�
 #+end_src
 
 *** Reftex
-Hide mode line see [[hide-mode-line]].
 #+begin_src emacs-lisp
   (use-package reftex
     :hook ((LaTeX-mode . turn-on-reftex)
-           (reftex-toc-mode . menu-bar--visual-line-mode-enable)
-           (reftex-toc-mode . hide-mode-line-mode))
+           (reftex-toc-mode . menu-bar--visual-line-mode-enable))
     :config
     (setq reftex-toc-split-windows-horizontally t)
     (setq reftex-toc-split-windows-fraction 0.25))
 
+  (add-to-list 'display-buffer-alist '("\\*toc\\*"
+                                       (display-buffer-reuse-window)
+                                       (side . left)
+                                       (window-parameters
+                                        (mode-line-format . none)
+                                        (delete-other-windows . t))))
 #+end_src
 *** ox-latex
 #+begin_src emacs-lisp
@@ -4434,6 +4420,16 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 
   (my/comma-leader-def
     "r" '(elfeed-summary :wk "Elfeed"))
+
+  (add-to-list 'display-buffer-alist
+               `(,(rx (| "*elfeed-search*"
+                         "*elfeed-summary*"
+                         "*elfeed-entry-"))
+                 (display-buffer-in-tab)
+                 (tab-name . "RSS")
+                 (tab-group . "RSS")
+                 (window-parameters . ((mode-line-format . none)))))
+
 #+end_src
 *** elfeed-org
 [[https://github.com/remyhonig/elfeed-org][remyhonig/elfeed-org: Configure the Elfeed RSS reader with an Orgmode file]] 通过 org 集中管理 elfeed 源。
@@ -4538,11 +4534,16 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
     (message "Copied %s" (file-name-base (buffer-file-name))))
 
   (use-package pdf-outline
-    :hook ((pdf-view-mode . pdf-outline-minor-mode)
-           (pdf-outline-buffer-mode . hide-mode-line-mode))
+    :hook (pdf-view-mode . pdf-outline-minor-mode)
     :bind (:map pdf-outline-buffer-mode-map
                 ("RET" . pdf-outline-follow-link-and-quit)))
 
+  (add-to-list 'display-buffer-alist '("\\*Outline"
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 0.5)
+                                       (window-parameters
+                                        (mode-line-format . none))))
   (use-package pdf-annot
     :hook (pdf-view-mode . pdf-annot-minor-mode)
     :bind (:map pdf-annot-edit-contents-minor-mode-map
@@ -4781,7 +4782,15 @@ error in process sentinel: Mu server process ended with exit code 1
   (my/comma-leader-def
     "e" '(mu4e :wk "MAIL"))
 #+end_src
-
+#+begin_src emacs-lisp
+  (add-to-list 'display-buffer-alist
+               `(,(rx (| "*mu4e-main*"
+                         "*mu4e-headers*"))
+                 (display-buffer-in-tab)
+                 (tab-name . "Mail")
+                 (tab-group . "Mail")
+                 (window-parameters . ((mode-line-format . none)))))
+#+end_src
 *** mu4e-actions
 Save mail to pdf as backup.
 #+begin_src emacs-lisp
