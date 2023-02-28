@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-02-28 Tue 22:25]
+#+DATE: [2023-02-28 Tue 22:30]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -1931,6 +1931,9 @@ Emacs 的拉圾回收太影响性能，此包的作用是当 Emacs 处于 idle �
 
   (run-with-idle-timer 2 nil (lambda ()
                                (proxy-enable)))
+
+  (my/space-leader-def
+    "mp" '(toggle-proxy :wk "Proxy"))
 #+end_src
 #+begin_src emacs-lisp :tangle no
   (my/comma-leader-def
