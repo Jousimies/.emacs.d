@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-02-28 Tue 21:09]
+#+DATE: [2023-02-28 Tue 22:25]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -360,8 +360,6 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 #+begin_src emacs-lisp
   (with-eval-after-load 'evil
     (evil-define-key '(normal visual) 'global
-      "gt" nil
-      "gs" nil
       "ge" nil))
 #+end_src
 ** epkg
@@ -1132,7 +1130,6 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
   (use-package tab-bar
     :hook (on-first-file . tab-bar-mode)
     :config
-    ;; (setq tab-bar-new-tab-choice "*dashboard*")
     (setq tab-bar-close-button-show nil)
     (setq tab-bar-tab-hints nil)
     (setq tab-bar-show nil))
@@ -1146,23 +1143,35 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
     (setq tabspaces-use-filtered-buffers-as-default t))
 #+end_src
 #+begin_src emacs-lisp
-  (my/space-leader-def
-    "t" '(:ignore t :wk "Tabs")
-    "tn" '(tab-new :wk "New")
-    "tg" '(tab-group :wk "Group")
-    "ts" '(tab-switch :wk "switch")
-    "tr" '(tab-bar-switch-to-recent-tab :wk "Recent")
-    "tc" '(tab-close :wk "Close")
-    "tC" '(tab-close-group :wk "Close group")
-    "tO" '(tab-close-other :wk "Close other"))
+  ;; (my/space-leader-def
+  ;;   "t" '(:ignore t :wk "Tabs")
+  ;;   "tn" '(tab-new :wk "New")
+  ;;   "tg" '(tab-group :wk "Group")
+  ;;   "ts" '(tab-switch :wk "switch")
+  ;;   "tr" '(tab-bar-switch-to-recent-tab :wk "Recent")
+  ;;   "tc" '(tab-close :wk "Close")
+  ;;   "tC" '(tab-close-group :wk "Close group")
+  ;;   "tO" '(tab-close-other :wk "Close other"))
+
+  (with-eval-after-load 'evil
+    (evil-define-key 'normal 'global
+      "gs" 'tab-switch)
+    (evil-define-key 'motion org-agenda-mode-map
+      "gs" 'tab-switch))
 #+end_src
 #+begin_src emacs-lisp
   (add-to-list 'display-buffer-alist
-               '("^.*\\.\\(org\\|md\\|tex\\|log\\)$"
-                 (display-buffer-in-tab display-buffer-in-new-tab display-buffer-reuse-window)
-                 (tab-name . "Edit")
-                 (tab-group . "Edit")
-                 (window-parameters . ((inhibit-same-window . t)))))
+               '((or (derived-mode . text-mode)
+                     (derived-mode . ekg-notes-mode))
+                 (display-buffer-in-tab)
+                 (tab-name . "Edit") (tab-group . "Edit")
+                 (select . t)))
+
+  (add-to-list 'display-buffer-alist
+               '((derived-mode . prog-mode)
+                 (display-buffer-in-tab)
+                 (tab-name . "Porg") (tab-group . "Prog")
+                 (select . t)))
 
   (add-to-list 'display-buffer-alist
                '((or (derived-mode . dired-mode)
@@ -1172,25 +1181,13 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
                  (tab-group . "Dired")))
 
   (add-to-list 'display-buffer-alist
-               '((derived-mode . image-mode)
-                 (display-buffer-in-tab)
-                 (tab-name . "Pic")
-                 (tab-group . "Pic")))
-
-  (add-to-list 'display-buffer-alist
-               '((derived-mode . emacs-lisp-mode)
-                 (display-buffer-in-tab)
-                 (tab-name . "Prog")
-                 (tab-group . "Prog")))
-
-  (add-to-list 'display-buffer-alist
-               `(,(rx (| "*scratch*"
-                         "*dashboard*"
+               `(,(rx (| "*dashboard*"
                          "*Messages*"))
                  (display-buffer-in-tab)
                  (tab-name . "Home")
                  (tab-group . "Home")
-                 (window-parameters . ((mode-line-format . none)))))
+                 (window-parameters . ((mode-line-format . none)
+                                       (no-other-window . t)))))
 #+end_src
 ** savehist-mode
 #+begin_src emacs-lisp
@@ -1270,9 +1267,8 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
     (setq recentf-auto-cleanup 300)
     (setq recentf-max-saved-items 1000))
 
-  (with-eval-after-load 'evil
-    (evil-define-key 'normal 'global
-      "gr" 'recentf-open-files))
+  (my/space-leader-def
+    "fr" '(recentf-open-files :wk "Recentf"))
 #+end_src
 
 ** visual-line-mode
@@ -4450,16 +4446,16 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
                :keybinding "z"
                :docstring "Search Zhihu."))
 
-  (with-eval-after-load 'evil
-      (evil-define-key '(normal visual) 'global
-        "gsb" 'engine/search-bookdouban
-        "gss" 'engine/search-google
-        "gsg" 'engine/search-github
-        "gsw" 'engine/search-wikipedia
-        "gsm" 'engine/search-moviedouban
-        "gsz" 'engine/search-zhihu
-        "gsr" 'rg
-        "gsl" 'consult-git-grep))
+  (my/space-leader-def
+    "s" '(:ignore t :wk "Search")
+    "sb" '(engine/search-bookdouban :wk "Book")
+    "ss" '(engine/search-google :wk "Google")
+    "sg" '(engine/search-github :wk "Github")
+    "sw" '(engine/search-wikipedia :wk "Wiki")
+    "sm" '(engine/search-moviedouban :wk "Movie")
+    "sz" '(engine/search-zhihu :wk "Zhihu")
+    "sr" '(rg :wk "rg")
+    "sl" '(consult-git-grep :wk "git"))
 #+end_src
 
 [[https://github.com/xuchunyang/grab-mac-link.el][xuchunyang/grab-mac-link.el: Grab link from Mac Apps and insert it into Emacs]]. 很方便的在文件中增加当前浏览网页的链接，我使用 MacOS, 常用的是 Safari 浏览器。
@@ -5198,7 +5194,7 @@ clocktable 中的 scope 可以是自定义的函数，下面的函数将 books �
     "fI" '(my/index-file :wk "Index file")
     "fp" '(my/plan-file :wk "Plan file")
     "ff" '(my/finance-file :wk "Finance file")
-    "fr" '(my/reflection-file :wk "Reflection file")
+    "fR" '(my/reflection-file :wk "Reflection file")
     "fg" '(my/gtd-file :wk "GTD file"))
 
   (defun my/start-server ()
