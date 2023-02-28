@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-02-28 Tue 00:28]
+#+DATE: [2023-02-28 Tue 21:09]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -479,11 +479,11 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 
 不设置 charset，在 MacOS 上默认使用 =PingFanc SC= 字体，看起来也可以。
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Iosevka Fixed" :height 160)
+  (set-face-attribute 'default nil :font "Iosevka Term" :height 160)
   (if (display-graphic-p)
       (dolist (charset '(kana han cjk-misc bopomofo))
         (set-fontset-font (frame-parameter nil 'font)
-                          charset (font-spec :family "Source Han Serif SC" :height 160)) t 'prepend))
+                          charset (font-spec :family "Source Han Serif SC" :height 140)) t 'prepend))
 #+end_src
 
 ** Themes
@@ -1132,7 +1132,7 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
   (use-package tab-bar
     :hook (on-first-file . tab-bar-mode)
     :config
-    (setq tab-bar-new-tab-choice "*dashboard*")
+    ;; (setq tab-bar-new-tab-choice "*dashboard*")
     (setq tab-bar-close-button-show nil)
     (setq tab-bar-tab-hints nil)
     (setq tab-bar-show nil))
@@ -1159,9 +1159,10 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
 #+begin_src emacs-lisp
   (add-to-list 'display-buffer-alist
                '("^.*\\.\\(org\\|md\\|tex\\|log\\)$"
-                 (display-buffer-in-tab)
+                 (display-buffer-in-tab display-buffer-in-new-tab display-buffer-reuse-window)
                  (tab-name . "Edit")
-                 (tab-group . "Edit")))
+                 (tab-group . "Edit")
+                 (window-parameters . ((inhibit-same-window . t)))))
 
   (add-to-list 'display-buffer-alist
                '((or (derived-mode . dired-mode)
@@ -1208,7 +1209,8 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
 #+end_src
 
 ** midnight-mode
-作用是半夜的时候自动清理 buffer。怀疑这个导致 mu4e 出现 error code 1 的错误，先关闭试试。
+作用是半夜的时候自动清理 buffer。
++怀疑这个导致 mu4e 出现 error code 1 的错误，先关闭试试。+ 可能的原因是 emacs-plus 的问题，自编译的版本没有出现这种问题。
 #+begin_src emacs-lisp
   (add-hook 'on-first-buffer-hook 'midnight-mode)
 #+end_src
@@ -1404,6 +1406,11 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
         (make-directory target-dir t))))
 
   (add-to-list 'find-file-not-found-functions #'my/auto-create-missing-dirs)
+#+end_src
+
+** ibuffer
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+end_src
 * Awesome Emacs Equipped with Third-Party Packages
 ** undo
@@ -1938,6 +1945,33 @@ Emacs 的拉圾回收太影响性能，此包的作用是当 Emacs 处于 idle �
   (use-package advance-words-count
     :bind ("M-=" . advance-words-count))
 #+end_src
+** Convert eps to png
+#+begin_src emacs-lisp
+  (defun eps-to-png-marked ()
+    "Convert all marked EPS files in the current Dired buffer to PNG format using ImageMagick's convert utility.
+  Each input file is converted to a PNG file with the same basename.
+  This function requires ImageMagick's convert utility to be installed and available in the system's PATH."
+    (interactive)
+    (let ((eps-files (dired-get-marked-files)))
+      (when (not eps-files)
+        (error "No marked files in Dired buffer."))
+      (let ((n 0))
+        (message "Converting:\n")
+        (dolist (epsfile eps-files)
+          (let ((pngfile (concat (file-name-sans-extension epsfile) ".png")))
+            (setq n (1+ n))
+            (message "%d: %s to %s." n epsfile pngfile)
+            (start-process "eps-to-png"
+                           "*eps-to-png*"
+                           "convert"
+                           "-colorspace"
+                           "sRGB"
+                           "-density"
+                           "600x600"
+                           epsfile
+                           pngfile)))
+        (message "\n%d files were converted from EPS to PNG format." n))))
+#+end_src
 * Emacs Works with Multiple Language, Piece of Cake
 Emacs 在英文的学习、使用方面具有很大的帮助。
 
@@ -2294,7 +2328,7 @@ langtool 也可以检查语法，相比较 grammarly，不需要连网，所以�
                 ("C-c l" . org-store-link)))
                 ;; ("<return>" . org-return)))
 #+end_src
-*** Babel
+*** org-babel
 以下配置来源：https://emacs-china.org/t/org-babel/18699
 
 禁用 org babel 加载的语言可以有效的提高 Emacs 的启动速度。
@@ -2323,7 +2357,53 @@ langtool 也可以检查语法，相比较 grammarly，不需要连网，所以�
     (advice-add 'org-babel-execute-src-block :before 'my/org-babel-execute-src-block)
     (setq org-confirm-babel-evaluate nil))
 #+end_src
+**** dotsk
+#+begin_src emacs-lisp :tangle no
+  (require 'org-macs)
+  (org-assert-version)
+  (defvar org-babel-default-header-args:dotsk
+    '((:results . "file") (:exports . "results"))
+    "Default arguments to use when evaluating a dot source block.")
 
+  (defun org-babel-expand-body:dotsk (body params)
+    "Expand BODY according to PARAMS, return the expanded body."
+    (let ((vars (org-babel--get-vars params)))
+      (mapc
+       (lambda (pair)
+         (let ((name (symbol-name (car pair)))
+               (value (cdr pair)))
+           (setq body
+                 (replace-regexp-in-string
+                  (concat "$" (regexp-quote name))
+                  (if (stringp value) value (format "%S" value))
+                  body
+                  t
+                  t))))
+       vars)
+      body))
+
+  (defun org-babel-execute:dotsk (body params)
+    " This function is called by `org-babel-execute-src-block'."
+    (let* ((out-file (cdr (or (assq :file params)
+                              (error "You need to specify a :file parameter"))))
+           (cmdline (or (cdr (assq :cmdline params))))
+           (cmd (or (cdr (assq :cmd params)) (concat "node " user-emacs-directory "packages/sketchviz/sketch.js"))
+                (coding-system-for-read 'utf-8) ;use utf-8 with sub-processes
+                (coding-system-for-write 'utf-8)
+                (in-file (org-babel-temp-file "dotsk-")))
+           (with-temp-file in-file
+             (insert (org-babel-expand-body:dotsk body params)))
+           (org-babel-eval
+            (concat cmd
+                    " " (org-babel-process-file-name in-file)
+                    " " cmdline
+                    " " (org-babel-process-file-name out-file)) "")
+           nil)) ;; signal that output has already been written to file
+
+    (defun org-babel-prep-session:dotsk (_session _params)
+      "Return an error because Dot does not support sessions."
+      (error "Dot does not support sessions"))
+#+end_src
 *** org-capture
 #+begin_src emacs-lisp
   (use-package org-capture
@@ -2381,12 +2461,12 @@ langtool 也可以检查语法，相比较 grammarly，不需要连网，所以�
 
   (add-hook 'org-capture-after-finalize-hook 'delete-frame)
 
-  (add-to-list 'display-buffer-alist '("\\*Org Select\\*"
-                                       (display-buffer-pop-up-frame)
-                                       (window-parameters
-                                        (no-other-window . t)
-                                        (mode-line-format . none)
-                                        (no-delete-other-windows . t))))
+  ;; (add-to-list 'display-buffer-alist '("\\*Org Select\\*"
+  ;;                                      (display-buffer-pop-up-frame)
+  ;;                                      (window-parameters
+  ;;                                       (no-other-window . t)
+  ;;                                       (mode-line-format . none)
+  ;;                                       (no-delete-other-windows . t))))
 
   (global-set-key (kbd "<f10>") 'my/org-capture)
 #+end_src
@@ -2886,7 +2966,19 @@ Punch in or out.
       "geA" 'ekg-show-notes-with-all-tags
       "geb" 'ekg-browse-url
       "ger" 'ekg-rename-tag)
-    (evil-set-initial-state 'ekg-notes-mode 'emacs))
+    (evil-define-key 'normal ekg-notes-mode-map
+      "A" 'ekg-notes-any-tags
+      "B" 'ekg-notes-select-and-browse-url
+      "a" 'ekg-notes-any-note-tags
+      "b" 'ekg-notes-browse
+      "c" 'ekg-notes-create
+      "d" 'ekg-notes-delete
+      "n" 'ekg-notes-next
+      "o" 'ekg-notes-open
+      "p" 'ekg-notes-previous
+      "r" 'ekg-notes-remove
+      "t" 'ekg-notes-tag
+      "q" 'quit-window))
 #+end_src
 
 ** org-roam
@@ -4385,7 +4477,6 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 [[https://github.com/skeeto/elfeed][https://github.com/skeeto/elfeed]]
 #+begin_src emacs-lisp
   (use-package elfeed
-    :bind ("C-c , r" . elfeed)
     :preface
     (defun elfeed-display-buffer (buf &optional act)
       (pop-to-buffer buf '((display-buffer-reuse-window display-buffer-in-side-window)
@@ -4400,7 +4491,7 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
     (setq elfeed-show-entry-switch #'elfeed-display-buffer))
 
   (my/space-leader-def
-    "R" '(elfeed-summary :wk "Elfeed"))
+    "E" '(elfeed-summary :wk "Elfeed"))
 
   (add-to-list 'display-buffer-alist
                `(,(rx (| "*elfeed-search*"
@@ -4432,7 +4523,7 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 [[https://github.com/SqrtMinusOne/elfeed-summary][SqrtMinusOne/elfeed-summary: Feed summary interface for elfeed]]
 #+begin_src emacs-lisp
   (use-package elfeed-summary
-    :bind ("C-c , r" . elfeed-summary)
+    :commands elfeed-summary
     :config
     (setq elfeed-summary-other-window t)
     (setq elfeed-summary-settings
@@ -4639,7 +4730,7 @@ Calibre 用于管理书籍，Calibredb 可以在 Emacs 中管理而不需要打�
     :config
     (setq calibredb-root-dir "~/Nextcloud/L.Calibre/")
     (setq calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
-    (setq calibredb-add-delete-original-file t)
+    (setq calibredb-add-delete-original-file "yes")
     (setq calibredb-size-show t)
     (setq calibredb-format-character-icons t)
 
@@ -4774,7 +4865,8 @@ error in process sentinel: Mu server process ended with exit code 1
                  (display-buffer-in-tab)
                  (tab-name . "Mail")
                  (tab-group . "Mail")
-                 (window-parameters . ((mode-line-format . none)))))
+                 (window-parameters . ((mode-line-format . none)
+                                       (same-window . nil)))))
 #+end_src
 *** mu4e-actions
 Save mail to pdf as backup.
