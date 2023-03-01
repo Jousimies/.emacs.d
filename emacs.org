@@ -3984,7 +3984,7 @@ bibtex-completion 这个包是 org-roam-bibtex 的依赖。
                                               (inproceedings . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
                                               (t . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*}"))))
 #+end_src
-*** org-roam-bibtex
+*** COMMENT org-roam-bibtex
 org-roam-bibtex 的主要作用是当创建文献笔记时，会在文件的头部创建一个 ~ROAM_REFS: @xxx~ ，这样通过 @xxx 可以打开对应文献的 PDF 文件。
 
 我设置了 ~z m~ 调用 ~orb-note-actions~. 主要作用有两个，一个是打开对应文献笔记的 PDF 文件，一个是通过 scrapper 来获取 PDF 文件的引文信息。
