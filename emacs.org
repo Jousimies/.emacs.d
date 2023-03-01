@@ -3875,7 +3875,15 @@ eaf-pdf-viewer 存在的问题还是安装较难，对于系统环境要求较�
      (setq citar-symbols
           `((file ,(all-the-icons-faicon "file-pdf-o" :face 'all-the-icons-dred :v-adjust -0.1) . " ")
             (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-            (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " ")))))
+            (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))))
+
+    (defun my/citar-create-note (key &optional entry)
+      "Create a note for KEY and ENTRY.
+  If ENTRY is nil, use `citar-get-entry' with KEY."
+      (interactive (list (citar-select-ref)))
+      (funcall (citar--get-notes-config :create) key (or entry (citar-get-entry key)))
+      (tempel-insert 'ref))
+    (advice-add 'citar-create-note :override 'my/citar-create-note))
 
   (use-package citar-latex
     :after citar)
@@ -3906,7 +3914,23 @@ eaf-pdf-viewer 存在的问题还是安装较难，对于系统环境要求较�
     "rl" '(citar-open-links :wk "Open links"))
 #+end_src
 
-*** citar-org-roam
+*** citar-denote
+#+begin_src emacs-lisp
+  (use-package citar-denote
+    :after citar
+    :config
+    (defun my/citar-open-notes (citekeys)
+      "Open notes associated with the CITEKEYS."
+      (interactive (list (citar-select-refs :filter (citar-denote-has-notes))))
+      (pcase (let ((embark-default-action-overrides
+                    (cons (cons t #'citar--open-resource)
+                          (bound-and-true-p embark-default-action-overrides))))
+               (citar--select-resource citekeys :notes t :create-notes t))
+        (`(note . ,note) (citar-open-note note))
+        (`(create-note . ,citekey) (citar-create-note citekey))))
+    (advice-add 'citar-denote-open-note :override 'my/citar-open-notes))
+#+end_src
+*** COMMENT citar-org-roam
 这个包将 citar 和 org-roam 相结合，我主要使用它来创建文献笔记内容。
 
 目前 citar-org-roam 不支持 capture with template, 我改写了 citar-org-roam--create-capture-note 函数。

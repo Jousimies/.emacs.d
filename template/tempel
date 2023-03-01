@@ -79,6 +79,25 @@ org-mode
 
 (frac "\\frac{" p "}{" p "}")
 
+(ref "* What is the problem addressed in the paper?" n> n>
+     "# Is this a new problem? If it is a new problem, why does it matter? If it is not an entirely new problem, why does it still matter?" n>
+     "# 这个问题的性质是什么？是一个新的问题吗？如果是一个新问题，它的重要性何在？如果不完全是一个新问题，为什么它“仍然重要”？" n> n>
+     "* What is the scientific hypothesis that the paper is trying to verify?" n>
+     "* What are the key related works and who are the key people working on this topic?" n>
+     "* What is the key of the proposed solution in the paper?" n>
+     "# Summarize the key differentiation of the paper when compared with the previous related works." n>
+     "* Implementation Details or Experimental Setup" n>
+     "# Dataset [Ref], No of Attributes, Environment/Tool and Technique, Compared and validated with Techniques [Name and parameters compared]" n>
+     "# 实施细节/实验设置。 数据集 [Ref]，属性数，环境/工具和技术，与技术进行比较和验证 [名称和参数比较]" n>
+     "# 实验是在什么样的数据集基础上运行的？科学研究结果应当是可以量化、可以复现的，读文章的人是否能接触到文中所用的数据集？" n> n>
+     "* Findings and Conclusions" n>
+     "# 实验结果能否有力地支持假设？" n>
+     "* Limitations and Weaknesses" n>
+     "* Research Contribution" n>
+     "# 用自己的语言总结出来。" n>
+     "* What should/could be done next?" n>
+     "# 下一步可以做什么？这是非常关键的一个问题。" n>)
+
 (hugo
  "#+DESCRIPTION: " p n>
  "#+DATE: " p n>

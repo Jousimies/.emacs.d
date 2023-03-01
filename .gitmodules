@@ -442,3 +442,6 @@
 [submodule "packages/page-break-lines"]
 	path = packages/page-break-lines
 	url = https://github.com/purcell/page-break-lines.git
+[submodule "packages/citar-denote"]
+	path = packages/citar-denote
+	url = https://github.com/pprevos/citar-denote.git
