@@ -3862,7 +3862,7 @@ eaf-pdf-viewer 存在的问题还是安装较难，对于系统环境要求较�
     :commands citar-open citar-open-entry citar-open-files citar-open-notes citar-open-links
     :config
     (setq citar-bibliography org-cite-global-bibliography)
-    (setq citar-notes-paths `(,(expand-file-name "roam/ref" my-galaxy)))
+    (setq citar-notes-paths `(,(expand-file-name "references" my-galaxy)))
     (setq citar-library-file-extensions '("pdf" "jpg" "epub"))
     (setq citar-templates '((main . "${author editor:30} ${date year issued:4} ${title:48}")
                             (suffix . "${=key= id:15} ${=type=:12} ${tags keywords:*}")
