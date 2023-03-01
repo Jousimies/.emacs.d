@@ -436,3 +436,9 @@
 [submodule "packages/sketchviz"]
 	path = packages/sketchviz
 	url = https://github.com/gpotter2/sketchviz.git
+[submodule "packages/denote-git"]
+	path = packages/denote-git
+	url = https://github.com/protesilaos/denote.git
+[submodule "packages/page-break-lines"]
+	path = packages/page-break-lines
+	url = https://github.com/purcell/page-break-lines.git

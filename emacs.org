@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-02-28 Tue 22:30]
+#+DATE: [2023-03-01 Wed 20:37]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -257,9 +257,9 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     (setq evil-want-integration t)
     (setq evil-want-C-u-scroll t)
     (setq evil-want-C-h-delete t)
+    (setq evil-respect-visual-line-mode t)
     :config
     (setq evil-undo-system 'undo-fu)
-    (setq evil-respect-visual-line-mode t)
     (setq evil-visual-state-cursor 'hollow)
 
     (setq evil-normal-state-tag " 𝐍 ")
@@ -359,8 +359,9 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 为了重用 g 绑定的按键，需要先将其上的键绑定取消掉。
 #+begin_src emacs-lisp
   (with-eval-after-load 'evil
-    (evil-define-key '(normal visual) 'global
-      "ge" nil))
+    (evil-define-key '(normal motion visual) 'global
+      "ge" nil
+      "gn" nil))
 #+end_src
 ** epkg
 #+begin_src emacs-lisp
@@ -983,7 +984,11 @@ Dashboard 界面的 banner 使用的是 ~ascii art~, 可以通过 [[https://asci
   (use-package color-identifiers-mode
     :hook (on-first-file . global-color-identifiers-mode))
 #+end_src
-
+** page-break-lines
+#+begin_src emacs-lisp
+  (use-package page-break-lines
+    :hook (org-mode . global-page-break-lines-mode))
+#+end_src
 * Powerful Emacs Equipped with Builtin Packages
 Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://github.com/condy0919/emacs-newbie][condy0919/emacs-newbie: Introduction to Emacs]]. 初学者可以看看。
 ** Better default
@@ -1291,6 +1296,7 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
 #+begin_src emacs-lisp
   (use-package dired
     :bind ("C-x d" . dired)
+    :hook (dired-mode . dired-hide-details-mode)
     :config
     (setq insert-directory-program "/opt/homebrew/bin/gls")
     (setq dired-use-ls-dired t)
@@ -1310,7 +1316,7 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
                 ("s-." . dired-hide-dotfiles-mode)))
 #+end_src
 
-*** dirvish
+*** COMMENT dirvish
 #+begin_src emacs-lisp
   (use-package dirvish
     :bind ([remap dired] . dirvish)
@@ -1644,7 +1650,6 @@ Evil 模式编辑需要设置 undo system.
   (setq tab-always-indent 'complete)
 
   (use-package orderless
-    :defer 2
     :config
     (setq completion-styles '(orderless partial-completion)))
 #+end_src
@@ -1697,7 +1702,7 @@ Evil 模式编辑需要设置 undo system.
     :hook (completion-list-mode . consult-preview-at-point-mode)
     :bind (([remap apropos] . consult-apropos)
            ([remap bookmark-jump] . consult-bookmark)
-           ([remap goto-line] . consult-goto-line)
+           ([remap goto-line] . consult-line)
            ([remap imenu] . consult-imenu)
            ([remap locate] . consult-locate)
            ([remap load-theme] . consult-theme)
@@ -2979,7 +2984,25 @@ Punch in or out.
       "t" 'ekg-notes-tag
       "q" 'quit-window))
 #+end_src
+** denote
+#+begin_src emacs-lisp
+  (use-package denote
+    :commands (denote-signature denote-subdirectory denote-rename-file-using-front-matter
+                                denote-rename-file
+                                denote-link-or-create)
+    :hook (dired-mode . denote-dired-mode)
+    :config
+    (setq denote-directory (expand-file-name "denote" my-galaxy)))
 
+  (with-eval-after-load 'evil
+    (evil-define-key '(normal visual) 'global
+      "gns" 'denote-signature
+      "gnd" 'denote-subdirectory
+      "gnr" 'denote-rename-file-using-front-matter
+      "gnR" 'denote-rename-file
+      "gnl" 'denote-link-or-create))
+
+#+end_src
 ** org-roam
 readinglog 和 reference 模板见 [[./template/]] 文件夹。
 
@@ -3210,7 +3233,9 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
     :commands consult-notes
     :config
     (setq consult-notes-file-dir-sources
-          `(("Articles"  ?a  ,(concat my-galaxy "/articles")))))
+          `(("Articles"  ?a  ,(concat my-galaxy "/articles"))
+            ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
+            ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy)))))
   (defun my/new-article (article)
       (interactive "sTitle: ")
       (let ((filename (format "%s" article))
@@ -3228,6 +3253,10 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
 
   (my/space-leader-def
       "nv" '(consult-notes-org-roam-find-node-relation :wk "Node navigation"))
+
+  (with-eval-after-load 'evil
+    (evil-define-key 'normal 'global
+      "gnn" 'consult-notes))
 #+end_src
 
 *** org-transclusion
@@ -3551,10 +3580,11 @@ Zen Mode 或者叫禅模式，其目的是为了降低不相关因素对于心�
 在 Emacs 上有两个相关的包，一个是 ~olivetti~, 另外一个是 ~writeroom-mode~. ~olivetti~ 的功能更单一一些，但是足够使用。
 #+begin_src emacs-lisp
   (use-package olivetti
-    :commands olivetti-mode)
+    :commands olivetti-mode
+    :hook (org-mode . olivetti-mode))
 
   (with-eval-after-load 'evil
-    (evil-define-key 'nromal 'org-mode-map
+    (evil-define-key 'nromal org-mode-map
       "zw" 'olivetti-mode))
 #+end_src
 ** TOC
@@ -3584,19 +3614,27 @@ Zen Mode 或者叫禅模式，其目的是为了降低不相关因素对于心�
   (use-package org-download
     :commands org-download-enable
     :hook (org-mode . org-download-enable)
-    :config
+    :init
     (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
+    (setq org-download-heading-lvl nil)
+    :config
     (setq org-download-screenshot-method 'screencapture)
     (setq org-download-abbreviate-filename-function 'expand-file-name)
     (setq org-download-timestamp "%Y%m%d%H%M%S")
     (setq org-download-display-inline-images nil)
-    (setq org-download-heading-lvl nil)
     (setq org-download-annotate-function (lambda (_link) ""))
     (setq org-download-image-attr-list '("#+NAME: fig: "
                                          "#+CAPTION: "
                                          "#+ATTR_ORG: :width 500px"
                                          "#+ATTR_LATEX: :width 10cm :placement [!htpb]"
-                                         "#+ATTR_HTML: :width 600px")))
+                                         "#+ATTR_HTML: :width 600px"))
+    (defun my/auto-change-file-paths ()
+      (interactive)
+      (save-excursion
+        (previous-line)
+        (while (re-search-forward (expand-file-name "~") nil t)
+          (replace-match "~" t nil))))
+    (advice-add 'org-download-clipboard :after 'my/auto-change-file-paths))
   (my/space-leader-def
     "od" '(:ignore t :wk "Download")
     "odc" '(org-download-clipboard :wk "Download Clipboard")
