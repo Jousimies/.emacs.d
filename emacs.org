@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-03-01 Wed 20:37]
+#+DATE: [2023-03-01 Wed 23:21]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -1148,16 +1148,6 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
     (setq tabspaces-use-filtered-buffers-as-default t))
 #+end_src
 #+begin_src emacs-lisp
-  ;; (my/space-leader-def
-  ;;   "t" '(:ignore t :wk "Tabs")
-  ;;   "tn" '(tab-new :wk "New")
-  ;;   "tg" '(tab-group :wk "Group")
-  ;;   "ts" '(tab-switch :wk "switch")
-  ;;   "tr" '(tab-bar-switch-to-recent-tab :wk "Recent")
-  ;;   "tc" '(tab-close :wk "Close")
-  ;;   "tC" '(tab-close-group :wk "Close group")
-  ;;   "tO" '(tab-close-other :wk "Close other"))
-
   (with-eval-after-load 'evil
     (evil-define-key 'normal 'global
       "gs" 'tab-switch)
