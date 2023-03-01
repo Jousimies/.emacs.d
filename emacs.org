@@ -5049,7 +5049,7 @@ clocktable 中的 scope 可以是自定义的函数，下面的函数将 books �
     "Get reading list."
     (let (reading-list)
       (append reading-list
-              (file-expand-wildcards (expand-file-name "roam/books/*.org" my-galaxy)))))
+              (file-expand-wildcards (expand-file-name "denote/books/*.org" my-galaxy)))))
 #+end_src
 
 ** Achive
