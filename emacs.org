@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-03-01 Wed 23:21]
+#+DATE: [2023-03-03 Fri 01:43]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -4725,28 +4725,18 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
   When it finised, it will jump to note file."
     (interactive)
     (let* ((pdf-filename (buffer-name))
-           (txt-filename (make-temp-name "/tmp/annot-"))
-           (org-file (read-file-name "Save extracted highlights to org file: " (expand-file-name "roam/ref/" my-galaxy)))
-           (org-heading "Highlights")
-           (process (start-process-shell-command
-                     "pdfannots"
-                     nil
-                     (format "python3 ~/pdfannots/pdfannots.py \"%s\" -o \"%s\""
-                             pdf-filename txt-filename))))
-      (set-process-sentinel
-       process
-       (lambda (process _event)
-         (when (eq (process-status process) 'exit)
-           (find-file org-file)
-           (goto-char (point-min))
-           (if (re-search-forward (format "^* %s" org-heading) nil t)
-               (progn
-                 (end-of-line)
-                 (insert "\n")
-                 (insert-file-contents txt-filename)
-                 (delete-file txt-filename)
-                 (message "PDF highlights added to org heading '%s'" org-heading))
-             (message "Org heading '%s' not found" org-heading)))))))
+           (txt-filename (make-temp-file "/tmp/annot-"))
+           (org-file (read-file-name "Save extracted highlights to org file: " (expand-file-name "references/" my-galaxy))))
+      (async-start
+       `(lambda ()
+          (shell-command-to-string (format "/opt/homebrew/bin/python3.10 ~/pdfannots/pdfannots.py \"%s\""
+                                            ,pdf-filename)))
+       `(lambda (annot)
+          (setq annot (replace-regexp-in-string "##" "*" annot))
+          (with-temp-buffer
+            (insert annot)
+            (write-region (point-min) (point-max) ,org-file t))
+          (find-file ,org-file)))))
 
   (my/space-leader-def
     "mh" '(my/pdf-extract-highlight :wk "Extract highlight"))
