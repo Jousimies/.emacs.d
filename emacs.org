@@ -4550,6 +4550,7 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 [[https://github.com/skeeto/elfeed][https://github.com/skeeto/elfeed]]
 #+begin_src emacs-lisp
   (use-package elfeed
+    :defer t
     :preface
     (defun elfeed-display-buffer (buf &optional act)
       (pop-to-buffer buf '((display-buffer-reuse-window display-buffer-in-side-window)
@@ -4562,9 +4563,6 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
                             (popup . t)))))
     :config
     (setq elfeed-show-entry-switch #'elfeed-display-buffer))
-
-  (my/space-leader-def
-    "E" '(elfeed-summary :wk "Elfeed"))
 
   (add-to-list 'display-buffer-alist
                `(,(rx (| "*elfeed-search*"
@@ -4618,6 +4616,9 @@ https://emacs-china.org/t/retina-osx-ei-10-11-3-emacs-org-mode-latex-preview/77/
 
     (advice-add 'elfeed-summary :after 'elfeed-summary-update)
     (advice-add 'elfeed-summary :before 'elfeed-org))
+
+  (my/space-leader-def
+    "E" '(elfeed-summary :wk "Elfeed"))
 #+end_src
 
 [[https://github.com/karthink/elfeed-tube][karthink/elfeed-tube: Youtube integration for Elfeed, the feed reader for Emacs]] 不知道为什么不能更新 RSS. 暂时停用了。
