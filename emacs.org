@@ -3886,15 +3886,7 @@ eaf-pdf-viewer 存在的问题还是安装较难，对于系统环境要求较�
      (setq citar-symbols
           `((file ,(all-the-icons-faicon "file-pdf-o" :face 'all-the-icons-dred :v-adjust -0.1) . " ")
             (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-            (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))))
-
-    (defun my/citar-create-note (key &optional entry)
-      "Create a note for KEY and ENTRY.
-  If ENTRY is nil, use `citar-get-entry' with KEY."
-      (interactive (list (citar-select-ref)))
-      (funcall (citar--get-notes-config :create) key (or entry (citar-get-entry key)))
-      (tempel-insert 'ref))
-    (advice-add 'citar-create-note :override 'my/citar-create-note))
+            (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " ")))))
 
   (use-package citar-latex
     :after citar)
