@@ -2992,6 +2992,8 @@ Punch in or out.
       "gnR" 'denote-rename-file
       "gnl" 'denote-link-or-create))
 
+  (use-package denote-org-dblock
+    :after denote org)
 #+end_src
 ** org-roam
 readinglog 和 reference 模板见 [[./template/]] 文件夹。
