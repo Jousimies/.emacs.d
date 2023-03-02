@@ -3491,15 +3491,12 @@ vulpea to build dynamic agenda.
     "oat" '(org-todo-list :wk "Todo list")
     "oav" '(org-search-view :wk "View search")
     "oai" '(my/org-inprogress-tasks :wk "Inprogess tasks"))
-#+end_src
 
-#+begin_src emacs-lisp
-  (use-package org-agenda
-    :after evil
-    :config
+  (with-eval-after-load 'evil
     (evil-set-initial-state 'org-agenda-mode 'motion)
     (evil-define-key 'motion org-agenda-mode-map
       (kbd "RET") 'org-agenda-switch-to
+      (kbd "SPC") 'nil
       "gj" 'org-agenda-next-item
       "gr" 'org-agenda-redo
       "gR" 'org-agenda-redo-all
