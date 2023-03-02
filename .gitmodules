@@ -445,3 +445,12 @@
 [submodule "packages/citar-denote"]
 	path = packages/citar-denote
 	url = https://github.com/pprevos/citar-denote.git
+[submodule "packages/org-gtd.el"]
+	path = packages/org-gtd.el
+	url = https://github.com/Trevoke/org-gtd.el.git
+[submodule "packages/org-edna"]
+	path = packages/org-edna
+	url = https://github.com/emacsmirror/org-edna.git
+[submodule "packages/org-agenda-property"]
+	path = packages/org-agenda-property
+	url = https://github.com/Malabarba/org-agenda-property.git

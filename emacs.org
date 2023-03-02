@@ -3279,7 +3279,7 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
     "ote" '(org-transclusion-live-sync-start :wk "Edit live"))
 #+end_src
 
-** dynamic org-agenda
+** COMMENT dynamic org-agenda
 vulpea to build dynamic agenda.
 #+begin_src emacs-lisp
   (use-package vulpea
@@ -3360,12 +3360,13 @@ vulpea to build dynamic agenda.
     "fg" '(my/gtd-file :wk "GTD file"))
 #+end_src
 
+** org-agenda
 #+begin_src emacs-lisp
   (use-package org-agenda
     :bind ("<f12>" . my/org-agenda)
     :hook (org-agenda-finalize . #'org-agenda-find-same-or-today-or-agenda)
     :config
-    (setq org-agenda-files (directory-files-recursively (expand-file-name "todos" my-galaxy) "org$\\|archive$"))
+    (setq org-agenda-files (directory-files-recursively (expand-file-name "todos" my-galaxy) "org$"))
     (setq org-agenda-dim-blocked-tasks t)
     (setq org-agenda-compact-blocks t)
     (setq org-agenda-window-setup 'other-tab)
@@ -3507,6 +3508,27 @@ vulpea to build dynamic agenda.
       "cg" 'org-agenda-clock-goto
       "cc" 'org-agenda-clock-cancel
       "cr" 'org-agenda-clockreport-mode))
+#+end_src
+
+** org-gtd
+#+begin_src emacs-lisp
+  (use-package org-gtd
+    :commands org-gtd-process-inbox
+    :init
+    (setq org-gtd-update-ack "2.1.0")
+    :custom
+    (org-gtd-directory (expand-file-name "todos" my-galaxy))
+    (org-agenda-property-list '("DELEGATED_TO"))
+    (org-edna-use-inheritance t)
+    :config
+    (add-to-list 'org-agenda-files (expand-file-name "todos/org-gtd-tasks.org" my-galaxy))
+    :bind (:map org-gtd-process-map
+                ("C-c c" . org-gtd-choose)))
+
+  (use-package org-edna
+    :after org-gtd
+    :config
+    (org-edna-load))
 #+end_src
 ** calendar and appt
 #+begin_src emacs-lisp
