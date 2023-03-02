@@ -2995,7 +2995,7 @@ Punch in or out.
   (use-package denote-org-dblock
     :after denote org)
 #+end_src
-** org-roam
+** COMMENT org-roam
 readinglog 和 reference 模板见 [[./template/]] 文件夹。
 
 Org-roam 默认会缓存所有的节点（文件或标题），若要排除不需要的节点可以使用 =ROAM_EXCLUDE= 关键字或者使用 =org-roam-db-node-include-function= 函数。
@@ -3216,7 +3216,7 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
       "zf" 'consult-org-roam-forward-links))
 #+end_src
 
-*** consult-notes
+** consult-notes
 这个包结合 denote 比较好用，不需要结合 org-roam 使用。
 
 因为我己经不使用 deft 而是使用 consult-notes 来管理自己写的博客。使用下面的函数来创建新的文章， consult-notes 只能用于查询，无新建文件的功能。
@@ -3251,7 +3251,7 @@ Org-roam 默认会缓存所有的节点（文件或标题），若要排除不�
       "gnn" 'consult-notes))
 #+end_src
 
-*** org-transclusion
+** org-transclusion
 这里需要结合 [[fringe-mode]] 使用，不能完全隐藏 fringe, 否则会没有效果。我设置的是 minimal.
 #+begin_src emacs-lisp
   (use-package org-transclusion
