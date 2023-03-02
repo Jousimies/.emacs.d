@@ -3598,7 +3598,7 @@ Zen Mode 或者叫禅模式，其目的是为了降低不相关因素对于心�
     :hook (org-mode . olivetti-mode))
 
   (with-eval-after-load 'evil
-    (evil-define-key 'nromal org-mode-map
+    (evil-define-key 'normal org-mode-map
       "zw" 'olivetti-mode))
 #+end_src
 ** TOC
