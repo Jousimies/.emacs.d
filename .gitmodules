@@ -253,9 +253,6 @@
 [submodule "packages/ebib"]
 	path = packages/ebib
 	url = https://github.com/joostkremers/ebib.git
-[submodule "packages/org-roam-bibtex"]
-	path = packages/org-roam-bibtex
-	url = https://github.com/org-roam/org-roam-bibtex.git
 [submodule "packages/helm-bibtex"]
 	path = packages/helm-bibtex
 	url = https://github.com/tmalsburg/helm-bibtex.git
