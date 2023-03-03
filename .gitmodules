@@ -454,3 +454,15 @@
 [submodule "packages/org-agenda-property"]
 	path = packages/org-agenda-property
 	url = https://github.com/Malabarba/org-agenda-property.git
+[submodule "packages/mu4e-alert"]
+	path = packages/mu4e-alert
+	url = https://github.com/iqbalansari/mu4e-alert.git
+[submodule "packages/ht.el"]
+	path = packages/ht.el
+	url = https://github.com/Wilfred/ht.el.git
+[submodule "packages/mu4e-marker-icons"]
+	path = packages/mu4e-marker-icons
+	url = https://repo.or.cz/mu4e-marker-icons.git
+[submodule "packages/mu4e-column-faces"]
+	path = packages/mu4e-column-faces
+	url = https://github.com/Alexander-Miller/mu4e-column-faces.git
