@@ -463,3 +463,9 @@
 [submodule "packages/mu4e-column-faces"]
 	path = packages/mu4e-column-faces
 	url = https://github.com/Alexander-Miller/mu4e-column-faces.git
+[submodule "packages/yaml-mode"]
+	path = packages/yaml-mode
+	url = https://github.com/yoshiki/yaml-mode.git
+[submodule "packages/emacs-toml"]
+	path = packages/emacs-toml
+	url = https://github.com/gongo/emacs-toml.git
