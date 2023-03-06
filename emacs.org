@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-03-04 Sat 16:17]
+#+DATE: [2023-03-06 Mon 11:59]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -5391,7 +5391,7 @@ clocktable 中的 scope 可以是自定义的函数，下面的函数将 books �
   (defun my/finance-file ()
     "Open finance file."
     (interactive)
-    (find-file (expand-file-name "finance/finance.bean" my-galaxy)))
+    (find-file (expand-file-name "finance/beans/finance.bean" my-galaxy)))
 
   (defun my/reading-record ()
     "Open reading record file."
