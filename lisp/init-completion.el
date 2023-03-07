@@ -157,7 +157,7 @@
 
 (autoload 'prescient-persist-mode "prescient" "" t)
 (add-hook 'after-init-hook 'prescient-persist-mode)
-
+(setq prescient-save-file (expand-file-name "cache/prescient-save.el" user-emacs-directory))
 (use-package vertico-prescient
   :hook (vertico-mode . vertico-prescient-mode))
 
