@@ -8,4 +8,5 @@ emacs.org
 *.log
 *.gz
 *.pdf
+*.aux
 .auctex-auto
