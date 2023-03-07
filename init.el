@@ -1066,107 +1066,6 @@ of the box `(w h)' inside the box `(cw ch)'."
   :config
   (setq vertico-prescient-completion-styles '(orderless prescient partial-completion)))
 
-(use-package gcmh
-  :config
-  (setq gcmh-idle-delay 'auto)
-  (setq gcmh-auto-idle-delay-factor 10)
-  (setq gcmh-high-cons-threshold #x1000000)
-  :hook (after-init . gcmh-mode))
-
-(use-package file-info
-  :commands file-info-show
-  :config
-  (setq hydra-hint-display-type 'posframe)
-  (setq hydra-posframe-show-params `(:poshandler posframe-poshandler-frame-center
-                                                 :internal-border-width 2
-                                                 :internal-border-color "#61AFEF"
-                                                 :left-fringe 16
-                                                 :right-fringe 16)))
-
-(my/space-leader-def
-  "mi" '(file-info-show :wk "File info"))
-
-(use-package disk-usage
-  :bind ("C-c d u" . disk-usage))
-(my/space-leader-def
-  "m" '(:ignore t :wk "Misc")
-  "md" '(disk-usage :wk "Disk usage"))
-
-(use-package youtube-dl
-  :commands youtube-dl
-  :config
-  (setq youtube-dl-directory "~/Downloads/")
-  (setq youtube-dl-program "/opt/homebrew/bin/youtube-dl")
-  (setq youtube-dl-arguments
-        '("--no-mtime" "--restrict-filenames" "--format" "best" "--mark-watched")))
-
-(defun my/ocr ()
-"OCR with Macos system."
-  (interactive)
-  (shell-command "shortcuts run \"OCR Selected Area\"")
-  (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
-
-(my/space-leader-def
-  "mo" '(my/ocr :wk "OCR"))
-
-(defun toggle-proxy ()
-  "Toggle proxy for the url.el library."
-  (interactive)
-  (if url-proxy-services
-      (proxy-disable)
-    (proxy-enable)))
-
-(defun proxy-enable ()
-  "Enable proxy."
-  (interactive)
-  (setq url-proxy-services
-        '(("http" . "127.0.0.1:8118")
-          ("https" . "127.0.0.1:8118")
-          ("socks" . "127.0.0.1:8118")
-          ("no_proxy" . "0.0.0.0")))
-  (message "Proxy enabled! %s" (car url-proxy-services)))
-
-(defun proxy-disable ()
-  "Disable proxy."
-  (interactive)
-  (if url-proxy-services
-      (setq url-proxy-services nil))
-  (message "Proxy disabled!"))
-
-(run-with-idle-timer 2 nil (lambda ()
-                             (proxy-enable)))
-
-(my/space-leader-def
-  "mp" '(toggle-proxy :wk "Proxy"))
-
-(use-package advance-words-count
-  :bind ("M-=" . advance-words-count))
-
-(defun eps-to-png-marked ()
-  "Convert all marked EPS files in the current Dired buffer to PNG format using ImageMagick's convert utility.
-Each input file is converted to a PNG file with the same basename.
-This function requires ImageMagick's convert utility to be installed and available in the system's PATH."
-  (interactive)
-  (let ((eps-files (dired-get-marked-files)))
-    (when (not eps-files)
-      (error "No marked files in Dired buffer."))
-    (let ((n 0))
-      (message "Converting:\n")
-      (dolist (epsfile eps-files)
-        (let ((pngfile (concat (file-name-sans-extension epsfile) ".png")))
-          (setq n (1+ n))
-          (message "%d: %s to %s." n epsfile pngfile)
-          (start-process "eps-to-png"
-                         "*eps-to-png*"
-                         "convert"
-                         "-colorspace"
-                         "sRGB"
-                         "-density"
-                         "600x600"
-                         epsfile
-                         pngfile)))
-      (message "\n%d files were converted from EPS to PNG format." n))))
-
 (use-package ispell
   :config
   (setq ispell-program-name "/opt/homebrew/bin/aspell")
@@ -1814,14 +1713,6 @@ This function requires ImageMagick's convert utility to be installed and availab
                (window-parameters . ((no-other-window . t)
                                      (no-delete-other-windows . t)))))
 
-(use-package ol
-  :config
-  (setq org-link-frame-setup '((vm . vm-visit-folder-other-frame)
-                               (vm-imap . vm-visit-imap-folder-other-frame)
-                               (gnus . org-gnus-no-new-news)
-                               (file . find-file)
-                               (wl . wl-other-frame))))
-
 ;; https://200ok.ch/posts/2022-12-07_streamline_your_org_mode_workflow_with_automatic_clock_table_recalculation.html
 ;; Need add #+AUTOCALC_CLOCK_TABLES to org file.
 (with-eval-after-load 'org
@@ -1882,6 +1773,14 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
     (my/org-set-time-file-property "DATE")))
 
 (add-hook 'before-save-hook 'my/org-set-date)
+
+;; Get reading list from books directory for org-clock report.
+;; The org-clock report scope can be a function.
+(defun my/reading-list ()
+  "Get reading list."
+  (let (reading-list)
+    (append reading-list
+            (file-expand-wildcards (expand-file-name "denote/books/*.org" my-galaxy)))))
 
 (use-package ekg
   :commands (ekg-show-notes-in-trash
@@ -2122,100 +2021,6 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
 
   (setq diary-file (expand-file-name "diary/diary.org" my-galaxy)))
 
-(use-package olivetti
-  :commands olivetti-mode)
-
-(with-eval-after-load 'evil
-  (evil-define-key 'normal org-mode-map
-    "zw" 'olivetti-mode))
-
-(use-package toc-org
-  :hook (org-mode . toc-org-mode))
-
-(use-package org-superstar
-  :hook (org-mode . org-superstar-mode)
-  :config
-  (setq org-superstar-headline-bullets-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼"))
-  ;; (setq org-superstar-headline-bullets-list '("1" "2" "3" "4" "5" "6" "7"))
-  ;; (setq org-superstar-headline-bullets-list '("①" "②" "③" "④" "⑤" "⑥"))
-  (setq org-hide-leading-stars t))
-
-(use-package org-download
-  :commands org-download-enable
-  :hook (org-mode . org-download-enable)
-  :init
-  (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
-  (setq org-download-heading-lvl nil)
-  :config
-  (setq org-download-screenshot-method 'screencapture)
-  (setq org-download-abbreviate-filename-function 'expand-file-name)
-  (setq org-download-timestamp "%Y%m%d%H%M%S")
-  (setq org-download-display-inline-images nil)
-  (setq org-download-annotate-function (lambda (_link) ""))
-  (setq org-download-image-attr-list '("#+NAME: fig: "
-                                       "#+CAPTION: "
-                                       "#+ATTR_ORG: :width 500px"
-                                       "#+ATTR_LATEX: :width 10cm :placement [!htpb]"
-                                       "#+ATTR_HTML: :width 600px"))
-  (defun my/auto-change-file-paths ()
-    (interactive)
-    (save-excursion
-      (previous-line)
-      (while (re-search-forward (expand-file-name "~") nil t)
-        (replace-match "~" t nil))))
-  (advice-add 'org-download-clipboard :after 'my/auto-change-file-paths))
-(my/space-leader-def
-  "od" '(:ignore t :wk "Download")
-  "odc" '(org-download-clipboard :wk "Download Clipboard")
-  "ody" '(org-download-yank :wk "Download Yank")
-  "odr" '(org-download-rename-last-file :wk "Rename last file")
-  "odR" '(org-download-rename-at-point :wk "Rename point"))
-
-(use-package org-appear
-  :config
-  (setq org-appear-autolinks t)
-  (setq org-appear-trigger 'manual)
-  :hook ((org-mode . (lambda ()
-                       (add-hook 'evil-insert-state-entry-hook
-                                 #'org-appear-manual-start
-                                 nil
-                                 t)
-                       (add-hook 'evil-insert-state-exit-hook
-                                 #'org-appear-manual-stop
-                                 nil
-                                 t)))
-         (org-mode . org-appear-mode)))
-
-(use-package math-preview
-  :commands (math-preview-all math-preview-at-point)
-  :config
-  (setq math-preview-scale 1.1)
-  (setq math-preview-raise 0.3)
-  (setq math-preview-margin '(1 . 0)))
-
-(my/space-leader-def
-  "p" '(:ignore t :wk "Preview")
-  "pa" '(math-preview-all :wk "All")
-  "pA" '(math-preview-clear-all :wk "Clear All")
-  "pp" '(math-preview-at-point :wk "Point")
-  "pP" '(math-preview-clear-at-point :wk "Clear Point")
-  "pr" '(math-preview-region :wk "Region")
-  "pR" '(math-preview-clear-region :wk "Clear Region"))
-
-(use-package plantuml
-  :commands (plantuml-org-to-mindmap-open plantuml-org-to-wbs-open)
-  :config
-  (setq plantuml-jar-path
-        (concat (string-trim
-                 (shell-command-to-string "readlink -f $(brew --prefix plantuml)"))
-                "/libexec/plantuml.jar")))
-(my/space-leader-def
-  "pm" '(plantuml-org-to-mindmap-open :wk "Mindmap")
-  "ps" '(plantuml-org-to-wbs-open :wk "Work Breakdown Structure"))
-
-(use-package org-rainbow-tags
-  :hook (org-mode . org-rainbow-tags-mode))
-
 (use-package alarm-clock
   :commands (alarm-clock-set alarm-clock-list-view)
   :config
@@ -2226,19 +2031,19 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
   :config
   (setq alert-default-style 'osx-notifier))
 
+(use-package org-alert
+  :hook (on-first-file . org-alert-enable)
+  :config
+  (setq org-alert-interval 300)
+  (setq org-alert-notify-cutoff 10)
+  (setq org-alert-notify-after-event-cutoff 10)
+  (setq org-alert-notification-title "Org Agenda Reminder!"))
+
 (use-package pomm
   :commands pomm
   :config
   (setq pomm-state-file-location (expand-file-name "cache/pomm" user-emacs-directory))
   (pomm-mode-line-mode 1))
-
-(defun org-export-docx ()
-  "Convert org to docx."
-  (interactive)
-  (let ((docx-file (concat (file-name-sans-extension (buffer-file-name)) ".docx"))
-        (template-file (expand-file-name "template/template.docx" user-emacs-directory)))
-    (shell-command (format "pandoc %s -o %s --reference-doc=%s" (buffer-file-name) docx-file template-file))
-    (message "Convert finish: %s" docx-file)))
 
 (use-package beancount
   :mode (".bean" . beancount-mode)
@@ -2430,6 +2235,97 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
   :bind (:map LaTeX-mode-map
               ("C-c h" . TeX-doc)))
 
+(use-package auctex-latexmk
+  :hook (LaTeX-mode . auctex-latexmk-setup))
+
+(use-package reftex
+  :hook ((LaTeX-mode . turn-on-reftex)
+         (reftex-toc-mode . menu-bar--visual-line-mode-enable))
+  :config
+  (setq reftex-toc-split-windows-horizontally t)
+  (setq reftex-toc-split-windows-fraction 0.25))
+
+(add-to-list 'display-buffer-alist '("\\*toc\\*"
+                                     (display-buffer-reuse-window)
+                                     (side . left)
+                                     (window-parameters
+                                      (mode-line-format . none)
+                                      (delete-other-windows . t))))
+
+(use-package cdlatex
+  :hook ((LaTeX-mode . turn-on-cdlatex)
+         (org-mode . org-cdlatex-mode)))
+
+(use-package org
+  :config
+  (setq org-highlight-latex-and-related '(latex script)))
+
+(use-package ox-latex
+  :defer 3
+  :config
+  (setq org-latex-src-block-backend 'minted)
+  (setq org-latex-minted-options '(("breaklines" "true")
+                                   ("breakanywhere" "true")))
+
+  (setq org-latex-classes nil)
+  (add-to-list 'org-latex-classes
+               '("book"
+                 "\\documentclass[UTF8,twoside,a4paper,12pt,openright]{ctexrep}
+                   [NO-DEFAULT-PACKAGES]
+                   [NO-PACKAGES]
+                   [EXTRA]"
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes '("article-cn" "\\documentclass{ctexart}
+                                      [NO-DEFAULT-PACKAGES]
+                                      [NO-PACKAGES]
+                                      [EXTRA]"
+                                    ("\\section{%s}" . "\\section*{%s}")
+                                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes '("article" "\\documentclass[11pt]{article}
+                                      [NO-DEFAULT-PACKAGES]
+                                      [NO-PACKAGES]
+                                      [EXTRA]"
+                                    ("\\section{%s}" . "\\section*{%s}")
+                                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes '("beamer" "\\documentclass[presentation]{beamer}
+                                      [DEFAULT-PACKAGES]
+                                      [PACKAGES]
+                                      [EXTRA]"
+                                    ("\\section{%s}" . "\\section*{%s}")
+                                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+  (setq org-latex-pdf-process
+        '("xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
+          "bibtex -shell-escape %b"
+          "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
+          "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
+          "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl"))
+
+  (setq org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
+                                        "out" "toc" "nav" "snm" "vrb" "dvi"
+                                        "fdb_latexmk" "blg" "brf" "fls"
+                                        "entoc" "ps" "spl" "bbl"))
+
+  (setq org-latex-prefer-user-labels t))
+
+(use-package ox-beamer
+  :defer 3
+  :after org)
+
 (use-package font-latex
   :after tex
   :config
@@ -2519,97 +2415,6 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
           ("restartlist" "{")
           ("crefname" "{"))))
 
-(use-package cdlatex
-  :hook ((LaTeX-mode . turn-on-cdlatex)
-         (org-mode . org-cdlatex-mode)))
-
-(use-package reftex
-  :hook ((LaTeX-mode . turn-on-reftex)
-         (reftex-toc-mode . menu-bar--visual-line-mode-enable))
-  :config
-  (setq reftex-toc-split-windows-horizontally t)
-  (setq reftex-toc-split-windows-fraction 0.25))
-
-(add-to-list 'display-buffer-alist '("\\*toc\\*"
-                                     (display-buffer-reuse-window)
-                                     (side . left)
-                                     (window-parameters
-                                      (mode-line-format . none)
-                                      (delete-other-windows . t))))
-
-(use-package org
-  :config
-  (setq org-highlight-latex-and-related '(latex script)))
-
-(use-package ox-latex
-  :defer 3
-  :config
-  (setq org-latex-src-block-backend 'minted)
-  (setq org-latex-minted-options '(("breaklines" "true")
-                                   ("breakanywhere" "true")))
-
-  (setq org-latex-classes nil)
-  (add-to-list 'org-latex-classes
-               '("book"
-                 "\\documentclass[UTF8,twoside,a4paper,12pt,openright]{ctexrep}
-                   [NO-DEFAULT-PACKAGES]
-                   [NO-PACKAGES]
-                   [EXTRA]"
-                 ("\\chapter{%s}" . "\\chapter*{%s}")
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-  (add-to-list 'org-latex-classes '("article-cn" "\\documentclass{ctexart}
-                                      [NO-DEFAULT-PACKAGES]
-                                      [NO-PACKAGES]
-                                      [EXTRA]"
-                                    ("\\section{%s}" . "\\section*{%s}")
-                                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-  (add-to-list 'org-latex-classes '("article" "\\documentclass[11pt]{article}
-                                      [NO-DEFAULT-PACKAGES]
-                                      [NO-PACKAGES]
-                                      [EXTRA]"
-                                    ("\\section{%s}" . "\\section*{%s}")
-                                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes '("beamer" "\\documentclass[presentation]{beamer}
-                                      [DEFAULT-PACKAGES]
-                                      [PACKAGES]
-                                      [EXTRA]"
-                                    ("\\section{%s}" . "\\section*{%s}")
-                                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-  (setq org-latex-pdf-process
-        '("xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-          "bibtex -shell-escape %b"
-          "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-          "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-          "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl"))
-
-  (setq org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
-                                        "out" "toc" "nav" "snm" "vrb" "dvi"
-                                        "fdb_latexmk" "blg" "brf" "fls"
-                                        "entoc" "ps" "spl" "bbl"))
-
-  (setq org-latex-prefer-user-labels t))
-
-(use-package auctex-latexmk
-  :hook (LaTeX-mode . auctex-latexmk-setup))
-
-(use-package ox-beamer
-  :defer 3
-  :after org)
-
 (use-package ox-hugo
   :defer 3
   :after ox)
@@ -2695,6 +2500,108 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
 
           ("personal-website" :components ("site" "notes" "books"
                                            "movies" "engineering" "static")))))
+
+(use-package olivetti
+  :commands olivetti-mode)
+
+(with-eval-after-load 'evil
+  (evil-define-key 'normal org-mode-map
+    "zw" 'olivetti-mode))
+
+(use-package toc-org
+  :hook (org-mode . toc-org-mode))
+
+(use-package org-superstar
+  :hook (org-mode . org-superstar-mode)
+  :config
+  (setq org-superstar-headline-bullets-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼"))
+  ;; (setq org-superstar-headline-bullets-list '("1" "2" "3" "4" "5" "6" "7"))
+  ;; (setq org-superstar-headline-bullets-list '("①" "②" "③" "④" "⑤" "⑥"))
+  (setq org-hide-leading-stars t))
+
+(use-package org-rainbow-tags
+  :hook (org-mode . org-rainbow-tags-mode))
+
+(use-package org-appear
+  :config
+  (setq org-appear-autolinks t)
+  (setq org-appear-trigger 'manual)
+  :hook ((org-mode . (lambda ()
+                       (add-hook 'evil-insert-state-entry-hook
+                                 #'org-appear-manual-start
+                                 nil
+                                 t)
+                       (add-hook 'evil-insert-state-exit-hook
+                                 #'org-appear-manual-stop
+                                 nil
+                                 t)))
+         (org-mode . org-appear-mode)))
+
+(use-package math-preview
+  :commands (math-preview-all math-preview-at-point)
+  :config
+  (setq math-preview-scale 1.1)
+  (setq math-preview-raise 0.3)
+  (setq math-preview-margin '(1 . 0)))
+
+(my/space-leader-def
+  "p" '(:ignore t :wk "Preview")
+  "pa" '(math-preview-all :wk "All")
+  "pA" '(math-preview-clear-all :wk "Clear All")
+  "pp" '(math-preview-at-point :wk "Point")
+  "pP" '(math-preview-clear-at-point :wk "Clear Point")
+  "pr" '(math-preview-region :wk "Region")
+  "pR" '(math-preview-clear-region :wk "Clear Region"))
+
+(use-package org-download
+  :commands org-download-enable
+  :hook (org-mode . org-download-enable)
+  :init
+  (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
+  (setq org-download-heading-lvl nil)
+  :config
+  (setq org-download-screenshot-method 'screencapture)
+  (setq org-download-abbreviate-filename-function 'expand-file-name)
+  (setq org-download-timestamp "%Y%m%d%H%M%S")
+  (setq org-download-display-inline-images nil)
+  (setq org-download-annotate-function (lambda (_link) ""))
+  (setq org-download-image-attr-list '("#+NAME: fig: "
+                                       "#+CAPTION: "
+                                       "#+ATTR_ORG: :width 500px"
+                                       "#+ATTR_LATEX: :width 10cm :placement [!htpb]"
+                                       "#+ATTR_HTML: :width 600px"))
+  (defun my/auto-change-file-paths ()
+    (interactive)
+    (save-excursion
+      (previous-line)
+      (while (re-search-forward (expand-file-name "~") nil t)
+        (replace-match "~" t nil))))
+  (advice-add 'org-download-clipboard :after 'my/auto-change-file-paths))
+(my/space-leader-def
+  "od" '(:ignore t :wk "Download")
+  "odc" '(org-download-clipboard :wk "Download Clipboard")
+  "ody" '(org-download-yank :wk "Download Yank")
+  "odr" '(org-download-rename-last-file :wk "Rename last file")
+  "odR" '(org-download-rename-at-point :wk "Rename point"))
+
+(use-package plantuml
+  :commands (plantuml-org-to-mindmap-open plantuml-org-to-wbs-open)
+  :config
+  (setq plantuml-jar-path
+        (concat (string-trim
+                 (shell-command-to-string "readlink -f $(brew --prefix plantuml)"))
+                "/libexec/plantuml.jar")))
+(my/space-leader-def
+  "pm" '(plantuml-org-to-mindmap-open :wk "Mindmap")
+  "ps" '(plantuml-org-to-wbs-open :wk "Work Breakdown Structure"))
+
+(defun org-export-docx ()
+  "Convert org to docx."
+  (interactive)
+  (let ((docx-file (concat (file-name-sans-extension (buffer-file-name)) ".docx"))
+        (template-file (expand-file-name "template/template.docx" user-emacs-directory)))
+    (shell-command (format "pandoc %s -o %s --reference-doc=%s" (buffer-file-name) docx-file template-file))
+    (message "Convert finish: %s" docx-file)))
 
 ;; eww
 ;; Install readability first.
@@ -3141,14 +3048,6 @@ If SKIP-HEADERS is set, do not show include message headers."
                                 "*\n\n" (format-time-string "%Y-%m-%d")
                                 "\n#+end_signature")))
 
-;; Get reading list from books directory for org-clock report.
-;; The org-clock report scope can be a function.
-(defun my/reading-list ()
-  "Get reading list."
-  (let (reading-list)
-    (append reading-list
-            (file-expand-wildcards (expand-file-name "denote/books/*.org" my-galaxy)))))
-
 (use-package achive
   :commands achive
   :config
@@ -3165,6 +3064,107 @@ If SKIP-HEADERS is set, do not show include message headers."
 (with-eval-after-load 'evil-collection
   (evil-collection-define-key 'normal 'achive-visual-mode-map
     "q" 'quit-window))
+
+(use-package gcmh
+  :config
+  (setq gcmh-idle-delay 'auto)
+  (setq gcmh-auto-idle-delay-factor 10)
+  (setq gcmh-high-cons-threshold #x1000000)
+  :hook (after-init . gcmh-mode))
+
+(use-package file-info
+  :commands file-info-show
+  :config
+  (setq hydra-hint-display-type 'posframe)
+  (setq hydra-posframe-show-params `(:poshandler posframe-poshandler-frame-center
+                                                 :internal-border-width 2
+                                                 :internal-border-color "#61AFEF"
+                                                 :left-fringe 16
+                                                 :right-fringe 16)))
+
+(my/space-leader-def
+  "mi" '(file-info-show :wk "File info"))
+
+(use-package disk-usage
+  :bind ("C-c d u" . disk-usage))
+(my/space-leader-def
+  "m" '(:ignore t :wk "Misc")
+  "md" '(disk-usage :wk "Disk usage"))
+
+(use-package youtube-dl
+  :commands youtube-dl
+  :config
+  (setq youtube-dl-directory "~/Downloads/")
+  (setq youtube-dl-program "/opt/homebrew/bin/youtube-dl")
+  (setq youtube-dl-arguments
+        '("--no-mtime" "--restrict-filenames" "--format" "best" "--mark-watched")))
+
+(defun my/ocr ()
+"OCR with Macos system."
+  (interactive)
+  (shell-command "shortcuts run \"OCR Selected Area\"")
+  (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
+
+(my/space-leader-def
+  "mo" '(my/ocr :wk "OCR"))
+
+(defun toggle-proxy ()
+  "Toggle proxy for the url.el library."
+  (interactive)
+  (if url-proxy-services
+      (proxy-disable)
+    (proxy-enable)))
+
+(defun proxy-enable ()
+  "Enable proxy."
+  (interactive)
+  (setq url-proxy-services
+        '(("http" . "127.0.0.1:8118")
+          ("https" . "127.0.0.1:8118")
+          ("socks" . "127.0.0.1:8118")
+          ("no_proxy" . "0.0.0.0")))
+  (message "Proxy enabled! %s" (car url-proxy-services)))
+
+(defun proxy-disable ()
+  "Disable proxy."
+  (interactive)
+  (if url-proxy-services
+      (setq url-proxy-services nil))
+  (message "Proxy disabled!"))
+
+(run-with-idle-timer 2 nil (lambda ()
+                             (proxy-enable)))
+
+(my/space-leader-def
+  "mp" '(toggle-proxy :wk "Proxy"))
+
+(use-package advance-words-count
+  :bind ("M-=" . advance-words-count))
+
+(defun eps-to-png-marked ()
+  "Convert all marked EPS files in the current Dired buffer to PNG format using ImageMagick's convert utility.
+Each input file is converted to a PNG file with the same basename.
+This function requires ImageMagick's convert utility to be installed and available in the system's PATH."
+  (interactive)
+  (let ((eps-files (dired-get-marked-files)))
+    (when (not eps-files)
+      (error "No marked files in Dired buffer."))
+    (let ((n 0))
+      (message "Converting:\n")
+      (dolist (epsfile eps-files)
+        (let ((pngfile (concat (file-name-sans-extension epsfile) ".png")))
+          (setq n (1+ n))
+          (message "%d: %s to %s." n epsfile pngfile)
+          (start-process "eps-to-png"
+                         "*eps-to-png*"
+                         "convert"
+                         "-colorspace"
+                         "sRGB"
+                         "-density"
+                         "600x600"
+                         epsfile
+                         pngfile)))
+      (message "\n%d files were converted from EPS to PNG format." n))))
 
 (defun mac-launchpad/string-ends-with (s ending)
   "Return non-nil if string S ends with ENDING."
