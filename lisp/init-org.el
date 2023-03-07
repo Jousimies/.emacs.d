@@ -31,7 +31,7 @@
 
   (setq org-todo-keyword-faces
         '(("NEXT" . '(success org-todo))
-          ("TODO" . org-todo)
+          ("TODO" . 'org-todo)
           ("CNCL" . '(region org-todo))
           ("WAIT" . '(bold org-todo))))
 
