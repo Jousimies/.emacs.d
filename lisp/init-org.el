@@ -436,8 +436,9 @@
       (bh/punch-in nil)
       (alert "Start Working: Fighting" :title "Punch In" ))))
 
-(my/space-leader-def
-  "op" '(my/toggle-punch-in-or-out :wk "Punch In or Out"))
+(with-eval-after-load 'evil
+  (evil-define-key '(normal visual) 'global
+    "gp" 'my/toggle-punch-in-or-out))
 
 (add-to-list 'display-buffer-alist
              '("\\*Org Note\\*"

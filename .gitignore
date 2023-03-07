@@ -5,3 +5,6 @@ emacs
 sdcv-dict
 cache
 emacs.org
+*.log
+*.gz
+*.pdf

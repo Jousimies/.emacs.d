@@ -4,9 +4,6 @@
 
 ;;; Code:
 
-(with-eval-after-load 'yasnippet
-  (add-hook 'LaTeX-mode-hook 'eglot-ensure))
-
 (use-package markdown-mode
   :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
          ("README\\.md\\'" . gfm-mode))
