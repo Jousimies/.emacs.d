@@ -1,5 +1,5 @@
 #+TITLE: Personal emacs configuration
-#+DATE: [2023-03-06 Mon 11:59]
+#+DATE: [2023-03-07 Tue 18:31]
 #+PROPERTY: header-args:emacs-lisp :results silent :tangle "~/.emacs.d/init.el"
 #+AUTO_TANGLE: t
 #+OPTIONS: author:nil
@@ -233,7 +233,7 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 
 [[https://github.com/emacscollective/no-littering][https://github.com/emacscollective/no-littering]], 会将一些包产生的文件集中放置到 etc 和 var 两个文件夹中，而不是散落在 user-emacs-directory 当中。
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package no-littering)
 #+end_src
 
@@ -368,7 +368,9 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
 ** epkg
 #+begin_src emacs-lisp
   (use-package epkg
-    :commands (epkg-describe-package))
+    :commands (epkg-describe-package)
+    :config
+    (setq epkg-repository (expand-file-name "cache/epkgs" user-emacs-directory)))
 
   (use-package epkg-marginalia
     :after (epkg marginalia)
@@ -451,8 +453,16 @@ Emacs 进行性检检测还可以使用[[https://github.com/dholm/benchmark-init
     (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-upstream)
     (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote))
 
+  (use-package transient
+    :config
+    (setq transient-levels-file (expand-file-name "cache/transient/levels.el" user-emacs-directory))
+    (setq transient-values-file (expand-file-name "cache/transient/values.el" user-emacs-directory))
+    (setq transient-history-file (expand-file-name "cache/transient/history.el" user-emacs-directory)))
+
   (use-package forge
-    :after magit)
+    :after magit
+    :config
+    (setq forge-database-file (expand-file-name "cache/forge-database.sqlite" user-emacs-directory)))
 #+end_src
 *** browse-at-remote
 #+begin_src emacs-lisp
@@ -975,7 +985,8 @@ Dashboard 界面的 banner 使用的是 ~ascii art~, 可以通过 [[https://asci
   (with-eval-after-load 'evil
     (evil-define-key 'motion 'dashboard-mode-map
       "gf" 'find-file
-      "gb" 'consult-buffer))
+      "gb" 'consult-buffer
+      "gB" 'previous-buffer))
 
   (run-with-idle-timer 300 t #'dashboard-open)
 #+end_src
@@ -1033,6 +1044,7 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
                 bidi-display-reordering nil)
 
   (setq ffap-machine-p-known 'reject)
+  (setq auto-save-list-file-prefix (expand-file-name "cache/auto-save-list/.saves-" user-emacs-directory))
 #+end_src
 
 ** system coding
@@ -1144,7 +1156,7 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
     :hook (tab-bar-mode . tabspaces-mode)
     :config
     (setq tabspaces-session-file
-          (expand-file-name "tabsession.el" no-littering-var-directory))
+          (expand-file-name "cache/tabsession.el" user-emacs-directory))
     (setq tabspaces-use-filtered-buffers-as-default t))
 #+end_src
 #+begin_src emacs-lisp
@@ -1203,17 +1215,24 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
 #+end_src
 ** savehist-mode
 #+begin_src emacs-lisp
-  (setq history-length 1000
-        savehist-save-minibuffer-history 1
-        savehist-additional-variables '(kill-ring
-                                        search-ring
-                                        regexp-search-ring)
-        history-delete-duplicates t)
-  (add-hook 'on-first-file-hook 'savehist-mode)
+  (use-package savehist
+    :hook (on-first-file . savehist-mode)
+    :config
+    (setq savehist-file (expand-file-name "cache/history" user-emacs-directory))
+    (setq history-length 1000
+          savehist-save-minibuffer-history 1
+          savehist-additional-variables '(kill-ring
+                                          search-ring
+                                          regexp-search-ring)
+          history-delete-duplicates t))
 #+end_src
 
 ** save-place-mode
 #+begin_src emacs-lisp
+  (use-package saveplace
+    :hook (on-first-file . save-place-mode)
+    :config
+    (setq save-place-file (expand-file-name "cache/places" user-emacs-directory)))
   (add-hook 'on-first-buffer-hook 'save-place-mode)
 #+end_src
 
@@ -1276,6 +1295,7 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
   (use-package recentf
     :hook (after-init . recentf-mode)
     :config
+    (setq recentf-save-file (expand-file-name "cache/recentf" user-emacs-directory))
     (setq recentf-auto-cleanup 300)
     (setq recentf-max-saved-items 1000))
 
@@ -1394,6 +1414,9 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
 
 ** bookmark
 #+begin_src emacs-lisp
+  (use-package bookmark
+    :config
+    (setq bookmark-default-file (expand-file-name "cache/bookmarks" user-emacs-directory)))
   (my/space-leader-def
     "ba" 'bookmark-set
     "br" 'bookmark-rename
@@ -1421,6 +1444,20 @@ Emacs 内置了很多有用的 mode, 详细内容请参考仓库：[[https://git
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+end_src
+
+** URL
+#+begin_src emacs-lisp
+  (use-package url
+    :config
+    (setq url-configuration-directory (expand-file-name "cache/url" user-emacs-directory)))
+#+end_src
+
+** multisession
+#+begin_src emacs-lisp
+  (use-package multisession
+    :config
+    (setq multisession-directory (expand-file-name "cache/multisession" user-emacs-directory)))
+#+end_src
 * Awesome Emacs Equipped with Third-Party Packages
 ** undo
 Emacs 自带 undo 和 undo-redo 功能。这里使用了 ~undo-fu~ 和 ~undo-fu-session~ 以及 ~vundo~ 这三个包。
@@ -1431,7 +1468,9 @@ Evil 模式编辑需要设置 undo system.
 
   (use-package undo-fu-session
     :after undo-fu
-    :hook (on-first-file . undo-fu-session-global-mode))
+    :hook (on-first-file . undo-fu-session-global-mode)
+    :config
+    (setq undo-fu-session-directory (expand-file-name "cache/undo-fu-session" user-emacs-directory)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1465,7 +1504,7 @@ Evil 模式编辑需要设置 undo system.
     :hook (on-first-buffer . gc-buffers-mode))
 #+end_src
 
-** COMMENT ace-window
+** ace-window
 作用是方便进行窗口的跳转，对于笔记本这种不大的屏幕不怎么需要，如果是较大的屏幕很有用。可以结合 winner 进行使用。
 
 对于同一 buffer 中位置的跳转，想要回到之前的位置可以使用 ~evil-jump-backward~.
@@ -2337,6 +2376,17 @@ langtool 也可以检查语法，相比较 grammarly，不需要连网，所以�
     (setq org-todo-repeat-to-state t)
     (setq org-todo-keywords
           '((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)")))
+
+    (setq org-todo-keyword-faces
+          '(("NEXT" . '(success org-todo))
+            ("TODO" . org-todo)
+            ("CNCL" . '(region org-todo))
+            ("WAIT" . '(bold org-todo))))
+
+    (setq org-priority-faces
+          '((?A . '(bold org-priority))
+            (?B . org-priority)
+            (?C . '(shadow org-priority))))
     (setq org-todo-state-tags-triggers
           (quote (("CNCL" ("CNCL" . t))
                   ("WAIT" ("WAIT" . t))
@@ -2347,7 +2397,7 @@ langtool 也可以检查语法，相比较 grammarly，不需要连网，所以�
                   ("DONE" ("WAIT") ("CNCL") ("SOMEDAY")))))
     :bind (:map org-mode-map
                 ("C-c l" . org-store-link)))
-                ;; ("<return>" . org-return)))
+  ;; ("<return>" . org-return)))
 #+end_src
 *** org-babel
 以下配置来源：https://emacs-china.org/t/org-babel/18699
@@ -2436,7 +2486,10 @@ langtool 也可以检查语法，相比较 grammarly，不需要连网，所以�
                 ("RET" . org-capture-finalize))
     :config
     (setq org-capture-templates
-          '(("i" "Inbox"
+          '(("i" "GTD Inbox"
+             entry (file (lambda () (concat my-galaxy "/todos/inbox.org")))
+             "* %?\n%U\n" :time-prompt t :tree-type week)
+            ("I" "NC Inbox"
              plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/inbox.org")))
              "**** %?\n%U\n" :time-prompt t :tree-type week)
             ("p" "Daily Plan"
@@ -2576,6 +2629,7 @@ POST：[[https://fuco1.github.io/2023-02-08-Visit-the-org-headline-from-the-atta
   (use-package org-id
     :after org
     :config
+    (setq org-id-locations-file (expand-file-name "cache/.org-id-locations" user-emacs-directory))
     (setq org-id-method 'ts)
     (setq org-id-link-to-org-use-id 'create-if-interactive))
 
@@ -2681,6 +2735,7 @@ POST：[[https://fuco1.github.io/2023-02-08-Visit-the-org-headline-from-the-atta
     :after org
     :config
     (org-clock-persistence-insinuate)
+    (setq org-clock-persist-file (expand-file-name "cache/org-clock-save.el" user-emacs-directory))
     (setq org-clock-history-length 23)
     (setq org-clock-in-resume t)
     (setq org-clock-into-drawer "LOGCLOCK")
@@ -2815,7 +2870,7 @@ Punch in or out.
                 (org-clock-in))
             (when bh/keep-clock-running
               (bh/clock-in-default-task)))))))
-  (defvar bh/default-task-id "20220524T114723.420565")
+  (defvar bh/default-task-id "20230307T170734.341755")
   (defun bh/clock-in-default-task-as-default ()
     "Clock in default task."
     (interactive)
@@ -3013,6 +3068,8 @@ Punch in or out.
 
   (with-eval-after-load 'evil
     (evil-define-key '(normal visual) 'global
+      "gnbl" 'denote-org-dblock-insert-links
+      "gnbb" 'denote-org-dblock-insert-backlinks
       "gns" 'denote-signature
       "gnd" 'denote-subdirectory
       "gnr" 'denote-rename-file-using-front-matter
@@ -3378,24 +3435,11 @@ vulpea to build dynamic agenda.
     (add-hook 'find-file-hook #'vulpea-project-update-tag)
     (add-hook 'before-save-hook #'vulpea-project-update-tag))
 #+end_src
-#+begin_src emacs-lisp
-  (defun my/gtd-file ()
-    (interactive)
-    (find-file (expand-file-name "todos/org-gtd-tasks.org" my-galaxy)))
-#+end_src
 
 ** org-agenda
-#+begin_src emacs-lisp
-  (use-package org-agenda
-    :bind ("<f12>" . my/org-agenda)
-    :hook (org-agenda-finalize . #'org-agenda-find-same-or-today-or-agenda)
-    :config
-    (setq org-agenda-files (directory-files-recursively (expand-file-name "todos" my-galaxy) "org$"))
-    (setq org-agenda-dim-blocked-tasks t)
-    (setq org-agenda-compact-blocks t)
-    (setq org-agenda-window-setup 'other-tab)
-    (setq org-agenda-align-tags-to-column -120)
-    (setq org-agenda-custom-commands
+转到使用 =org-gtd= 处理 GTD 任务，它的 ~org-gtd-engage~ 比我定制的 =org-agenda-custom-commands= 看起来更简洁。
+#+begin_src emacs-lisp :tangle no
+  (setq org-agenda-custom-commands
           '(("R" "Review projects" tags-todo "-CANCELLED/"
              ((org-agenda-overriding-header "Reviews Scheduled")
               (org-agenda-skip-function 'org-review-agenda-skip)
@@ -3469,23 +3513,37 @@ vulpea to build dynamic agenda.
                      (org-agenda-prefix-format " %i")
                      (org-agenda-hide-tags-regexp "project")
                      (org-agenda-overriding-header "Tasks on hold")))))))
+#+end_src
+#+begin_src emacs-lisp
+  (use-package org-agenda
+    :bind ("C-<f12>" . org-agenda)
+    :hook (org-agenda-finalize . #'org-agenda-find-same-or-today-or-agenda)
+    :config
+    (setq org-agenda-files (directory-files-recursively (expand-file-name "todos" my-galaxy) "org$"))
+    (setq org-agenda-dim-blocked-tasks t)
+    (setq org-agenda-compact-blocks t)
+    (setq org-agenda-window-setup 'other-tab)
+    (setq org-agenda-align-tags-to-column -120)
 
-    (setq org-agenda-category-icon-alist
-          `(("\\`gtd\\'"
-             (#(" " 0 1 (rear-nonsticky t display (raise 0.0)
-                                         font-lock-face
-                                         (:family "FontAwesome" :height 1.0)
-                                         face
-                                         (:family "FontAwesome" :height 1.0))))
-             nil nil :ascent center)
-            ("\\\cc\\\|[a-zA-z0-9]*"
-             (#(" " 0 1 (rear-nonsticky t display (raise 0.0)
-                                         font-lock-face
-                                         (:family "FontAwesome" :height 1.0)
-                                         face
-                                         (:family "FontAwesome" :height 1.0))))
-             nil nil :ascent center))))
-
+    (with-eval-after-load 'all-the-icons
+      (setq org-agenda-category-icon-alist
+            `(("\\`gtd\\'"
+               (#(" " 0 1 (rear-nonsticky t display (raise 0.0)
+                                           font-lock-face
+                                           (:family "FontAwesome" :height 1.0)
+                                           face
+                                           (:family "FontAwesome" :height 1.0))))
+               nil nil :ascent center)
+              ("\\\cc\\\|[a-zA-z0-9]*"
+               (#(" " 0 1 (rear-nonsticky t display (raise 0.0)
+                                           font-lock-face
+                                           (:family "FontAwesome" :height 1.0)
+                                           face
+                                           (:family "FontAwesome" :height 1.0))))
+               nil nil :ascent center)))))
+#+end_src
+使用 =C-f12= 打开 ~org-agenda~ 然后执行相应的操作比使用快捷键的方式心智负担小一些。
+#+begin_src emacs-lisp :tangle no
   (defun my/org-agenda ()
     "Open my `org-agenda'.
   Run `org-roam-db-sync' to get full lists of org agenda files."
@@ -3513,12 +3571,14 @@ vulpea to build dynamic agenda.
     "oat" '(org-todo-list :wk "Todo list")
     "oav" '(org-search-view :wk "View search")
     "oai" '(my/org-inprogress-tasks :wk "Inprogess tasks"))
+#+end_src
 
+#+begin_src emacs-lisp
   (with-eval-after-load 'evil
     (evil-set-initial-state 'org-agenda-mode 'motion)
     (evil-define-key 'motion org-agenda-mode-map
       (kbd "RET") 'org-agenda-switch-to
-      (kbd "SPC") 'nil
+      "SPC" 'nil
       "gj" 'org-agenda-next-item
       "gr" 'org-agenda-redo
       "gR" 'org-agenda-redo-all
@@ -3530,10 +3590,16 @@ vulpea to build dynamic agenda.
       "cc" 'org-agenda-clock-cancel
       "cr" 'org-agenda-clockreport-mode))
 #+end_src
-
 ** org-gtd
 #+begin_src emacs-lisp
+  (defun my/gtd-file ()
+    (interactive)
+    (find-file (expand-file-name "todos/org-gtd-tasks.org" my-galaxy)))
+#+end_src
+
+#+begin_src emacs-lisp
   (use-package org-gtd
+    :bind ("<f12>" . org-gtd-engage)
     :commands org-gtd-capture org-gtd-engage org-gtd-process-inbox org-gtd-show-all-next org-gtd-show-stuck-projects
     :init
     (setq org-gtd-update-ack "2.1.0")
@@ -3775,7 +3841,7 @@ Emacs 中执行 Pomodoro 哲学。
   (use-package pomm
     :commands pomm
     :config
-    (setq pomm-state-file-location (expand-file-name "pomm" no-littering-var-directory))
+    (setq pomm-state-file-location (expand-file-name "cache/pomm" user-emacs-directory))
     (pomm-mode-line-mode 1))
 #+end_src
 
@@ -5204,7 +5270,7 @@ clocktable 中的 scope 可以是自定义的函数，下面的函数将 books �
     :commands achive
     :config
     (setq achive-language 'zh)
-    (setq achive-cache-path (expand-file-name ".achive" no-littering-var-directory)))
+    (setq achive-cache-path (expand-file-name "chche/.achive" user-emacs-directory)))
 
   (my/space-leader-def
     "ms" '(achive :wk "Share"))

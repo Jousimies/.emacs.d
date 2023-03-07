@@ -5,3 +5,4 @@ early-init.el
 build-emacs-macos
 emacs
 sdcv-dict
+cache
