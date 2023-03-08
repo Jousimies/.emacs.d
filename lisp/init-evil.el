@@ -49,6 +49,11 @@
   :config
   (evil-embrace-enable-evil-surround-integration))
 
+(use-package evil-easymotion
+  :after evil
+  :config
+  (evilem-default-keybindings "SPC"))
+
 (use-package which-key
   :hook (after-init . which-key-mode)
   :config
