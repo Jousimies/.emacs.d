@@ -76,7 +76,6 @@
 
 (require 'init-benchmark)
 (require 'init-evil)
-(require 'init-edit)
 (require 'init-ui)
 (require 'init-builtin)
 (require 'init-auto-save)
