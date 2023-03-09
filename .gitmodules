@@ -472,3 +472,6 @@
 [submodule "packages/evil-easymotion"]
 	path = packages/evil-easymotion
 	url = https://github.com/PythonNut/evil-easymotion.git
+[submodule "packages/mind-wave"]
+	path = packages/mind-wave
+	url = https://github.com/manateelazycat/mind-wave.git

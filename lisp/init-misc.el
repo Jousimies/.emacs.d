@@ -318,5 +318,7 @@ This command can be called when in a file buffer or in `dired'."
 
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
 
+(use-package mind-wave)
+
 (provide 'init-misc)
 ;;; init-misc.el ends here.
