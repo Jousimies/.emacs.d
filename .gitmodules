@@ -475,3 +475,6 @@
 [submodule "packages/mind-wave"]
 	path = packages/mind-wave
 	url = https://github.com/manateelazycat/mind-wave.git
+[submodule "packages/saveplace-pdf-view"]
+	path = packages/saveplace-pdf-view
+	url = https://github.com/nicolaisingh/saveplace-pdf-view.git

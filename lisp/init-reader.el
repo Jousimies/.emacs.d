@@ -130,6 +130,11 @@ When it finised, it will jump to note file."
              (format "pdftoppm -r 600 %s %s -png" filename pdf-base-name))))
       (message "Current file is not a PDF file."))))
 
+(use-package saveplace-pdf-view
+  :after pdf-tools
+  :config
+  (save-place-mode))
+
 (use-package nov
   :mode (".epub" . nov-mode)
   :config
