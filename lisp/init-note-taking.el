@@ -89,12 +89,6 @@
     "gnn" 'consult-notes
     "gna" 'my/new-article))
 
-;; (use-package consult-notes-org-roam
-;;   :commands consult-notes-org-roam-find-node-relation)
-
-;; (my/space-leader-def
-;;     "nv" '(consult-notes-org-roam-find-node-relation :wk "Node navigation"))
-
 (use-package org-transclusion
   :commands (org-transclusion-make-from-link org-transclusion-add org-transclusion-add-all)
   :config
