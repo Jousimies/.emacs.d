@@ -5,9 +5,13 @@
 ;;; Code:
 
 (use-package evil
-  :bind (:map evil-insert-state-map
+  :bind ((:map evil-insert-state-map
               ("C-e" . move-end-of-line)
               ("C-k" . kill-line))
+         (:map evil-motion-state-map
+               ("SPC" . nil)
+               ("RET" . nil)
+               ("TAB" . nil)))
   :hook ((after-init . evil-mode)
          (after-change-major-mode . (lambda ()
                                       (setq-local evil-shift-width tab-width))))
