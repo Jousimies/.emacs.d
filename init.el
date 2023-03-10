@@ -1,3 +1,9 @@
+;; init.el --- Personal Emacs Configuration -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 ;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
 (setq auto-mode-case-fold nil)
 
@@ -42,7 +48,11 @@
 
         ;; 继续递归搜索子目录
         (add-subdirs-to-load-path subdir-path)))))
+
+;; add packages to load-path
 (add-subdirs-to-load-path "~/.emacs.d/packages")
+
+;; add lisp configuraton
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
 ;; https://www.emacswiki.org/emacs/ExecPath
@@ -73,7 +83,6 @@
 (require 'init-ui)
 (require 'init-builtin)
 (require 'init-auto-save)
-(require 'init-server)
 (require 'init-git)
 (require 'init-del)
 (require 'init-template)
