@@ -69,35 +69,12 @@
 (my/space-leader-def
   "mo" '(my/ocr :wk "OCR"))
 
-(defun toggle-proxy ()
-  "Toggle proxy for the url.el library."
-  (interactive)
-  (if url-proxy-services
-      (proxy-disable)
-    (proxy-enable)))
-
-(defun proxy-enable ()
-  "Enable proxy."
-  (interactive)
-  (setq url-proxy-services
-        '(("http" . "127.0.0.1:8118")
-          ("https" . "127.0.0.1:8118")
-          ("socks" . "127.0.0.1:8118")
-          ("no_proxy" . "0.0.0.0")))
-  (message "Proxy enabled! %s" (car url-proxy-services)))
-
-(defun proxy-disable ()
-  "Disable proxy."
-  (interactive)
-  (if url-proxy-services
-      (setq url-proxy-services nil))
-  (message "Proxy disabled!"))
-
-(run-with-idle-timer 2 nil (lambda ()
-                             (proxy-enable)))
-
-(my/space-leader-def
-  "mp" '(toggle-proxy :wk "Proxy"))
+(use-package socks
+  :defer 5
+  :config
+  (setq socks-noproxy '("localhost"))
+  (setq url-gateway-method 'socks)
+  (setq socks-server '("Default server" "127.0.0.1" 8118 5)))
 
 (use-package advance-words-count
   :bind ("M-=" . advance-words-count))
