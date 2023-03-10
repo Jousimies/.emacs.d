@@ -75,7 +75,10 @@
   (setq consult-notes-file-dir-sources
         `(("Articles"  ?a  ,(concat my-galaxy "/articles"))
           ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
-          ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy)))))
+          ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
+          ("Manuscript"  ?m ,(expand-file-name "denote/manuscript" my-galaxy))
+          ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy)))))
+
 (defun my/new-article (article)
     (interactive "sTitle: ")
     (let ((filename (format "%s" article))
