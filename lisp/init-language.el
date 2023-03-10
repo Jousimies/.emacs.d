@@ -14,6 +14,11 @@
 ;; (with-eval-after-load 'whitespace-cleanup-mode
 ;;   (add-to-list 'whitespace-cleanup-mode-ignore-modes 'markdown-mode))
 
+(use-package devdocs-browser
+  :commands devdocs-browser-install-doc devdocs-browser-open devdocs-browser-open-in
+  :config
+  (setq devdocs-browser-cache-directory (expand-file-name "cache/devdocs-browser/" user-emacs-directory)))
+
 (add-to-list 'auto-mode-alist '("poetry\\.lock\\'" . toml-mode))
 
 (use-package yaml-mode
