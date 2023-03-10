@@ -49,8 +49,7 @@
                 ("NEXT" ("WAIT") ("CNCL") ("SOMEDAY"))
                 ("DONE" ("WAIT") ("CNCL") ("SOMEDAY")))))
   :bind (:map org-mode-map
-              ("C-c l" . org-store-link)
-              ("<return>" . org-return)))
+              ("C-c l" . org-store-link)))
 
 (use-package ob-core
   :after org
