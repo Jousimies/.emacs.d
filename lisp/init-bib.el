@@ -90,10 +90,10 @@
   :config
   (setq ebib-preload-bib-files org-cite-global-bibliography)
 
-  (setq ebib-keywords (concat org-roam-directory "/bibtexs/keywords.txt"))
-  (setq ebib-notes-directory (concat org-roam-directory "/ref"))
-  (setq ebib-filters-default-file (concat org-roam-directory "/bibtexs/ebib-filters"))
-  (setq ebib-reading-list-file (concat org-roam-directory "/bibtexs/reading_list.org"))
+  (setq ebib-keywords (concat my-galaxy "/bibtexs/keywords.txt"))
+  (setq ebib-notes-directory (concat my-galaxy "/ref"))
+  (setq ebib-filters-default-file (concat my-galaxy "/bibtexs/ebib-filters"))
+  (setq ebib-reading-list-file (concat my-galaxy "/bibtexs/reading_list.org"))
 
   (setq ebib-keywords-field-keep-sorted t)
   (setq ebib-keywords-file-save-on-exit 'always)
