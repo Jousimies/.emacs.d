@@ -138,6 +138,7 @@ When it finised, it will jump to note file."
 (use-package nov
   :mode (".epub" . nov-mode)
   :config
+  (setq nov-save-place-file (expand-file-name "cache/nov-places" user-emacs-directory))
   (setq nov-unzip-program (executable-find "bsdtar")
         nov-unzip-args '("-xC" directory "-f" filename)))
 
