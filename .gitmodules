@@ -478,3 +478,6 @@
 [submodule "packages/saveplace-pdf-view"]
 	path = packages/saveplace-pdf-view
 	url = https://github.com/nicolaisingh/saveplace-pdf-view.git
+[submodule "packages/emacs-devdocs-browser"]
+	path = packages/emacs-devdocs-browser
+	url = https://github.com/blahgeek/emacs-devdocs-browser.git
