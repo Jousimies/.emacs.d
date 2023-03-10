@@ -35,6 +35,7 @@
   (evil-set-initial-state 'org-agenda-mode 'motion)
   (evil-define-key 'motion org-agenda-mode-map
     (kbd "RET") 'org-agenda-switch-to
+    "/" 'org-agenda-filter
     "SPC" 'nil
     "gj" 'org-agenda-next-item
     "gr" 'org-agenda-redo
