@@ -19,11 +19,12 @@
               (alist-get 'package marginalia-annotator-registry)))
 
 (use-package gcmh
+  :hook ((after-init . gcmh-mode)
+         (focus-out . garbage-collect))
   :config
   (setq gcmh-idle-delay 'auto)
   (setq gcmh-auto-idle-delay-factor 10)
-  (setq gcmh-high-cons-threshold #x1000000)
-  :hook (after-init . gcmh-mode))
+  (setq gcmh-high-cons-threshold #x1000000))
 
 (use-package grab-mac-link
   :commands grab-mac-link-dwim
