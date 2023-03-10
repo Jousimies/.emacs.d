@@ -1,9 +1,3 @@
-;; init.el --- Personal Emacs Configuration -*- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 ;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
 (setq auto-mode-case-fold nil)
 
@@ -123,4 +117,5 @@
                        gcs-done)))
           90)
 
+(provide 'init)
 ;;; init.el ends here.

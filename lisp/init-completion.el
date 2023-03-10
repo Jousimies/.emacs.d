@@ -1,9 +1,3 @@
-;; init-completion.el --- Minibuffer and completion *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (setq read-buffer-completion-ignore-case t)
 (setq completion-ignore-case t)
 (setq minibuffer-prompt-properties

@@ -1,9 +1,3 @@
-;; init-org.el --- org-mode *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package org
   :config
   (setq org-ellipsis " ⇲")

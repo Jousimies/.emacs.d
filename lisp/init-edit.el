@@ -1,9 +1,3 @@
-;; init-edit.el --- better edit *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package gc-buffers
   :hook (on-first-buffer . gc-buffers-mode))
 

@@ -1,9 +1,3 @@
-;; init-template.el --- template system *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package tempel
   :bind (("M-+" . tempel-complete)
          ("M-*" . tempel-insert))

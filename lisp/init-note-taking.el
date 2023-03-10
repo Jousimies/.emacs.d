@@ -1,9 +1,3 @@
-;; init-note-taking.el --- note taking *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package ekg
   :commands (ekg-show-notes-in-trash
              ekg-show-notes-for-today

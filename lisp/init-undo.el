@@ -1,9 +1,3 @@
-;; init-undo.el --- undo system*- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package undo-fu)
 
 (use-package undo-fu-session

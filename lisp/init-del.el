@@ -1,9 +1,3 @@
-;; init-del.el --- delete *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (setq delete-by-moving-to-trash t)
 (setq trash-directory "~/.Trash")
 

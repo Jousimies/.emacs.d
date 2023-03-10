@@ -1,9 +1,3 @@
-;; init-elfeed.el --- elfeed, rss reader *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package elfeed
   :defer t
   :preface

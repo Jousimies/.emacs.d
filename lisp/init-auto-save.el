@@ -1,9 +1,3 @@
-;; init-auto-save.el --- auto-save *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package auto-save
   :hook (on-first-file . auto-save-enable)
   :config

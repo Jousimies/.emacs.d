@@ -1,9 +1,3 @@
-;; init-helpful.el --- helpful *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package helpful
   :commands helpful-update
   :bind (([remap describe-function] . helpful-callable)

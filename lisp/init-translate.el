@@ -1,9 +1,3 @@
-;; init-translate.el --- translate *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package langtool
   :commands langtool-check-buffer
   :config
@@ -120,13 +114,6 @@
     "glr" 'dictionary-overlay-render-buffer
     "glk" 'dictionary-overlay-mark-word-unknown
     "glK" 'dictionary-overlay-mark-word-known))
-
-(use-package flycheck
-  :hook (prog-mode . flycheck-mode))
-
-(use-package flycheck-grammarly
-  :after flycheck
-  :commands flycheck-grammarly-setup)
 
 (add-to-list 'display-buffer-alist
              (cons

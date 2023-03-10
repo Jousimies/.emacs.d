@@ -1,9 +1,3 @@
-;; init-bib.el --- bib management *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package oc
   :after org
   :config

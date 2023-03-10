@@ -1,9 +1,3 @@
-;; init-misc.el --- Misc *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package org-auto-tangle
   :hook (org-mode . org-auto-tangle-mode))
 

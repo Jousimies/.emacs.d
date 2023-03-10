@@ -1,9 +1,3 @@
-;; init-evil.el --- Personal Emacs Configuration -*- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package evil
   :bind ((:map evil-insert-state-map
               ("C-e" . move-end-of-line)

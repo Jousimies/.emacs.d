@@ -1,9 +1,3 @@
-;; init-builtin.el --- Builtin *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (setq frame-inhibit-implied-resize t)
 (setq use-file-dialog nil)
 (setq use-dialog-box nil)
@@ -281,6 +275,21 @@
 (use-package multisession
   :config
   (setq multisession-directory (expand-file-name "cache/multisession" user-emacs-directory)))
+
+(use-package server
+  :hook (on-first-input . server-start)
+  :config
+  (defun my/start-server ()
+    (interactive)
+    (if (not (server-running-p))
+        (server-start))
+    (message "Server has started")))
+
+(my/space-leader-def
+  "q" '(:ignore t :wk "Quit/Restart")
+  "qR" '(restart-emacs :wk "Restart emacs")
+  "qq" '(server-force-delete :wk "Server Delete")
+  "qs" '(my/start-server :wk "Server Delete"))
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here.

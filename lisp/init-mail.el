@@ -1,9 +1,3 @@
-;; init-mail.el --- email *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (setq user-full-name "Duan Ning")
 (setq user-mail-address "duan_n@outlook.com")
 

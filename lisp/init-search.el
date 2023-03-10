@@ -1,9 +1,3 @@
-;; init-search.el --- Better search *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package ctrlf
   :after evil
   :hook (on-first-buffer . ctrlf-mode)

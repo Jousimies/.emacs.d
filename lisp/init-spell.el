@@ -1,9 +1,3 @@
-;; init-spell.el --- spell *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (use-package ispell
   :config
   (setq ispell-program-name "/opt/homebrew/bin/aspell")

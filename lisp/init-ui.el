@@ -1,9 +1,3 @@
-;; init-ui.el --- UI *- lexical-binding: t; no-byte-compile: t -*-
-
-;;; Commentary:
-
-;;; Code:
-
 (set-face-attribute 'default nil :font "Iosevka Term" :height 160)
 (if (display-graphic-p)
     (dolist (charset '(kana han cjk-misc bopomofo))
