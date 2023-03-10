@@ -134,7 +134,7 @@
 (use-package alert
   :commands alert
   :config
-  (setq alert-default-style 'osx-notifier))
+  (setq alert-default-style 'notifier))
 
 (use-package org-alert
   :hook (on-first-file . org-alert-enable)
