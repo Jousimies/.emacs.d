@@ -1,4 +1,4 @@
-;; init.el --- auto-save *- lexical-binding: t; no-byte-compile: t -*-
+;; init-server.el --- auto-save *- lexical-binding: t; no-byte-compile: t -*-
 
 ;;; Commentary:
 

@@ -1,4 +1,4 @@
-;; init-taking.el --- note taking *- lexical-binding: t; no-byte-compile: t -*-
+;; init-note-taking.el --- note taking *- lexical-binding: t; no-byte-compile: t -*-
 
 ;;; Commentary:
 
