@@ -106,6 +106,8 @@
 (require 'init-browser)
 (require 'init-vterm)
 (require 'init-misc)
+(add-hook 'on-first-buffer-hook #'(lambda ()
+                                    (require 'init-chatgpt)))
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (when (file-exists-p custom-file)
