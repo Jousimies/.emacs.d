@@ -30,15 +30,16 @@
         '((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)")))
 
   (setq org-todo-keyword-faces
-        '(("NEXT" . '(success org-todo))
-          ("TODO" . 'org-todo)
-          ("CNCL" . '(region org-todo))
-          ("WAIT" . '(bold org-todo))))
+        `(("NEXT" . (success . org-todo))
+          ("TODO" . org-todo)
+          ("CNCL" . (region . org-todo))
+          ("WAIT" . (bold . org-todo))))
 
   (setq org-priority-faces
-        '((?A . '(bold org-priority))
+        '((?A . (bold . org-priority))
           (?B . org-priority)
-          (?C . '(shadow org-priority))))
+          (?C . (shadow . org-priority))))
+
   (setq org-todo-state-tags-triggers
         (quote (("CNCL" ("CNCL" . t))
                 ("WAIT" ("WAIT" . t))
