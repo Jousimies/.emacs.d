@@ -146,7 +146,29 @@
       (my/siri-translate2english))))
 
 (use-package emacs-azure-tts
-  :commands emacs-azure-tts)
+  :commands emacs-azure-tts
+  :preface
+  (defun play-sound-internal (sound)
+  "Internal function for `play-sound' (which see)."
+  (or (eq (car-safe sound) 'sound)
+      (signal 'wrong-type-argument (list sound)))
+
+  (cl-destructuring-bind (&key file data volume device)
+      (cdr sound)
+
+    (and (or data device)
+         (error "DATA and DEVICE arg not supported"))
+
+    (apply #'start-process "afplay" nil
+           "afplay" (append (and volume (list "-v" volume))
+                            (list (expand-file-name file data-directory))))))
+  (defun emacs-azure-tts-sentence ()
+    (interactive)
+    (emacs-azure-tts 1)))
+
+(with-eval-after-load 'evil
+  (evil-define-key '(normal visual) 'global
+    "gls" 'emacs-azure-tts-sentence))
 
 (use-package language-chunk
   :commands lc-memo-review lc-corpus-capture-card
