@@ -145,5 +145,18 @@
         (my/siri-translate)
       (my/siri-translate2english))))
 
+(use-package emacs-azure-tts
+  :commands emacs-azure-tts)
+
+(use-package language-chunk
+  :commands lc-memo-review lc-corpus-capture-card
+  :config
+  (setq lc-db-location (expand-file-name "database/lc.db" my-galaxy)))
+
+(with-eval-after-load 'evil
+  (evil-define-key '(normal visual) 'global
+    "glc" 'lc-corpus-capture-card
+    "glv" 'lc-memo-review))
+
 (provide 'init-translate)
 ;;; init-translate.el ends here.

@@ -481,3 +481,9 @@
 [submodule "packages/emacs-devdocs-browser"]
 	path = packages/emacs-devdocs-browser
 	url = https://github.com/blahgeek/emacs-devdocs-browser.git
+[submodule "packages/emacs-azure-tts"]
+	path = packages/emacs-azure-tts
+	url = https://github.com/czqhurricnae/emacs-azure-tts.git
+[submodule "packages/language-chunk"]
+	path = packages/language-chunk
+	url = https://github.com/zbelial/language-chunk.git
