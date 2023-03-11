@@ -487,3 +487,6 @@
 [submodule "packages/language-chunk"]
 	path = packages/language-chunk
 	url = https://github.com/zbelial/language-chunk.git
+[submodule "packages/popweb"]
+	path = packages/popweb
+	url = https://github.com/manateelazycat/popweb.git

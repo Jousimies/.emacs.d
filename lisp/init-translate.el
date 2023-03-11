@@ -158,5 +158,14 @@
     "glc" 'lc-corpus-capture-card
     "glv" 'lc-memo-review))
 
+(use-package popweb-dict
+  :commands popweb-dict-say-word
+  :config
+  (setq popweb-config-location (expand-file-name "cache/popweb" user-emacs-directory)))
+
+(with-eval-after-load 'evil
+  (evil-define-key '(normal visual) 'global
+    "glw" 'popweb-dict-say-word))
+
 (provide 'init-translate)
 ;;; init-translate.el ends here.
