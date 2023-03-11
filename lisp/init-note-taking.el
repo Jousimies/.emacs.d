@@ -11,7 +11,7 @@
          (:map ekg-notes-mode-map
                ("q" . quit-window)))
   :config
-  (setq triples-default-database-filename (expand-file-name "ekg/triples.db" my-galaxy)))
+  (setq triples-default-database-filename (expand-file-name "database/triples.db" my-galaxy)))
 
 (add-to-list 'display-buffer-alist '("\\*EKG"
                                      (display-buffer-pop-up-frame)
