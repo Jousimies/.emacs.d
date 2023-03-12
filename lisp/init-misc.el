@@ -293,5 +293,8 @@ This command can be called when in a file buffer or in `dired'."
 (use-package mind-wave
   :mode ("chat" . mind-wave-chat-mode))
 
+(use-package focus
+  :hook (org-mode . focus-mode))
+
 (provide 'init-misc)
 ;;; init-misc.el ends here.

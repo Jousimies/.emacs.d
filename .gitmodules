@@ -490,3 +490,6 @@
 [submodule "packages/popweb"]
 	path = packages/popweb
 	url = https://github.com/manateelazycat/popweb.git
+[submodule "packages/Focus"]
+	path = packages/Focus
+	url = https://github.com/larstvei/Focus.git
