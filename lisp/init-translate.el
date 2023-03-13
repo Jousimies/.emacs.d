@@ -100,8 +100,7 @@
     "glt" 'powerthesaurus-lookup-dwim))
 
 (use-package dictionary-overlay
-  :defer 5
-  :load-path "~/.emacs.d/packages/dictionary-overlay/"
+  :commands dictionary-overlay-render-buffer dictionary-overlay-toggle
   :config
   (setq dictionary-overlay-translators '("local" "darwin" "sdcv" "web"))
   (setq dictionary-overlay-user-data-directory
@@ -111,7 +110,7 @@
 
 (with-eval-after-load 'evil
   (evil-define-key '(normal visual) 'global
-    "glr" 'dictionary-overlay-render-buffer
+    "glr" 'dictionary-overlay-toggle
     "glk" 'dictionary-overlay-mark-word-unknown
     "glK" 'dictionary-overlay-mark-word-known))
 
