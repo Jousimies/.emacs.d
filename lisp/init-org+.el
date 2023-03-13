@@ -100,5 +100,14 @@
     (shell-command (format "pandoc %s -o %s --reference-doc=%s" (buffer-file-name) docx-file template-file))
     (message "Convert finish: %s" docx-file)))
 
+(use-package org-anki
+  :after org
+  :commands org-anki-sync-entry
+  :general (my/space-leader-def
+             "oa" '(:ignore t :wk "Anki")
+             "oas" '(org-anki-sync-entry :wk "Sync")
+             "oaS" '(org-anki-sync-all :wk "Sync all")
+             "oad" '(org-anki-delete-entry :wk "Delete")))
+
 (provide 'init-org+)
 ;;; init-org+.el ends here.

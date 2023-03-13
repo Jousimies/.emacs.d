@@ -493,3 +493,9 @@
 [submodule "packages/Focus"]
 	path = packages/Focus
 	url = https://github.com/larstvei/Focus.git
+[submodule "packages/org-anki"]
+	path = packages/org-anki
+	url = https://github.com/eyeinsky/org-anki.git
+[submodule "packages/emacs-promise"]
+	path = packages/emacs-promise
+	url = https://github.com/chuntaro/emacs-promise.git
