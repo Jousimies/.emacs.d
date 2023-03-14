@@ -19,10 +19,11 @@
   (setq gts-buffer-follow-p t)
   (setq gts-translate-list '(("en" "zh")))
   (setq gts-default-translator (gts-translator
-				:picker (gts-noprompt-picker)
-				:engines (list
-					  (gts-google-engine :parser (gts-google-summary-parser)))
-				:render (gts-buffer-render))))
+                                :picker (gts-noprompt-picker)
+                                :engines (list
+                                          (gts-bing-engine)
+                                          (gts-google-engine :parser (gts-google-summary-parser)))
+                                :render (gts-buffer-render))))
 (with-eval-after-load 'evil
   (evil-define-key '(normal visual) 'global
     "gll" 'gts-do-translate))
