@@ -499,3 +499,6 @@
 [submodule "packages/emacs-promise"]
 	path = packages/emacs-promise
 	url = https://github.com/chuntaro/emacs-promise.git
+[submodule "packages/org-contacts"]
+	path = packages/org-contacts
+	url = https://repo.or.cz/org-contacts.git
