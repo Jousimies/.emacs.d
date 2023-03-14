@@ -21,7 +21,7 @@
   (setq gcmh-high-cons-threshold #x1000000))
 
 (use-package grab-mac-link
-  :commands grab-mac-link-dwim
+  :commands grab-mac-link-dwim grab-mac-link-safari-1
   :preface
   (defun my/link-grab ()
     (interactive)

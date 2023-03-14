@@ -43,22 +43,79 @@
     "q" 'quit-window))
 
 (use-package denote
-  :commands (denote-signature denote-subdirectory denote-rename-file-using-front-matter
-                              denote-rename-file
-                              denote-link-or-create)
+  :commands (denote denote-signature denote-subdirectory denote-rename-file-using-front-matter
+                    denote-keywords-prompt
+                    denote-rename-file
+                    denote-link-or-create)
   :hook (dired-mode . denote-dired-mode)
+  :preface
+  (cl-defun jf/denote-capture-reference (&key
+                                         title
+                                         url
+                                         (keywords (denote-keywords-prompt))
+                                         (domain "literature"))
+    "Create a `denote' entry for the TITLE and URL.
+TODO: Would it make sense to prompt for the domain?
+"
+    (denote title
+            keywords
+            'org
+            (expand-file-name domain (denote-directory))
+            nil))
+
+  (cl-defun jf/menu--org-capture-elfeed-show (&key (entry elfeed-show-entry))
+    "Create a `denote' from `elfeed' ENTRY."
+    (interactive)
+    (let* ((url (elfeed-entry-link entry))
+           (title (elfeed-entry-title entry)))
+      (jf/denote-capture-reference :url url :title title)))
+
+  (defun jf/menu--org-capture-safari ()
+    "Create an `denote' entry from Safari page."
+    (interactive)
+    (let* ((link-title-pair (grab-mac-link-safari-1))
+           (url (car link-title-pair))
+           (title (cadr link-title-pair)))
+      (jf/denote-capture-reference :url url :title title)))
   :config
   (setq denote-directory (expand-file-name "denote" my-galaxy)))
 
+(cl-defun my/denote-subdirectory (subdirectory)
+  (denote
+   (denote-title-prompt)
+   (denote-keywords-prompt)
+   'org
+   (expand-file-name subdirectory (denote-directory))))
+
+;;;###autoload
+(defun my/denote-term ()
+  (interactive)
+  (my/denote-subdirectory "term"))
+
+;;;###autoload
+(defun my/denote-book ()
+  (interactive)
+  (my/denote-subdirectory "books"))
+
+;;;###autoload
+(defun my/denote-outline ()
+  (interactive)
+  (my/denote-subdirectory "outline"))
+
 (with-eval-after-load 'evil
   (evil-define-key '(normal visual) 'global
-    "gnbl" 'denote-org-dblock-insert-links
-    "gnbb" 'denote-org-dblock-insert-backlinks
+    "gnll" 'denote-org-dblock-insert-links
+    "gnlb" 'denote-org-dblock-insert-backlinks
     "gns" 'denote-signature
     "gnd" 'denote-subdirectory
+    "gne" 'jf/menu--org-capture-elfeed-show
+    "gnt" 'my/denote-term
+    "gnb" 'my/denote-book
+    "gno" 'my/denote-outline
+    "gnc" 'jf/menu--org-capture-safari
     "gnr" 'denote-rename-file-using-front-matter
     "gnR" 'denote-rename-file
-    "gnl" 'denote-link-or-create))
+    "gnll" 'denote-link-or-create))
 
 (use-package denote-org-dblock
   :after denote org)
@@ -69,8 +126,9 @@
   (setq consult-notes-file-dir-sources
         `(("Articles"  ?a  ,(concat my-galaxy "/articles"))
           ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
+          ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
           ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
-          ("Manuscript"  ?m ,(expand-file-name "denote/manuscript" my-galaxy))
+          ("Outline"  ?m ,(expand-file-name "denote/outline" my-galaxy))
           ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy)))))
 
 (defun my/new-article (article)
