@@ -502,3 +502,6 @@
 [submodule "packages/org-contacts"]
 	path = packages/org-contacts
 	url = https://repo.or.cz/org-contacts.git
+[submodule "packages/org-ai"]
+	path = packages/org-ai
+	url = https://github.com/rksm/org-ai.git

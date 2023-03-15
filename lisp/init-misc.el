@@ -313,8 +313,11 @@ This command can be called when in a file buffer or in `dired'."
 
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
 
-(use-package mind-wave
-  :mode ("chat" . mind-wave-chat-mode))
+(use-package org-ai
+  :commands (org-ai-mode)
+  :hook (org-mode . org-ai-mode)
+  :config
+  (org-ai-install-yasnippets))
 
 (use-package focus
   :hook (org-mode . focus-mode))
