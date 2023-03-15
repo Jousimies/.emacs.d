@@ -10,3 +10,4 @@ emacs.org
 *.pdf
 *.aux
 .auctex-auto
+custom.el
