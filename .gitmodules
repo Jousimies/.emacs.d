@@ -502,3 +502,6 @@
 [submodule "packages/org-ai"]
 	path = packages/org-ai
 	url = https://github.com/rksm/org-ai.git
+[submodule "packages/auctex"]
+	path = packages/auctex
+	url = https://git.savannah.gnu.org/git/auctex.git

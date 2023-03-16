@@ -11,4 +11,3 @@ emacs.org
 *.aux
 .auctex-auto
 custom.el
-auctex
