@@ -1,8 +1,8 @@
 (use-package tex
   :mode (".tex" . LaTeX-mode)
   :init
-  (load "auctex.el" nil t t)
-  (load "preview-latex.el" nil t t)
+  (load (expand-file-name "auctex/auctex.el" user-emacs-directory) nil t t)
+  (load (expand-file-name "auctex/preview-latex.el" user-emacs-directory) nil t t)
   :config
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)

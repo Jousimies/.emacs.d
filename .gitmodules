@@ -259,9 +259,6 @@
 [submodule "packages/scihub.el"]
 	path = packages/scihub.el
 	url = https://github.com/emacs-pe/scihub.el.git
-[submodule "packages/auctex"]
-	path = packages/auctex
-	url = https://github.com/emacsmirror/auctex.git
 [submodule "packages/cdlatex"]
 	path = packages/cdlatex
 	url = https://github.com/cdominik/cdlatex.git
