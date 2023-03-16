@@ -1,4 +1,5 @@
-(use-package undo-fu)
+(use-package undo-fu
+  :defer t)
 
 (use-package undo-fu-session
   :after undo-fu

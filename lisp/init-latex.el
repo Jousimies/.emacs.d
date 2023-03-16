@@ -34,28 +34,16 @@
   (setq reftex-toc-split-windows-horizontally t)
   (setq reftex-toc-split-windows-fraction 0.25))
 
-(add-to-list 'display-buffer-alist '("\\*toc\\*"
-                                     (display-buffer-reuse-window)
-                                     (side . left)
-                                     (window-parameters
-                                      (mode-line-format . none)
-                                      (delete-other-windows . t))))
-
 (use-package cdlatex
   :hook ((LaTeX-mode . turn-on-cdlatex)
          (org-mode . org-cdlatex-mode)))
 
-(use-package org
-  :config
-  (setq org-highlight-latex-and-related '(latex script)))
-
 (use-package ox-latex
-  :defer 3
+  :after org
   :config
   (setq org-latex-src-block-backend 'minted)
   (setq org-latex-minted-options '(("breaklines" "true")
                                    ("breakanywhere" "true")))
-
   (setq org-latex-classes nil)
   (add-to-list 'org-latex-classes
                '("book"
@@ -112,97 +100,7 @@
   (setq org-latex-prefer-user-labels t))
 
 (use-package ox-beamer
-  :defer 3
   :after org)
-
-(use-package font-latex
-  :after tex
-  :config
-  (setq font-latex-match-reference-keywords
-        '(;; BibLaTeX.
-          ("printbibliography" "[{")
-          ("addbibresource" "[{")
-          ;; Standard commands.
-          ("cite" "[{")
-          ("citep" "[{")
-          ("citet" "[{")
-          ("Cite" "[{")
-          ("parencite" "[{")
-          ("Parencite" "[{")
-          ("footcite" "[{")
-          ("footcitetext" "[{")
-          ;; Style-specific commands.
-          ("textcite" "[{")
-          ("Textcite" "[{")
-          ("smartcite" "[{")
-          ("Smartcite" "[{")
-          ("cite*" "[{")
-          ("parencite*" "[{")
-          ("supercite" "[{")
-          ;; Qualified citation lists.
-          ("cites" "[{")
-          ("Cites" "[{")
-          ("parencites" "[{")
-          ("Parencites" "[{")
-          ("footcites" "[{")
-          ("footcitetexts" "[{")
-          ("smartcites" "[{")
-          ("Smartcites" "[{")
-          ("textcites" "[{")
-          ("Textcites" "[{")
-          ("supercites" "[{")
-          ;; Style-independent commands.
-          ("autocite" "[{")
-          ("Autocite" "[{")
-          ("autocite*" "[{")
-          ("Autocite*" "[{")
-          ("autocites" "[{")
-          ("Autocites" "[{")
-          ;; Text commands.
-          ("citeauthor" "[{")
-          ("Citeauthor" "[{")
-          ("citetitle" "[{")
-          ("citetitle*" "[{")
-          ("citeyear" "[{")
-          ("citedate" "[{")
-          ("citeurl" "[{")
-          ;; Special commands.
-          ("fullcite" "[{")
-          ;; Cleveref.
-          ("cref" "{")
-          ("Cref" "{")
-          ("cpageref" "{")
-          ("Cpageref" "{")
-          ("cpagerefrange" "{")
-          ("Cpagerefrange" "{")
-          ("crefrange" "{")
-          ("Crefrange" "{")
-          ("labelcref" "{")))
-
-  (setq font-latex-match-textual-keywords
-        '(;; BibLaTeX brackets.
-          ("parentext" "{")
-          ("brackettext" "{")
-          ("hybridblockquote" "[{")
-          ;; Auxiliary commands.
-          ("textelp" "{")
-          ("textelp*" "{")
-          ("textins" "{")
-          ("textins*" "{")
-          ;; Subcaption.
-          ("subcaption" "[{")))
-
-  (setq font-latex-match-variable-keywords
-        '(;; Amsmath.
-          ("numberwithin" "{")
-          ;; Enumitem.
-          ("setlist" "[{")
-          ("setlist*" "[{")
-          ("newlist" "{")
-          ("renewlist" "{")
-          ("setlistdepth" "{")
-          ("restartlist" "{")
-          ("crefname" "{"))))
 
 (provide 'init-latex)
 ;;; init-latex.el ends here.

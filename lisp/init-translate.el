@@ -5,13 +5,8 @@
   (setq langtool-http-server-port 8081)
   (setq langtool-autoshow-message-function #'langtool-popup-autoshow))
 
-(add-to-list 'display-buffer-alist
-             '("^\\*Dictionary\\*"
-               (display-buffer-in-side-window)
-               (side . right)
-               (window-width . 70)))
-
-(global-set-key (kbd "M-#") 'dictionary-lookup-definition)
+(use-package dictionary
+  :bind ("M-#" . dictionary-lookup-definition))
 
 (use-package go-translate
   :commands gts-do-translate
@@ -114,11 +109,6 @@
     "glr" 'dictionary-overlay-toggle
     "glk" 'dictionary-overlay-mark-word-unknown
     "glK" 'dictionary-overlay-mark-word-known))
-
-(add-to-list 'display-buffer-alist
-             (cons
-              "\\*Async Shell Command\\*.*"
-              (cons #'display-buffer-no-window nil)))
 
 (defun my/siri-translate ()
   (interactive)

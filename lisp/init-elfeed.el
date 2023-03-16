@@ -13,30 +13,20 @@
   :config
   (setq elfeed-show-entry-switch #'elfeed-display-buffer))
 
-(add-to-list 'display-buffer-alist
-             `(,(rx (| "*elfeed-search*"
-                       "*elfeed-summary*"
-                       "*elfeed-entry-"))
-               (display-buffer-in-tab)
-               (tab-name . "RSS")
-               (tab-group . "RSS")
-               (window-parameters . ((mode-line-format . none)))))
-
 (use-package elfeed-org
-  :after elfeed)
-
-(setq rmh-elfeed-org-files `(,(concat my-galaxy "/rss/elfeed.org")))
-
-(defun my/rss-source ()
+  :defer t
+  :init
+  (setq rmh-elfeed-org-files `(,(concat my-galaxy "/rss/elfeed.org")))
+  (defun my/rss-source ()
     "Open elfeed config file."
     (interactive)
     (find-file (car rmh-elfeed-org-files)))
-
-(my/space-leader-def
-  "fe" '(my/rss-source :wk "Elfeed file"))
+  (my/space-leader-def
+    "fe" '(my/rss-source :wk "Elfeed file")))
 
 (use-package elfeed-summary
-  :commands elfeed-summary
+  :general (my/space-leader-def
+             "E" '(elfeed-summary :wk "Elfeed"))
   :config
   (setq elfeed-summary-other-window t)
   (setq elfeed-summary-settings
@@ -58,9 +48,6 @@
 
   (advice-add 'elfeed-summary :after 'elfeed-summary-update)
   (advice-add 'elfeed-summary :before 'elfeed-org))
-
-(my/space-leader-def
-  "E" '(elfeed-summary :wk "Elfeed"))
 
 (provide 'init-elfeed)
 ;;; init-elfeed.el ends here.

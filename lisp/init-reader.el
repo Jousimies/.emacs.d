@@ -8,21 +8,17 @@
   :magic ("%PDF" . pdf-view-mode)
   :config
   (pdf-tools-install t nil t nil)
-  (evil-declare-key 'normal pdf-view-mode-map
-    "gh" 'pdf-annot-add-highlight-markup-annotation
-    "ga" 'pdf-annot-add-text-annotation
-    "gd" 'pdf-annot-delete)
-  :init
+  (with-eval-after-load 'evil
+    (evil-declare-key 'normal pdf-view-mode-map
+      "gh" 'pdf-annot-add-highlight-markup-annotation
+      "ga" 'pdf-annot-add-text-annotation
+      "gd" 'pdf-annot-delete))
   (setq pdf-view-display-size 'fit-width)
   (setq pdf-view-use-unicode-ligther nil)
   (setq pdf-view-use-scaling t)
   (setq pdf-view-use-imagemagick nil)
   (setq pdf-annot-activate-created-annotations nil))
 
-(add-to-list 'display-buffer-alist '("\\.pdf"
-                                     (display-buffer-in-tab)
-                                     (tab-name . "PDF")
-                                     (tab-group . "PDF")))
 (use-package pdf-occur
   :hook (pdf-view-mode . pdf-occur-global-minor-mode))
 
@@ -32,23 +28,17 @@
 (use-package pdf-links
   :hook (pdf-view-mode . pdf-links-minor-mode))
 
-(defun my/get-file-name ()
-  "Copy pdf file name."
-  (interactive)
-  (kill-new (file-name-base (buffer-file-name)))
-  (message "Copied %s" (file-name-base (buffer-file-name))))
+;; (defun my/get-file-name ()
+;;   "Copy pdf file name."
+;;   (interactive)
+;;   (kill-new (file-name-base (buffer-file-name)))
+;;   (message "Copied %s" (file-name-base (buffer-file-name))))
 
 (use-package pdf-outline
   :hook (pdf-view-mode . pdf-outline-minor-mode)
   :bind (:map pdf-outline-buffer-mode-map
               ("RET" . pdf-outline-follow-link-and-quit)))
 
-(add-to-list 'display-buffer-alist '("\\*Outline"
-                                     (display-buffer-in-side-window)
-                                     (side . right)
-                                     (window-width . 0.5)
-                                     (window-parameters
-                                      (mode-line-format . none))))
 (use-package pdf-annot
   :hook (pdf-view-mode . pdf-annot-minor-mode)
   :bind (:map pdf-annot-edit-contents-minor-mode-map
@@ -67,7 +57,6 @@
   :after pdf-view
   :config
   (setq pdf-misc-print-program-executable "/usr/bin/lp")
-
   (defun mrb/pdf-misc-print-pages(filename pages &optional interactive-p)
     "Wrapper for `pdf-misc-print-document` to add page selection support."
     (interactive (list (pdf-view-buffer-file-name)
@@ -79,8 +68,8 @@
                (cons (concat "-P " pages) pdf-misc-print-program-args)
              pdf-misc-print-program-args)))
       (pdf-misc-print-document filename)))
-  :bind (:map pdf-view-mode-map
-              ([remap pdf-misc-print-document] . mrb/pdf-misc-print-pages)))
+  (with-eval-after-load 'pdf-view
+    (define-key pdf-view-mode-map [remap pdf-misc-print-document] #'mrb/pdf-misc-print-pages)))
 
 (defun my/pdf-extract-highlight ()
   "Extract highlight to plain text.

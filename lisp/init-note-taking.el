@@ -13,13 +13,6 @@
   :config
   (setq triples-default-database-filename (expand-file-name "database/triples.db" my-galaxy)))
 
-(add-to-list 'display-buffer-alist '("\\*EKG"
-                                     (display-buffer-pop-up-frame)
-                                     (window-parameters
-                                      (no-other-window . t)
-                                      (mode-line-format . none)
-                                      (no-delete-other-windows . t))))
-
 (with-eval-after-load 'evil
   (evil-define-key '(normal visual) 'global
     "ged" 'ekg-show-notes-for-today
@@ -104,10 +97,9 @@ TODO: Would it make sense to prompt for the domain?
 
 (with-eval-after-load 'evil
   (evil-define-key '(normal visual) 'global
-    "gnll" 'denote-org-dblock-insert-links
-    "gnlb" 'denote-org-dblock-insert-backlinks
+    "gndl" 'denote-org-dblock-insert-links
+    "gndb" 'denote-org-dblock-insert-backlinks
     "gns" 'denote-signature
-    "gnd" 'denote-subdirectory
     "gne" 'jf/menu--org-capture-elfeed-show
     "gnt" 'my/denote-term
     "gnb" 'my/denote-book
@@ -115,7 +107,7 @@ TODO: Would it make sense to prompt for the domain?
     "gnc" 'jf/menu--org-capture-safari
     "gnr" 'denote-rename-file-using-front-matter
     "gnR" 'denote-rename-file
-    "gnll" 'denote-link-or-create))
+    "gnl" 'denote-link-or-create))
 
 (use-package denote-org-dblock
   :after denote org)
@@ -128,7 +120,7 @@ TODO: Would it make sense to prompt for the domain?
           ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
           ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
           ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
-          ("Outline"  ?m ,(expand-file-name "denote/outline" my-galaxy))
+          ("Outline"  ?o ,(expand-file-name "denote/outline" my-galaxy))
           ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy)))))
 
 (defun my/new-article (article)
@@ -146,6 +138,16 @@ TODO: Would it make sense to prompt for the domain?
 
 (use-package org-transclusion
   :commands (org-transclusion-make-from-link org-transclusion-add org-transclusion-add-all)
+  :general (my/space-leader-def
+             "t" '(:ignore t :wk "Transclusion")
+             "ta" '(org-transclusion-add :wk "Add")
+             "tA" '(org-transclusion-add-all :wk "Add all")
+             "tr" '(org-transclusion-remove :wk "Remove")
+             "tR" '(org-transclusion-remove-all :wk "Remove all")
+             "tg" '(org-transclusion-refresh :wk "Refresh")
+             "tm" '(org-transclusion-make-from-link :wk "Make link")
+             "to" '(org-transclusion-open-source :wk "Open source")
+             "te" '(org-transclusion-live-sync-start :wk "Edit live"))
   :config
   (face-spec-set 'org-transclusion-fringe
                  '((((background light))
@@ -159,16 +161,6 @@ TODO: Would it make sense to prompt for the domain?
                    (t
                     :foreground "white"))
                  'face-override-spec))
-(my/space-leader-def
-  "t" '(:ignore t :wk "Transclusion")
-  "ta" '(org-transclusion-add :wk "Add")
-  "tA" '(org-transclusion-add-all :wk "Add all")
-  "tr" '(org-transclusion-remove :wk "Remove")
-  "tR" '(org-transclusion-remove-all :wk "Remove all")
-  "tg" '(org-transclusion-refresh :wk "Refresh")
-  "tm" '(org-transclusion-make-from-link :wk "Make link")
-  "to" '(org-transclusion-open-source :wk "Open source")
-  "te" '(org-transclusion-live-sync-start :wk "Edit live"))
 
 (provide 'init-note-taking)
 ;;; init-note-taking.el ends here.

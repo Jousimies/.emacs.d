@@ -1,4 +1,5 @@
 (use-package ispell
+  :defer t
   :config
   (setq ispell-program-name "/opt/homebrew/bin/aspell")
   (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together"))

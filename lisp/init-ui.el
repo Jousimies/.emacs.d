@@ -1,10 +1,13 @@
-(set-face-attribute 'default nil :font "Iosevka Term" :height 160)
-(if (display-graphic-p)
-    (dolist (charset '(kana han cjk-misc bopomofo))
-      (set-fontset-font (frame-parameter nil 'font)
-                        charset (font-spec :family "Source Han Serif SC" :height 140)) t 'prepend))
+(add-hook 'after-init-hook
+          #'(lambda ()
+              (set-face-attribute 'default nil :font "Iosevka Term" :height 160)
+              (if (display-graphic-p)
+                  (dolist (charset '(kana han cjk-misc bopomofo))
+                    (set-fontset-font (frame-parameter nil 'font)
+                                      charset (font-spec :family "Source Han Serif SC" :height 140)) t 'prepend))))
 
 (use-package modus-themes
+  :defer t
   :config
   (setq modus-themes-bold-constructs t)
   (setq modus-themes-italic-constructs t)
@@ -53,37 +56,44 @@
   (pcase appearance
     ('light (load-theme 'modus-operandi t))
     ('dark (load-theme 'modus-vivendi t))))
+
 (add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
 
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
 
-(fringe-mode '(1 . 1))
+(add-hook 'after-init-hook (lambda ()
+			     (fringe-mode '(1 . 1))))
 
-(add-hook 'prog-mode-hook 'hl-line-mode)
-(add-hook 'org-mode-hook 'hl-line-mode)
+(use-package hl-line
+  :hook ((prog-mode . hl-line-mode)
+	 (org-mode . hl-line-mode)))
 
-(setq-default display-line-numbers-widen t)
-(setq display-line-numbers-type 'relative)
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(add-hook 'org-mode-hook 'display-line-numbers-mode)
-(add-hook 'LaTeX-mode-hook 'display-line-numbers-mode)
+(use-package display-line-numbers
+  :hook ((prog-mode . display-line-numbers-mode)
+	 (org-mode . display-line-numbers-mode)
+	 (LaTeX-mode . display-line-numbers-mode))
+  :init
+  (setq-default display-line-numbers-widen t)
+  :config
+  (setq display-line-numbers-type 'relative))
 
-(scroll-bar-mode 0)
+(add-hook 'after-init-hook (lambda ()
+			     (scroll-bar-mode 0)))
 
-(setq-default fill-column 90)
+(use-package display-fill-column-indicator
+  :hook (prog-mode . display-fill-column-indicator-mode)
+  :config
+  (face-spec-set 'fill-column-indicator
+		 '((default :height 0.1))
+		 'face-override-spec)
+  (setq-default fill-column 90))
 
-(face-spec-set 'fill-column-indicator
-               '((default :height 0.1))
-               'face-override-spec)
-
-;; only show fill indicator in prog mode.
-(add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
-
-(setq show-paren-style 'parenthesis)
-(setq show-paren-context-when-offscreen 'overlay)
-
-(add-hook 'text-mode-hook 'show-paren-mode)
+(use-package paren
+  :hook (text-mode . show-paren-mode)
+  :config
+  (setq show-paren-style 'parenthesis)
+  (setq show-paren-context-when-offscreen 'overlay))
 
 (blink-cursor-mode -1)
 
@@ -95,14 +105,14 @@
            current-input-method)
     current-input-method))
 
-(add-hook 'evil-insert-state-entry-hook
-          (lambda ()
-            (when (im--chinese-p)
-              (set-cursor-color "red"))))
+(defun im-change-cursor-color ()
+  "Set cursor color depending on input method."
+  (interactive)
+  (set-cursor-color (if (im--chinese-p)
+                        "red"
+                      (foreground-color-at-point))))
 
-(add-hook 'evil-insert-state-exit-hook
-          (lambda ()
-            (set-cursor-color (foreground-color-at-point))))
+(add-hook 'post-command-hook 'im-change-cursor-color)
 
 (set-frame-parameter nil 'alpha '(90 . 100))
 

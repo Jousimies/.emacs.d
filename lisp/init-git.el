@@ -11,6 +11,7 @@
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote))
 
 (use-package transient
+  :defer t
   :config
   (setq transient-levels-file (expand-file-name "cache/transient/levels.el" user-emacs-directory))
   (setq transient-values-file (expand-file-name "cache/transient/values.el" user-emacs-directory))

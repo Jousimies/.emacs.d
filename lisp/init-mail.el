@@ -2,15 +2,18 @@
 (setq user-mail-address "duan_n@outlook.com")
 
 (use-package simple
+  :defer t
   :config
   (setq mail-user-agent 'mu4e-user-agent))
 
 (use-package message
+  :defer t
   :config
-(setq message-sendmail-envelope-from 'header)
-(setq message-kill-buffer-query nil)
-(setq message-sendmail-extra-arguments '("-a" "outlook"))
-(setq message-send-mail-function 'sendmail-send-it))
+  (setq message-kill-buffer-on-exit t)
+  (setq message-kill-buffer-query nil)
+  (setq message-sendmail-envelope-from 'header)
+  (setq message-kill-buffer-query nil)
+  (setq message-sendmail-extra-arguments '("-a" "outlook")))
 
 (add-to-list 'load-path "/opt/homebrew/opt/mu/share/emacs/site-lisp/mu/mu4e")
 (unless (fboundp 'mu4e)
@@ -73,8 +76,8 @@
              `(,(rx (| "*mu4e-main*"
                        "*mu4e-headers*"))
                (display-buffer-in-tab)
-               (tab-name . "Mail")
-               (tab-group . "Mail")
+               (tab-name . "Home")
+               (tab-group . "Home")
                (window-parameters . ((mode-line-format . none)))))
 
 (defun extra-email-to-pdf (msg &optional args)

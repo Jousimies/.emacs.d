@@ -42,39 +42,41 @@
     "cc" 'org-agenda-clock-cancel
     "cr" 'org-agenda-clockreport-mode))
 
+;;;###autoload
 (defun my/gtd-file ()
   (interactive)
   (find-file (expand-file-name "todos/org-gtd-tasks.org" my-galaxy)))
 
 (use-package org-gtd
-  :bind ("<f12>" . org-gtd-engage)
   :commands org-gtd-capture org-gtd-engage org-gtd-process-inbox org-gtd-show-all-next org-gtd-show-stuck-projects
+  :bind (("<f12>" . org-gtd-engage)
+         (:map org-gtd-process-map
+               ("C-c c" . org-gtd-choose)))
   :init
   (setq org-gtd-update-ack "2.1.0")
+  :general (my/space-leader-def
+             "d" '(:ignore t :wk "Org gtd")
+             "dp" '(org-gtd-process-inbox :wk "Process")
+             "da" '(org-agenda-list :wk "Agenda list")
+             "de" '(org-gtd-engage :wk "Engage")
+             "dn" '(org-gtd-show-all-next :wk "Next tasks")
+             "ds" '(org-gtd-show-stuck-projects :wk "Stuck projects"))
   :custom
   (org-gtd-directory (expand-file-name "todos" my-galaxy))
   (org-agenda-property-list '("DELEGATED_TO"))
-  (org-edna-use-inheritance t)
   :config
-  (add-to-list 'org-agenda-files (expand-file-name "todos/org-gtd-tasks.org" my-galaxy))
-  :bind (:map org-gtd-process-map
-          ("C-c c" . org-gtd-choose)))
-
-(my/space-leader-def
-  "d" '(:ignore t :wk "Org gtd")
-  "dp" '(org-gtd-process-inbox :wk "Process")
-  "da" '(org-agenda-list :wk "Agenda list")
-  "de" '(org-gtd-engage :wk "Engage")
-  "dn" '(org-gtd-show-all-next :wk "Next tasks")
-  "ds" '(org-gtd-show-stuck-projects :wk "Stuck projects"))
+  (add-to-list 'org-agenda-files (expand-file-name "todos/org-gtd-tasks.org" my-galaxy)))
 
 (use-package org-edna
   :after org-gtd
   :config
+  (setq org-edna-use-inheritance t)
   (org-edna-load))
 
 (use-package calendar
-  :commands calendar
+  :defer t
+  :general (my/space-leader-def
+             "c" '(calendar :wk "Calendar"))
   :config
   (setq calendar-view-diary-initially-flag t)
   (setq calendar-mark-diary-entries-flag t)
@@ -82,68 +84,13 @@
 
   (setq calendar-date-style 'iso)
   (setq calendar-date-display-form calendar-iso-date-display-form)
+  (add-hook 'calendar-today-visible-hook #'calendar-mark-today)
 
   (setq calendar-time-display-form
         '(24-hours ":" minutes
                    (when time-zone
                      (format "(%s)" time-zone))))
-  (setq diary-date-forms diary-iso-date-forms)
-  :hook (calendar-today-visible . #'calendar-mark-today))
-
-(my/space-leader-def
-  "c" '(calendar :wk "Calendar"))
-
-(use-package appt
-  :after calendar
-  :config
-  (setq appt-display-diary nil)
-  (setq appt-disp-window-function #'appt-disp-window)
-  (setq appt-display-mode-line t)
-  (setq appt-display-interval 3)
-  (setq appt-audible nil)
-  (setq appt-warning-time-regexp "appt \\([0-9]+\\)")
-  (setq appt-message-warning-time 6)
-  (add-hook 'diary-mode-hook #'appt-activate))
-
-(use-package diary-lib
-  :after calendar
-  :config
-  (add-hook 'diary-list-entries-hook #'diary-sort-entries)
-  (add-hook 'diary-mode-hook #'goto-address-mode)
-  (setq diary-display-function #'diary-fancy-display)
-  (setq diary-header-line-format nil)
-  (setq diary-list-include-blanks nil)
-  (setq diary-abbreviated-year-flag nil)
-  (setq diary-number-of-entries 7)
-  (setq diary-comment-start ");;")
-  (setq diary-comment-end "")
-  (setq diary-nonmarking-symbol "!")
-
-  (setq diary-file (expand-file-name "diary/diary.org" my-galaxy)))
-
-(use-package alarm-clock
-  :commands (alarm-clock-set alarm-clock-list-view)
-  :config
-  (setq alarm-clock-cache-file (expand-file-name "var/.alarm-clock.cache" user-emacs-directory)))
-
-(use-package alert
-  :commands alert
-  :config
-  (setq alert-default-style 'notifier))
-
-(use-package org-alert
-  :hook (on-first-file . org-alert-enable)
-  :config
-  (setq org-alert-interval 300)
-  (setq org-alert-notify-cutoff 10)
-  (setq org-alert-notify-after-event-cutoff 10)
-  (setq org-alert-notification-title "Org Agenda Reminder!"))
-
-(use-package pomm
-  :commands pomm
-  :config
-  (setq pomm-state-file-location (expand-file-name "cache/pomm" user-emacs-directory))
-  (pomm-mode-line-mode 1))
+  (setq diary-date-forms diary-iso-date-forms))
 
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.

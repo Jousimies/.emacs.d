@@ -1,11 +1,8 @@
 (use-package evil
-  :bind ((:map evil-insert-state-map
-              ("C-e" . move-end-of-line)
-              ("C-k" . kill-line))
-         (:map evil-motion-state-map
+  :bind (:map evil-motion-state-map
                ("SPC" . nil)
                ("RET" . nil)
-               ("TAB" . nil)))
+               ("TAB" . nil))
   :hook ((after-init . evil-mode)
          (after-change-major-mode . (lambda ()
                                       (setq-local evil-shift-width tab-width))))
@@ -25,7 +22,14 @@
   (setq evil-visual-state-tag " 𝐕 ")
   (setq evil-replace-state-tag " 𝐑 ")
   (setq evil-operator-state-tag " O ")
-  (setq evil-emacs-state-tag " E "))
+  (setq evil-emacs-state-tag " E ")
+
+  (evil-define-key '(normal motion visual) 'global
+      "ge" nil
+      "gn" nil)
+
+  (define-key evil-insert-state-map (kbd "C-e") #'move-end-of-line)
+  (define-key evil-insert-state-map (kbd "C-k") #'kill-line))
 
 (global-set-key (kbd "C-M-u") 'universal-argument)
 
@@ -37,10 +41,10 @@
   (evil-collection-init))
 
 (use-package evil-commentary
-  :hook (on-first-file . evil-commentary-mode))
+  :hook (evil-mode . evil-commentary-mode))
 
 (use-package evil-surround
-  :hook (on-first-file . global-evil-surround-mode))
+  :hook (evil-mode . global-evil-surround-mode))
 
 (use-package evil-embrace
   :hook (org-mode . embrace-org-mode-hook)
@@ -53,7 +57,7 @@
   (evilem-default-keybindings "SPC"))
 
 (use-package which-key
-  :hook (after-init . which-key-mode)
+  :hook (evil-mode . which-key-mode)
   :config
   (setq which-key-show-early-on-C-h t)
   (setq which-key-idle-delay 10000)
@@ -70,14 +74,6 @@
   "My literate Emacs configuration."
   (interactive)
   (find-file (expand-file-name "emacs.org" user-emacs-directory)))
-
-(my/space-leader-def
-  "f" '(:ignore t :wk "Files"))
-
-(with-eval-after-load 'evil
-  (evil-define-key '(normal motion visual) 'global
-    "ge" nil
-    "gn" nil))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here.

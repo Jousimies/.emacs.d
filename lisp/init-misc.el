@@ -42,10 +42,9 @@
   "mi" '(file-info-show :wk "File info"))
 
 (use-package disk-usage
-  :bind ("C-c d u" . disk-usage))
-(my/space-leader-def
-  "m" '(:ignore t :wk "Misc")
-  "md" '(disk-usage :wk "Disk usage"))
+  :general (my/space-leader-def
+             "m" '(:ignore t :wk "Misc")
+             "md" '(disk-usage :wk "Disk usage")))
 
 (use-package youtube-dl
   :commands youtube-dl
@@ -312,6 +311,9 @@ This command can be called when in a file buffer or in `dired'."
   (scroll-other-window 2))
 
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
+
+(use-package mind-wave
+  :mode ("chat" . mind-wave-chat-mode))
 
 (use-package org-ai
   :commands (org-ai-mode)

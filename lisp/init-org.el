@@ -16,6 +16,7 @@
         org-startup-with-inline-images t
         org-image-actual-width '(500)
         org-use-speed-commands t)
+  (setq org-highlight-latex-and-related '(latex script))
   (setq org-enforce-todo-dependencies t)
   (setq org-enforce-todo-checkbox-dependencies t)
 
@@ -65,12 +66,12 @@
   (setq org-confirm-babel-evaluate nil))
 
 (use-package org-capture
-  :after org
-  :bind (:map org-capture-mode-map
+  :bind (("<f10>" . org-capture)
+         (:map org-capture-mode-map
               ([remap evil-save-and-close] . org-capture-finalize)
               ([remap evil-save-modified-and-close] . org-capture-finalize)
               ([remap evil-quit] . org-capture-kill)
-              ("RET" . org-capture-finalize))
+              ("RET" . org-capture-finalize)) )
   :config
   (setq org-capture-templates
         '(("i" "GTD Inbox"
@@ -111,27 +112,8 @@
 :PLOT: %^{PLOT}
 :END:"))))
 
-(defun my/org-capture ()
-  "Make a new frame to do org-capture staff."
-  (interactive)
-  (make-frame)
-  (org-capture))
-
-(add-hook 'org-capture-after-finalize-hook 'delete-frame)
-
-;; (add-to-list 'display-buffer-alist '("\\*Org Select\\*"
-;;                                      (display-buffer-pop-up-frame)
-;;                                      (window-parameters
-;;                                       (no-other-window . t)
-;;                                       (mode-line-format . none)
-;;                                       (no-delete-other-windows . t))))
-
-(global-set-key (kbd "<f10>") 'my/org-capture)
-
-(use-package org-attach
-  :config
-  (setq org-attach-id-dir (expand-file-name "attach" my-galaxy))
-  (defun my/org-attach-visit-headline-from-dired ()
+;;;###autoload
+(defun my/org-attach-visit-headline-from-dired ()
     "Go to the headline corresponding to this org-attach directory."
     (interactive)
     (let* ((id-parts (last (split-string default-directory "/" t) 2))
@@ -142,6 +124,11 @@
         (goto-char m)
         (move-marker m nil)
         (org-fold-show-context))))
+
+(use-package org-attach
+  :after org
+  :config
+  (setq org-attach-id-dir (expand-file-name "attach" my-galaxy))
   (add-to-list 'display-buffer-alist
                '("\\*Org Attach\\*"
                  (display-buffer-pop-up-frame)
@@ -149,22 +136,26 @@
                  (slot . 0)
                  (window-width . 0.5)
                  (window-parameters . ((no-other-window . t)
-                                       (no-delete-other-windows . t)))))
-  :bind (:map dired-mode-map
-              ("C-'" . my/org-attach-visit-headline-from-dired)))
+                                       (no-delete-other-windows . t))))))
+
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "C-'") #'my/org-attach-visit-headline-from-dired))
 
 (use-package org-habit
-  :after org-agenda
+  :after org
   :config
   (add-to-list 'org-modules 'org-habit t))
 
 (use-package org-id
   :after org
+  :general (my/space-leader-def
+             "oi" '(org-id-get-create :wk "Create ID"))
   :config
   (setq org-id-locations-file (expand-file-name "cache/.org-id-locations" user-emacs-directory))
   (setq org-id-method 'ts)
   (setq org-id-link-to-org-use-id 'create-if-interactive))
 
+;;;###autoload
 (defun my/copy-idlink ()
   "Copy idlink to clipboard."
   (interactive)
@@ -179,9 +170,6 @@
       (message "Copied %s to killring (clipboard)" mytmplink))))
 
 (global-set-key (kbd "<f7>") 'my/copy-idlink)
-
-(my/space-leader-def
-  "oi" '(org-id-get-create :wk "Create ID"))
 
 (use-package org-src
   :after org
@@ -200,57 +188,14 @@
   (setq org-refile-use-outline-path 'file)
   (setq org-refile-active-region-within-subtree t))
 
-(use-package org
-  :config
-  (defface my-org-emphasis-bold
-    '((default :inherit bold)
-      (((class color) (min-colors 88) (background light))
-       :foreground "#a60000")
-      (((class color) (min-colors 88) (background dark))
-       :foreground "#ff8059"))
-    "My bold emphasis for Org.")
-
-  (defface my-org-emphasis-italic
-    '((default :inherit italic)
-      (((class color) (min-colors 88) (background light))
-       :foreground "#005e00")
-      (((class color) (min-colors 88) (background dark))
-       :foreground "#44bc44"))
-    "My italic emphasis for Org.")
-
-  (defface my-org-emphasis-underline
-    '((default :inherit underline)
-      (((class color) (min-colors 88) (background light))
-       :foreground "#813e00")
-      (((class color) (min-colors 88) (background dark))
-       :foreground "#d0bc00"))
-    "My underline emphasis for Org.")
-
-  (defface my-org-emphasis-strike-through
-    '((default :strike-through t)
-      (((class color) (min-colors 88) (background light))
-       :foreground "#505050")
-      (((class color) (min-colors 88) (background dark))
-       :foreground "#a8a8a8"))
-    "My strike-through emphasis for Org.")
-
-  (defface my-org-emphasis-strike-through
-    '((((class color) (min-colors 88) (background light))
-       :strike-through "#972500" :foreground "#505050")
-      (((class color) (min-colors 88) (background dark))
-       :strike-through "#ef8b50" :foreground "#a8a8a8"))
-    "My strike-through emphasis for Org.")
-
-  (setq org-emphasis-alist
-        '(("*" my-org-emphasis-bold)
-          ("/" my-org-emphasis-italic)
-          ("_" my-org-emphasis-underline)
-          ("=" org-verbatim verbatim)
-          ("~" org-code verbatim)
-          ("+" my-org-emphasis-strike-through))))
-
 (use-package org-clock
   :after org
+  :general (my/space-leader-def
+             "oc" '(:ignore t :wk "Clock")
+             "ocj" '(org-clock-goto :wk "Clock goto")
+             "oci" '(org-clock-in :wk "Clock In")
+             "oco" '(org-clock-out :wk "Clock Out")
+             "ocl" '(org-clock-in-last :wk "Clock In Last"))
   :config
   (org-clock-persistence-insinuate)
   (setq org-clock-persist-file (expand-file-name "cache/org-clock-save.el" user-emacs-directory))
@@ -263,13 +208,6 @@
   (setq org-clock-clocktable-default-properties '(:maxlevel 5 :link t :tags t))
   (setq org-clock-persist-query-resume nil)
   (setq org-clock-report-include-clocking-task t))
-
-(my/space-leader-def
-  "oc" '(:ignore t :wk "Clock")
-  "ocj" '(org-clock-goto :wk "Clock goto")
-  "oci" '(org-clock-in :wk "Clock In")
-  "oco" '(org-clock-out :wk "Clock Out")
-  "ocl" '(org-clock-in-last :wk "Clock In Last"))
 
 (setq bh/keep-clock-running nil)
 
@@ -434,14 +372,14 @@
   (evil-define-key '(normal visual) 'global
     "gp" 'my/toggle-punch-in-or-out))
 
-(add-to-list 'display-buffer-alist
-             '("\\*Org Note\\*"
-               (display-buffer-in-side-window)
-               (side . right)
-               (slot . 0)
-               (window-width . 0.5)
-               (window-parameters . ((no-other-window . t)
-                                     (no-delete-other-windows . t)))))
+(use-package ol
+  :after org
+  :config
+  (setq org-link-frame-setup '((vm . vm-visit-folder-other-frame)
+                               (vm-imap . vm-visit-imap-folder-other-frame)
+                               (gnus . org-gnus-no-new-news)
+                               (file . find-file)
+                               (wl . wl-other-frame))))
 
 ;; https://200ok.ch/posts/2022-12-07_streamline_your_org_mode_workflow_with_automatic_clock_table_recalculation.html
 ;; Need add #+AUTOCALC_CLOCK_TABLES to org file.

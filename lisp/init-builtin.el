@@ -1,52 +1,65 @@
-(setq frame-inhibit-implied-resize t)
+(setq ring-bell-function 'ignore)
+(setq tab-width 4)
 (setq use-file-dialog nil)
 (setq use-dialog-box nil)
+(setq use-short-answers t)
+(setq read-process-output-max #x10000)
+(setq create-lockfiles nil)
+(setq recenter-redisplay nil)
+(setq load-prefer-newer t)
+(setq next-screen-context-lines 5)
+(setq frame-inhibit-implied-resize t)
+(setq inhibit-compacting-font-caches t)
+(setq inhibit-quit nil)
+(setq fast-but-imprecise-scrolling t)
+(setq scroll-preserve-screen-position t)
+(setq auto-save-list-file-name nil)
+(setq history-delete-duplicates t)
+(setq bidi-display-reordering nil)
 
-(setq-default ring-bell-function 'ignore
-              use-short-answers t
-              read-process-output-max #x10000
-              message-kill-buffer-on-exit t
-              message-kill-buffer-query nil
-              indent-tabs-mode nil
-              tab-width 4
-              make-backup-files nil
-              create-lockfiles nil
-              confirm-kill-processes nil
-              confirm-kill-emacs nil
-              recenter-redisplay nil
-              load-prefer-newer t
-              mark-ring-max 128
-              next-screen-context-lines 5
-              inhibit-default-init t
-              inhibit-startup-message t
-              inhibit-splash-screen t
-              inhibit-compacting-font-caches t
-              ;; inhibit-quit nil
-              fast-but-imprecise-scrolling t
-              scroll-preserve-screen-position t
-              auto-save-default nil
-              auto-save-list-file-name nil
-              kill-do-not-save-duplicates t
-              kill-ring-max (* kill-ring-max 2)
-              history-delete-duplicates t
-              view-read-only t
-              kill-read-only-ok t
-              async-shell-command-display-buffer nil
-              ;; Improve the performance of rendering long lines.
-              bidi-display-reordering nil)
-
-(setq ffap-machine-p-known 'reject)
 (setq auto-save-list-file-prefix (expand-file-name "cache/auto-save-list/.saves-" user-emacs-directory))
+(setq inhibit-default-init t)
+(setq inhibit-startup-message t)
+(setq inhibit-splash-screen t)
 
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
+(use-package simple
+  :defer t
+  :init
+  (setq-default indent-tabs-mode nil)
+  :config
+  (setq mark-ring-max 128)
+  (setq kill-do-not-save-duplicates t)
+  (setq kill-ring-max (* kill-ring-max 2))
+  (setq async-shell-command-display-buffer nil))
 
-(add-hook 'profiler-report-mode-hook #'hl-line-mode)
+(use-package files
+  :defer t
+  :config
+  (setq auto-save-default nil)
+  (setq large-file-warning-threshold nil)
+  (setq confirm-kill-processes nil)
+  (setq confirm-kill-emacs nil)
+  (setq make-backup-files nil)
+  (setq view-read-only t)
+  (setq kill-read-only-ok t)
 
-(setq switch-to-buffer-in-dedicated-window 'pop)
-(setq switch-to-buffer-obey-display-actions t)
+  (defun my/auto-create-missing-dirs ()
+    (let ((target-dir (file-name-directory buffer-file-name)))
+      (unless (file-exists-p target-dir)
+        (make-directory target-dir t))))
+  (add-to-list 'find-file-not-found-functions #'my/auto-create-missing-dirs))
+
+(use-package ffap
+  :defer t
+  :config
+  (setq ffap-machine-p-known 'reject))
+
+(add-hook 'after-init-hook
+          #'(lambda ()
+              (prefer-coding-system 'utf-8)
+              (set-default-coding-systems 'utf-8)
+              (set-terminal-coding-system 'utf-8)
+              (set-keyboard-coding-system 'utf-8)))
 
 (my/space-leader-def
   "b" '(:ignore t :wk "Buffer/Bookmark")
@@ -60,6 +73,7 @@
     "zx" 'kill-current-buffer))
 
 (use-package calc
+  :defer t
   :hook ((calc-trail-mode . (lambda ()
                               (setq-local mode-line-format nil)))
          (calc-mode . (lambda ()
@@ -76,34 +90,123 @@
 
 (add-hook 'on-first-input-hook 'delete-selection-mode)
 
-(setq-default winner-dont-bind-my-keys t)
-(add-hook 'on-first-buffer-hook 'winner-mode)
-(setq winner-boring-buffers '("*Completions*"
-                              "*Compile-Log*"
-                              "*inferior-lisp*"
-                              "*Fuzzy Completions*"
-                              "*Apropos*"
-                              "*Help*"
-                              "*cvs*"
-                              "*Buffer List*"
-                              "*Ibuffer*"
-                              "*esh command on file*"))
+(use-package winner
+  :hook (on-first-buffer . winner-mode)
+  :config
+  (setq winner-dont-bind-my-keys t)
+  (setq winner-boring-buffers '("*Completions*"
+                                "*Compile-Log*"
+                                "*inferior-lisp*"
+                                "*Fuzzy Completions*"
+                                "*Apropos*"
+                                "*Help*"
+                                "*cvs*"
+                                "*Buffer List*"
+                                "*Ibuffer*"
+                                "*esh command on file*")))
 
-(add-hook 'on-first-file-hook 'global-auto-revert-mode)
+(use-package autorevert
+  :hook (on-first-file . global-auto-revert-mode))
+
+(add-hook 'on-first-buffer-hook 'tab-bar-mode)
 
 (use-package tab-bar
-  :hook (on-first-file . tab-bar-mode)
+  :defer t
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-tab-hints nil)
   (setq tab-bar-show nil))
 
+(use-package window
+  :defer t
+  :config
+  (add-to-list 'display-buffer-alist
+               `(,(rx (| "*elfeed-search*"
+                         "*elfeed-summary*"
+                         "*elfeed-entry-"))
+                 (display-buffer-in-tab)
+                 (tab-name . "RSS")
+                 (tab-group . "RSS")
+                 (window-parameters . ((mode-line-format . none)))))
+  (add-to-list 'display-buffer-alist
+               (cons
+                "\\*Async Shell Command\\*.*"
+                (cons #'display-buffer-no-window nil)))
+  (add-to-list 'display-buffer-alist
+               '("^\\*Dictionary\\*"
+                 (display-buffer-in-side-window)
+                 (side . right)
+                 (window-width . 70)))
+  (add-to-list 'display-buffer-alist '("\\.pdf"
+                                       (display-buffer-in-tab)
+                                       (tab-name . "PDF")
+                                       (tab-group . "PDF")))
+  (add-to-list 'display-buffer-alist '("\\*Outline"
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 0.5)
+                                       (window-parameters
+                                        (mode-line-format . none))))
+  (add-to-list 'display-buffer-alist '("\\*ekg"
+                                       (display-buffer-pop-up-frame)
+                                       (window-parameters
+                                        (mode-line-format . none)
+                                        (delete-other-windows . t))))
+  (add-to-list 'display-buffer-alist
+               '((or (derived-mode . help-mode)
+                     (derived-mode . helpful-mode))
+                 (display-buffer-reuse-mode-window display-buffer-in-side-window)
+                 (window-width . 0.5)
+                 (side . right)
+                 (slot . 0)))
+  (add-to-list 'display-buffer-alist '("\\*toc\\*"
+                                     (display-buffer-reuse-window)
+                                     (side . left)
+                                     (window-parameters
+                                      (mode-line-format . none)
+                                      (delete-other-windows . t))))
+  (add-to-list 'display-buffer-alist
+             '("\\*Org Note\\*"
+               (display-buffer-in-side-window)
+               (side . right)
+               (slot . 0)
+               (window-width . 0.5)
+               (window-parameters . ((no-other-window . t)
+                                     (no-delete-other-windows . t)))))
+  (add-to-list 'display-buffer-alist
+               '((derived-mode . text-mode)
+                 (display-buffer-in-tab)
+                 (tab-name . "Edit") (tab-group . "Edit")
+                 (select . t)))
+
+  (add-to-list 'display-buffer-alist
+               '((derived-mode . prog-mode)
+                 (display-buffer-in-tab)
+                 (tab-name . "Porg")
+                 (tab-group . "Prog")
+                 (select . t)))
+
+  (add-to-list 'display-buffer-alist
+               '((or (derived-mode . dired-mode)
+                     (derived-mode . dirvish-mode))
+                 (display-buffer-in-tab)
+                 (tab-name . "Dired")
+                 (tab-group . "Dired")))
+
+  (add-to-list 'display-buffer-alist
+               `(,(rx (| "*dashboard*"
+                         "*Messages*"))
+                 (display-buffer-in-tab)
+                 (tab-name . "Home")
+                 (tab-group . "Home")
+                 (window-parameters . ((mode-line-format . none)
+                                       (no-other-window . t))))))
+
 (use-package tabspaces
-  :after tab-bar
   :hook (tab-bar-mode . tabspaces-mode)
   :config
   (setq tabspaces-session-file
-	(expand-file-name "cache/tabsession.el" user-emacs-directory))
+        (expand-file-name "cache/tabsession.el" user-emacs-directory))
   (setq tabspaces-use-filtered-buffers-as-default t))
 
 (with-eval-after-load 'evil
@@ -111,35 +214,6 @@
     "gs" 'tab-switch)
   (evil-define-key 'motion org-agenda-mode-map
     "gs" 'tab-switch))
-
-(add-to-list 'display-buffer-alist
-             '((or (derived-mode . text-mode)
-                   (derived-mode . ekg-notes-mode))
-               (display-buffer-in-tab)
-               (tab-name . "Edit") (tab-group . "Edit")
-               (select . t)))
-
-(add-to-list 'display-buffer-alist
-             '((derived-mode . prog-mode)
-               (display-buffer-in-tab)
-               (tab-name . "Porg") (tab-group . "Prog")
-               (select . t)))
-
-(add-to-list 'display-buffer-alist
-             '((or (derived-mode . dired-mode)
-                   (derived-mode . dirvish-mode))
-               (display-buffer-in-tab)
-               (tab-name . "Dired")
-               (tab-group . "Dired")))
-
-(add-to-list 'display-buffer-alist
-             `(,(rx (| "*dashboard*"
-                       "*Messages*"))
-               (display-buffer-in-tab)
-               (tab-name . "Home")
-               (tab-group . "Home")
-               (window-parameters . ((mode-line-format . none)
-                                     (no-other-window . t)))))
 
 (use-package savehist
   :hook (on-first-file . savehist-mode)
@@ -160,43 +234,44 @@
 
 (add-hook 'on-first-buffer-hook 'midnight-mode)
 
-(add-hook 'text-mode-hook 'global-so-long-mode)
-(setq-default large-file-warning-threshold nil)
-(when (fboundp 'so-long-enable)
-  (add-hook 'on-first-file-hook 'so-long-enable))
+(use-package so-long
+  :hook (text-mode . global-so-long-mode))
 
 (add-hook 'prog-mode-hook 'electric-pair-mode)
 (add-hook 'org-mode-hook 'electric-pair-mode)
 
-(setq prettify-symbols-alist '(("lambda" . ?λ)
-                               ("function" . ?𝑓)))
-(add-hook 'prog-mode-hook 'prettify-symbols-mode)
-(add-hook 'LaTeX-mode-hook 'prettify-symbols-mode)
+(use-package prog-mode
+  :hook ((prog-mode . prettify-symbols-mode)
+         (LaTeX-mode . prettify-symbols-mode))
+  :config
+  (setq prettify-symbols-alist '(("lambda" . ?λ)
+                                 ("function" . ?𝑓))))
 
-(setq hippie-expand-try-functions-list '(try-complete-file-name-partially
-                                         try-complete-file-name
-                                         try-expand-all-abbrevs
-                                         try-expand-dabbrev
-                                         try-expand-dabbrev-all-buffers
-                                         try-expand-dabbrev-from-kill
-                                         try-complete-lisp-symbol-partially
-                                         try-complete-lisp-symbol))
-(global-set-key [remap dabbrev-expand] 'hippie-expand)
+(use-package hippie-exp
+  :bind ([remap dabbrev-expand] . hippie-expand)
+  :config
+  (setq hippie-expand-try-functions-list '(try-complete-file-name-partially
+                                           try-complete-file-name
+                                           try-expand-all-abbrevs
+                                           try-expand-dabbrev
+                                           try-expand-dabbrev-all-buffers
+                                           try-expand-dabbrev-from-kill
+                                           try-complete-lisp-symbol-partially
+                                           try-complete-lisp-symbol)))
 
 (add-hook 'prog-mode-hook 'outline-minor-mode)
 
-(use-package loaddefs
+(use-package pixel-scroll
   :hook (on-first-file . pixel-scroll-precision-mode))
 
 (use-package recentf
   :hook (after-init . recentf-mode)
+  :general (my/space-leader-def
+             "fr" '(recentf-open-files :wk "Recentf"))
   :config
   (setq recentf-save-file (expand-file-name "cache/recentf" user-emacs-directory))
   (setq recentf-auto-cleanup 300)
   (setq recentf-max-saved-items 1000))
-
-(my/space-leader-def
-  "fr" '(recentf-open-files :wk "Recentf"))
 
 (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
 (add-hook 'org-roam-mode-hook 'turn-on-visual-line-mode)
@@ -224,6 +299,11 @@
   :bind (:map dired-mode-map
               ("s-." . dired-hide-dotfiles-mode)))
 
+(use-package image-dired
+  :bind ("C-c d" . image-dired)
+  :config
+  (setq image-dired-dir (expand-file-name "cache/image-dired" user-emacs-directory)))
+
 (use-package consult-dir
   :bind (("C-x C-d" . consult-dir)
          (:map minibuffer-mode-map
@@ -231,6 +311,7 @@
                ("C-x C-j" . consult-dir-jump-file))))
 
 (use-package frame
+  :hook (after-init . window-divider-mode)
   :config
   (face-spec-set 'window-divider
                  '((((background light))
@@ -239,40 +320,43 @@
                     :foreground "#FFFFFF"))
                  'face-override-spec)
   (setq window-divider-default-bottom-width 1)
-  (setq window-divider-default-places 'bottom-only)
-  :hook (after-init . window-divider-mode))
+  (setq window-divider-default-places 'bottom-only))
 
-(setq doc-view-mupdf-use-svg t)
-(setq doc-view-imenu-flatten t)
-(setq doc-view-continuous t)
+(use-package doc-view
+  :defer t
+  :config
+  (setq doc-view-mupdf-use-svg t)
+  (setq doc-view-imenu-flatten t)
+  (setq doc-view-continuous t))
 
-(setq-default abbrev-mode t)
+(add-hook 'org-mode-hook 'abbrev-mode)
+(add-hook 'LaTeX-mode-hook 'abbrev-mode)
 
 (use-package bookmark
+  :commands bookmark-set bookmark-rename bookmark-delete bookmark-jump
   :config
   (setq bookmark-default-file (expand-file-name "cache/bookmarks" user-emacs-directory)))
+
 (my/space-leader-def
   "ba" 'bookmark-set
   "br" 'bookmark-rename
   "bd" 'bookmark-delete
   "bj" 'bookmark-jump)
 
-(setq select-enable-primary t)
-
-(defun my/auto-create-missing-dirs ()
-  (let ((target-dir (file-name-directory buffer-file-name)))
-    (unless (file-exists-p target-dir)
-      (make-directory target-dir t))))
-
-(add-to-list 'find-file-not-found-functions #'my/auto-create-missing-dirs)
+(use-package select
+  :defer t
+  :config
+  (setq select-enable-primary t))
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 (use-package url
+  :defer t
   :config
   (setq url-configuration-directory (expand-file-name "cache/url" user-emacs-directory)))
 
 (use-package multisession
+  :defer t
   :config
   (setq multisession-directory (expand-file-name "cache/multisession" user-emacs-directory)))
 

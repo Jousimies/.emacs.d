@@ -4,7 +4,8 @@
 
 ;;; Code:
 (use-package vterm
-  :bind ("C-c , v" . toggle-vterm)
+  :general (my/space-leader-def
+             "v" '(toggle-vterm :wk "vterm"))
   :config
   (setq vterm-kill-buffer-on-exit t)
   (setq vterm-max-scrollback 5000)
@@ -22,9 +23,6 @@
       (progn
         (vterm)
         (evil-insert 1)))))
-
-(my/space-leader-def
-  "v" '(toggle-vterm :wk "vterm"))
 
 (provide 'init-vterm)
 ;;; init-vterm.el ends here.
