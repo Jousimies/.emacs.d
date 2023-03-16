@@ -2,7 +2,7 @@
   :commands (magit magit-status magit-submodule-add)
   :bind ("C-x g" . magit)
   :config
-  (magit-add-section-hook 'magit-status-sections-hook
+ (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-modules
                           'magit-insert-unpulled-from-upstream)
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-overview)
