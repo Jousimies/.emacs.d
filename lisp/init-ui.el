@@ -7,7 +7,6 @@
                                       charset (font-spec :family "Source Han Serif SC" :height 140)) t 'prepend))))
 
 (use-package modus-themes
-  :defer t
   :config
   (setq modus-themes-bold-constructs t)
   (setq modus-themes-italic-constructs t)

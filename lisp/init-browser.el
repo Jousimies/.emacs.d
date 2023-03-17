@@ -13,6 +13,16 @@
 ;; Search engine
 (use-package engine-mode
   :hook (on-first-input . engine-mode)
+  :general (my/space-leader-def
+             "s" '(:ignore t :wk "Search")
+             "sb" '(engine/search-bookdouban :wk "Book")
+             "ss" '(engine/search-google :wk "Google")
+             "sg" '(engine/search-github :wk "Github")
+             "sw" '(engine/search-wikipedia :wk "Wiki")
+             "sm" '(engine/search-moviedouban :wk "Movie")
+             "sz" '(engine/search-zhihu :wk "Zhihu")
+             "sr" '(rg :wk "rg")
+             "sl" '(consult-git-grep :wk "git"))
   :config
   (defengine google "https://google.com/search?q=%s"
              :keybinding "g"
@@ -35,17 +45,6 @@
   (defengine zhihu "https://www.zhihu.com/search?type=content&q=%s"
              :keybinding "z"
              :docstring "Search Zhihu."))
-
-(my/space-leader-def
-  "s" '(:ignore t :wk "Search")
-  "sb" '(engine/search-bookdouban :wk "Book")
-  "ss" '(engine/search-google :wk "Google")
-  "sg" '(engine/search-github :wk "Github")
-  "sw" '(engine/search-wikipedia :wk "Wiki")
-  "sm" '(engine/search-moviedouban :wk "Movie")
-  "sz" '(engine/search-zhihu :wk "Zhihu")
-  "sr" '(rg :wk "rg")
-  "sl" '(consult-git-grep :wk "git"))
 
 (provide 'init-browser)
 ;;; init-browser.el ends here.

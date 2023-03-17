@@ -44,19 +44,20 @@
 
   (add-hook 'evil-insert-state-entry-hook #'my/beancount-activate-input-method))
 
+(use-package tablist
+  :commands tablist-minor-mode)
+
 (use-package achive
-  :commands achive
+  :general (my/space-leader-def
+             "ms" '(achive :wk "Share"))
   :config
   (setq achive-language 'zh)
-  (setq achive-cache-path (expand-file-name "chche/.achive" user-emacs-directory)))
+  (setq achive-cache-path (expand-file-name "cache/.achive" user-emacs-directory))
+  (add-to-list 'display-buffer-alist '("\\*A Chive\\*"
+                                         (display-buffer-in-tab)
+                                         (tab-name . "Misc")
+                                         (tab-group . "Misc"))))
 
-(my/space-leader-def
-  "ms" '(achive :wk "Share"))
-
-(add-to-list 'display-buffer-alist '("\\*A Chive\\*"
-                                     (display-buffer-in-new-tab)
-                                     (tab-name . "Share")
-                                     (tab-group . "Misc")))
 (with-eval-after-load 'evil-collection
   (evil-collection-define-key 'normal 'achive-visual-mode-map
     "q" 'quit-window))

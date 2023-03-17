@@ -108,10 +108,8 @@
 (use-package autorevert
   :hook (on-first-file . global-auto-revert-mode))
 
-(add-hook 'on-first-buffer-hook 'tab-bar-mode)
-
 (use-package tab-bar
-  :defer t
+  :hook (after-init . tab-bar-mode)
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-tab-hints nil)
@@ -120,87 +118,37 @@
 (use-package window
   :defer t
   :config
-  (add-to-list 'display-buffer-alist
-               `(,(rx (| "*elfeed-search*"
-                         "*elfeed-summary*"
-                         "*elfeed-entry-"))
-                 (display-buffer-in-tab)
-                 (tab-name . "RSS")
-                 (tab-group . "RSS")
-                 (window-parameters . ((mode-line-format . none)))))
-  (add-to-list 'display-buffer-alist
-               (cons
-                "\\*Async Shell Command\\*.*"
-                (cons #'display-buffer-no-window nil)))
-  (add-to-list 'display-buffer-alist
-               '("^\\*Dictionary\\*"
-                 (display-buffer-in-side-window)
-                 (side . right)
-                 (window-width . 70)))
   (add-to-list 'display-buffer-alist '("\\.pdf"
                                        (display-buffer-in-tab)
-                                       (tab-name . "PDF")
-                                       (tab-group . "PDF")))
+                                       (tab-name . "PDF") (tab-group . "PDF")))
   (add-to-list 'display-buffer-alist '("\\*Outline"
                                        (display-buffer-in-side-window)
                                        (side . right)
                                        (window-width . 0.5)
                                        (window-parameters
                                         (mode-line-format . none))))
-  (add-to-list 'display-buffer-alist '("\\*ekg"
-                                       (display-buffer-pop-up-frame)
+  (add-to-list 'display-buffer-alist '("\\*toc\\*"
+                                       (display-buffer-reuse-window display-buffer-in-side-window)
+                                       (side . left)
                                        (window-parameters
                                         (mode-line-format . none)
                                         (delete-other-windows . t))))
-  (add-to-list 'display-buffer-alist
-               '((or (derived-mode . help-mode)
-                     (derived-mode . helpful-mode))
-                 (display-buffer-reuse-mode-window display-buffer-in-side-window)
-                 (window-width . 0.5)
-                 (side . right)
-                 (slot . 0)))
-  (add-to-list 'display-buffer-alist '("\\*toc\\*"
-                                     (display-buffer-reuse-window)
-                                     (side . left)
-                                     (window-parameters
-                                      (mode-line-format . none)
-                                      (delete-other-windows . t))))
-  (add-to-list 'display-buffer-alist
-             '("\\*Org Note\\*"
-               (display-buffer-in-side-window)
-               (side . right)
-               (slot . 0)
-               (window-width . 0.5)
-               (window-parameters . ((no-other-window . t)
-                                     (no-delete-other-windows . t)))))
-  (add-to-list 'display-buffer-alist
-               '((derived-mode . text-mode)
-                 (display-buffer-in-tab)
-                 (tab-name . "Edit") (tab-group . "Edit")
-                 (select . t)))
+  (add-to-list 'display-buffer-alist '("\\*Org Note\\*"
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (slot . 0)
+                                       (window-width . 0.5)
+                                       (window-parameters . ((no-other-window . t)
+                                                             (no-delete-other-windows . t)))))
+  (add-to-list 'display-buffer-alist '((derived-mode . text-mode)
+                                       (display-buffer-in-tab)
+                                       (tab-name . "Edit") (tab-group . "Edit")
+                                       (select . t)))
 
-  (add-to-list 'display-buffer-alist
-               '((derived-mode . prog-mode)
-                 (display-buffer-in-tab)
-                 (tab-name . "Porg")
-                 (tab-group . "Prog")
-                 (select . t)))
-
-  (add-to-list 'display-buffer-alist
-               '((or (derived-mode . dired-mode)
-                     (derived-mode . dirvish-mode))
-                 (display-buffer-in-tab)
-                 (tab-name . "Dired")
-                 (tab-group . "Dired")))
-
-  (add-to-list 'display-buffer-alist
-               `(,(rx (| "*dashboard*"
-                         "*Messages*"))
-                 (display-buffer-in-tab)
-                 (tab-name . "Home")
-                 (tab-group . "Home")
-                 (window-parameters . ((mode-line-format . none)
-                                       (no-other-window . t))))))
+  (add-to-list 'display-buffer-alist '((derived-mode . prog-mode)
+                                       (display-buffer-in-tab)
+                                       (tab-name . "Porg") (tab-group . "Prog")
+                                       (select . t))))
 
 (use-package tabspaces
   :hook (tab-bar-mode . tabspaces-mode)
@@ -292,7 +240,12 @@
   (setq dired-recursive-deletes 'top)
   (setq dired-listing-switches
         "-l --almost-all --human-readable --group-directories-first --no-group")
-  (setq dired-auto-revert-buffer t))
+  (setq dired-auto-revert-buffer t)
+  (add-to-list 'display-buffer-alist '((or (derived-mode . dired-mode)
+                                             (derived-mode . dirvish-mode))
+                                         (display-buffer-in-tab)
+                                         (tab-name . "Dired")
+                                         (tab-group . "Dired"))))
 
 (use-package dired-hide-dotfiles
   :hook (dired-mode . dired-hide-dotfiles-mode)

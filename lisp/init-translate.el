@@ -6,7 +6,12 @@
   (setq langtool-autoshow-message-function #'langtool-popup-autoshow))
 
 (use-package dictionary
-  :bind ("M-#" . dictionary-lookup-definition))
+  :bind ("M-#" . dictionary-lookup-definition)
+  :config
+  (add-to-list 'display-buffer-alist '("^\\*Dictionary\\*"
+                                         (display-buffer-in-side-window)
+                                         (side . right)
+                                         (window-width . 70))))
 
 (use-package go-translate
   :commands gts-do-translate

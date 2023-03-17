@@ -1,6 +1,6 @@
 (use-package elfeed
   :defer t
-  :preface
+  :config
   (defun elfeed-display-buffer (buf &optional act)
     (pop-to-buffer buf '((display-buffer-reuse-window display-buffer-in-side-window)
                          (side . bottom)
@@ -10,12 +10,11 @@
                           (select . t)
                           (quit . t)
                           (popup . t)))))
-  :config
   (setq elfeed-show-entry-switch #'elfeed-display-buffer))
 
 (use-package elfeed-org
-  :defer t
-  :init
+  :commands elfeed-org
+  :config
   (setq rmh-elfeed-org-files `(,(concat my-galaxy "/rss/elfeed.org")))
   (defun my/rss-source ()
     "Open elfeed config file."

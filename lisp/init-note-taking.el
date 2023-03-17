@@ -11,7 +11,12 @@
          (:map ekg-notes-mode-map
                ("q" . quit-window)))
   :config
-  (setq triples-default-database-filename (expand-file-name "database/triples.db" my-galaxy)))
+  (setq triples-default-database-filename (expand-file-name "database/triples.db" my-galaxy))
+  (add-to-list 'display-buffer-alist '("^\\*ekg\\|^\\*EKG"
+                                         (display-buffer-pop-up-frame)
+                                         (window-parameters
+                                          (mode-line-format . none)
+                                          (delete-other-windows . t)))))
 
 (with-eval-after-load 'evil
   (evil-define-key '(normal visual) 'global
@@ -132,7 +137,7 @@ TODO: Would it make sense to prompt for the domain?
       (tempel-insert 'hugo)))
 
 (with-eval-after-load 'evil
-  (evil-define-key '(normal visual) 'global
+  (evil-define-key '(normal motion visual) 'global
     "gnn" 'consult-notes
     "gna" 'my/new-article))
 

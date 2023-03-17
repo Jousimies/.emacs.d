@@ -72,14 +72,6 @@
 (my/space-leader-def
   "e" '(mu4e :wk "MAIL"))
 
-(add-to-list 'display-buffer-alist
-             `(,(rx (| "*mu4e-main*"
-                       "*mu4e-headers*"))
-               (display-buffer-in-tab)
-               (tab-name . "Home")
-               (tab-group . "Home")
-               (window-parameters . ((mode-line-format . none)))))
-
 (defun extra-email-to-pdf (msg &optional args)
   "Pdf temp file MSG to a new name with ARGS ignored."
   (let* ((async-shell-command-display-buffer nil)
