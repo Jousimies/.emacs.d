@@ -27,9 +27,10 @@
   (setq completion-styles '(orderless partial-completion)))
 
 (use-package vertico
+  :demand t
   :load-path "~/.emacs.d/packages/vertico"
-  :hook (after-init . vertico-mode)
   :config
+  (vertico-mode)
   (setq vertico-cycle t)
   :bind (:map vertico-map
       ("C-j" . vertico-next)
@@ -44,25 +45,25 @@
   :hook ((minibuffer-setup . marginalia-mode)))
 
 (use-package embark
+  :general (my/space-leader-def
+             "oe" '(embark-open-externally :wk "Open externally"))
   :bind (("C-." . embark-act)
          ("M-." . embark-dwim)
          (:map vertico-map
                ("C-c C-o" . embark-export)
                ("C-c C-c" . embark-act)))
-  :init
-  (setq prefix-help-command #'embark-prefix-help-command)
   :config
+  (setq prefix-help-command #'embark-prefix-help-command)
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
                  (window-parameters (mode-line-format . none)))))
 
-(my/space-leader-def
-  "oe" '(embark-open-externally :wk "Open externally"))
-
 (use-package consult
   :commands consult-outline
   :hook (completion-list-mode . consult-preview-at-point-mode)
+  :general (my/space-leader-def
+             "fr" '(consult-recent-file :wk "Recentf"))
   :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-line)
@@ -85,7 +86,9 @@
     "gh" 'consult-outline))
 
 (use-package corfu
+  :demand t
   :config
+  (global-corfu-mode)
   (setq corfu-cycle t)
   (setq corfu-auto t)
   (setq corfu-auto-prefix 2)
@@ -103,8 +106,7 @@
       (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
                   corfu-popupinfo-delay nil)
       (corfu-mode 1)))
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
-  :hook (after-init . global-corfu-mode))
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package corfu-echo
   :hook (corfu-mode . corfu-echo-mode))
@@ -150,16 +152,25 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
   )
 
-(autoload 'prescient-persist-mode "prescient" "" t)
-(add-hook 'after-init-hook 'prescient-persist-mode)
+(require 'prescient)
 (setq prescient-save-file (expand-file-name "cache/prescient-save.el" user-emacs-directory))
-(use-package vertico-prescient
-  :hook (vertico-mode . vertico-prescient-mode))
+(prescient-persist-mode)
 
-(use-package corfu-prescient
-  :hook (corfu-mode . corfu-prescient-mode)
-  :config
-  (setq vertico-prescient-completion-styles '(orderless prescient partial-completion)))
+(require 'vertico-prescient)
+(setq vertico-prescient-completion-styles '(orderless prescient partial-completion))
+(vertico-prescient-mode)
+
+(require 'corfu-prescient)
+(corfu-prescient-mode)
+
+;; (use-package vertico-prescient
+;;   :load-path "~/.emacs.d/packages/prescient.el/vertico-prescient.el"
+;;   :hook (vertico-mode . vertico-prescient-mode))
+
+;; (use-package corfu-prescient
+;;   :hook (corfu-mode . corfu-prescient-mode)
+;;   :config
+;;   (setq vertico-prescient-completion-styles '(orderless prescient partial-completion)))
 
 (provide 'init-completion)
 ;;; init-git.el ends here.

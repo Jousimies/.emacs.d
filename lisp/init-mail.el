@@ -107,11 +107,6 @@ If SKIP-HEADERS is set, do not show include message headers."
 (with-eval-after-load 'mu4e
   (add-to-list 'mu4e-view-actions '("download as html"  . extra-save-email-html)))
 
-(with-eval-after-load 'all-the-icons
-  (setq display-time-mail-icon `(,(propertize
-                                   (all-the-icons-material "mail")
-                                   'face `(:family ,(all-the-icons-material-family))))))
-
 (with-eval-after-load 'mu4e
   (setq mu4e-use-fancy-chars nil))
 

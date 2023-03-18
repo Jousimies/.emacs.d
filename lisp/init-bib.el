@@ -6,7 +6,7 @@
 (use-package citar
   :commands citar-open citar-open-entry citar-open-files citar-open-notes citar-open-links
   :config
-  (setq citar-bibliography org-cite-global-bibliography)
+  (setq citar-bibliography `(,(concat my-galaxy "/bibtexs/References.bib")))
   (setq citar-notes-paths `(,(expand-file-name "references" my-galaxy)))
   (setq citar-library-file-extensions '("pdf" "jpg" "epub"))
   (setq citar-templates '((main . "${author editor:30} ${date year issued:4} ${title:48}")
@@ -15,12 +15,7 @@
                           (note . "${title}")))
   (setq citar-symbol-separator "  ")
   (setq citar-file-additional-files-separator "-")
-  (setq citar-at-point-function 'embark-act)
-  (with-eval-after-load 'all-the-icons
-   (setq citar-symbols
-        `((file ,(all-the-icons-faicon "file-pdf-o" :face 'all-the-icons-dred :v-adjust -0.1) . " ")
-          (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-          (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " ")))))
+  (setq citar-at-point-function 'embark-act))
 
 (use-package citar-latex
   :after citar)

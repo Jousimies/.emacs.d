@@ -3,9 +3,8 @@
                ("SPC" . nil)
                ("RET" . nil)
                ("TAB" . nil))
-  :hook ((after-init . evil-mode)
-         (after-change-major-mode . (lambda ()
-                                      (setq-local evil-shift-width tab-width))))
+  :hook (after-change-major-mode . (lambda ()
+                                      (setq-local evil-shift-width tab-width)))
   :init
   (setq evil-want-keybinding nil)
   (setq evil-want-integration t)
@@ -13,6 +12,7 @@
   (setq evil-want-C-h-delete t)
   (setq evil-respect-visual-line-mode t)
   :config
+  (evil-mode)
   (setq evil-undo-system 'undo-fu)
   (setq evil-visual-state-cursor 'hollow)
 
@@ -41,7 +41,9 @@
   (evil-collection-init))
 
 (use-package evil-commentary
-  :hook (evil-mode . evil-commentary-mode))
+  :after evil
+  :config
+  (evil-commentary-mode))
 
 (use-package evil-surround
   :hook (evil-mode . global-evil-surround-mode))
@@ -57,26 +59,11 @@
   (evilem-default-keybindings "SPC"))
 
 (use-package which-key
-  :hook (evil-mode . which-key-mode)
+  :hook (after-init . which-key-mode)
   :config
   (setq which-key-show-early-on-C-h t)
   (setq which-key-idle-delay 10000)
   (setq which-key-idle-secondary-delay 0.05))
-
-(use-package general
-  :config
-  (general-create-definer my/space-leader-def
-    :prefix "SPC"
-    :non-normal-prefix "M-SPC"
-    :states '(normal visual insert emacs)))
-
-(defun my/emacs-config ()
-  "My literate Emacs configuration."
-  (interactive)
-  (find-file (expand-file-name "emacs.org" user-emacs-directory)))
-
-(my/space-leader-def
-  ".i" '(my/emacs-config :wk "Configuration"))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here.

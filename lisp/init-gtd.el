@@ -8,23 +8,6 @@
   (setq org-agenda-window-setup 'other-tab)
   (setq org-agenda-align-tags-to-column -120))
 
-  ;; (with-eval-after-load 'all-the-icons
-  ;;   (setq org-agenda-category-icon-alist
-  ;;         `(("\\`gtd\\'"
-  ;;            (#(" " 0 1 (rear-nonsticky t display (raise 0.0)
-  ;;                                        font-lock-face
-  ;;                                        (:family "FontAwesome" :height 1.0)
-  ;;                                        face
-  ;;                                        (:family "FontAwesome" :height 1.0))))
-  ;;            nil nil :ascent center)
-  ;;           ("\\\cc\\\|[a-zA-z0-9]*"
-  ;;            (#(" " 0 1 (rear-nonsticky t display (raise 0.0)
-  ;;                                        font-lock-face
-  ;;                                        (:family "FontAwesome" :height 1.0)
-  ;;                                        face
-  ;;                                        (:family "FontAwesome" :height 1.0))))
-  ;;            nil nil :ascent center)))))
-
 (with-eval-after-load 'evil
   (evil-set-initial-state 'org-agenda-mode 'motion)
   (evil-define-key 'motion org-agenda-mode-map

@@ -54,17 +54,15 @@
   :config
   (setq ffap-machine-p-known 'reject))
 
-(add-hook 'after-init-hook
-          #'(lambda ()
-              (prefer-coding-system 'utf-8)
-              (set-default-coding-systems 'utf-8)
-              (set-terminal-coding-system 'utf-8)
-              (set-keyboard-coding-system 'utf-8)))
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
 
-(my/space-leader-def
-  "b" '(:ignore t :wk "Buffer/Bookmark")
-  "be" '(eval-buffer :wk "Eval buffer")
-  "bk" '(kill-this-buffer :wk "Kill This Buffer"))
+;; (my/space-leader-def
+;;   "b" '(:ignore t :wk "Buffer/Bookmark")
+;;   "be" '(eval-buffer :wk "Eval buffer")
+;;   "bk" '(kill-this-buffer :wk "Kill This Buffer"))
 
 (with-eval-after-load 'evil
   (evil-define-key 'normal 'global
@@ -73,16 +71,14 @@
     "zx" 'kill-current-buffer))
 
 (use-package calc
-  :defer t
+  :general (my/space-leader-def
+             "C" '(calc :wk "calc"))
   :hook ((calc-trail-mode . (lambda ()
                               (setq-local mode-line-format nil)))
          (calc-mode . (lambda ()
                         (setq-local mode-line-format nil))))
   :config
   (setq calc-window-height 15))
-
-(my/space-leader-def
-  "C" '(calc :wk "calc"))
 
 (add-hook 'prog-mode-hook 'column-number-mode)
 
@@ -107,13 +103,6 @@
 
 (use-package autorevert
   :hook (on-first-file . global-auto-revert-mode))
-
-(use-package tab-bar
-  :hook (after-init . tab-bar-mode)
-  :config
-  (setq tab-bar-close-button-show nil)
-  (setq tab-bar-tab-hints nil)
-  (setq tab-bar-show nil))
 
 (use-package window
   :defer t
@@ -163,6 +152,10 @@
   (evil-define-key 'motion org-agenda-mode-map
     "gs" 'tab-switch))
 
+(use-package menu-bar
+  :general (my/space-leader-def
+             "bk" '(kill-this-buffer :wk "Kill buffer")))
+
 (use-package savehist
   :hook (on-first-file . savehist-mode)
   :config
@@ -211,15 +204,6 @@
 
 (use-package pixel-scroll
   :hook (on-first-file . pixel-scroll-precision-mode))
-
-(use-package recentf
-  :hook (after-init . recentf-mode)
-  :general (my/space-leader-def
-             "fr" '(recentf-open-files :wk "Recentf"))
-  :config
-  (setq recentf-save-file (expand-file-name "cache/recentf" user-emacs-directory))
-  (setq recentf-auto-cleanup 300)
-  (setq recentf-max-saved-items 1000))
 
 (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
 (add-hook 'org-roam-mode-hook 'turn-on-visual-line-mode)
@@ -286,15 +270,13 @@
 (add-hook 'LaTeX-mode-hook 'abbrev-mode)
 
 (use-package bookmark
-  :commands bookmark-set bookmark-rename bookmark-delete bookmark-jump
+  :general (my/space-leader-def
+             "ba" 'bookmark-set
+             "br" 'bookmark-rename
+             "bd" 'bookmark-delete
+             "bj" 'bookmark-jump)
   :config
   (setq bookmark-default-file (expand-file-name "cache/bookmarks" user-emacs-directory)))
-
-(my/space-leader-def
-  "ba" 'bookmark-set
-  "br" 'bookmark-rename
-  "bd" 'bookmark-delete
-  "bj" 'bookmark-jump)
 
 (use-package select
   :defer t
@@ -315,18 +297,17 @@
 
 (use-package server
   :hook (on-first-input . server-start)
+  :general (my/space-leader-def
+             "q" '(:ignore t :wk "Quit/Restart")
+             "qR" '(restart-emacs :wk "Restart emacs")
+             "qq" '(server-force-delete :wk "Server Delete")
+             "qs" '(my/start-server :wk "Server Delete"))
   :config
   (defun my/start-server ()
     (interactive)
     (if (not (server-running-p))
         (server-start))
     (message "Server has started")))
-
-(my/space-leader-def
-  "q" '(:ignore t :wk "Quit/Restart")
-  "qR" '(restart-emacs :wk "Restart emacs")
-  "qq" '(server-force-delete :wk "Server Delete")
-  "qs" '(my/start-server :wk "Server Delete"))
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here.

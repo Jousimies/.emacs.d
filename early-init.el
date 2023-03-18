@@ -20,7 +20,7 @@
 (setq-default inhibit-redisplay t
               inhibit-message t)
 
-(add-hook 'after-init-hook
+(add-hook 'window-setup-hook
           (lambda ()
             (setq-default inhibit-redisplay nil
                           inhibit-message nil)
@@ -32,4 +32,5 @@
 (setq byte-compile-warnings nil)
 
 (fset 'display-startup-echo-area-message 'ignore)
+
 ;;; early-init.el ends here
