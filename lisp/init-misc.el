@@ -2,7 +2,8 @@
   :hook (org-mode . org-auto-tangle-mode))
 
 (use-package epkg
-  :commands (epkg-describe-package)
+  :general (my/space-leader-def
+             ".p" '(epkg-describe-package :wk "Package Search"))
   :config
   (setq epkg-repository (expand-file-name "cache/epkgs" user-emacs-directory)))
 
@@ -320,9 +321,6 @@ This command can be called when in a file buffer or in `dired'."
   :hook (org-mode . org-ai-mode)
   :config
   (org-ai-install-yasnippets))
-
-(use-package focus
-  :hook (org-mode . focus-mode))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.

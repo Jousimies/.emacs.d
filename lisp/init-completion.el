@@ -22,6 +22,7 @@
 (setq tab-always-indent 'complete)
 
 (use-package orderless
+  :after vertico
   :config
   (setq completion-styles '(orderless partial-completion)))
 

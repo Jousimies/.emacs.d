@@ -78,6 +78,32 @@ TODO: Would it make sense to prompt for the domain?
   :config
   (setq denote-directory (expand-file-name "denote" my-galaxy)))
 
+(defvar prot-dired--limit-hist '()
+  "Minibuffer history for `prot-dired-limit-regexp'.")
+;;;###autoload
+(defun prot-dired-limit-regexp (regexp omit)
+  "Limit Dired to keep files matching REGEXP.
+
+With optional OMIT argument as a prefix (\\[universal-argument]),
+exclude files matching REGEXP.
+
+Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
+  (interactive
+   (list
+    (read-regexp
+     (concat "Files "
+             (when current-prefix-arg
+               (propertize "NOT " 'face 'warning))
+             "matching PATTERN: ")
+     nil 'prot-dired--limit-hist)
+    current-prefix-arg))
+  (dired-mark-files-regexp regexp)
+  (unless omit (dired-toggle-marks))
+  (dired-do-kill-lines))
+
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "C-;") 'prot-dired-limit-regexp))
+
 (cl-defun my/denote-subdirectory (subdirectory)
   (denote
    (denote-title-prompt)

@@ -75,5 +75,8 @@
   (interactive)
   (find-file (expand-file-name "emacs.org" user-emacs-directory)))
 
+(my/space-leader-def
+  ".i" '(my/emacs-config :wk "Configuration"))
+
 (provide 'init-evil)
 ;;; init-evil.el ends here.

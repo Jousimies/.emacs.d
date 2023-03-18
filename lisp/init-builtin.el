@@ -242,10 +242,10 @@
         "-l --almost-all --human-readable --group-directories-first --no-group")
   (setq dired-auto-revert-buffer t)
   (add-to-list 'display-buffer-alist '((or (derived-mode . dired-mode)
-                                             (derived-mode . dirvish-mode))
-                                         (display-buffer-in-tab)
-                                         (tab-name . "Dired")
-                                         (tab-group . "Dired"))))
+                                           (derived-mode . dirvish-mode))
+                                       (display-buffer-in-tab)
+                                       (tab-name . "Dired")
+                                       (tab-group . "Dired"))))
 
 (use-package dired-hide-dotfiles
   :hook (dired-mode . dired-hide-dotfiles-mode)

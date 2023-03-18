@@ -92,5 +92,33 @@
                      (format "(%s)" time-zone))))
   (setq diary-date-forms diary-iso-date-forms))
 
+(use-package appt
+  :after calendar
+  :hook (diary-mode . appt-activate)
+  :config
+  (setq appt-display-diary nil)
+  (setq appt-disp-window-function #'appt-disp-window)
+  (setq appt-display-mode-line t)
+  (setq appt-display-interval 3)
+  (setq appt-audible nil)
+  (setq appt-warning-time-regexp "appt \\([0-9]+\\)")
+  (setq appt-message-warning-time 6))
+
+(use-package diary-lib
+  :after calendar
+  :config
+  (add-hook 'diary-list-entries-hook #'diary-sort-entries)
+  (add-hook 'diary-mode-hook #'goto-address-mode)
+  (setq diary-display-function #'diary-fancy-display)
+  (setq diary-header-line-format nil)
+  (setq diary-list-include-blanks nil)
+  (setq diary-abbreviated-year-flag nil)
+  (setq diary-number-of-entries 7)
+  (setq diary-comment-start ");;")
+  (setq diary-comment-end "")
+  (setq diary-nonmarking-symbol "!")
+
+  (setq diary-file (expand-file-name "diary/diary.org" my-galaxy)))
+
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.
