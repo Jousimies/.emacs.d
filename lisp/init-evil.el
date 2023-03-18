@@ -46,7 +46,9 @@
   (evil-commentary-mode))
 
 (use-package evil-surround
-  :hook (evil-mode . global-evil-surround-mode))
+  :after evil
+  :config
+  (global-evil-surround-mode))
 
 (use-package evil-embrace
   :hook (org-mode . embrace-org-mode-hook)

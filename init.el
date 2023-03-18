@@ -78,10 +78,10 @@
 (defvar website-directory "~/Nextcloud/L.Personal.Galaxy/website"
   "The source folder of my blog.")
 
-;; (require 'init-benchmark)
+(require 'init-benchmark)
 (require 'init-font)
 (require 'init-theme)
-;; (require 'init-dashboard)
+(require 'init-dashboard)
 (require 'init-recentf)
 (add-hook 'after-init-hook #'(lambda ()
                                (require 'init-ui)
@@ -95,7 +95,6 @@
                                  (require 'init-del)
                                  (require 'init-template)
                                  (require 'init-edit)
-                                 (require 'init-helpful)
                                  (require 'init-search)
                                  (require 'init-undo)
                                  (require 'init-language)
@@ -105,6 +104,7 @@
 (add-hook 'on-first-input-hook #'(lambda ()
                                    (require 'init-git)
                                    (require 'init-auto-save)
+                                   (require 'init-helpful)
                                    (require 'init-spell)
                                    (require 'init-latex)
                                    (require 'init-translate)
