@@ -13,8 +13,5 @@
 (my/space-leader-def
   ".i" '(my/emacs-config :wk "Configuration"))
 
-(my/space-leader-def
-  "mb" '(dashboard-open :wk "*Dashboard*"))
-
 (provide 'init-general)
 ;;; init-general.el ends here.

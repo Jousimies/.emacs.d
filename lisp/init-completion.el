@@ -27,8 +27,8 @@
   (setq completion-styles '(orderless partial-completion)))
 
 (use-package vertico
-  :demand t
   :load-path "~/.emacs.d/packages/vertico"
+  :demand t
   :config
   (vertico-mode)
   (setq vertico-cycle t)
@@ -45,6 +45,7 @@
   :hook ((minibuffer-setup . marginalia-mode)))
 
 (use-package embark
+  :commands embark-prefix-help-command
   :general (my/space-leader-def
              "oe" '(embark-open-externally :wk "Open externally"))
   :bind (("C-." . embark-act)
@@ -85,8 +86,13 @@
   (evil-declare-key 'normal LaTeX-mode-map
     "gh" 'consult-outline))
 
+(use-package consult-dir
+  :bind (("C-x C-d" . consult-dir)
+         (:map minibuffer-mode-map
+               ("C-x C-d" . consult-dir)
+               ("C-x C-j" . consult-dir-jump-file))))
+
 (use-package corfu
-  :demand t
   :config
   (global-corfu-mode)
   (setq corfu-cycle t)
@@ -156,21 +162,18 @@
 (setq prescient-save-file (expand-file-name "cache/prescient-save.el" user-emacs-directory))
 (prescient-persist-mode)
 
-(require 'vertico-prescient)
-(setq vertico-prescient-completion-styles '(orderless prescient partial-completion))
-(vertico-prescient-mode)
+;; (require 'vertico-prescient)
+;; (setq vertico-prescient-completion-styles '(orderless prescient partial-completion))
+;; (vertico-prescient-mode)
 
-(require 'corfu-prescient)
-(corfu-prescient-mode)
 
-;; (use-package vertico-prescient
-;;   :load-path "~/.emacs.d/packages/prescient.el/vertico-prescient.el"
-;;   :hook (vertico-mode . vertico-prescient-mode))
+(use-package vertico-prescient
+  :hook (vertico-mode . vertico-prescient-mode)
+  :config
+  (setq vertico-prescient-completion-styles '(orderless prescient partial-completion)))
 
-;; (use-package corfu-prescient
-;;   :hook (corfu-mode . corfu-prescient-mode)
-;;   :config
-;;   (setq vertico-prescient-completion-styles '(orderless prescient partial-completion)))
+(use-package corfu-prescient
+  :hook (corfu-mode . corfu-prescient-mode))
 
 (provide 'init-completion)
 ;;; init-git.el ends here.

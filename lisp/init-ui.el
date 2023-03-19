@@ -10,8 +10,8 @@
 
 (use-package display-line-numbers
   :hook ((prog-mode . display-line-numbers-mode)
-	 (org-mode . display-line-numbers-mode)
-	 (LaTeX-mode . display-line-numbers-mode))
+         (org-mode . display-line-numbers-mode)
+         (LaTeX-mode . display-line-numbers-mode))
   :init
   (setq-default display-line-numbers-widen t)
   :config
@@ -23,8 +23,8 @@
   :hook (prog-mode . display-fill-column-indicator-mode)
   :config
   (face-spec-set 'fill-column-indicator
-		 '((default :height 0.1))
-		 'face-override-spec)
+                 '((default :height 0.1))
+                 'face-override-spec)
   (setq-default fill-column 90))
 
 (use-package paren
@@ -167,7 +167,7 @@ of the box `(w h)' inside the box `(cw ch)'."
   (advice-add command :after #'pulse-line))
 
 (use-package color-identifiers-mode
-  :hook (on-first-file . global-color-identifiers-mode))
+  :hook (text-mode . global-color-identifiers-mode))
 
 (use-package page-break-lines
   :hook (org-mode . global-page-break-lines-mode))

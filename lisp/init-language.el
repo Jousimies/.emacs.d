@@ -21,5 +21,9 @@
   ;; (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
   ;; (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode)))
 
+(use-package elisp-mode
+  :general (my/space-leader-def
+             ".e" '(emacs-lisp-macroexpand :wk "Macro expand")))
+
 (provide 'init-language)
 ;;; init-language.el ends here.

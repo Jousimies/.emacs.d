@@ -86,71 +86,8 @@
 
 (add-hook 'on-first-input-hook 'delete-selection-mode)
 
-(use-package winner
-  :hook (on-first-buffer . winner-mode)
-  :config
-  (setq winner-dont-bind-my-keys t)
-  (setq winner-boring-buffers '("*Completions*"
-                                "*Compile-Log*"
-                                "*inferior-lisp*"
-                                "*Fuzzy Completions*"
-                                "*Apropos*"
-                                "*Help*"
-                                "*cvs*"
-                                "*Buffer List*"
-                                "*Ibuffer*"
-                                "*esh command on file*")))
-
 (use-package autorevert
   :hook (on-first-file . global-auto-revert-mode))
-
-(use-package window
-  :defer t
-  :config
-  (add-to-list 'display-buffer-alist '("\\.pdf"
-                                       (display-buffer-in-tab)
-                                       (tab-name . "PDF") (tab-group . "PDF")))
-  (add-to-list 'display-buffer-alist '("\\*Outline"
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (window-width . 0.5)
-                                       (window-parameters
-                                        (mode-line-format . none))))
-  (add-to-list 'display-buffer-alist '("\\*toc\\*"
-                                       (display-buffer-reuse-window display-buffer-in-side-window)
-                                       (side . left)
-                                       (window-parameters
-                                        (mode-line-format . none)
-                                        (delete-other-windows . t))))
-  (add-to-list 'display-buffer-alist '("\\*Org Note\\*"
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (slot . 0)
-                                       (window-width . 0.5)
-                                       (window-parameters . ((no-other-window . t)
-                                                             (no-delete-other-windows . t)))))
-  (add-to-list 'display-buffer-alist '((derived-mode . text-mode)
-                                       (display-buffer-in-tab)
-                                       (tab-name . "Edit") (tab-group . "Edit")
-                                       (select . t)))
-
-  (add-to-list 'display-buffer-alist '((derived-mode . prog-mode)
-                                       (display-buffer-in-tab)
-                                       (tab-name . "Porg") (tab-group . "Prog")
-                                       (select . t))))
-
-(use-package tabspaces
-  :hook (tab-bar-mode . tabspaces-mode)
-  :config
-  (setq tabspaces-session-file
-        (expand-file-name "cache/tabsession.el" user-emacs-directory))
-  (setq tabspaces-use-filtered-buffers-as-default t))
-
-(with-eval-after-load 'evil
-  (evil-define-key 'normal 'global
-    "gs" 'tab-switch)
-  (evil-define-key 'motion org-agenda-mode-map
-    "gs" 'tab-switch))
 
 (use-package menu-bar
   :general (my/space-leader-def
@@ -240,12 +177,6 @@
   :bind ("C-c d" . image-dired)
   :config
   (setq image-dired-dir (expand-file-name "cache/image-dired" user-emacs-directory)))
-
-(use-package consult-dir
-  :bind (("C-x C-d" . consult-dir)
-         (:map minibuffer-mode-map
-               ("C-x C-d" . consult-dir)
-               ("C-x C-j" . consult-dir-jump-file))))
 
 (use-package frame
   :hook (after-init . window-divider-mode)

@@ -1,9 +1,6 @@
 (use-package gc-buffers
   :hook (on-first-buffer . gc-buffers-mode))
 
-(use-package ace-window
-  :bind ("C-x o" . ace-window))
-
 (use-package expand-region
   :commands er/expand-region)
 

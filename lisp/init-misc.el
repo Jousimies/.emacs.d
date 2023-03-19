@@ -322,5 +322,12 @@ This command can be called when in a file buffer or in `dired'."
   :config
   (org-ai-install-yasnippets))
 
+(use-package which-key
+  :hook (on-first-input . which-key-mode)
+  :config
+  (setq which-key-show-early-on-C-h t)
+  (setq which-key-idle-delay 10000)
+  (setq which-key-idle-secondary-delay 0.05))
+
 (provide 'init-misc)
 ;;; init-misc.el ends here.
