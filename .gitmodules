@@ -421,9 +421,6 @@
 [submodule "packages/sketchviz"]
 	path = packages/sketchviz
 	url = https://github.com/gpotter2/sketchviz.git
-[submodule "packages/denote-git"]
-	path = packages/denote-git
-	url = https://github.com/protesilaos/denote.git
 [submodule "packages/page-break-lines"]
 	path = packages/page-break-lines
 	url = https://github.com/purcell/page-break-lines.git
@@ -499,3 +496,9 @@
 [submodule "packages/vertico"]
 	path = packages/vertico
 	url = https://github.com/minad/vertico.git
+[submodule "packages/denote"]
+	path = packages/denote
+	url = https://github.com/protesilaos/denote.git
+[submodule "packages/meow"]
+	path = packages/meow
+	url = https://github.com/meow-edit/meow.git

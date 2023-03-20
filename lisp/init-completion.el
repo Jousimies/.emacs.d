@@ -41,6 +41,14 @@
   :bind (:map vertico-map
         ("C-u" . vertico-directory-up)))
 
+;; (use-package vertico-multiform
+;;   :after consult
+;;   :config
+;;   (vertico-multiform-mode)
+;;   (setq vertico-multiform-commands
+;;         '((consult-notes (vertico-sort-function . vertico-sort-alpha))))
+;;   (setq consult-notes-denote-display-id nil))
+
 (use-package marginalia
   :hook ((minibuffer-setup . marginalia-mode)))
 

@@ -8,7 +8,7 @@
 (defun my/emacs-config ()
   "My literate Emacs configuration."
   (interactive)
-  (find-file (expand-file-name "emacs.org" user-emacs-directory)))
+  (find-file (expand-file-name "emacs_evil.org" user-emacs-directory)))
 
 (my/space-leader-def
   ".i" '(my/emacs-config :wk "Configuration"))

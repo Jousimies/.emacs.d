@@ -132,12 +132,16 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   (my/denote-subdirectory "outline"))
 
 ;;;###autoload
+(defun my/denote-reference-heading ()
+  (interactive)
+  (goto-char (point-max))
+  (insert "\n* References\n"))
+;;;###autoload
 (defun my/denote-signature-from-filename ()
-    "Get signature of buffer file name between '==' and '--'."
-    (interactive)
-    (let* ((title (cadr (split-string (buffer-file-name) "==")))
-           (signature (car (split-string title "--"))))
-      (kill-new signature)))
+  (interactive)
+  (let* ((signature (denote-retrieve-filename-signature (buffer-file-name))))
+    (if signature
+        (kill-new signature))))
 
 (advice-add 'denote-signature :before #'my/denote-signature-from-filename)
 

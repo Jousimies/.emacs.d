@@ -118,7 +118,6 @@
                                     (require 'init-bib)
                                     (require 'init-gtd)
                                     (require 'init-finance)
-
                                     (require 'init-reader)
                                     (require 'init-elfeed)
                                     (require 'init-mail)
