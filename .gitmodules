@@ -109,9 +109,6 @@
 [submodule "packages/ctrlf"]
 	path = packages/ctrlf
 	url = https://github.com/radian-software/ctrlf.git
-[submodule "packages/vertico"]
-	path = packages/vertico
-	url = https://github.com/minad/vertico.git
 [submodule "packages/corfu"]
 	path = packages/corfu
 	url = https://github.com/minad/corfu.git
@@ -499,3 +496,6 @@
 [submodule "packages/auctex"]
 	path = packages/auctex
 	url = https://git.savannah.gnu.org/git/auctex.git
+[submodule "packages/vertico"]
+	path = packages/vertico
+	url = https://github.com/minad/vertico.git

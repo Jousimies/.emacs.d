@@ -45,7 +45,7 @@
                     denote-keywords-prompt
                     denote-rename-file
                     denote-link-or-create)
-  :hook (dired-mode . denote-dired-mode)
+  :hook (dired-mode . denote-dired-mode-in-directories)
   :preface
   (cl-defun jf/denote-capture-reference (&key
                                          title
@@ -76,7 +76,12 @@ TODO: Would it make sense to prompt for the domain?
            (title (cadr link-title-pair)))
       (jf/denote-capture-reference :url url :title title)))
   :config
-  (setq denote-directory (expand-file-name "denote" my-galaxy)))
+  (setq denote-directory (expand-file-name "denote" my-galaxy))
+  (setq denote-dired-directories (list denote-directory
+                                       (thread-last denote-directory (expand-file-name "books"))
+                                       (thread-last denote-directory (expand-file-name "outline"))
+                                       (thread-last denote-directory (expand-file-name "literature"))
+                                       (thread-last denote-directory (expand-file-name "term")))))
 
 (defvar prot-dired--limit-hist '()
   "Minibuffer history for `prot-dired-limit-regexp'.")
@@ -126,6 +131,16 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   (interactive)
   (my/denote-subdirectory "outline"))
 
+;;;###autoload
+(defun my/denote-signature-from-filename ()
+    "Get signature of buffer file name between '==' and '--'."
+    (interactive)
+    (let* ((title (cadr (split-string (buffer-file-name) "==")))
+           (signature (car (split-string title "--"))))
+      (kill-new signature)))
+
+(advice-add 'denote-signature :before #'my/denote-signature-from-filename)
+
 (with-eval-after-load 'evil
   (evil-define-key '(normal visual) 'global
     "gndl" 'denote-org-dblock-insert-links
@@ -133,6 +148,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
     "gns" 'denote-signature
     "gne" 'jf/menu--org-capture-elfeed-show
     "gnt" 'my/denote-term
+    "gni" 'my/denote-reference-heading
     "gnb" 'my/denote-book
     "gno" 'my/denote-outline
     "gnc" 'jf/menu--org-capture-safari
@@ -180,6 +196,19 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
              "to" '(org-transclusion-open-source :wk "Open source")
              "te" '(org-transclusion-live-sync-start :wk "Edit live"))
   :config
+  (defun denote-org-transclusion-add (link plist)
+    (when (string= "denote" (org-element-property :type link))
+      (let* ((denote-id (org-element-property :path link))
+             (file-path (denote-get-path-by-id denote-id))
+             (new-link (with-temp-buffer
+                         (insert "file:")
+                         (insert file-path)
+                         (beginning-of-buffer)
+                         (org-element-link-parser))))
+        (org-transclusion-add-org-file new-link plist))))
+  (cl-pushnew 'denote-org-transclusion-add
+              org-transclusion-add-functions)
+
   (face-spec-set 'org-transclusion-fringe
                  '((((background light))
                     :foreground "black")

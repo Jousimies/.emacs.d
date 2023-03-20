@@ -43,6 +43,8 @@
                 ("TODO" ("WAIT") ("CNCL") ("SOMEDAY"))
                 ("NEXT" ("WAIT") ("CNCL") ("SOMEDAY"))
                 ("DONE" ("WAIT") ("CNCL") ("SOMEDAY")))))
+  :general (my/space-leader-def
+             "pi" '(org-toggle-inline-images :wk "Images"))
   :bind (:map org-mode-map
               ("C-c l" . org-store-link)))
 

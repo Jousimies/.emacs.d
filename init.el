@@ -84,7 +84,7 @@
 (require 'init-font)
 (require 'init-theme)
 (require 'init-recentf)
-;; (require 'init-dashboard)
+(require 'init-dashboard)
 (add-hook 'after-init-hook #'(lambda ()
                                (require 'init-ui)
                                (require 'init-general)

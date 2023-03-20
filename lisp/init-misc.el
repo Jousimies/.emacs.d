@@ -313,6 +313,16 @@ This command can be called when in a file buffer or in `dired'."
 
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
 
+(defun add-stars-to-region (beg end)
+  "Add stars to the beginning and end of the region."
+  (interactive "r")
+  (save-excursion
+    (goto-char end)
+    (insert "* ")
+    (goto-char beg)
+    (insert " *")))
+(global-set-key (kbd "M-b") #'add-stars-to-region)
+
 (use-package mind-wave
   :mode ("chat" . mind-wave-chat-mode))
 

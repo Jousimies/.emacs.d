@@ -35,20 +35,18 @@
          (org-mode . org-appear-mode)))
 
 (use-package math-preview
-  :commands (math-preview-all math-preview-at-point)
+  :general (my/space-leader-def
+             "p" '(:ignore t :wk "Preview")
+             "pa" '(math-preview-all :wk "All")
+             "pA" '(math-preview-clear-all :wk "Clear All")
+             "pp" '(math-preview-at-point :wk "Point")
+             "pP" '(math-preview-clear-at-point :wk "Clear Point")
+             "pr" '(math-preview-region :wk "Region")
+             "pR" '(math-preview-clear-region :wk "Clear Region"))
   :config
   (setq math-preview-scale 1.1)
   (setq math-preview-raise 0.3)
   (setq math-preview-margin '(1 . 0)))
-
-(my/space-leader-def
-  "p" '(:ignore t :wk "Preview")
-  "pa" '(math-preview-all :wk "All")
-  "pA" '(math-preview-clear-all :wk "Clear All")
-  "pp" '(math-preview-at-point :wk "Point")
-  "pP" '(math-preview-clear-at-point :wk "Clear Point")
-  "pr" '(math-preview-region :wk "Region")
-  "pR" '(math-preview-clear-region :wk "Clear Region"))
 
 (use-package org-download
   :commands org-download-enable
