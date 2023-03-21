@@ -103,5 +103,10 @@
 
   (setq diary-file (expand-file-name "diary/diary.org" my-galaxy)))
 
+(use-package alert
+  :commands alert
+  :config
+  (setq alert-default-style 'osx-notifier))
+
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.

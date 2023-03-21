@@ -23,10 +23,19 @@
                                 :engines (list
                                           (gts-bing-engine)
                                           (gts-google-engine :parser (gts-google-summary-parser)))
-                                :render (gts-buffer-render))))
+                                :render (gts-buffer-render)))
+  (defun go-translate-save-kill-ring ()
+    (interactive)
+    (gts-translate (gts-translator
+                    :picker (gts-noprompt-picker)
+                    :engines (gts-google-engine
+                              :parser (gts-google-summary-parser))
+                    :render (gts-kill-ring-render)))))
+
 (with-eval-after-load 'evil
   (evil-define-key '(normal visual) 'global
-    "gll" 'gts-do-translate))
+    "gll" 'gts-do-translate
+    "glg" 'go-translate-save-kill-ring))
 
 (use-package lingva
   :commands lingva-translate
@@ -38,7 +47,7 @@
     "glL" 'lingva-translate))
 
 (use-package sdcv
-  :commands sdcv-search-pointer sdcv-search-input+
+  :commands sdcv-search-pointer sdcv-search-pointer+
   :config
   (face-spec-set 'sdcv-tooltip-face
                  '((((background light))
@@ -75,8 +84,8 @@
 
 (with-eval-after-load 'evil-collection
     (evil-define-key '(normal visual) 'global
-      "glp" 'sdcv-search-pointer
-      "gli" 'sdcv-search-input+)
+      "glP" 'sdcv-search-pointer
+      "glp" 'sdcv-search-pointer+)
 
   (evil-collection-define-key 'normal 'sdcv-mode-map
     "q" 'quit-window))

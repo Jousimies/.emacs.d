@@ -109,6 +109,7 @@ If SKIP-HEADERS is set, do not show include message headers."
 
 (with-eval-after-load 'mu4e
   (setq mu4e-use-fancy-chars nil))
+;; (setq display-time-mail-icon "")
 
 (use-package mu4e-alert
   :after mu4e

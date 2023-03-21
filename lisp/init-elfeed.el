@@ -14,14 +14,14 @@
 
 (use-package elfeed-org
   :commands elfeed-org
+  :general (my/space-leader-def
+             "fe" '(my/rss-source :wk "Elfeed file"))
   :config
   (setq rmh-elfeed-org-files `(,(concat my-galaxy "/rss/elfeed.org")))
   (defun my/rss-source ()
     "Open elfeed config file."
     (interactive)
-    (find-file (car rmh-elfeed-org-files)))
-  (my/space-leader-def
-    "fe" '(my/rss-source :wk "Elfeed file")))
+    (find-file (car rmh-elfeed-org-files))))
 
 (use-package elfeed-summary
   :general (my/space-leader-def

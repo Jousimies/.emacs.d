@@ -13,14 +13,6 @@
   (cl-pushnew 'epkg-marginalia-annotate-package
               (alist-get 'package marginalia-annotator-registry)))
 
-(use-package gcmh
-  :hook ((after-init . gcmh-mode)
-         (focus-out . garbage-collect))
-  :config
-  (setq gcmh-idle-delay 'auto)
-  (setq gcmh-auto-idle-delay-factor 10)
-  (setq gcmh-high-cons-threshold #x1000000))
-
 (use-package grab-mac-link
   :commands grab-mac-link-dwim grab-mac-link-safari-1
   :preface
@@ -30,7 +22,8 @@
   :bind ("<f8>" . my/link-grab))
 
 (use-package file-info
-  :commands file-info-show
+  :general (my/space-leader-def
+             "mi" '(file-info-show :wk "File info"))
   :config
   (setq hydra-hint-display-type 'posframe)
   (setq hydra-posframe-show-params `(:poshandler posframe-poshandler-frame-center
@@ -38,9 +31,6 @@
                                                  :internal-border-color "#61AFEF"
                                                  :left-fringe 16
                                                  :right-fringe 16)))
-
-(my/space-leader-def
-  "mi" '(file-info-show :wk "File info"))
 
 (use-package disk-usage
   :general (my/space-leader-def
@@ -313,31 +303,52 @@ This command can be called when in a file buffer or in `dired'."
 
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
 
-(defun add-stars-to-region (beg end)
-  "Add stars to the beginning and end of the region."
-  (interactive "r")
-  (save-excursion
-    (goto-char end)
-    (insert "* ")
-    (goto-char beg)
-    (insert " *")))
-(global-set-key (kbd "M-b") #'add-stars-to-region)
-
-(use-package mind-wave
-  :mode ("chat" . mind-wave-chat-mode))
-
-(use-package org-ai
-  :commands (org-ai-mode)
-  :hook (org-mode . org-ai-mode)
+(use-package hydra
+  :bind ("s-b" . my/hydra-org-symbol/body)
   :config
-  (org-ai-install-yasnippets))
+  (defun add-symbol-to-region (beg end symbol)
+    (save-excursion
+      (goto-char end)
+      (insert (concat symbol " "))
+      (goto-char beg)
+      (insert (concat " " symbol))))
+
+  (defun add-stars-to-region (beg end)
+    (interactive "r")
+    (add-symbol-to-region beg end "*"))
+
+  (defun add-equal-to-region (beg end)
+    (interactive "r")
+    (add-symbol-to-region beg end "="))
+
+  (defun add-underline-to-region (beg end)
+    (interactive "r")
+    (add-symbol-to-region beg end "_"))
+
+  (defun add-italic-to-region (beg end)
+    (interactive "r")
+    (add-symbol-to-region beg end "/"))
+
+  (defun add-plus-to-region (beg end)
+    (interactive "r")
+    (add-symbol-to-region beg end "+"))
+
+  (defhydra my/hydra-org-symbol (:color blue)
+    "
+  Add symbol to chinese char: "
+    ("*" add-stars-to-region)
+    ("=" add-equal-to-region)
+    ("_" add-underline-to-region)
+    ("/" add-italic-to-region)
+    ("+" add-plus-to-region)))
 
 (use-package which-key
-  :hook (on-first-input . which-key-mode)
+  :after evil
   :config
   (setq which-key-show-early-on-C-h t)
   (setq which-key-idle-delay 10000)
-  (setq which-key-idle-secondary-delay 0.05))
+  (setq which-key-idle-secondary-delay 0.05)
+  (which-key-mode))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.

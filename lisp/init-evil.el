@@ -1,3 +1,18 @@
+(use-package general
+  :config
+  (general-create-definer my/space-leader-def
+    :prefix "SPC"
+    :non-normal-prefix "M-SPC"
+    :states '(normal visual insert emacs)))
+
+(defun my/emacs-config ()
+  "My literate Emacs configuration."
+  (interactive)
+  (find-file (expand-file-name "emacs.org" user-emacs-directory)))
+
+(my/space-leader-def
+  ".i" '(my/emacs-config :wk "Configuration"))
+
 (use-package evil
     :bind (:map evil-motion-state-map
                 ("SPC" . nil)
@@ -13,7 +28,7 @@
     (setq evil-respect-visual-line-mode t)
     :config
     (evil-mode)
-    (setq evil-undo-system 'undo-fu)
+    (setq evil-undo-system 'undo-redo)
     (setq evil-visual-state-cursor 'hollow)
 
     (setq evil-normal-state-tag " 𝐍 ")
@@ -32,33 +47,6 @@
     (evil-define-key '(normal motion visual) 'global
       "ge" nil
       "gn" nil))
-
-(use-package evil-collection
-  :after evil
-  :config
-  (setq evil-collection-key-blacklist '("SPC" ","))
-  (setq forge-add-default-bindings nil)
-  (evil-collection-init))
-
-(use-package evil-commentary
-  :after evil
-  :config
-  (evil-commentary-mode))
-
-(use-package evil-surround
-  :after evil
-  :config
-  (global-evil-surround-mode))
-
-(use-package evil-embrace
-  :hook (org-mode . embrace-org-mode-hook)
-  :config
-  (evil-embrace-enable-evil-surround-integration))
-
-(use-package evil-easymotion
-  :after evil
-  :config
-  (evilem-default-keybindings "SPC"))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here.

@@ -52,62 +52,6 @@
 
 (add-hook 'post-command-hook 'im-change-cursor-color)
 
-(set-frame-parameter nil 'alpha '(90 . 100))
-
-(defun ct/frame-center (&optional frame)
-  "Center a frame on the screen."
-  (interactive)
-  (let* ((frame (or (and (boundp 'frame) frame) (selected-frame)))
-         (center (ct/frame-get-center frame)))
-    (apply 'set-frame-position (flatten-list (list frame center)))))
-
-(defun ct/screen-usable-height (&optional display)
-  "Return the usable height of the display.
-
-Some window-systems have portions of the screen which Emacs
-cannot address. This function should return the height of the
-screen, minus anything which is not usable."
-  (- (display-pixel-height display)
-     (cond ((eq window-system 'ns) 22) ;; macOS Menu Bar offset
-           (t 0))))
-
-(defun ct/screen-usable-width (&optional display)
-  "Return the usable width of the display."
-  (display-pixel-width display))
-
-(defun ct/center-box (w h cw ch)
-  "Center a box inside another box.
-
-Returns a list of `(TOP LEFT)' representing the centered position
-of the box `(w h)' inside the box `(cw ch)'."
-  (list (/ (- cw w) 2) (/ (- ch h) 2)))
-
-(defun ct/frame-get-center (frame)
-  "Return the center position of FRAME on it's display."
-  (let ((disp (frame-parameter frame 'display)))
-    (ct/center-box (frame-pixel-width frame) (frame-pixel-height frame)
-                   (ct/screen-usable-width disp) (ct/screen-usable-height disp))))
-
-(defun ct/frame-center (&optional frame)
-  "Center a frame on the screen."
-  (interactive)
-  (apply 'set-frame-position
-         (let* ((frame (or (and (boundp 'frame) frame) (selected-frame)))
-                (center (ct/frame-get-center frame)))
-           ;; Flatten the X/Y list in `center` into a single list with `frame`
-           ;; so this list can be applied as parameters to `set-frame-position`:
-           `(,frame ,@center))))
-
-(add-to-list 'after-make-frame-functions #'ct/frame-center 0)
-
-(defun my/make-or-delete-frame ()
-  (interactive)
-  (if (= (frame-width) 80) ;; 80 is the default frame width.
-      (delete-frame)
-    (make-frame)))
-
-(global-set-key (kbd "s-n") 'my/make-or-delete-frame)
-
 (defun my/mode-line-padding ()
   (let* ((r-length (string-width (format-mode-line global-mode-string))))
     (propertize " "
@@ -116,9 +60,9 @@ of the box `(w h)' inside the box `(cw ch)'."
 (add-to-list 'global-mode-string
              '(:eval (propertize
                       (concat
-                       "𝚻𝚨𝚩 "
-                       (number-to-string (tab-bar--current-tab-index))
-                       ": "
+                       "𝚻𝚨𝚩: "
+                       ;; (number-to-string (tab-bar--current-tab-index))
+                       ;; ": "
                        (alist-get 'group (tab-bar--current-tab))) 'face 'font-lock-constant-face)))
 
 (setq mode-line-end-spaces
@@ -135,6 +79,7 @@ of the box `(w h)' inside the box `(cw ch)'."
                 (:propertize ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote))
                 mode-line-frame-identification
                 mode-line-buffer-identification
+                "  "
                 mode-line-position
                 ;; (:eval (propertize " %I " 'face 'font-lock-constant-face))
                 "  "
@@ -147,7 +92,9 @@ of the box `(w h)' inside the box `(cw ch)'."
                 mode-line-end-spaces))
 
 (use-package mode-line-bell
-  :hook (on-first-buffer . mode-line-bell-mode))
+  :defer 1
+  :config
+  (mode-line-bell-mode))
 
 (use-package rainbow-mode
   :hook (prog-mode . rainbow-mode))
@@ -170,7 +117,14 @@ of the box `(w h)' inside the box `(cw ch)'."
   :hook (text-mode . global-color-identifiers-mode))
 
 (use-package page-break-lines
-  :hook (org-mode . global-page-break-lines-mode))
+  :hook (org-mode . page-break-lines-mode))
+
+(use-package prog-mode
+  :hook ((prog-mode . prettify-symbols-mode)
+         (LaTeX-mode . prettify-symbols-mode))
+  :config
+  (setq prettify-symbols-alist '(("lambda" . ?λ)
+                                 ("function" . ?𝑓))))
 
 (provide 'init-ui)
 ;;; init-ui.el ends here.

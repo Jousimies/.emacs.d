@@ -49,8 +49,13 @@
   (setq math-preview-margin '(1 . 0)))
 
 (use-package org-download
-  :commands org-download-enable
   :hook (org-mode . org-download-enable)
+  :general (my/space-leader-def
+             "od" '(:ignore t :wk "Download")
+             "odc" '(org-download-clipboard :wk "Download Clipboard")
+             "ody" '(org-download-yank :wk "Download Yank")
+             "odr" '(org-download-rename-last-file :wk "Rename last file")
+             "odR" '(org-download-rename-at-point :wk "Rename point"))
   :init
   (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
   (setq org-download-heading-lvl nil)
@@ -72,23 +77,16 @@
       (while (re-search-forward (expand-file-name "~") nil t)
         (replace-match "~" t nil))))
   (advice-add 'org-download-clipboard :after 'my/auto-change-file-paths))
-(my/space-leader-def
-  "od" '(:ignore t :wk "Download")
-  "odc" '(org-download-clipboard :wk "Download Clipboard")
-  "ody" '(org-download-yank :wk "Download Yank")
-  "odr" '(org-download-rename-last-file :wk "Rename last file")
-  "odR" '(org-download-rename-at-point :wk "Rename point"))
 
 (use-package plantuml
-  :commands (plantuml-org-to-mindmap-open plantuml-org-to-wbs-open)
+  :general (my/space-leader-def
+             "pm" '(plantuml-org-to-mindmap-open :wk "Mindmap")
+             "ps" '(plantuml-org-to-wbs-open :wk "Work Breakdown Structure"))
   :config
   (setq plantuml-jar-path
         (concat (string-trim
                  (shell-command-to-string "readlink -f $(brew --prefix plantuml)"))
                 "/libexec/plantuml.jar")))
-(my/space-leader-def
-  "pm" '(plantuml-org-to-mindmap-open :wk "Mindmap")
-  "ps" '(plantuml-org-to-wbs-open :wk "Work Breakdown Structure"))
 
 (defun org-export-docx ()
   "Convert org to docx."

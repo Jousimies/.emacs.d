@@ -46,7 +46,49 @@
                     denote-rename-file
                     denote-link-or-create)
   :hook (dired-mode . denote-dired-mode-in-directories)
-  :preface
+  :config
+  (setq denote-directory (expand-file-name "denote" my-galaxy))
+  (setq denote-dired-directories (list denote-directory
+                                       (thread-last denote-directory (expand-file-name "books"))
+                                       (thread-last denote-directory (expand-file-name "outline"))
+                                       (thread-last denote-directory (expand-file-name "literature"))
+                                       (thread-last denote-directory (expand-file-name "term")))))
+(use-package denote-org-dblock
+  :after denote org)
+
+(defvar prot-dired--limit-hist '()
+  "Minibuffer history for `prot-dired-limit-regexp'.")
+
+(defun my/dired-denote-signature-get ()
+  (let* ((file (dired-get-filename))
+         (signature (denote-retrieve-filename-signature file)))
+    (concat "==" signature )))
+
+(defun prot-dired-limit-regexp (regexp omit)
+  "Limit Dired to keep files matching REGEXP, default search with Signature.
+
+With optional OMIT argument as a prefix (\\[universal-argument]),
+exclude files matching REGEXP.
+
+Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
+  (interactive
+   (list
+    (read-regexp
+     (concat "Files "
+             (when current-prefix-arg
+               (propertize "NOT " 'face 'warning))
+             "matching PATTERN" (format " (default: %s)" (my/dired-denote-signature-get)) ": ")
+     (my/dired-denote-signature-get)
+     nil)
+    current-prefix-arg))
+  (dired-mark-files-regexp regexp)
+  (unless omit (dired-toggle-marks))
+  (dired-do-kill-lines))
+
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "C-;") 'prot-dired-limit-regexp))
+
+(with-eval-after-load 'denote
   (cl-defun jf/denote-capture-reference (&key
                                          title
                                          url
@@ -74,40 +116,10 @@ TODO: Would it make sense to prompt for the domain?
     (let* ((link-title-pair (grab-mac-link-safari-1))
            (url (car link-title-pair))
            (title (cadr link-title-pair)))
-      (jf/denote-capture-reference :url url :title title)))
-  :config
-  (setq denote-directory (expand-file-name "denote" my-galaxy))
-  (setq denote-dired-directories (list denote-directory
-                                       (thread-last denote-directory (expand-file-name "books"))
-                                       (thread-last denote-directory (expand-file-name "outline"))
-                                       (thread-last denote-directory (expand-file-name "literature"))
-                                       (thread-last denote-directory (expand-file-name "term")))))
-
-(defvar prot-dired--limit-hist '()
-  "Minibuffer history for `prot-dired-limit-regexp'.")
-;;;###autoload
-(defun prot-dired-limit-regexp (regexp omit)
-  "Limit Dired to keep files matching REGEXP.
-
-With optional OMIT argument as a prefix (\\[universal-argument]),
-exclude files matching REGEXP.
-
-Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
-  (interactive
-   (list
-    (read-regexp
-     (concat "Files "
-             (when current-prefix-arg
-               (propertize "NOT " 'face 'warning))
-             "matching PATTERN: ")
-     nil 'prot-dired--limit-hist)
-    current-prefix-arg))
-  (dired-mark-files-regexp regexp)
-  (unless omit (dired-toggle-marks))
-  (dired-do-kill-lines))
-
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-;") 'prot-dired-limit-regexp))
+      (jf/denote-capture-reference :url url :title title)
+      (my/denote-reference-heading)
+      (my/link-grab)
+      (forward-line -3))))
 
 (cl-defun my/denote-subdirectory (subdirectory)
   (denote
@@ -136,10 +148,13 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   (interactive)
   (goto-char (point-max))
   (insert "\n* References\n"))
+
 ;;;###autoload
 (defun my/denote-signature-from-filename ()
   (interactive)
-  (let* ((signature (denote-retrieve-filename-signature (buffer-file-name))))
+  (let* ((mode (buffer-local-value 'major-mode (current-buffer)))
+         (file (if (eq mode 'org-mode) (buffer-file-name) (dired-get-filename)))
+         (signature (denote-retrieve-filename-signature file)))
     (if signature
         (kill-new signature))))
 
@@ -155,13 +170,26 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
     "gni" 'my/denote-reference-heading
     "gnb" 'my/denote-book
     "gno" 'my/denote-outline
-    "gnc" 'jf/menu--org-capture-safari
+    "gng" 'jf/menu--org-capture-safari
     "gnr" 'denote-rename-file-using-front-matter
     "gnR" 'denote-rename-file
     "gnl" 'denote-link-or-create))
 
-(use-package denote-org-dblock
-  :after denote org)
+(use-package dired-x
+  :bind (:map dired-mode-map
+              ("C-c v" . my/denote-signature-buffer))
+  :config
+  (defun my/denote-signature-buffer ()
+    (interactive)
+    (switch-to-buffer "*denote-signatures*")
+    (read-only-mode -1)
+    (erase-buffer)
+    (insert
+     (shell-command-to-string
+      "ls -l | awk /==/ | sed  's/--/=@/3' | sort -t '=' -Vk 3,3 | sed 's/=@/--/' "))
+    (dired-virtual denote-directory)
+    (denote-dired-mode)
+    (auto-revert-mode -1)))
 
 (use-package consult-notes
   :commands consult-notes
@@ -226,5 +254,10 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
                     :foreground "white"))
                  'face-override-spec))
 
-(provide 'init-note-taking)
-;;; init-note-taking.el ends here.
+(use-package org-noter
+  :after org pdf-tools
+  :config
+  (setq org-noter-notes-search-path `(,(expand-file-name "references" my-galaxy))))
+
+(provide 'init-note)
+;;; init-note.el ends here.

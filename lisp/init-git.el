@@ -2,7 +2,8 @@
   :commands (magit magit-status magit-submodule-add)
   :bind ("C-x g" . magit)
   :config
- (magit-add-section-hook 'magit-status-sections-hook
+  (setq magit-git-executable "/usr/bin/git")
+  (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-modules
                           'magit-insert-unpulled-from-upstream)
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-overview)
@@ -22,11 +23,13 @@
   :config
   (setq forge-database-file (expand-file-name "cache/forge-database.sqlite" user-emacs-directory)))
 
-(use-package browse-at-remote
-  :commands browse-at-remote)
+(use-package git-timemachine
+  :general (my/space-leader-def
+             "mt" '(git-timemachine :wk "Timemachine")))
 
-(my/space-leader-def
-    "or" '(browse-at-remote :wk "Open remote"))
+(use-package browse-at-remote
+  :general (my/space-leader-def
+             "or" '(browse-at-remote :wk "Open remote")))
 
 (provide 'init-git)
 ;;; init-git.el ends here.

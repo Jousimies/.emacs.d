@@ -4,7 +4,12 @@
   (setq org-cite-global-bibliography `(,(concat my-galaxy "/bibtexs/References.bib"))))
 
 (use-package citar
-  :commands citar-open citar-open-entry citar-open-files citar-open-notes citar-open-links
+  :general (my/space-leader-def
+             "re" '(citar-open-entry :wk "Open entry")
+             "rp" '(citar-open-files :wk "Open files")
+             "ri" '(citar-insert-citation :wk "Insert citation")
+             "rn" '(citar-open-notes :wk "Open/Create note")
+             "rl" '(citar-open-links :wk "Open links"))
   :config
   (setq citar-bibliography `(,(concat my-galaxy "/bibtexs/References.bib")))
   (setq citar-notes-paths `(,(expand-file-name "references" my-galaxy)))
@@ -30,34 +35,29 @@
   (setq org-cite-insert-processor 'citar)
   (setq org-cite-follow-processor 'citar)
   (setq org-cite-activate-processor 'citar)
-
   (with-eval-after-load 'citar-org
     (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point)))
 
 (use-package citar-embark
-  :commands citar-embark-mode
   :hook (org-mode . citar-embark-mode))
 
-(my/space-leader-def
-  "re" '(citar-open-entry :wk "Open entry")
-  "rp" '(citar-open-files :wk "Open files")
-  "ri" '(citar-insert-citation :wk "Insert citation")
-  "rn" '(citar-open-notes :wk "Open/Create note")
-  "rl" '(citar-open-links :wk "Open links"))
-
 (use-package citar-denote
-  :after citar
-  :config
-  (defun my/citar-open-notes (citekeys)
-    "Open notes associated with the CITEKEYS."
-    (interactive (list (citar-select-refs :filter (citar-denote-has-notes))))
-    (pcase (let ((embark-default-action-overrides
-                  (cons (cons t #'citar--open-resource)
-                        (bound-and-true-p embark-default-action-overrides))))
-             (citar--select-resource citekeys :notes t :create-notes t))
-      (`(note . ,note) (citar-open-note note))
-      (`(create-note . ,citekey) (citar-create-note citekey))))
-  (advice-add 'citar-denote-open-note :override 'my/citar-open-notes))
+  :commands (citar-denote-add-citekey
+             citar-denote-remove-citekey
+             citar-denote-dwim
+             citar-denote-open-note
+             citar-denote-find-reference
+             citar-denote-find-citation
+             citar-denote-cite-nocite))
+
+(with-eval-after-load 'evil
+  (evil-define-key '(normal visual motion) 'global
+    "gnca" 'citar-denote-add-citekey
+    "gncx" 'citar-denote-remove-citekey
+    "gnco" 'citar-denote-open-note
+    "gncd" 'citar-denote-dwim
+    "gncr" 'citar-denote-find-reference
+    "gncf" 'citar-denote-find-citation))
 
 (use-package bibtex-completion
   :after org-roam-bibtex
@@ -80,7 +80,7 @@
   (setq ebib-preload-bib-files org-cite-global-bibliography)
 
   (setq ebib-keywords (concat my-galaxy "/bibtexs/keywords.txt"))
-  (setq ebib-notes-directory (concat my-galaxy "/ref"))
+  (setq ebib-notes-directory (concat my-galaxy "/references"))
   (setq ebib-filters-default-file (concat my-galaxy "/bibtexs/ebib-filters"))
   (setq ebib-reading-list-file (concat my-galaxy "/bibtexs/reading_list.org"))
 
@@ -92,24 +92,20 @@
   (setq ebib-file-associations '(("ps" . "gv"))))
 
 (use-package scihub
-  :commands scihub
+  :general (my/space-leader-def
+             "rs" '(scihub :wk "scihub"))
   :config
   (setq scihub-download-directory "~/Downloads/")
   (setq scihub-open-after-download t)
   (setq scihub-fetch-domain 'scihub-fetch-domains-lovescihub))
 
 (use-package biblio
-  :commands biblio-lookup
-  :general
-  (:states 'normal
-           "SPC rd" 'my/biblio-lookup-crossref :no-autoload t)
-  :preface
+  :general (my/space-leader-def
+            "rc" '(my/biblio-lookup-crossref :wk "Get bib from crossfer"))
+  :config
   (defun my/biblio-lookup-crossref ()
     (interactive)
     (biblio-lookup 'biblio-crossref-backend)))
-
-(my/space-leader-def
-  "rd" '(my/biblio-lookup-crossref :wk "Get bib from crossfer"))
 
 (provide 'init-bib)
 ;;; init-bib.el ends here.

@@ -6,10 +6,12 @@
                       ,(expand-file-name "template/tempel" my-galaxy))))
 
 (use-package yasnippet
-  :hook (on-first-file . yas-global-mode)
+  :defer 1
   :config
-  (use-package yasnippet-snippets
-    :after yasnippet))
+  (yas-global-mode))
+
+(use-package yasnippet-snippets
+  :after yasnippet)
 
 (provide 'init-template)
 ;;; init-template.el ends here.

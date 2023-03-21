@@ -117,12 +117,10 @@ org-mode
 (attr_code
  "#+ATTR_LATEX: :options frame=lines, fontsize=\small, baselinestretch=1, linenos")
 
-(fig "#+NAME: fig:" p n>
-     "#+CAPTION:" p n>
+(fig "#+CAPTION:" p n>
      "#+ATTR_ORG: :width 500px" n>
      "#+ATTR_LaTeX: :width 12cm :placement [!htpb]" n>
-     "#+ATTR_HTML: :width 600px" n>
-     "[[~/Nextcloud/L.Personal.Galaxy/roam/pic/" p "]]")
+     "#+ATTR_HTML: :width 600px" n>)
 
 (fig2 "#+begin_latex" n>
       "\\begin{figure}[htbp]" n>

@@ -1,12 +1,3 @@
-(setq read-buffer-completion-ignore-case t)
-(setq completion-ignore-case t)
-(setq minibuffer-prompt-properties
-      '(read-only t cursor-intangible t face minibuffer-prompt))
-
-(use-package simple
-  :config
-  (setq-default read-extended-command-predicate #'command-completion-default-include-p))
-
 (use-package minibuffer
   :config
   (setq completion-category-overrides '((file (styles basic partial-completion))))
@@ -22,19 +13,18 @@
 (setq tab-always-indent 'complete)
 
 (use-package orderless
-  :after vertico
   :config
   (setq completion-styles '(orderless partial-completion)))
 
 (use-package vertico
   :load-path "~/.emacs.d/packages/vertico"
   :demand t
+  :bind (:map vertico-map
+              ("C-j" . vertico-next)
+              ("C-k" . vertico-previous))
   :config
   (vertico-mode)
-  (setq vertico-cycle t)
-  :bind (:map vertico-map
-      ("C-j" . vertico-next)
-      ("C-k" . vertico-previous)))
+  (setq vertico-cycle t))
 
 (use-package vertico-directory
   :after vertico
@@ -53,7 +43,6 @@
   :hook ((minibuffer-setup . marginalia-mode)))
 
 (use-package embark
-  :commands embark-prefix-help-command
   :general (my/space-leader-def
              "oe" '(embark-open-externally :wk "Open externally"))
   :bind (("C-." . embark-act)
@@ -165,23 +154,6 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
   )
-
-(require 'prescient)
-(setq prescient-save-file (expand-file-name "cache/prescient-save.el" user-emacs-directory))
-(prescient-persist-mode)
-
-;; (require 'vertico-prescient)
-;; (setq vertico-prescient-completion-styles '(orderless prescient partial-completion))
-;; (vertico-prescient-mode)
-
-
-(use-package vertico-prescient
-  :hook (vertico-mode . vertico-prescient-mode)
-  :config
-  (setq vertico-prescient-completion-styles '(orderless prescient partial-completion)))
-
-(use-package corfu-prescient
-  :hook (corfu-mode . corfu-prescient-mode))
 
 (provide 'init-completion)
 ;;; init-git.el ends here.

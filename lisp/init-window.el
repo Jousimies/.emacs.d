@@ -1,18 +1,3 @@
-(use-package winner
-  :hook (on-first-buffer . winner-mode)
-  :config
-  (setq winner-dont-bind-my-keys t)
-  (setq winner-boring-buffers '("*Completions*"
-                                "*Compile-Log*"
-                                "*inferior-lisp*"
-                                "*Fuzzy Completions*"
-                                "*Apropos*"
-                                "*Help*"
-                                "*cvs*"
-                                "*Buffer List*"
-                                "*Ibuffer*"
-                                "*esh command on file*")))
-
 (use-package window
   :defer t
   :config
@@ -38,7 +23,8 @@
                                        (window-width . 0.5)
                                        (window-parameters . ((no-other-window . t)
                                                              (no-delete-other-windows . t)))))
-  (add-to-list 'display-buffer-alist '((derived-mode . text-mode)
+  (add-to-list 'display-buffer-alist '((or (derived-mode . org-mode)
+                                           (devived-mode . LaTeX-mode))
                                        (display-buffer-in-tab)
                                        (tab-name . "Edit") (tab-group . "Edit")
                                        (select . t)))
@@ -47,6 +33,20 @@
                                        (display-buffer-in-tab)
                                        (tab-name . "Porg") (tab-group . "Prog")
                                        (select . t))))
+(use-package ace-window
+  :bind ("C-x o" . ace-window))
+
+(use-package frame
+  :config
+  (face-spec-set 'window-divider
+                 '((((background light))
+                    :foreground "#000000")
+                   (t
+                    :foreground "#FFFFFF"))
+                 'face-override-spec)
+  (setq window-divider-default-bottom-width 1)
+  (setq window-divider-default-places 'bottom-only)
+  (window-divider-mode))
 
 (use-package ace-window
   :bind ("C-x o" . ace-window))
