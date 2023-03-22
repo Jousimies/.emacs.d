@@ -192,6 +192,7 @@
 
 (use-package org-clock
   :after org
+  :commands org-clocking-p
   :general (my/space-leader-def
              "oc" '(:ignore t :wk "Clock")
              "ocj" '(org-clock-goto :wk "Clock goto")
