@@ -23,7 +23,5 @@
       (setq dashboard-startup-banner (expand-file-name "src/banner.txt" user-emacs-directory))))
   (setq dashboard-set-navigator nil))
 
-(run-with-idle-timer 300 t #'dashboard-open)
-
 (provide 'init-dashboard)
 ;;; init-dashboard.el ends here.
