@@ -68,15 +68,13 @@
   :config
   (setq undo-fu-session-directory (expand-file-name "cache/undo-fu-session" user-emacs-directory))
 
-  (defun z/undo-fu-session--make-file-name (filename)
-         "Take the path FILENAME and return a name base on this. IDEA: subed.el"
-         (expand-file-name
-          (format
-           "undo-fu-session_%s"
-           (md5 (convert-standard-filename (expand-file-name filename))))
-          undo-fu-session-directory))
-
-  (advice-add 'undo-fu-session--make-file-name :override #'z/undo-fu-session--make-file-name)
+  (defun my/undo-fu-session--make-file-name (filename)
+    "Take the path FILENAME and return a name base on this."
+    (concat
+     (file-name-concat undo-fu-session-directory
+                       (md5 (convert-standard-filename (expand-file-name filename))))
+     (undo-fu-session--file-name-ext)))
+  (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name)
 
   (undo-fu-session-global-mode))
 
