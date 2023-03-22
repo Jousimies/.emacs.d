@@ -106,7 +106,7 @@
 (use-package alert
   :commands alert
   :config
-  (setq alert-default-style 'osx-notifier))
+  (setq alert-default-style 'notifier))
 
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.
