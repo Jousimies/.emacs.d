@@ -61,6 +61,25 @@
   (define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
   (define-key outline-minor-mode-map (kbd "S-<tab>") 'bicycle-cycle-global))
 
+(use-package undo-fu)
+
+(use-package undo-fu-session
+  :after undo-fu
+  :config
+  (setq undo-fu-session-directory (expand-file-name "cache/undo-fu-session" user-emacs-directory))
+
+  (defun z/undo-fu-session--make-file-name (filename)
+         "Take the path FILENAME and return a name base on this. IDEA: subed.el"
+         (expand-file-name
+          (format
+           "undo-fu-session_%s"
+           (md5 (convert-standard-filename (expand-file-name filename))))
+          undo-fu-session-directory))
+
+  (advice-add 'undo-fu-session--make-file-name :override #'z/undo-fu-session--make-file-name)
+
+  (undo-fu-session-global-mode))
+
 (use-package vundo
   :bind ("C-x u" . vundo)
   :config

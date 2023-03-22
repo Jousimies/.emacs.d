@@ -28,7 +28,7 @@
     (setq evil-respect-visual-line-mode t)
     :config
     (evil-mode)
-    (setq evil-undo-system 'undo-redo)
+    (setq evil-undo-system 'undo-fu)
     (setq evil-visual-state-cursor 'hollow)
 
     (setq evil-normal-state-tag " 𝐍 ")
