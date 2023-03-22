@@ -11,5 +11,8 @@
 (use-package telega-notifications
   :hook (telega-load . telega-notifications-mode))
 
+(use-package telega-alert
+  :hook (telega-load . telega-alert-mode))
+
 (provide 'init-telega)
 ;;; init-telega.el ends here.
