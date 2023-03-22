@@ -88,38 +88,37 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-;") 'prot-dired-limit-regexp))
 
-(with-eval-after-load 'denote
-  (cl-defun jf/denote-capture-reference (&key
-                                         title
-                                         url
-                                         (keywords (denote-keywords-prompt))
-                                         (domain "literature"))
-    "Create a `denote' entry for the TITLE and URL.
+(cl-defun jf/denote-capture-reference (&key
+                                       title
+                                       url
+                                       (keywords (denote-keywords-prompt))
+                                       (domain "literature"))
+  "Create a `denote' entry for the TITLE and URL.
 TODO: Would it make sense to prompt for the domain?
 "
-    (denote title
-            keywords
-            'org
-            (expand-file-name domain (denote-directory))
-            nil))
+  (denote title
+          keywords
+          'org
+          (expand-file-name domain (denote-directory))
+          nil))
 
-  (cl-defun jf/menu--org-capture-elfeed-show (&key (entry elfeed-show-entry))
-    "Create a `denote' from `elfeed' ENTRY."
-    (interactive)
-    (let* ((url (elfeed-entry-link entry))
-           (title (elfeed-entry-title entry)))
-      (jf/denote-capture-reference :url url :title title)))
+(cl-defun jf/menu--org-capture-elfeed-show (&key (entry elfeed-show-entry))
+  "Create a `denote' from `elfeed' ENTRY."
+  (interactive)
+  (let* ((url (elfeed-entry-link entry))
+         (title (elfeed-entry-title entry)))
+    (jf/denote-capture-reference :url url :title title)))
 
-  (defun jf/menu--org-capture-safari ()
-    "Create an `denote' entry from Safari page."
-    (interactive)
-    (let* ((link-title-pair (grab-mac-link-safari-1))
-           (url (car link-title-pair))
-           (title (cadr link-title-pair)))
-      (jf/denote-capture-reference :url url :title title)
-      (my/denote-reference-heading)
-      (my/link-grab)
-      (forward-line -3))))
+(defun jf/menu--org-capture-safari ()
+  "Create an `denote' entry from Safari page."
+  (interactive)
+  (let* ((link-title-pair (grab-mac-link-safari-1))
+         (url (car link-title-pair))
+         (title (cadr link-title-pair)))
+    (jf/denote-capture-reference :url url :title title)
+    (my/denote-reference-heading)
+    (my/link-grab)
+    (forward-line -3)))
 
 (cl-defun my/denote-subdirectory (subdirectory)
   (denote
