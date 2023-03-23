@@ -505,3 +505,9 @@
 [submodule "packages/achive"]
 	path = packages/achive
 	url = https://github.com/zakudriver/achive.git
+[submodule "packages/emms"]
+	path = packages/emms
+	url = https://git.savannah.gnu.org/git/emms.git
+[submodule "packages/lyrics-fetcher.el"]
+	path = packages/lyrics-fetcher.el
+	url = https://github.com/SqrtMinusOne/lyrics-fetcher.el.git
