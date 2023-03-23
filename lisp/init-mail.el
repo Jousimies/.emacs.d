@@ -95,11 +95,25 @@
   (setq mu4e-headers-auto-update t)
   (setq mu4e-headers-date-format "%d/%m/%y")
   (setq mu4e-headers-time-format "%H:%M")
-  (setq mu4e-headers-fields '((:flags . 4)
-                              (:human-date . 9)
-                              (:subject . 90)
+  (setq mu4e-headers-fields '((:flags . 8)
+                              (:human-date . 10)
+                              (:subject . 100)
                               (:from-or-to . 40)
-                              (:tags . 20)))
+                              (:tags . 15)))
+  (setq mu4e-headers-unread-mark    '("u" . " "))
+  (setq mu4e-headers-draft-mark     '("D" . " "))
+  (setq mu4e-headers-flagged-mark   '("F" . " "))
+  (setq mu4e-headers-new-mark       '("N" . " "))
+  (setq mu4e-headers-passed-mark    '("P" . " "))
+  (setq mu4e-headers-replied-mark   '("R" . " "))
+  (setq mu4e-headers-seen-mark      '("S" . " "))
+  (setq mu4e-headers-trashed-mark   '("T" . " "))
+  (setq mu4e-headers-attach-mark    '("a" . " "))
+  (setq mu4e-headers-encrypted-mark '("x" . " "))
+  (setq mu4e-headers-signed-mark    '("s" . " "))
+  (setq mu4e-headers-list-mark '("s" . " "))
+  (setq mu4e-headers-personal-mark '("p" . " "))
+
   (define-key mu4e-headers-mode-map (kbd "C-c l") 'org-store-link))
 
 (use-package mu4e-bookmarks
@@ -136,7 +150,7 @@
 (use-package mu4e-helpers
   :after mu4e
   :config
-  (setq mu4e-use-fancy-chars nil))
+  (setq mu4e-use-fancy-chars t))
 
 (use-package sendmail
   :config
