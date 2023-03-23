@@ -24,7 +24,7 @@
                                        (window-parameters . ((no-other-window . t)
                                                              (no-delete-other-windows . t)))))
   (add-to-list 'display-buffer-alist '((or (derived-mode . org-mode)
-                                           (devived-mode . LaTeX-mode))
+                                           (derived-mode . LaTeX-mode))
                                        (display-buffer-in-tab)
                                        (tab-name . "Edit") (tab-group . "Edit")
                                        (select . t)))
