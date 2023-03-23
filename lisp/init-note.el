@@ -53,11 +53,15 @@
                                        (thread-last denote-directory (expand-file-name "literature"))
                                        (thread-last denote-directory (expand-file-name "term")))))
 
-(evil-define-key '(normal visual) 'global
-    "gns" 'denote-signature
-    "gnr" 'denote-rename-file-using-front-matter
-    "gnR" 'denote-rename-file
-    "gnl" 'denote-link-or-create)
+(evil-define-key '(normal visual motion) 'global
+    "gns" 'denote-signature)
+
+(evil-define-key '(normal visual motion) dired-mode-map
+  "gnr" 'denote-dired-rename-marked-files)
+
+(evil-define-key '(normal visual motion) org-mode-map
+  "gnr" 'denote-rename-file-using-front-matter
+  "gnl" 'denote-link-or-create)
 
 (use-package denote-org-dblock
   :after denote org)
