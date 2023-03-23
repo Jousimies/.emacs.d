@@ -14,5 +14,9 @@
                            (eq major-mode 'telega-chat-mode))
                    'other))))
 
-(provide 'init-rime)
-;;; init-rime.el ends here.
+(add-hook 'evil-insert-state-exit-hook
+          (lambda ()
+            (setq sis-default-cursor-color (foreground-color-at-point))))
+
+(provide 'init-sis)
+;;; init-sis.el ends here.

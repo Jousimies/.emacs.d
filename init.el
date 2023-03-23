@@ -128,7 +128,7 @@
                            (require 'init-completion)
                            (require 'init-template)
                            (require 'init-prog)
-                           (require 'init-rime)
+                           (require 'init-sis)
                            (require 'init-misc)
                            (require 'init-search)
                            (require 'init-git)
