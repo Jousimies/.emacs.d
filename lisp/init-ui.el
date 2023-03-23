@@ -40,25 +40,6 @@
   (setq show-paren-style 'parenthesis)
   (setq show-paren-context-when-offscreen 'overlay))
 
-(blink-cursor-mode -1)
-
-(defun im--chinese-p ()
-  "Check if the current input state is Chinese."
-  (if (featurep 'rime)
-      (and (rime--should-enable-p)
-           (not (rime--should-inline-ascii-p))
-           current-input-method)
-    current-input-method))
-
-(defun im-change-cursor-color ()
-  "Set cursor color depending on input method."
-  (interactive)
-  (set-cursor-color (if (im--chinese-p)
-                        "red"
-                      (foreground-color-at-point))))
-
-(add-hook 'post-command-hook 'im-change-cursor-color)
-
 (defun my/mode-line-padding ()
   (let* ((r-length (string-width (format-mode-line global-mode-string))))
     (propertize " "

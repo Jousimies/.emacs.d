@@ -1,4 +1,7 @@
-(set-frame-parameter nil 'alpha '(90 . 100))
+(use-package frame
+  :config
+  (set-frame-parameter nil 'alpha '(90 . 100))
+  (blink-cursor-mode -1))
 
 (defun ct/frame-center (&optional frame)
   "Center a frame on the screen."
