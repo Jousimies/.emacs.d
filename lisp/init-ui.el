@@ -45,14 +45,6 @@
     (propertize " "
                 'display `(space :align-to (- right ,(+ r-length 1))))))
 
-(add-to-list 'global-mode-string
-             '(:eval (propertize
-                      (concat
-                       "𝚻𝚨𝚩: "
-                       ;; (number-to-string (tab-bar--current-tab-index))
-                       ;; ": "
-                       (alist-get 'group (tab-bar--current-tab))) 'face 'font-lock-constant-face)))
-
 (setq mode-line-end-spaces
       '(""
         global-mode-string))
@@ -69,13 +61,17 @@
                 mode-line-buffer-identification
                 "  "
                 mode-line-position
-                ;; (:eval (propertize " %I " 'face 'font-lock-constant-face))
                 "  "
                 (vc-mode vc-mode)
                 (:eval (when buffer-read-only
                          (concat "  "  (propertize "RO"
                                                    'face 'font-lock-type-face
                                                    'help-echo "Buffer is read-only"))))
+                "  "
+                (:eval (propertize
+                        (concat
+                         "𝚻𝚨𝚩: "
+                         (alist-get 'group (tab-bar--current-tab))) 'face 'font-lock-constant-face))
                 (:eval (my/mode-line-padding))
                 mode-line-end-spaces))
 
