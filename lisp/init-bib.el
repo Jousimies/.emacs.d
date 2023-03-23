@@ -50,14 +50,13 @@
              citar-denote-find-citation
              citar-denote-cite-nocite))
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual motion) 'global
+(evil-define-key '(normal visual motion) 'global
     "gnca" 'citar-denote-add-citekey
     "gncx" 'citar-denote-remove-citekey
     "gnco" 'citar-denote-open-note
     "gncd" 'citar-denote-dwim
     "gncr" 'citar-denote-find-reference
-    "gncf" 'citar-denote-find-citation))
+    "gncf" 'citar-denote-find-citation)
 
 (use-package bibtex-completion
   :after org-roam-bibtex

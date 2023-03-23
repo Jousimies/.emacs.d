@@ -11,10 +11,10 @@
                                            (derived-mode . telega-root-mode))
                                        (display-buffer-in-tab)
                                        (tab-name . "Chat") (tab-group . "Chat")
-                                       (select . t)))
-  (with-eval-after-load 'evil
-    (evil-define-key 'normal telega-root-mode-map
-      "gs" nil)))
+                                       (select . t))))
+
+(evil-define-key 'normal telega-root-mode-map
+    "gs" nil)
 
 (use-package telega-notifications
   :hook (telega-load . telega-notifications-mode))

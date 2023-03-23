@@ -1,9 +1,8 @@
 (use-package olivetti
   :commands olivetti-mode)
 
-(with-eval-after-load 'evil
-  (evil-define-key 'normal org-mode-map
-    "zw" 'olivetti-mode))
+(evil-define-key 'normal org-mode-map
+    "zw" 'olivetti-mode)
 
 (use-package toc-org
   :hook (org-mode . toc-org-mode))

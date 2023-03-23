@@ -39,6 +39,15 @@
   :config
   (setq ffap-machine-p-known 'reject))
 
+(use-package message
+  :defer t
+  :config
+  (setq message-kill-buffer-on-exit t)
+  (setq message-kill-buffer-query nil)
+  (setq message-sendmail-envelope-from 'header)
+  (setq message-kill-buffer-query nil)
+  (setq message-sendmail-extra-arguments '("-a" "outlook")))
+
 (use-package calc
   :general (my/space-leader-def
              "C" '(calc :wk "calc"))

@@ -371,9 +371,8 @@
       (bh/punch-in nil)
       (alert "Start Working: Fighting" :title "Punch In" ))))
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) 'global
-    "gp" 'my/toggle-punch-in-or-out))
+(evil-define-key '(normal visual) 'global
+  "gp" 'my/toggle-punch-in-or-out)
 
 (use-package ol
   :after org

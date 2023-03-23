@@ -1,5 +1,4 @@
 (use-package elfeed
-  :defer t
   :config
   (defun elfeed-display-buffer (buf &optional act)
     (pop-to-buffer buf '((display-buffer-reuse-window display-buffer-in-side-window)
@@ -44,9 +43,20 @@
                  (:elements (query . finance)))
           (group (:title . "Youtube")
                  (:elements (query . video)))))
+  (add-to-list 'display-buffer-alist '((or (derived-mode . elfeed-summary-mode)
+                                           (derived-mode . elfeed-search-mode)
+                                           (derived-mode . elfeed-show-mode))
+                                       (display-buffer-in-tab)
+                                       (tab-name . "RSS") (tab-group . "RSS")
+                                       (select . t)
+                                       (window-parameters
+                                        (mode-line-format . none))))
 
   (advice-add 'elfeed-summary :after 'elfeed-summary-update)
   (advice-add 'elfeed-summary :before 'elfeed-org))
+
+(evil-define-key 'normal elfeed-summary-mode-map
+    "q" nil)
 
 (provide 'init-elfeed)
 ;;; init-elfeed.el ends here.

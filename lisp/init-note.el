@@ -13,20 +13,19 @@
   :config
   (setq triples-default-database-filename (expand-file-name "database/triples.db" my-galaxy))
   (add-to-list 'display-buffer-alist '("^\\*ekg\\|^\\*EKG"
-                                         (display-buffer-pop-up-frame)
-                                         (window-parameters
-                                          (mode-line-format . none)
-                                          (delete-other-windows . t)))))
+                                       (display-buffer-pop-up-frame)
+                                       (window-parameters
+                                        (mode-line-format . none)
+                                        (delete-other-windows . t)))))
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) 'global
+(evil-define-key '(normal visual) 'global
     "ged" 'ekg-show-notes-for-today
     "gee" 'ekg-show-notes-with-tag
     "gea" 'ekg-show-notes-with-any-tags
     "geA" 'ekg-show-notes-with-all-tags
     "geb" 'ekg-browse-url
     "ger" 'ekg-rename-tag)
-  (evil-define-key 'normal ekg-notes-mode-map
+(evil-define-key 'normal ekg-notes-mode-map
     "A" 'ekg-notes-any-tags
     "B" 'ekg-notes-select-and-browse-url
     "a" 'ekg-notes-any-note-tags
@@ -38,7 +37,7 @@
     "p" 'ekg-notes-previous
     "r" 'ekg-notes-remove
     "t" 'ekg-notes-tag
-    "q" 'quit-window))
+    "q" 'quit-window)
 
 (use-package denote
   :commands (denote denote-signature denote-subdirectory denote-rename-file-using-front-matter
@@ -53,8 +52,19 @@
                                        (thread-last denote-directory (expand-file-name "outline"))
                                        (thread-last denote-directory (expand-file-name "literature"))
                                        (thread-last denote-directory (expand-file-name "term")))))
+
+(evil-define-key '(normal visual) 'global
+    "gns" 'denote-signature
+    "gnr" 'denote-rename-file-using-front-matter
+    "gnR" 'denote-rename-file
+    "gnl" 'denote-link-or-create)
+
 (use-package denote-org-dblock
   :after denote org)
+
+(evil-define-key '(normal visual) 'global
+    "gndl" 'denote-org-dblock-insert-links
+    "gndb" 'denote-org-dblock-insert-backlinks)
 
 (defvar prot-dired--limit-hist '()
   "Minibuffer history for `prot-dired-limit-regexp'.")
@@ -159,20 +169,13 @@ TODO: Would it make sense to prompt for the domain?
 
 (advice-add 'denote-signature :before #'my/denote-signature-from-filename)
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) 'global
-    "gndl" 'denote-org-dblock-insert-links
-    "gndb" 'denote-org-dblock-insert-backlinks
-    "gns" 'denote-signature
-    "gne" 'jf/menu--org-capture-elfeed-show
-    "gnt" 'my/denote-term
-    "gni" 'my/denote-reference-heading
-    "gnb" 'my/denote-book
-    "gno" 'my/denote-outline
-    "gng" 'jf/menu--org-capture-safari
-    "gnr" 'denote-rename-file-using-front-matter
-    "gnR" 'denote-rename-file
-    "gnl" 'denote-link-or-create))
+(evil-define-key '(normal visual) 'global
+  "gne" 'jf/menu--org-capture-elfeed-show
+  "gnt" 'my/denote-term
+  "gni" 'my/denote-reference-heading
+  "gnb" 'my/denote-book
+  "gno" 'my/denote-outline
+  "gng" 'jf/menu--org-capture-safari)
 
 (use-package dired-x
   :bind (:map dired-mode-map
@@ -201,6 +204,9 @@ TODO: Would it make sense to prompt for the domain?
           ("Outline"  ?o ,(expand-file-name "denote/outline" my-galaxy))
           ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy)))))
 
+(evil-define-key '(normal motion visual) 'global
+    "gnn" 'consult-notes)
+
 (defun my/new-article (article)
     (interactive "sTitle: ")
     (let ((filename (format "%s" article))
@@ -209,10 +215,8 @@ TODO: Would it make sense to prompt for the domain?
       (insert "#+TITLE: " article "\n")
       (tempel-insert 'hugo)))
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal motion visual) 'global
-    "gnn" 'consult-notes
-    "gna" 'my/new-article))
+(evil-define-key '(normal motion visual) 'global
+  "gna" 'my/new-article)
 
 (use-package org-transclusion
   :commands (org-transclusion-make-from-link org-transclusion-add org-transclusion-add-all)

@@ -32,19 +32,17 @@
                               :parser (gts-google-summary-parser))
                     :render (gts-kill-ring-render)))))
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) 'global
+(evil-define-key '(normal visual) 'global
     "gll" 'gts-do-translate
-    "glg" 'go-translate-save-kill-ring))
+    "glg" 'go-translate-save-kill-ring)
 
 (use-package lingva
   :commands lingva-translate
   :config
   (setq lingva-target "zh"))
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) 'global
-    "glL" 'lingva-translate))
+(evil-define-key '(normal visual) 'global
+    "glL" 'lingva-translate)
 
 (use-package sdcv
   :commands sdcv-search-pointer sdcv-search-pointer+
@@ -82,20 +80,17 @@
           "21世纪双语科技词典"
           "quick_eng-zh_CN")))
 
-(with-eval-after-load 'evil-collection
-    (evil-define-key '(normal visual) 'global
-      "glP" 'sdcv-search-pointer
-      "glp" 'sdcv-search-pointer+)
-
-  (evil-collection-define-key 'normal 'sdcv-mode-map
-    "q" 'quit-window))
+(evil-define-key '(normal visual) 'global
+    "glP" 'sdcv-search-pointer
+    "glp" 'sdcv-search-pointer+)
+(evil-define-key 'normal sdcv-mode-map
+    "q" 'quit-window)
 
 (use-package osx-dictionary
   :commands osx-dictionary-search-pointer)
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) 'global
-    "gld" 'osx-dictionary-search-pointer))
+(evil-define-key '(normal visual) 'global
+    "gld" 'osx-dictionary-search-pointer)
 
 (use-package powerthesaurus
   :commands (powerthesaurus-lookup-dwim
@@ -105,9 +100,8 @@
              powerthesaurus-lookup-definitions-dwim
              powerthesaurus-lookup-sentences-dwim))
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) 'global
-    "glt" 'powerthesaurus-lookup-dwim))
+(evil-define-key '(normal visual) 'global
+    "glt" 'powerthesaurus-lookup-dwim)
 
 (use-package dictionary-overlay
   :commands dictionary-overlay-render-buffer dictionary-overlay-toggle
@@ -118,11 +112,10 @@
   (setq dictionary-overlay-python "/opt/homebrew/bin/python3.10")
   (dictionary-overlay-start))
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) 'global
+(evil-define-key '(normal visual) 'global
     "glr" 'dictionary-overlay-toggle
     "glk" 'dictionary-overlay-mark-word-unknown
-    "glK" 'dictionary-overlay-mark-word-known))
+    "glK" 'dictionary-overlay-mark-word-known)
 
 (defun my/siri-translate ()
   (interactive)
@@ -170,28 +163,25 @@
     (interactive)
     (emacs-azure-tts 1)))
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) 'global
-    "gls" 'emacs-azure-tts-sentence))
+(evil-define-key '(normal visual) 'global
+    "gls" 'emacs-azure-tts-sentence)
 
 (use-package language-chunk
   :commands lc-memo-review lc-corpus-capture-card
   :config
   (setq lc-db-location (expand-file-name "database/lc.db" my-galaxy)))
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) 'global
+(evil-define-key '(normal visual) 'global
     "glc" 'lc-corpus-capture-card
-    "glv" 'lc-memo-review))
+    "glv" 'lc-memo-review)
 
 (use-package popweb-dict
   :commands popweb-dict-say-word
   :config
   (setq popweb-config-location (expand-file-name "cache/popweb" user-emacs-directory)))
 
-(with-eval-after-load 'evil
-  (evil-define-key '(normal visual) 'global
-    "glw" 'popweb-dict-say-word))
+(evil-define-key '(normal visual) 'global
+    "glw" 'popweb-dict-say-word)
 
 (provide 'init-translate)
 ;;; init-translate.el ends here.

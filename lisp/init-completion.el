@@ -77,11 +77,10 @@
          :map minibuffer-mode-map
          ("C-r" . consult-history)))
 
-(with-eval-after-load 'evil
-  (evil-declare-key 'normal org-mode-map
-    "gh" 'consult-outline)
-  (evil-declare-key 'normal LaTeX-mode-map
-    "gh" 'consult-outline))
+(evil-declare-key 'normal org-mode-map
+  "gh" 'consult-outline)
+(evil-declare-key 'normal LaTeX-mode-map
+  "gh" 'consult-outline)
 
 (use-package consult-dir
   :bind (("C-x C-d" . consult-dir)

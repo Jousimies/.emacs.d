@@ -8,11 +8,6 @@
   :magic ("%PDF" . pdf-view-mode)
   :config
   (pdf-tools-install t nil t nil)
-  (with-eval-after-load 'evil
-    (evil-declare-key 'normal pdf-view-mode-map
-      "gh" 'pdf-annot-add-highlight-markup-annotation
-      "ga" 'pdf-annot-add-text-annotation
-      "gd" 'pdf-annot-delete))
   (setq pdf-view-display-size 'fit-width)
   (setq pdf-view-use-unicode-ligther nil)
   (setq pdf-view-use-scaling t)
@@ -43,7 +38,12 @@
   :hook (pdf-view-mode . pdf-annot-minor-mode)
   :bind (:map pdf-annot-edit-contents-minor-mode-map
               ("<return>" . pdf-annot-edit-contents-commit)
-              ("<S-return>" . newline)))
+              ("<S-return>" . newline))
+  :config
+  (evil-declare-key 'normal pdf-view-mode-map
+    "gh" 'pdf-annot-add-highlight-markup-annotation
+    "ga" 'pdf-annot-add-text-annotation
+    "gd" 'pdf-annot-delete))
 
 (use-package pdf-sync
   :hook (pdf-view-mode . pdf-sync-minor-mode))

@@ -163,6 +163,9 @@ This command can be called when in a file buffer or in `dired'."
 (my/space-leader-def
   "of" '(xah-show-in-desktop :wk "Open Finder"))
 
+(evil-define-key 'normal dired-mode-map
+  "e" 'xah-show-in-desktop)
+
 (defun jf/org-link-remove-link ()
   "Remove the link part of an `org-mode' link at point and keep only the description."
   (interactive)
@@ -177,9 +180,8 @@ This command can be called when in a file buffer or in `dired'."
             (delete-region link-begin link-end)
             (insert content)))))))
 
-(with-eval-after-load 'evil
-  (evil-declare-key 'normal 'global
-    "gX" 'jf/org-link-remove-link))
+(evil-declare-key 'normal 'global
+  "gX" 'jf/org-link-remove-link)
 
 (defun yt-set-time (time)
   "Set TIME in the YouTube link at point.)

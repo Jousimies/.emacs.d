@@ -4,8 +4,6 @@
                              (setq-local electric-indent-chars nil)))
          (beancount-mode . outline-minor-mode))
   :config
-  (evil-define-key 'normal 'beancount-mode-map
-    "zf" 'beancount-fava)
 
   ;; insert whole transaction instead of only insert date.
   (defun my/beancount-insert-transaction (&optional days)
@@ -44,6 +42,9 @@
 
   (add-hook 'evil-insert-state-entry-hook #'my/beancount-activate-input-method))
 
+(evil-define-key 'normal 'beancount-mode-map
+    "zf" 'beancount-fava)
+
 (use-package tablist
   :commands tablist-minor-mode)
 
@@ -54,13 +55,12 @@
   (setq achive-language 'zh)
   (setq achive-cache-path (expand-file-name "cache/.achive" user-emacs-directory))
   (add-to-list 'display-buffer-alist '("\\*A Chive\\*"
-                                         (display-buffer-in-tab)
-                                         (tab-name . "Misc")
-                                         (tab-group . "Misc"))))
+                                       (display-buffer-in-tab)
+                                       (tab-name . "Misc")
+                                       (tab-group . "Misc"))))
 
-(with-eval-after-load 'evil-collection
-  (evil-collection-define-key 'normal 'achive-visual-mode-map
-    "q" 'quit-window))
+(evil-define-key 'normal achive-visual-mode-map
+    "q" 'quit-window)
 
 (provide 'init-finance)
 ;;; init-finance.el ends here.

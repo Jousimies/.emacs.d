@@ -8,22 +8,21 @@
   (setq org-agenda-window-setup 'other-tab)
   (setq org-agenda-align-tags-to-column -120))
 
-(with-eval-after-load 'evil
-  (evil-set-initial-state 'org-agenda-mode 'motion)
-  (evil-define-key 'motion org-agenda-mode-map
-    (kbd "RET") 'org-agenda-switch-to
-    "/" 'org-agenda-filter
-    "SPC" 'nil
-    "gj" 'org-agenda-next-item
-    "gr" 'org-agenda-redo
-    "gR" 'org-agenda-redo-all
-    "t" 'org-agenda-todo
-    "u" 'org-agenda-undo
-    "I" 'org-agenda-clock-in
-    "O" 'org-agenda-clock-out
-    "cg" 'org-agenda-clock-goto
-    "cc" 'org-agenda-clock-cancel
-    "cr" 'org-agenda-clockreport-mode))
+(evil-set-initial-state 'org-agenda-mode 'motion)
+(evil-define-key 'motion org-agenda-mode-map
+  (kbd "RET") 'org-agenda-switch-to
+  "/" 'org-agenda-filter
+  "SPC" 'nil
+  "gj" 'org-agenda-next-item
+  "gr" 'org-agenda-redo
+  "gR" 'org-agenda-redo-all
+  "t" 'org-agenda-todo
+  "u" 'org-agenda-undo
+  "I" 'org-agenda-clock-in
+  "O" 'org-agenda-clock-out
+  "cg" 'org-agenda-clock-goto
+  "cc" 'org-agenda-clock-cancel
+  "cr" 'org-agenda-clockreport-mode)
 
 ;;;###autoload
 (defun my/gtd-file ()
