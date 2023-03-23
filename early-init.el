@@ -14,6 +14,7 @@
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars . 0) default-frame-alist)
 (push '(undecorated . t) default-frame-alist)
+(push '(width . 100) default-frame-alist)
 (push '(fullscreen . maximized) initial-frame-alist)
 
 ;; To suppress flashing at startup

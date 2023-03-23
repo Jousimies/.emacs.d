@@ -48,7 +48,7 @@ of the box `(w h)' inside the box `(cw ch)'."
 
 (defun my/make-or-delete-frame ()
   (interactive)
-  (if (= (frame-width) 80) ;; 80 is the default frame width.
+  (if (= (frame-width) 100) ;; 80 is the default frame width.
       (delete-frame)
     (make-frame)))
 
