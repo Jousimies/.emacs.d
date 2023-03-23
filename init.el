@@ -146,6 +146,7 @@
                            (require 'init-reader)
                            (require 'init-elfeed)
                            (require 'init-mail)
+                           (require 'init-emms)
                            (require 'init-telega)
                            (require 'init-vterm)
                            (require 'init-chatgpt)))

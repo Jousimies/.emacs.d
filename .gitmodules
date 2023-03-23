@@ -511,3 +511,6 @@
 [submodule "packages/lyrics-fetcher.el"]
 	path = packages/lyrics-fetcher.el
 	url = https://github.com/SqrtMinusOne/lyrics-fetcher.el.git
+[submodule "packages/consult-emms"]
+	path = packages/consult-emms
+	url = https://github.com/Hugo-Heagren/consult-emms.git
