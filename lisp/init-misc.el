@@ -41,7 +41,7 @@
   :commands youtube-dl
   :config
   (setq youtube-dl-directory "~/Downloads/")
-  (setq youtube-dl-program "/opt/homebrew/bin/youtube-dl")
+  (setq youtube-dl-program "/opt/homebrew/bin/yt-dlp")
   (setq youtube-dl-arguments
         '("--no-mtime" "--restrict-filenames" "--format" "best" "--mark-watched")))
 
