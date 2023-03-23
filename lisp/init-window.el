@@ -1,5 +1,4 @@
 (use-package window
-  :defer t
   :config
   (add-to-list 'display-buffer-alist '("\\.pdf"
                                        (display-buffer-in-tab)
