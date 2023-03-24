@@ -108,5 +108,18 @@
     (alert-message-notify info))
   (advice-add 'alert-osx-notifier-notify :override #'my/alert-osx-notifier-notify))
 
+(use-package alarm-clock
+  :bind ("C-M-<f12>" . alarm-clock-set)
+  :commands (alarm-clock-set alarm-clock-list-view)
+  :config
+  (setq alarm-clock-play-sound nil)
+  (setq alarm-clock-cache-file (expand-file-name "var/.alarm-clock.cache" user-emacs-directory)))
+
+(use-package pomm
+  :bind ("M-<f12>" . pomm)
+  :config
+  (setq pomm-state-file-location (expand-file-name "cache/pomm" user-emacs-directory))
+  (pomm-mode-line-mode))
+
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.
