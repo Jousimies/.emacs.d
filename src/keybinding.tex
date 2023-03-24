@@ -67,17 +67,38 @@
     \item[M-p] my/scroll-other-windown-down
     \item[C-.] embark-act
     \item[C-;] embark-dwim
+
     \item[f1] calibredb
     \item[f2] ebib
-    \item[f7] my/copy-idlink
+
+    \item[M-f4] browse-at-remote
+    \item[s-f4] epkg-describe-package
+
+    \item[f5] emms
+    \item[C-f5] my/toggle-emms
+    \item[C-u C-f5] emms-stop
+    \item[M-f5] consult-emms-library
+
     \item[f8] my/link-grab
-    \item[f9] ekg-capture
-    \item[C-f9] ekg-capture-url
-    \item[f10] my/org-capture
-    \item[f12] my/org-agenda
+    \item[s-f8] my/copy-idlink
+    \item[M-f8] my/menu--org-capture-safari
+
+    \item[f10] org-capture
+    \item[C-f10] ekg-capture
+    \item[M-f10] ekg-capture-url
+
+    \item[f12] org-gtd-engage
+    \item[C-f12] org-gtd-process-inbox
+    \item[s-f12] org-gtd-show-stuck-projects
+    \item[M-f12] pomm
+
+    \item[s-,] my/emacs-config
+
     \item[s-n] my/make-or-delete-frame
     \item[s-\~] other-frame
+
     \item[s-/] evil-commentary-line
+
     \item[C-x C-d] consult-dir
   \end{keylist}
   \section{Local keymaps}
@@ -110,13 +131,7 @@
     \item[s-.] dired-hide-dotfiles-mode
     \item[e] xah-show-in-desktop
     \item[C-'] my/org-attach-visit-headline-from-dired
-  \end{keylist}
-
-
-  \subsection{rime-mode-map}
-  \begin{keylist}
-    \item[M-j] rime-force-enable
-  \end{keylist}
+    \end{keylist}
 
   \subsection{evil-visual-state-map}
   \begin{keylist}
@@ -253,14 +268,14 @@
   \subsection{Language}
   \begin{keylist}
     \item[g l d] osx-dictionary-search-pointer
-    \item[g l l] my/gts-do-translate
+    \item[gll \& C-u gll] my/gts-do-translate
     \item[g l L] lingva-translate
-    \item[g l k] dictionary-overlay-mark-word-unknown
-    \item[g l K] dictionary-overlay-mark-word-known
-    \item[g l i] sdcv-search-input+
-    \item[g l p] sdcv-search-pointer
+    \item[g l P] sdcv-search-pointer
+    \item[g l p] sdcv-search-pointer+
     \item[g l t] powerthesaurus-lookup-dwim
     \item[g l r] dictionary-overlay-render-buffer
+    \item[g l k] dictionary-overlay-mark-word-unknown
+    \item[g l K] dictionary-overlay-mark-word-known
   \end{keylist}
   \subsection{Links}
   \begin{keylist}
