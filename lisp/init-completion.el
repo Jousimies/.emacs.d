@@ -77,9 +77,11 @@
          :map minibuffer-mode-map
          ("C-r" . consult-history)))
 
-(evil-declare-key 'normal org-mode-map
+(evil-define-key 'normal dired-mode-map
+  "/" 'consult-line)
+(evil-define-key 'normal org-mode-map
   "gh" 'consult-outline)
-(evil-declare-key 'normal LaTeX-mode-map
+(evil-define-key 'normal LaTeX-mode-map
   "gh" 'consult-outline)
 
 (use-package consult-dir
