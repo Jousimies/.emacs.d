@@ -520,3 +520,9 @@
 [submodule "packages/anzu"]
 	path = packages/anzu
 	url = https://github.com/emacsorphanage/anzu.git
+[submodule "packages/evil-find-char-pinyin"]
+	path = packages/evil-find-char-pinyin
+	url = https://github.com/cute-jumper/evil-find-char-pinyin.git
+[submodule "packages/pinyinlib.el"]
+	path = packages/pinyinlib.el
+	url = https://github.com/cute-jumper/pinyinlib.el.git

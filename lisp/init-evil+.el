@@ -31,5 +31,10 @@
 (use-package evil-anzu
   :after evil anzu)
 
+(use-package evil-find-char-pinyin
+  :after evil
+  :config
+  (evil-find-char-pinyin-mode 1))
+
 (provide 'init-evil+)
 ;;; init-evil+.el ends here.
