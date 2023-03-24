@@ -23,7 +23,6 @@
   :init
   (setq evil-want-keybinding nil)
   (setq evil-want-integration t)
-  (setq evil-want-C-u-scroll t)
   (setq evil-want-C-h-delete t)
   (setq evil-respect-visual-line-mode t)
   :config
@@ -42,11 +41,15 @@
   (define-key evil-insert-state-map (kbd "C-e") #'move-end-of-line)
   (define-key evil-insert-state-map (kbd "C-k") #'kill-line))
 
-(global-set-key (kbd "C-M-u") 'universal-argument)
 (evil-define-key '(normal motion visual) 'global
   "ge" nil
   "gn" nil
   "zx" 'kill-this-buffer)
+
+(use-package evil-commands
+  :bind (:map evil-motion-state-map
+              ("C-f" . evil-scroll-down)
+              ("C-b" . evil-scroll-up)))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here.
