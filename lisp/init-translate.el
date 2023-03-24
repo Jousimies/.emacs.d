@@ -14,7 +14,7 @@
                                          (window-width . 70))))
 
 (use-package go-translate
-  :commands gts-do-translate
+  :commands gts-do-translate my/gts-do-translate
   :config
   (setq gts-buffer-follow-p t)
   (setq gts-translate-list '(("en" "zh")))
@@ -24,17 +24,21 @@
                                           (gts-bing-engine)
                                           (gts-google-engine :parser (gts-google-summary-parser)))
                                 :render (gts-buffer-render)))
-  (defun go-translate-save-kill-ring ()
-    (interactive)
-    (gts-translate (gts-translator
-                    :picker (gts-noprompt-picker)
-                    :engines (gts-google-engine
-                              :parser (gts-google-summary-parser))
-                    :render (gts-kill-ring-render)))))
+
+  (defun my/gts-do-translate (arg)
+    "Prompt for input and perform translation, displaying output in split window.
+ With prefix argument, instead save translation to kill-ring."
+    (interactive "P")
+    (if arg
+        (gts-translate (gts-translator
+                        :picker (gts-noprompt-picker)
+                        :engines (gts-google-engine
+                                  :parser (gts-google-summary-parser))
+                        :render (gts-kill-ring-render)))
+      (gts-do-translate))))
 
 (evil-define-key '(normal visual) 'global
-    "gll" 'gts-do-translate
-    "glg" 'go-translate-save-kill-ring)
+  "gll" 'my/gts-do-translate)
 
 (use-package lingva
   :commands lingva-translate
