@@ -4,12 +4,7 @@
   (setq org-cite-global-bibliography `(,(concat my-galaxy "/bibtexs/References.bib"))))
 
 (use-package citar
-  :general (my/space-leader-def
-             "re" '(citar-open-entry :wk "Open entry")
-             "rp" '(citar-open-files :wk "Open files")
-             "ri" '(citar-insert-citation :wk "Insert citation")
-             "rn" '(citar-open-notes :wk "Open/Create note")
-             "rl" '(citar-open-links :wk "Open links"))
+  :commands citar-open-files citar-create-note
   :config
   (setq citar-bibliography `(,(concat my-galaxy "/bibtexs/References.bib")))
   (setq citar-notes-paths `(,(expand-file-name "references" my-galaxy)))
@@ -21,6 +16,9 @@
   (setq citar-symbol-separator "  ")
   (setq citar-file-additional-files-separator "-")
   (setq citar-at-point-function 'embark-act))
+
+(evil-define-key 'normal 'global
+  "gnp" 'citar-open-files)
 
 (use-package citar-latex
   :after citar)
@@ -42,21 +40,37 @@
   :hook (org-mode . citar-embark-mode))
 
 (use-package citar-denote
-  :commands (citar-denote-add-citekey
-             citar-denote-remove-citekey
-             citar-denote-dwim
-             citar-denote-open-note
-             citar-denote-find-reference
-             citar-denote-find-citation
-             citar-denote-cite-nocite))
+  :config
+  (setq citar-denote-subdir t)
+  (citar-denote-mode)
+
+  (defun my/citar-denote-create-note (citekey &optional _entry)
+    "Create a bibliography note for CITEKEY with properties ENTRY.
+
+The file type for the new note is determined by `citar-denote-file-type'.
+The title of the new note is set by `citar-denote-title-format'.
+When `citar-denote-subdir' is non-nil, prompt for a subdirectory."
+    (denote
+     (read-string "Title: " (citar-denote-generate-title citekey))
+     (citar-denote-keywords-prompt citekey)
+     citar-denote-file-type
+     (when citar-denote-subdir (expand-file-name "references" denote-directory)))
+    (citar-denote-add-reference citekey))
+
+  (advice-add 'citar-denote-create-note :override #'my/citar-denote-create-note))
+
+(defun my/citar-denote-find-ref-or-citation (arg)
+  (interactive "P")
+  (if arg
+      (citar-denote-find-citation)
+    (citar-denote-find-reference)))
 
 (evil-define-key '(normal visual motion) 'global
-    "gnca" 'citar-denote-add-citekey
-    "gncx" 'citar-denote-remove-citekey
-    "gnco" 'citar-denote-open-note
-    "gncd" 'citar-denote-dwim
-    "gncr" 'citar-denote-find-reference
-    "gncf" 'citar-denote-find-citation)
+  "gnk" 'citar-denote-add-citekey
+  "gnK" 'citar-denote-remove-citekey
+  "gno" 'citar-denote-open-note
+  "gnf" 'my/citar-denote-find-ref-or-citation
+  "gnN" 'citar-denote-dwim)
 
 (use-package bibtex-completion
   :after org-roam-bibtex
@@ -90,21 +104,15 @@
         '(("Entry Key" 30 t) ("Note" 1 nil) ("Year" 6 t) ("Title" 50 t)))
   (setq ebib-file-associations '(("ps" . "gv"))))
 
-(use-package scihub
-  :general (my/space-leader-def
-             "rs" '(scihub :wk "scihub"))
-  :config
-  (setq scihub-download-directory "~/Downloads/")
-  (setq scihub-open-after-download t)
-  (setq scihub-fetch-domain 'scihub-fetch-domains-lovescihub))
-
 (use-package biblio
-  :general (my/space-leader-def
-            "rc" '(my/biblio-lookup-crossref :wk "Get bib from crossfer"))
+  :commands my/biblio-lookup-crossref
   :config
   (defun my/biblio-lookup-crossref ()
     (interactive)
     (biblio-lookup 'biblio-crossref-backend)))
+
+(evil-define-key '(normal visual) 'global
+  "gnc" 'my/biblio-lookup-crossref)
 
 (provide 'init-bib)
 ;;; init-bib.el ends here.

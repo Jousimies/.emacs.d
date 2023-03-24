@@ -12,9 +12,7 @@
   (setq elfeed-show-entry-switch #'elfeed-display-buffer))
 
 (use-package elfeed-org
-  :commands elfeed-org
-  :general (my/space-leader-def
-             "fe" '(my/rss-source :wk "Elfeed file"))
+  :commands elfeed-org my/rss-source
   :config
   (setq rmh-elfeed-org-files `(,(concat my-galaxy "/rss/elfeed.org")))
   (defun my/rss-source ()

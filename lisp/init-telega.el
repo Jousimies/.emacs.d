@@ -1,6 +1,6 @@
 (use-package telega
   :general (my/space-leader-def
-             "T" '(telega :wk "Telega"))
+             "t" '(telega :wk "Telega"))
   :config
   (setq telega-server-libs-prefix "/opt/homebrew/opt/tdlib/")
   (setq telega-proxies

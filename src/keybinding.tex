@@ -175,22 +175,11 @@
   \section{Space leader keys}
   \subsection{Emacs Server}
   \begin{keylist}
-    \item[SPC q R] restart-emacs
-    \item[SPC q q] server-force-delete
-    \item[SPC q s] my/start-server
-  \end{keylist}
-
-  \subsection{Bookmark}
-  \begin{keylist}
-    \item[SPC b a] bookmark-set
-    \item[SPC b d] bookmark-delete
-    \item[SPC b j] bookmark-jump
-    \item[SPC b r] bookmark-rename
-  \end{keylist}
+    \item[C-c q r] restart-emacs
+    \end{keylist}
 
   \subsection{Buffer}
   \begin{keylist}
-    \item[SPC b e] eval-buffer
     \item[SPC b k] kill-this-buffer
     \item[SPC b s] switch-to-scratch
     \item[SPC b m] switch-to-message
@@ -198,11 +187,10 @@
 
   \subsection{File related}
   \begin{keylist}
-    \item[SPC f d] xah-show-in-desktop
+    \item[e] xah-show-in-desktop
     \item[SPC f b] my/reading-record
     \item[SPC f e] my/rss-source
     \item[SPC f i] my/inbox-file
-    \item[SPC f I] my/index-file
     \item[SPC f p] my/plan-file
     \item[SPC f r] my/reflection-file
     \item[SPC f g] my/gtd-file
@@ -222,40 +210,25 @@
 
   \subsection{Org-mode}
   \begin{keylist}
-    \item[SPC o c i] org-clock-in
-    \item[SPC o c o] org-clock-out
-    \item[SPC o c j] org-clock-goto
-    \item[SPC o c l] org-clock-in-last
-    \item[SPC o d c] org-download-clipboard
-    \item[SPC o d y] org-download-yank
-    \item[SPC o d r] org-download-rename-last-file
-    \item[SPC o d R] org-download-rename-at-point
+    \item[SPC d c] org-download-clipboard
+    \item[SPC d y] org-download-yank
+    \item[SPC d r] org-download-rename-last-file
+    \item[SPC d R] org-download-rename-at-point
     \item[SPC p m] plantuml-org-to-mindmap-open
     \item[SPC p s] plantuml-org-to-wbs-open
-    \item[SPC o i] org-id-get-create
-    \item[SPC t a] org-transclusion-add
-    \item[SPC t A] org-transclusion-add-all
-    \item[SPC t r] org-transclusion-remove
-    \item[SPC t R] org-transclusion-remove-all
-    \item[SPC t g] org-transclusion-refresh
-    \item[SPC t m] org-transclusion-make-from-link
-    \item[SPC t o] org-transclusion-open-source
-    \item[SPC t e] org-transclusion-live-sync-start
+    \item[g n t a] org-transclusion-add
+    \item[g n t A] org-transclusion-add-all
+    \item[g n t r] org-transclusion-remove
+    \item[g n t R] org-transclusion-remove-all
+    \item[g n t g] org-transclusion-refresh
+    \item[g n t m] org-transclusion-make-from-link
+    \item[g n t o] org-transclusion-open-source
+    \item[g n t e] org-transclusion-live-sync-start
     \item[SPC p a] math-preview-all
     \item[SPC p A] math-preview-clear-all
     \item[SPC p p] math-preview-at-point
     \item[SPC p r] math-preview-region
     \item[SPC p R] math-preview-clear-region
-  \end{keylist}
-
-  \subsection{References}
-  \begin{keylist}
-    \item[SPC r d] my/biblio-lookup-crossref
-    \item[SPC r e] citar-open-entry
-    \item[SPC r i] citar-insert-bibtex
-    \item[SPC r l] citar-open-links
-    \item[SPC r n] citar-open-notes
-    \item[SPC r p] citar-open-files
   \end{keylist}
 
   \section{g prefix}
@@ -272,19 +245,15 @@
   \begin{keylist}
     \item[g n a] my/new-article
     \item[g n n] consult-notes
-    \item[g n s] denote-signature
-    \item[g n d] denote-subdirectory
+    \item[g n s] my/denote-signature-or-subdirectory
     \item[g n l] denote-link-or-create
     \item[g n r] denote-rename-file-using-front-matter
-    \item[g n R] denote-rename-file
-    \item[g n b b] denote-org-dblock-insert-backlinks
-    \item[g n b l] denote-org-dblock-insert-links
   \end{keylist}
 
   \subsection{Language}
   \begin{keylist}
     \item[g l d] osx-dictionary-search-pointer
-    \item[g l l] gts-do-translate
+    \item[g l l] my/gts-do-translate
     \item[g l L] lingva-translate
     \item[g l k] dictionary-overlay-mark-word-unknown
     \item[g l K] dictionary-overlay-mark-word-known

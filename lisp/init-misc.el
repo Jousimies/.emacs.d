@@ -2,8 +2,7 @@
   :hook (org-mode . org-auto-tangle-mode))
 
 (use-package epkg
-  :general (my/space-leader-def
-             ".p" '(epkg-describe-package :wk "Package Search"))
+  :bind ("s-<f4>" . epkg-describe-package)
   :config
   (setq epkg-repository (expand-file-name "cache/epkgs" user-emacs-directory)))
 
@@ -160,11 +159,11 @@ This command can be called when in a file buffer or in `dired'."
                                "/usr/bin/xdg-open")))
         (start-process "" nil openFileProgram (shell-quote-argument $path)))))))
 
-(my/space-leader-def
-  "of" '(xah-show-in-desktop :wk "Open Finder"))
-
 (evil-define-key 'normal dired-mode-map
   "e" 'xah-show-in-desktop)
+
+(evil-define-key '(normal visual) 'global
+  "gF" 'embark-open-externally)
 
 (defun jf/org-link-remove-link ()
   "Remove the link part of an `org-mode' link at point and keep only the description."

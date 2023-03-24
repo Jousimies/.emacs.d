@@ -10,8 +10,10 @@
   (interactive)
   (find-file (expand-file-name "emacs.org" user-emacs-directory)))
 
-(my/space-leader-def
-  ".i" '(my/emacs-config :wk "Configuration"))
+(global-set-key (kbd "s-,") 'my/emacs-config)
+
+(use-package hydra
+  :commands defhydra)
 
 (use-package evil
   :bind (:map evil-motion-state-map
@@ -50,6 +52,13 @@
   :bind (:map evil-motion-state-map
               ("C-f" . evil-scroll-down)
               ("C-b" . evil-scroll-up)))
+
+(use-package which-key
+  :config
+  (setq which-key-show-early-on-C-h t)
+  (setq which-key-idle-delay 10000)
+  (setq which-key-idle-secondary-delay 0.05)
+  (which-key-mode))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here.

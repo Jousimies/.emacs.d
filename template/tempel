@@ -59,6 +59,11 @@ java-mode
 
 org-mode
 
+(tran_execude "#+transclude: " p " :exclude-elements"  " \"drawer keyword\"" n)
+(tran_content "#+transclude: " p " :only-contents" n)
+(tran_level "#+transclude: " p " :level" p n)
+(tran "#+transclude:  " p n)
+
 (title "#+title: " p n>
        "#+author: Jousimies" n>
        "#+language: zh" n n)

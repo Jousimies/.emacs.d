@@ -50,11 +50,11 @@
 (use-package org-download
   :hook (org-mode . org-download-enable)
   :general (my/space-leader-def
-             "od" '(:ignore t :wk "Download")
-             "odc" '(org-download-clipboard :wk "Download Clipboard")
-             "ody" '(org-download-yank :wk "Download Yank")
-             "odr" '(org-download-rename-last-file :wk "Rename last file")
-             "odR" '(org-download-rename-at-point :wk "Rename point"))
+             "d" '(:ignore t :wk "Download")
+             "dc" '(org-download-clipboard :wk "Download Clipboard")
+             "dy" '(org-download-yank :wk "Download Yank")
+             "dr" '(org-download-rename-last-file :wk "Rename last file")
+             "dR" '(org-download-rename-at-point :wk "Rename point"))
   :init
   (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
   (setq org-download-heading-lvl nil)
@@ -96,13 +96,7 @@
     (message "Convert finish: %s" docx-file)))
 
 (use-package org-anki
-  :after org
-  :commands org-anki-sync-entry
-  :general (my/space-leader-def
-             "oa" '(:ignore t :wk "Anki")
-             "oas" '(org-anki-sync-entry :wk "Sync")
-             "oaS" '(org-anki-sync-all :wk "Sync all")
-             "oad" '(org-anki-delete-entry :wk "Delete")))
+  :commands org-anki-sync-entry org-anki-sync-all org-anki-delete-entry)
 
 (use-package org-contacts
   :commands org-contacts

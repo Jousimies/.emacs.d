@@ -6,8 +6,8 @@
              ekg-show-notes-with-any-tags
              ekg-show-rename-tag
              ekg-browse-url)
-  :bind (("<f9>" . ekg-capture)
-         ("C-<f9>" . ekg-capture-url)
+  :bind (("C-<f10>" . ekg-capture)
+         ("M-<f10>" . ekg-capture-url)
          (:map ekg-notes-mode-map
                ("q" . quit-window)))
   :config
@@ -115,7 +115,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
     (my/link-grab)
     (forward-line -3)))
 
-(global-set-key (kbd "s-<f8>") 'my/menu--org-capture-safari)
+(global-set-key (kbd "M-<f8>") 'my/menu--org-capture-safari)
 
 (cl-defun my/denote-subdirectory (subdirectory)
   (denote
@@ -164,6 +164,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   ("t" my/denote-term "Terminology")
   ("b" my/denote-book "Books")
   ("o" my/denote-outline "Outline")
+  ("r" citar-create-note "References")
   ("q" nil))
 
 (defun my/denote-signature-or-subdirectory (arg)
@@ -176,9 +177,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   "gns" 'my/denote-signature-or-subdirectory)
 
 (evil-define-key '(normal visual) 'global
-  "gne" 'jf/menu--org-capture-elfeed-show
-  "gni" 'my/denote-reference-heading
-  "gng" 'jf/menu--org-capture-safari)
+  "gni" 'my/denote-reference-heading)
 
 (use-package dired-x
   :bind (:map dired-mode-map
@@ -222,18 +221,16 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   "gna" 'my/new-article)
 
 (use-package org-transclusion
-  :commands (org-transclusion-make-from-link org-transclusion-add org-transclusion-add-all)
-  :general (my/space-leader-def
-             "t" '(:ignore t :wk "Transclusion")
-             "ta" '(org-transclusion-add :wk "Add")
-             "tA" '(org-transclusion-add-all :wk "Add all")
-             "tr" '(org-transclusion-remove :wk "Remove")
-             "tR" '(org-transclusion-remove-all :wk "Remove all")
-             "tg" '(org-transclusion-refresh :wk "Refresh")
-             "tm" '(org-transclusion-make-from-link :wk "Make link")
-             "to" '(org-transclusion-open-source :wk "Open source")
-             "te" '(org-transclusion-live-sync-start :wk "Edit live"))
+  :commands (org-transclusion-make-from-link
+             org-transclusion-add
+             org-transclusion-add-all
+             org-transclusion-remove
+             org-transclusion-remove-all
+             org-transclusion-refresh
+             org-transclusion-open-source
+             org-transclusion-live-sync-start)
   :config
+  ;; https://github.com/nobiot/org-transclusion/issues/160#issuecomment-1377714791
   (defun denote-org-transclusion-add (link plist)
     (when (string= "denote" (org-element-property :type link))
       (let* ((denote-id (org-element-property :path link))
@@ -262,6 +259,16 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
                    (t
                     :foreground "white"))
                  'face-override-spec))
+
+(evil-define-key '(normal visual) org-mode-map
+  "gntm" 'org-transclusion-make-from-link
+  "gnta" 'org-transclusion-add
+  "gntA" 'org-transclusion-add-all
+  "gntr" 'org-transclusion-remove
+  "gntR" 'org-transclusion-remove-all
+  "gntg" 'org-transclusion-refresh
+  "gnto" 'org-transclusion-open-source
+  "gnts" 'org-transclusion-live-sync-start)
 
 (use-package org-noter
   :after org pdf-tools

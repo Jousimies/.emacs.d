@@ -43,8 +43,7 @@
   :hook ((minibuffer-setup . marginalia-mode)))
 
 (use-package embark
-  :general (my/space-leader-def
-             "oe" '(embark-open-externally :wk "Open externally"))
+  :commands embark-open-externally
   :bind (("C-." . embark-act)
          ("M-." . embark-dwim)
          (:map vertico-map
@@ -61,7 +60,7 @@
   :commands consult-outline
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :general (my/space-leader-def
-             "fr" '(consult-recent-file :wk "Recentf"))
+             "r" 'consult-recent-file)
   :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-line)
