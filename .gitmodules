@@ -526,3 +526,6 @@
 [submodule "packages/pinyinlib.el"]
 	path = packages/pinyinlib.el
 	url = https://github.com/cute-jumper/pinyinlib.el.git
+[submodule "packages/psearch.el"]
+	path = packages/psearch.el
+	url = https://github.com/twlz0ne/psearch.el.git

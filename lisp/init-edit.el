@@ -96,6 +96,9 @@
   :config
   (whitespace-cleanup-mode))
 
+(use-package psearch
+  :commands psearch-replace psearch-patch)
+
 (use-package pinyinlib
   :after orderless
   :config
