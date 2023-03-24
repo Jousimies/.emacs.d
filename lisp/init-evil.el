@@ -41,6 +41,7 @@
   (setq evil-emacs-state-tag " E ")
 
   (define-key evil-insert-state-map (kbd "C-e") #'move-end-of-line)
+  (define-key evil-insert-state-map (kbd "C-a") #'move-beginning-of-line)
   (define-key evil-insert-state-map (kbd "C-k") #'kill-line))
 
 (evil-define-key '(normal motion visual) 'global
