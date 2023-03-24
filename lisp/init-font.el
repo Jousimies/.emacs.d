@@ -1,5 +1,5 @@
 (set-face-attribute 'default nil :font "Iosevka Term" :height 160)
-(set-frame-font "Iosevka Term 16" nil t)
+;; (set-frame-font "Iosevka Term 16" nil t)
 (when (display-graphic-p)
   (dolist (charset '(kana han cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font)
