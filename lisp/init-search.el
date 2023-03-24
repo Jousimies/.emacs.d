@@ -1,9 +1,3 @@
-(use-package ctrlf
-  :after evil
-  :config
-  (ctrlf-mode)
-  (evil-global-set-key 'normal (kbd "/") 'ctrlf-forward-default))
-
 (use-package rg
   :commands rg
   :config

@@ -514,3 +514,9 @@
 [submodule "packages/consult-emms"]
 	path = packages/consult-emms
 	url = https://github.com/Hugo-Heagren/consult-emms.git
+[submodule "packages/evil-anzu"]
+	path = packages/evil-anzu
+	url = https://github.com/emacsorphanage/evil-anzu.git
+[submodule "packages/anzu"]
+	path = packages/anzu
+	url = https://github.com/emacsorphanage/anzu.git

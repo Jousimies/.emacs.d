@@ -24,5 +24,12 @@
   :config
   (evilem-default-keybindings "SPC"))
 
+(use-package anzu
+  :config
+  (global-anzu-mode 1))
+
+(use-package evil-anzu
+  :after evil anzu)
+
 (provide 'init-evil+)
 ;;; init-evil+.el ends here.
