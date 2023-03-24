@@ -99,37 +99,23 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-;") 'prot-dired-limit-regexp))
 
-(cl-defun jf/denote-capture-reference (&key
-                                       title
-                                       url
-                                       (keywords (denote-keywords-prompt))
-                                       (domain "literature"))
-  "Create a `denote' entry for the TITLE and URL.
-TODO: Would it make sense to prompt for the domain?
-"
-  (denote title
-          keywords
-          'org
-          (expand-file-name domain (denote-directory))
-          nil))
-
-(cl-defun jf/menu--org-capture-elfeed-show (&key (entry elfeed-show-entry))
-  "Create a `denote' from `elfeed' ENTRY."
-  (interactive)
-  (let* ((url (elfeed-entry-link entry))
-         (title (elfeed-entry-title entry)))
-    (jf/denote-capture-reference :url url :title title)))
-
-(defun jf/menu--org-capture-safari ()
-  "Create an `denote' entry from Safari page."
+(defun my/menu--org-capture-safari ()
+  "Create an `literature' denote entry from Safari page."
   (interactive)
   (let* ((link-title-pair (grab-mac-link-safari-1))
          (url (car link-title-pair))
-         (title (cadr link-title-pair)))
-    (jf/denote-capture-reference :url url :title title)
+         (title (cadr link-title-pair))
+         (keywords (denote-keywords-prompt)))
+    (denote title
+            keywords
+            'org
+            (expand-file-name "literature" (denote-directory))
+            nil)
     (my/denote-reference-heading)
     (my/link-grab)
     (forward-line -3)))
+
+(global-set-key (kbd "s-<f8>") 'my/menu--org-capture-safari)
 
 (cl-defun my/denote-subdirectory (subdirectory)
   (denote
