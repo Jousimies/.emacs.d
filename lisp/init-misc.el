@@ -306,6 +306,7 @@ This command can be called when in a file buffer or in `dired'."
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
 
 (use-package hydra
+  :commands defhydra
   :bind ("s-b" . my/hydra-org-symbol/body)
   :config
   (defun add-symbol-to-region (beg end symbol)

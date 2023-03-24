@@ -53,9 +53,6 @@
                                        (thread-last denote-directory (expand-file-name "literature"))
                                        (thread-last denote-directory (expand-file-name "term")))))
 
-(evil-define-key '(normal visual motion) 'global
-    "gns" 'denote-signature)
-
 (evil-define-key '(normal visual motion) dired-mode-map
   "gnr" 'denote-dired-rename-marked-files)
 
@@ -64,11 +61,11 @@
   "gnl" 'denote-link-or-create)
 
 (use-package denote-org-dblock
-  :after denote org)
+  :commands denote-org-dblock-insert-backlinks denote-org-dblock-insert-links)
 
-(evil-define-key '(normal visual) 'global
-    "gndl" 'denote-org-dblock-insert-links
-    "gndb" 'denote-org-dblock-insert-backlinks)
+(evil-define-key '(normal visual) org-mode-map
+  "gnL" 'denote-org-dblock-insert-links
+  "gnb" 'denote-org-dblock-insert-backlinks)
 
 (defvar prot-dired--limit-hist '()
   "Minibuffer history for `prot-dired-limit-regexp'.")
@@ -173,12 +170,28 @@ TODO: Would it make sense to prompt for the domain?
 
 (advice-add 'denote-signature :before #'my/denote-signature-from-filename)
 
+(defhydra my/hydra-denote-subdirectory (:color blue
+                                               :hint nil)
+  "
+  Create denote in subdirectory:
+"
+  ("t" my/denote-term "Terminology")
+  ("b" my/denote-book "Books")
+  ("o" my/denote-outline "Outline")
+  ("q" nil))
+
+(defun my/denote-signature-or-subdirectory (arg)
+  (interactive "P")
+  (if arg
+      (my/hydra-denote-subdirectory/body)
+    (denote-signature)))
+
+(evil-define-key '(normal visual motion) 'global
+  "gns" 'my/denote-signature-or-subdirectory)
+
 (evil-define-key '(normal visual) 'global
   "gne" 'jf/menu--org-capture-elfeed-show
-  "gnt" 'my/denote-term
   "gni" 'my/denote-reference-heading
-  "gnb" 'my/denote-book
-  "gno" 'my/denote-outline
   "gng" 'jf/menu--org-capture-safari)
 
 (use-package dired-x
