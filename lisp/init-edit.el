@@ -96,5 +96,13 @@
   :config
   (whitespace-cleanup-mode))
 
+(use-package pinyinlib
+  :after orderless
+  :config
+  (defun completion--regex-pinyin (str)
+    (orderless-regexp (pinyinlib-build-regexp-string str)))
+
+  (add-to-list 'orderless-matching-styles 'completion--regex-pinyin))
+
 (provide 'init-edit)
 ;;; init-edit.el ends here.
