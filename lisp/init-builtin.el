@@ -71,11 +71,6 @@
   (setq doc-view-continuous t))
 
 (use-package bookmark
-  :general (my/space-leader-def
-             "ba" 'bookmark-set
-             "br" 'bookmark-rename
-             "bd" 'bookmark-delete
-             "bj" 'bookmark-jump)
   :config
   (setq bookmark-default-file (expand-file-name "cache/bookmarks" user-emacs-directory)))
 
