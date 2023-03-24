@@ -35,6 +35,20 @@
 (use-package ace-window
   :bind ("C-x o" . ace-window))
 
+(defun my/scroll-other-windown-down ()
+  "Scroll other window down."
+  (interactive)
+  (scroll-other-window-down 2))
+
+(global-set-key (kbd "M-p") 'my/scroll-other-windown-down)
+
+(defun my/scroll-other-windown ()
+  "Scroll other window up."
+  (interactive)
+  (scroll-other-window 2))
+
+(global-set-key (kbd "M-n") 'my/scroll-other-windown)
+
 (use-package frame
   :config
   (face-spec-set 'window-divider

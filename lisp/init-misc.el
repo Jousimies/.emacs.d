@@ -233,20 +233,6 @@ This command can be called when in a file buffer or in `dired'."
 (my/space-leader-def
   "my" '(yt-set-time :wk "Youtube link time"))
 
-(defun switch-to-message ()
-  "Quick switch to `*Message*' buffer."
-  (interactive)
-  (switch-to-buffer "*Messages*"))
-
-(defun switch-to-scratch ()
-  "Quick switch to `*Scratch*' buffer."
-  (interactive)
-  (switch-to-buffer "*scratch*"))
-
-(my/space-leader-def
-  "bs" '(switch-to-scratch :wk "*scratch*")
-  "bm" '(switch-to-message :wk "*message*"))
-
 (defun my/inbox-file ()
   "Open inbox file."
   (interactive)
@@ -275,83 +261,64 @@ This command can be called when in a file buffer or in `dired'."
   (interactive)
   (find-file (expand-file-name "denote/books/20230301T211439--Book-lists-and-reading-record__reading.org" my-galaxy)))
 
-(my/space-leader-def
-  "f" '(:ignore t :wk "Open files")
-  "fb" '(my/reading-record :wk "Reading record")
-  "fi" '(my/inbox-file :wk "Inbox file")
-  "fI" '(my/index-file :wk "Index file")
-  "fp" '(my/plan-file :wk "Plan file")
-  "ff" '(my/finance-file :wk "Finance file")
-  "fR" '(my/reflection-file :wk "Reflection file")
-  "fg" '(my/gtd-file :wk "GTD file"))
-
 (defun my/start-server ()
   (interactive)
   (if (not (server-running-p))
       (server-start))
   (message "Server has started"))
 
-(defun my/scroll-other-windown-down ()
-  "Scroll other window down."
-  (interactive)
-  (scroll-other-window-down 2))
+(defhydra my/hydra-open-file (:color blue)
+  "
+  Open specific file.
+  "
+  ("b" my/reading-record "Books Reading")
+  ("e" my/rss-source "RSS")
+  ("f" my/finance-file "Finance")
+  ("g" my/gtd-file "GTD")
+  ("i" my/inbox-file "Inbox file")
+  ("p" my/plan-file "Plan file")
+  ("r" my/reflection-file "Reflection"))
 
-(global-set-key (kbd "M-p") 'my/scroll-other-windown-down)
+(my/space-leader-def
+  "f" 'my/hydra-open-file/body)
 
-(defun my/scroll-other-windown ()
-  "Scroll other window up."
-  (interactive)
-  (scroll-other-window 2))
+(defun add-symbol-to-region (beg end symbol)
+  (save-excursion
+    (goto-char end)
+    (insert (concat symbol " "))
+    (goto-char beg)
+    (insert (concat " " symbol))))
 
-(global-set-key (kbd "M-n") 'my/scroll-other-windown)
+(defun add-stars-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "*"))
 
-(use-package hydra
-  :commands defhydra
-  :bind ("s-b" . my/hydra-org-symbol/body)
-  :config
-  (defun add-symbol-to-region (beg end symbol)
-    (save-excursion
-      (goto-char end)
-      (insert (concat symbol " "))
-      (goto-char beg)
-      (insert (concat " " symbol))))
+(defun add-equal-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "="))
 
-  (defun add-stars-to-region (beg end)
-    (interactive "r")
-    (add-symbol-to-region beg end "*"))
+(defun add-underline-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "_"))
 
-  (defun add-equal-to-region (beg end)
-    (interactive "r")
-    (add-symbol-to-region beg end "="))
+(defun add-italic-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "/"))
 
-  (defun add-underline-to-region (beg end)
-    (interactive "r")
-    (add-symbol-to-region beg end "_"))
+(defun add-plus-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "+"))
 
-  (defun add-italic-to-region (beg end)
-    (interactive "r")
-    (add-symbol-to-region beg end "/"))
+(defhydra my/hydra-org-symbol (:color blue)
+      "
+    Add symbol to chinese char: "
+      ("*" add-stars-to-region)
+      ("=" add-equal-to-region)
+      ("_" add-underline-to-region)
+      ("/" add-italic-to-region)
+      ("+" add-plus-to-region))
 
-  (defun add-plus-to-region (beg end)
-    (interactive "r")
-    (add-symbol-to-region beg end "+"))
-
-  (defhydra my/hydra-org-symbol (:color blue)
-    "
-  Add symbol to chinese char: "
-    ("*" add-stars-to-region)
-    ("=" add-equal-to-region)
-    ("_" add-underline-to-region)
-    ("/" add-italic-to-region)
-    ("+" add-plus-to-region)))
-
-(use-package which-key
-  :after evil
-  :config
-  (setq which-key-show-early-on-C-h t)
-  (setq which-key-idle-delay 10000)
-  (setq which-key-idle-secondary-delay 0.05)
-  (which-key-mode))
+(global-set-key (kbd "s-b") 'my/hydra-org-symbol/body)
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.
