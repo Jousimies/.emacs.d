@@ -41,13 +41,14 @@
   (setq show-paren-context-when-offscreen 'overlay))
 
 (defun my/mode-line-padding ()
-  (let* ((r-length (string-width (format-mode-line global-mode-string))))
+  (let* ((r-length (string-width (format-mode-line mode-line-misc-info))))
     (propertize " "
-                'display `(space :align-to (- right ,(+ r-length 1))))))
+                'display `(space :align-to (- right ,(+ r-length 00))))))
 
 (setq mode-line-end-spaces
       '(""
-        global-mode-string))
+        mode-line-misc-info
+        ))
 
 (setq mode-line-position-column-line-format '(" %l,%c"))
 
@@ -59,6 +60,10 @@
                 (:propertize ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote))
                 mode-line-frame-identification
                 mode-line-buffer-identification
+                (:eval (propertize
+                        (concat
+                         "𝚻𝚨𝚩: "
+                         (alist-get 'group (tab-bar--current-tab))) 'face 'font-lock-constant-face))
                 "  "
                 mode-line-position
                 "  "
@@ -68,10 +73,6 @@
                                                    'face 'font-lock-type-face
                                                    'help-echo "Buffer is read-only"))))
                 "  "
-                (:eval (propertize
-                        (concat
-                         "𝚻𝚨𝚩: "
-                         (alist-get 'group (tab-bar--current-tab))) 'face 'font-lock-constant-face))
                 (:eval (my/mode-line-padding))
                 mode-line-end-spaces))
 
