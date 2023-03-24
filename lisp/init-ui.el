@@ -50,6 +50,14 @@
         mode-line-misc-info
         ))
 
+(add-to-list 'global-mode-string
+             '(:eval (propertize
+                      (concat
+                       "𝚻𝚨𝚩: "
+                       ;; (number-to-string (tab-bar--current-tab-index))
+                       ;; ": "
+                       (alist-get 'group (tab-bar--current-tab))) 'face 'font-lock-constant-face)))
+
 (setq mode-line-position-column-line-format '(" %l,%c"))
 
 (setq mode-line-percent-position '(-4 "%p"))
@@ -60,10 +68,6 @@
                 (:propertize ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote))
                 mode-line-frame-identification
                 mode-line-buffer-identification
-                (:eval (propertize
-                        (concat
-                         "𝚻𝚨𝚩: "
-                         (alist-get 'group (tab-bar--current-tab))) 'face 'font-lock-constant-face))
                 "  "
                 mode-line-position
                 "  "
