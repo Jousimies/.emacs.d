@@ -32,17 +32,12 @@
 (use-package org-gtd
   :commands org-gtd-capture org-gtd-engage org-gtd-process-inbox org-gtd-show-all-next org-gtd-show-stuck-projects
   :bind (("<f12>" . org-gtd-engage)
+         ("C-<f12>" . org-gtd-process-inbox)
+         ("s-<f12>" . org-gtd-show-stuck-projects)
          (:map org-gtd-process-map
                ("C-c c" . org-gtd-choose)))
   :init
   (setq org-gtd-update-ack "2.1.0")
-  :general (my/space-leader-def
-             "d" '(:ignore t :wk "Org gtd")
-             "dp" '(org-gtd-process-inbox :wk "Process")
-             "da" '(org-agenda-list :wk "Agenda list")
-             "de" '(org-gtd-engage :wk "Engage")
-             "dn" '(org-gtd-show-all-next :wk "Next tasks")
-             "ds" '(org-gtd-show-stuck-projects :wk "Stuck projects"))
   :custom
   (org-gtd-directory (expand-file-name "todos" my-galaxy))
   (org-agenda-property-list '("DELEGATED_TO"))
