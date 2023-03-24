@@ -258,8 +258,11 @@ TODO: Would it make sense to prompt for the domain?
                          (beginning-of-buffer)
                          (org-element-link-parser))))
         (org-transclusion-add-org-file new-link plist))))
-  (cl-pushnew 'denote-org-transclusion-add
-              org-transclusion-add-functions)
+  (cl-pushnew 'denote-org-transclusion-add org-transclusion-add-functions)
+
+  (psearch-patch org-transclusion-make-from-link
+    (psearch-replace '`(string= type "id")
+                     '`(string= type "denote")))
 
   (face-spec-set 'org-transclusion-fringe
                  '((((background light))
