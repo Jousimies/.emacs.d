@@ -28,8 +28,7 @@
              "mt" '(git-timemachine :wk "Timemachine")))
 
 (use-package browse-at-remote
-  :general (my/space-leader-def
-             "or" '(browse-at-remote :wk "Open remote")))
+  :bind ("M-<f4>" . browse-at-remote))
 
 (provide 'init-git)
 ;;; init-git.el ends here.
