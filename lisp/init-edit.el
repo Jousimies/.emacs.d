@@ -43,6 +43,9 @@
   :hook ((org-mode . abbrev-mode)
          (LaTeX-mode . abbrev-mode)))
 
+(use-package psearch
+  :commands psearch-replace psearch-patch)
+
 (use-package auto-save
   :demand t
   :config
@@ -74,7 +77,6 @@
                        (md5 (convert-standard-filename (expand-file-name filename))))
      (undo-fu-session--file-name-ext)))
   (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name)
-
   (undo-fu-session-global-mode))
 
 (use-package vundo
@@ -95,9 +97,6 @@
 (use-package whitespace-cleanup-mode
   :config
   (whitespace-cleanup-mode))
-
-(use-package psearch
-  :commands psearch-replace psearch-patch)
 
 (use-package pinyinlib
   :after orderless
