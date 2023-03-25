@@ -34,7 +34,7 @@
          (org-mode . org-appear-mode)))
 
 (use-package math-preview
-  :hook (org-mode . my/auto-math-preview-all)
+  :hook (org-mode . auto/math-preview-all)
   :general (my/space-leader-def
              "p" '(:ignore t :wk "Preview")
              "pa" '(math-preview-all :wk "All")
@@ -47,10 +47,17 @@
   (setq math-preview-scale 1.1)
   (setq math-preview-raise 0.2)
   (setq math-preview-margin '(1 . 0))
-  (defun my/auto-math-preview-all ()
-    (goto-char (point-min))
-    (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
-      (math-preview-all))))
+  (add-to-list 'org-options-keywords "NO_MATH_PREVIEW:")
+
+  (defun auto/math-preview-all ()
+    "Auto update clock table."
+    (interactive)
+    (when (derived-mode-p 'org-mode)
+      (save-excursion
+        (goto-char 0)
+        (unless (string-equal (cadar (org-collect-keywords '("NO_MATH_PREVIEW"))) "t")
+          (if (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
+              (math-preview-all)))))))
 
 (use-package org-download
   :hook (org-mode . org-download-enable)
