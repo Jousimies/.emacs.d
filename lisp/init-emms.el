@@ -6,10 +6,15 @@
   (setq emms-player-list '(emms-player-mpv))
   (setq emms-browser-covers #'emms-browser-cache-thumbnail-async)
   (setq emms-playlist-buffer-name "*Music*")
-  (add-to-list 'display-buffer-alist '((or (derived-mode . emms-playlist-mode)
-                                           (derived-mode . emms-browser-mode))
-                                       (display-buffer-in-tab)
-                                       (tab-name "Media") (tab-group "Media")))
+  (add-to-list 'display-buffer-alist '((derived-mode . emms-playlist-mode)
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-parameters
+                                        (window-width . 0.4)
+                                        (select . t)
+                                        (mode-line-format . none))))
+  (evil-define-key 'normal emms-playlist-mode-map
+    "q" 'quit-window)
 
   (defun my/toggle-emms (arg)
     "Toggle Emms playback: start if stopped, stop if playing.

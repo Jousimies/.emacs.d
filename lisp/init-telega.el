@@ -9,13 +9,13 @@
                    :type (:@type "proxyTypeSocks5"))))
   (add-to-list 'display-buffer-alist '((or (derived-mode . telega-chat-mode)
                                            (derived-mode . telega-root-mode))
-                                       (display-buffer-in-tab)
-                                       (tab-name . "Chat") (tab-group . "Chat")
+                                       (display-buffer-in-side-window)
+                                       (window-width . 0.4)
+                                       (side . right)
                                        (select . t)))
 
   (evil-define-key 'normal telega-root-mode-map
-    "gs" nil
-    "q" nil)
+    "gs" nil)
   (evil-define-key 'normal telega-msg-button-map
     "SPC" nil))
 
