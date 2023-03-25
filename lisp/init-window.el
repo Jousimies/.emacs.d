@@ -21,6 +21,7 @@
                                        (slot . 0)
                                        (window-width . 0.5)
                                        (window-parameters . ((no-other-window . t)
+                                                             (mode-line-format . none)
                                                              (no-delete-other-windows . t)))))
   (add-to-list 'display-buffer-alist '((or (derived-mode . org-mode)
                                            (derived-mode . LaTeX-mode))

@@ -133,11 +133,11 @@
   (setq org-attach-id-dir (expand-file-name "attach" my-galaxy))
   (add-to-list 'display-buffer-alist
                '("\\*Org Attach\\*"
-                 (display-buffer-pop-up-frame)
+                 (display-buffer-in-side-window)
                  (side . right)
-                 (slot . 0)
                  (window-width . 0.5)
                  (window-parameters . ((no-other-window . t)
+                                       (mode-line-format . none)
                                        (no-delete-other-windows . t))))))
 
 (with-eval-after-load 'dired
