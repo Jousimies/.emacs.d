@@ -64,7 +64,6 @@
   :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-line)
-         ([remap imenu] . consult-imenu)
          ([remap locate] . consult-locate)
          ([remap load-theme] . consult-theme)
          ([remap man] . consult-man)
@@ -75,6 +74,9 @@
          ([remap yank-pop] . consult-yank-pop)
          :map minibuffer-mode-map
          ("C-r" . consult-history)))
+
+(use-package consult-imenu
+  :bind (([remap imenu] . consult-imenu)))
 
 (evil-define-key 'normal dired-mode-map
   "/" 'consult-line)
