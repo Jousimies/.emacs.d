@@ -50,18 +50,6 @@
 
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
 
-(use-package frame
-  :config
-  (face-spec-set 'window-divider
-                 '((((background light))
-                    :foreground "#000000")
-                   (t
-                    :foreground "#FFFFFF"))
-                 'face-override-spec)
-  (setq window-divider-default-bottom-width 1)
-  (setq window-divider-default-places 'bottom-only)
-  (window-divider-mode))
-
 (use-package ace-window
   :bind ("C-x o" . ace-window))
 
