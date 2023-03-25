@@ -7,7 +7,6 @@
              ekg-show-rename-tag
              ekg-browse-url)
   :bind (("C-<f10>" . ekg-capture)
-         ("M-<f10>" . ekg-capture-url)
          (:map ekg-notes-mode-map
                ("q" . quit-window)))
   :config
@@ -115,7 +114,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
     (my/link-grab)
     (forward-line -3)))
 
-(global-set-key (kbd "M-<f8>") 'my/menu--org-capture-safari)
+(global-set-key (kbd "M-<f10>") 'my/menu--org-capture-safari)
 
 (cl-defun my/denote-subdirectory (subdirectory)
   (denote
