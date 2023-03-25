@@ -34,6 +34,7 @@
          (org-mode . org-appear-mode)))
 
 (use-package math-preview
+  :hook (org-mode . my/auto-math-preview-all)
   :general (my/space-leader-def
              "p" '(:ignore t :wk "Preview")
              "pa" '(math-preview-all :wk "All")
@@ -44,8 +45,12 @@
              "pR" '(math-preview-clear-region :wk "Clear Region"))
   :config
   (setq math-preview-scale 1.1)
-  (setq math-preview-raise 0.3)
-  (setq math-preview-margin '(1 . 0)))
+  (setq math-preview-raise 0.2)
+  (setq math-preview-margin '(1 . 0))
+  (defun my/auto-math-preview-all ()
+    (goto-char (point-min))
+    (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
+      (math-preview-all))))
 
 (use-package org-download
   :hook (org-mode . org-download-enable)
