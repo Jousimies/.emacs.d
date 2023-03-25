@@ -2,6 +2,8 @@
   :general (my/space-leader-def
              "t" '(telega :wk "Telega"))
   :config
+  (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))
+  (setq telega-chat-fill-column 60)
   (setq telega-server-libs-prefix "/opt/homebrew/opt/tdlib/")
   (setq telega-proxies
         (list
@@ -10,9 +12,11 @@
   (add-to-list 'display-buffer-alist '((or (derived-mode . telega-chat-mode)
                                            (derived-mode . telega-root-mode))
                                        (display-buffer-in-side-window)
-                                       (window-width . 0.4)
                                        (side . right)
-                                       (select . t)))
+                                       (window-width . 0.4)
+                                       (window-parameters
+                                        (select . t)
+                                        (mode-line-format . none))))
 
   (evil-define-key 'normal telega-root-mode-map
     "gs" nil)
