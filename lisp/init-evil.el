@@ -46,8 +46,7 @@
 
 (evil-define-key '(normal motion visual) 'global
   "ge" nil
-  "gn" nil
-  "zx" 'kill-this-buffer)
+  "gn" nil)
 
 (use-package evil-commands
   :bind (:map evil-motion-state-map

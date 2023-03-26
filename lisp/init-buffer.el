@@ -14,8 +14,7 @@
 (my/space-leader-def
   "b" '(:ignore t :wk "Buffer")
   "bs" '(switch-to-scratch :wk "*scratch*")
-  "bm" '(switch-to-message :wk "*message*")
-  "bk" '(kill-this-buffer :wk "Kill"))
+  "bm" '(switch-to-message :wk "*message*"))
 
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer))
