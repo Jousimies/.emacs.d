@@ -50,7 +50,8 @@
                                        (thread-last denote-directory (expand-file-name "books"))
                                        (thread-last denote-directory (expand-file-name "outline"))
                                        (thread-last denote-directory (expand-file-name "literature"))
-                                       (thread-last denote-directory (expand-file-name "term")))))
+                                       (thread-last denote-directory (expand-file-name "term"))
+                                       (thread-last denote-directory (expand-file-name "references")))))
 
 (evil-define-key '(normal visual motion) dired-mode-map
   "gnr" 'denote-dired-rename-marked-files)
@@ -203,6 +204,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
           ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
           ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
           ("Outline"  ?o ,(expand-file-name "denote/outline" my-galaxy))
+          ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
           ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy)))))
 
 (evil-define-key '(normal motion visual) 'global
