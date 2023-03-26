@@ -43,7 +43,7 @@
 (defun my/mode-line-padding ()
   (let* ((r-length (string-width (format-mode-line mode-line-misc-info))))
     (propertize " "
-                'display `(space :align-to (- right ,(+ r-length 00))))))
+                'display `(space :align-to (- right ,r-length)))))
 
 (setq mode-line-end-spaces
       '(""
