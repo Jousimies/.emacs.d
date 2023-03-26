@@ -1,10 +1,3 @@
-(use-package langtool
-  :commands langtool-check-buffer
-  :config
-  (setq langtool-http-server-host "localhost")
-  (setq langtool-http-server-port 8081)
-  (setq langtool-autoshow-message-function #'langtool-popup-autoshow))
-
 (use-package dictionary
   :bind ("M-#" . dictionary-lookup-definition)
   :config
