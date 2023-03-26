@@ -1,6 +1,6 @@
 (use-package frame
   :config
-  (add-to-list 'default-frame-alist '(alpha . (85 . 100)))
+  (add-to-list 'initial-frame-alist '(alpha . (85 . 100)))
   (blink-cursor-mode -1))
 
 (defun ct/frame-center (&optional frame)
