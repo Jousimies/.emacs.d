@@ -28,7 +28,7 @@
              "mt" '(git-timemachine :wk "Timemachine")))
 
 (use-package browse-at-remote
-  :bind ("C-<f4>" . browse-at-remote))
+  :bind ("M-<f4>" . browse-at-remote))
 
 (provide 'init-git)
 ;;; init-git.el ends here.

@@ -18,9 +18,9 @@ With universal argument (C-u), pause playback instead of stopping."
       (my/music)))
 
 (use-package emms
-  :bind (("C-<f8>" . my/toggle-emms)
-         ("C-<f9>" . emms-seek-forward)
-         ("C-<f7>" . emms-seek-backward))
+  :bind (("<f8>" . my/toggle-emms)
+         ("<f9>" . emms-seek-forward)
+         ("<f7>" . emms-seek-backward))
   :config
   (setq emms-directory (expand-file-name "cache/emms" user-emacs-directory))
   (setq emms-player-list '(emms-player-mpv))

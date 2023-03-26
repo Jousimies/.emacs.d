@@ -152,8 +152,7 @@
                            (require 'init-chatgpt)))
 
 (use-package server
-  :hook (after-init . server-start)
-  :bind ("C-c q r" . restart-emacs))
+  :hook (after-init . server-start))
 
 (use-package gcmh
   :hook ((after-init . gcmh-mode)

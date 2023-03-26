@@ -14,11 +14,11 @@
 
 (use-package grab-mac-link
   :commands grab-mac-link-dwim grab-mac-link-safari-1
+  :bind ("<f4>" . my/link-grab)
   :preface
   (defun my/link-grab ()
     (interactive)
-    (grab-mac-link-dwim 'safari))
-  :bind ("<f8>" . my/link-grab))
+    (grab-mac-link-dwim 'safari)))
 
 (use-package file-info
   :general (my/space-leader-def
