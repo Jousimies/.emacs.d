@@ -43,13 +43,8 @@
                     denote-keywords-prompt
                     denote-rename-file
                     denote-link-or-create)
-  :hook ((dired-mode . denote-dired-mode-in-directories)
-         (org-mode . my/denote-olivetti))
+  :hook (dired-mode . denote-dired-mode-in-directories)
   :config
-  (defun my/denote-olivetti ()
-    (interactive)
-    (when (denote-file-is-note-p (buffer-file-name))
-      (olivetti-mode)))
   (setq denote-directory (expand-file-name "denote" my-galaxy))
   (setq denote-dired-directories (list denote-directory
                                        (thread-last denote-directory (expand-file-name "books"))
