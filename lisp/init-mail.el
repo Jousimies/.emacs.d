@@ -2,20 +2,20 @@
 (setq user-mail-address "duan_n@outlook.com")
 
 (use-package mu4e
-  :load-path "/opt/homebrew/opt/mu/share/emacs/site-lisp/mu/mu4e/"
+  :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
+  :commands mu4e
   :general (my/space-leader-def
              "e" '(mu4e :wk "MAIL"))
   :config
-  (mu4e 'background)
-  (setq mu4e-confirm-quit t)
+  (setq mu4e-confirm-quit nil)
   (add-to-list 'display-buffer-alist '((or (derived-mode . mu4e-main-mode)
                                            (derived-mode . mu4e-view-mode)
                                            (derived-mode . mu4e-headers-mode))
                                        (display-buffer-in-tab)
                                        (tab-name . "Mail") (tab-group . "Mail")
-                                       (select . t)
-                                       (window-parameters
-                                        (mode-line-format . none)))))
+                                       (select . t))))
+(run-with-timer 2 nil (lambda ()
+                        (mu4e 'background)))
 
 (use-package mu4e-main
   :after mu4e
@@ -49,6 +49,11 @@
 (use-package mu4e-view
   :after mu4e
   :config
+  (evil-set-initial-state 'mu4e-view-mode 'normal)
+  (evil-define-key 'normal mu4e-view-mode-map
+    "a" 'mu4e-view-action
+    "q" 'quit-window)
+
   (defun extra-email-to-pdf (msg &optional args)
     "Pdf temp file MSG to a new name with ARGS ignored."
     (let* ((async-shell-command-display-buffer nil)
@@ -82,6 +87,11 @@
   (add-to-list 'mu4e-view-actions '("download as html"  . extra-save-email-html))
   (add-to-list 'mu4e-view-actions '("print to PDF"  . extra-print-email-to-pdf)))
 
+(use-package mu4e-modeline
+  :after mu4e
+  :config
+  (mu4e-modeline-mode))
+
 (use-package mu4e-context
   :after mu4e
   :config
@@ -90,6 +100,10 @@
 (use-package mu4e-headers
   :after mu4e
   :config
+  (evil-set-initial-state 'mu4e-headers-mode 'normal)
+  (evil-define-key 'normal mu4e-headers-mode-map
+    "q" 'quit-window)
+
   (setq mu4e-headers-precise-alignment t)
   (setq mu4e-headers-include-related t)
   (setq mu4e-headers-auto-update t)
@@ -174,16 +188,6 @@
                                   user-full-name
                                   "*\n\n" (format-time-string "%Y-%m-%d")
                                   "\n#+end_signature")))
-
-(use-package mu4e-alert
-  :after mu4e
-  :config
-  (mu4e-alert-set-default-style 'osx-notifier)
-  (mu4e-alert-enable-notifications)
-  (mu4e-alert-enable-mode-line-display))
-
-(use-package mu4e-column-faces
-  :hook (mu4e-headers-mode . mu4e-column-faces-mode))
 
 (provide 'init-mail)
 ;;; init-mail.el ends here.
