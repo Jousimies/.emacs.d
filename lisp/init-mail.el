@@ -1,5 +1,10 @@
 (setq user-full-name "Duan Ning")
-(setq user-mail-address "duan_n@outlook.com")
+
+(defvar mu4e-outlook (auth-source-pick-first-password :host "mu4e" :user "outlook")
+  "My outlook mail address.")
+
+(defvar mu4e-gmail (auth-source-pick-first-password :host "mu4e" :user "gmail")
+  "My gmail mail address.")
 
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
@@ -11,7 +16,7 @@
   (add-to-list 'display-buffer-alist '((derived-mode . mu4e-main-mode)
                                        (display-buffer-in-side-window)
                                        (side . right)
-                                       (window-width . 0.4)
+                                       (window-width . 0.45)
                                        (select . t)
                                        (window-parameters
                                         (mode-line-format . none))))
@@ -46,11 +51,12 @@
 (use-package mu4e-folders
   :after mu4e
   :config
-  (setq mu4e-attachment-dir "~/Downloads/")
-  (setq mu4e-sent-folder   "/outlook/Sent"
-        mu4e-drafts-folder "/outlook/Drafts"
-        mu4e-trash-folder  "/outlook/Deleted"
-        mu4e-refile-folder  "/outlook/Archive"))
+  (setq mu4e-maildir-shortcuts
+        '(("/outlook/INBOX" . ?o)
+          ("/outlook/Sent Messages" . ?O)
+          ("/gmail/INBOX" . ?g)
+          ("/gmail/[Gmail]/Sent Mail" . ?G)))
+  (setq mu4e-attachment-dir "~/Downloads/"))
 
 (use-package mu4e-view
   :after mu4e
@@ -101,6 +107,41 @@
 (use-package mu4e-context
   :after mu4e
   :config
+  (setq mu4e-contexts
+      `(,(make-mu4e-context
+          :name "Outlook"
+          :enter-func
+          (lambda () (mu4e-message "Enter outlook context"))
+          :leave-func
+          (lambda () (mu4e-message "Leave outlook context"))
+          :match-func
+          (lambda (msg)
+            (when msg
+              (mu4e-message-contact-field-matches msg
+                                                  :to 'mu4e-outlook)))
+          :vars `((user-mail-address . ,mu4e-outlook)
+                  (mu4e-drafts-folder . "/outlook/Drafts")
+                  (mu4e-refile-folder . "/outlook/Archive")
+                  (mu4e-sent-folder . "/outlook/Sent Messages")
+                  (mu4e-trash-folder . "/outlook/Deleted Messages")))
+
+        ,(make-mu4e-context
+          :name "gmail"
+          :enter-func
+          (lambda () (mu4e-message "Enter gmail context"))
+          :leave-func
+          (lambda () (mu4e-message "Leave gmail context"))
+          :match-func
+          (lambda (msg)
+            (when msg
+              (mu4e-message-contact-field-matches msg
+                                                  :to 'mu4e-gmail)))
+          :vars `((user-mail-address . ,mu4e-gmail)
+                  (mu4e-drafts-folder . "/gmail/Drafts")
+                  (mu4e-refile-folder . "/gmail/Archive")
+                  (mu4e-sent-folder . "/gmail/Sent")
+                  (mu4e-trash-folder . "/gmail/Trash")))))
+
   (setq mu4e-context-policy 'pick-first))
 
 (use-package mu4e-headers
@@ -141,9 +182,10 @@
   :config
   (setq mu4e-bookmarks '(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
                          ("date:today..now" "Today's messages" ?t)
+                         ("flag:trashed" "Trashed" ?T)
                          ("date:7d..now" "Last 7 days" ?w)
-                         ("date:1d..now AND NOT list:emacs-orgmode.gnu.org" "Last 1 days" ?o)
-                         ("date:1d..now AND list:emacs-orgmode.gnu.org" "Last 1 days (org mode)" ?m)
+                         ;; ("date:1d..now AND NOT list:emacs-orgmode.gnu.org" "Last 1 days" ?o)
+                         ;; ("date:1d..now AND list:emacs-orgmode.gnu.org" "Last 1 days (org mode)" ?m)
                          ("maildir:/drafts" "drafts" ?d)
                          ("flag:flagged AND NOT flag:trashed" "flagged" ?f)
                          ("mime:image/*" "Messages with images" ?p))))
@@ -176,7 +218,9 @@
   :config
   (setq sendmail-program (executable-find "msmtp"))
   (setq mail-specify-envelope-from t)
-  (setq mail-envelope-from 'header))
+  (setq mail-envelope-from 'header)
+  (setq send-mail-function 'message-send-mail-with-sendmail)
+  (setq message-send-mail-function 'message-send-mail-with-sendmail))
 
 (use-package org-msg
   :hook (mu4e-main-mode . org-msg-mode)
