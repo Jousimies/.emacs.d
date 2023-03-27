@@ -89,5 +89,8 @@
   :config
   (setq multisession-directory (expand-file-name "cache/multisession" user-emacs-directory)))
 
+(use-package cursor-sensor
+  :hook (minibuffer-setup . cursor-intangible-mode))
+
 (provide 'init-builtin)
 ;;; init-builtin.el ends here.

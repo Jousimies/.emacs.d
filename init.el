@@ -105,6 +105,13 @@
       '(read-only t cursor-intangible t face minibuffer-prompt))
 (setq max-mini-window-height 10)
 
+(defun my/emacs-config ()
+  "My literate Emacs configuration."
+  (interactive)
+  (find-file (expand-file-name "emacs.org" user-emacs-directory)))
+
+(global-set-key (kbd "s-,") 'my/emacs-config)
+
 ;; (setq use-package-compute-statistics t)
 ;; (setq use-package-verbose t)
 ;; (require 'init-benchmark)

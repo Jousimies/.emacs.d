@@ -18,26 +18,26 @@
 
 (use-package vertico
   :load-path "~/.emacs.d/packages/vertico"
-  :demand t
+  :commands vertico-mode
   :bind (:map vertico-map
               ("C-j" . vertico-next)
               ("C-k" . vertico-previous))
-  :config
+  :init
   (vertico-mode)
+  :config
+  (setq vertico-count 15)
+  (setq vertico-resize t)
   (setq vertico-cycle t))
 
 (use-package vertico-directory
   :after vertico
   :bind (:map vertico-map
-        ("C-u" . vertico-directory-up)))
+              ("C-u" . vertico-directory-up)))
 
-;; (use-package vertico-multiform
-;;   :after consult
-;;   :config
-;;   (vertico-multiform-mode)
-;;   (setq vertico-multiform-commands
-;;         '((consult-notes (vertico-sort-function . vertico-sort-alpha))))
-;;   (setq consult-notes-denote-display-id nil))
+(use-package vertico-indexed
+  :after vertico
+  :config
+  (vertico-indexed-mode))
 
 (use-package marginalia
   :hook ((minibuffer-setup . marginalia-mode)))

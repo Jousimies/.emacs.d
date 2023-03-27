@@ -22,12 +22,14 @@
               (lambda (orig &rest args)
                 (shut-up (apply orig args)))))
 
-(use-package flyspell
-  :hook (org-mode . flyspell-mode))
-
-(use-package flyspell-correct
-  :commands flyspell-correct-wrapper
-  :bind ([remap flyspell-auto-correct-previous-word] . flyspell-correct-wrapper))
+(use-package jinx
+  :hook (org-mode . jinx-mode)
+  ;; :bind ("C-c c" . jinx-correct)
+  :bind (:map jinx-misspelled-map
+              ("C-;" . jinx-correct))
+  :config
+  (add-to-list 'jinx-exclude-regexps '(t "\\cc"))
+  (setq jinx-languages '("en" "fr" "de")))
 
 (provide 'init-spell)
 ;;; init-spell.el ends here.

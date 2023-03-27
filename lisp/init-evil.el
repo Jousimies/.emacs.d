@@ -5,13 +5,6 @@
     :non-normal-prefix "M-SPC"
     :states '(normal visual insert emacs)))
 
-(defun my/emacs-config ()
-  "My literate Emacs configuration."
-  (interactive)
-  (find-file (expand-file-name "emacs.org" user-emacs-directory)))
-
-(global-set-key (kbd "s-,") 'my/emacs-config)
-
 (use-package hydra
   :commands defhydra)
 
