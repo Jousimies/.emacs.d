@@ -146,6 +146,28 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   (insert "\n* References\n"))
 
 ;;;###autoload
+(defun my/org-insert-web-page-archive ()
+    "Insert a file about web page archived locally into an Org file as reference."
+  (interactive)
+  (let* ((url (car (grab-mac-link-safari-1)))
+         (title (cadr (grab-mac-link-safari-1)))
+         (ID (format-time-string "%Y%m%dT%H%M%S"))
+         (new-title (concat ID "--" title))
+         (file-path (concat my/web_archive title ".html"))
+         (file-new-path (concat my/web_archive new-title ".html")))
+    (save-excursion
+      (goto-char (point-max))
+      (if (file-exists-p file-path)
+          (progn
+            (rename-file file-path file-new-path)
+            (insert "* ")
+            (org-insert-link nil file-new-path title)
+            (org-set-property "URL" url)
+            (org-set-tags "Reference")
+            (my/auto-change-file-paths))
+        (message "Please save web page first.")))))
+
+;;;###autoload
 (defun my/denote-signature-from-filename ()
   (interactive)
   (let* ((mode (buffer-local-value 'major-mode (current-buffer)))
@@ -177,7 +199,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   "gns" 'my/denote-signature-or-subdirectory)
 
 (evil-define-key '(normal visual) 'global
-  "gni" 'my/denote-reference-heading)
+  "gni" 'my/org-insert-web-page-archive)
 
 (use-package dired-x
   :bind (:map dired-mode-map

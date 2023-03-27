@@ -19,6 +19,13 @@
                                        (tab-name . "Dired")
                                        (tab-group . "Dired"))))
 
+(defun my/eww-html-file ()
+  (interactive)
+  (let* ((file (dired-get-filename)))
+    (eww (concat "file://" file))))
+
+(define-key dired-mode-map (kbd "C-c e") 'my/eww-html-file)
+
 (use-package dired-hide-dotfiles
   :hook (dired-mode . dired-hide-dotfiles-mode)
   :bind (:map dired-mode-map

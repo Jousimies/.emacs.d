@@ -78,6 +78,9 @@
 (defvar my-galaxy (expand-file-name "L.Personal.Galaxy" my-cloud)
   "This folder stores all the plain text files of my life.")
 
+(defvar my/web_archive (expand-file-name "web_archive/" my-galaxy)
+  "The folder save web pages.")
+
 (defvar website-directory "~/Nextcloud/L.Personal.Galaxy/website"
   "The source folder of my blog.")
 
