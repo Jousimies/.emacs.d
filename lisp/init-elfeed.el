@@ -41,8 +41,11 @@
                  (:elements (query . finance)))
           (group (:title . "Youtube")
                  (:elements (query . video)))))
-  (add-to-list 'display-buffer-alist '((or (derived-mode . elfeed-summary-mode)
-                                           (derived-mode . elfeed-search-mode)
+  (add-to-list 'display-buffer-alist '((derived-mode . elfeed-summary-mode)
+                                       (display-buffer-in-tab)
+                                       (tab-name . "RSS") (tab-group . "RSS")
+                                       (select . t)))
+  (add-to-list 'display-buffer-alist '((or (derived-mode . elfeed-search-mode)
                                            (derived-mode . elfeed-show-mode))
                                        (display-buffer-in-tab)
                                        (tab-name . "RSS") (tab-group . "RSS")
@@ -52,9 +55,6 @@
 
   (advice-add 'elfeed-summary :after 'elfeed-summary-update)
   (advice-add 'elfeed-summary :before 'elfeed-org))
-
-(evil-define-key 'normal elfeed-summary-mode-map
-    "q" nil)
 
 (provide 'init-elfeed)
 ;;; init-elfeed.el ends here.

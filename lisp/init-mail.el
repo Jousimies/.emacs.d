@@ -8,8 +8,14 @@
              "e" '(mu4e :wk "MAIL"))
   :config
   (setq mu4e-confirm-quit nil)
-  (add-to-list 'display-buffer-alist '((or (derived-mode . mu4e-main-mode)
-                                           (derived-mode . mu4e-view-mode)
+  (add-to-list 'display-buffer-alist '((derived-mode . mu4e-main-mode)
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 0.4)
+                                       (select . t)
+                                       (window-parameters
+                                        (mode-line-format . none))))
+  (add-to-list 'display-buffer-alist '((or (derived-mode . mu4e-view-mode)
                                            (derived-mode . mu4e-headers-mode))
                                        (display-buffer-in-tab)
                                        (tab-name . "Mail") (tab-group . "Mail")
