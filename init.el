@@ -110,9 +110,11 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
-;; (setq use-package-compute-statistics t)
-;; (setq use-package-verbose t)
-;; (require 'init-benchmark)
+(when init-file-debug
+  (setq use-package-compute-statistics t)
+  (setq use-package-verbose t)
+  (require 'init-benchmark))
+
 (require 'init-dashboard)
 
 (add-hook 'after-init-hook (lambda ()
@@ -154,13 +156,6 @@
                          (require 'init-music)
                          (require 'init-telega)
                          (require 'init-keybindings)))
-
-(defun my/emacs-config ()
-  "My literate Emacs configuration."
-  (interactive)
-  (find-file (expand-file-name "init.el" user-emacs-directory)))
-
-(global-set-key (kbd "s-,") 'my/emacs-config)
 
 (use-package server
   :hook (after-init . server-start))
