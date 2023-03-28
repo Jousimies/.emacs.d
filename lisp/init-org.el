@@ -16,6 +16,8 @@
         org-startup-with-inline-images t
         org-image-actual-width '(500)
         org-use-speed-commands t)
+  (setq org-preview-latex-default-process 'dvisvgm)
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
   (setq org-highlight-latex-and-related '(latex script))
   (setq org-enforce-todo-dependencies t)
   (setq org-enforce-todo-checkbox-dependencies t)
