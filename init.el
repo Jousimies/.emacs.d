@@ -66,24 +66,7 @@
     (setq exec-path (split-string path-from-shell path-separator))))
 (set-exec-path-from-shell-PATH)
 
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-
-(defvar my-cloud "~/Nextcloud"
-  "This folder is My cloud.")
-
-;; L.Personal.Galaxy location may change, but folders in this directory never change.
-(defvar my-galaxy (expand-file-name "L.Personal.Galaxy" my-cloud)
-  "This folder stores all the plain text files of my life.")
-
-(defvar my/web_archive (expand-file-name "web_archive/" my-galaxy)
-  "The folder save web pages.")
-
-(defvar website-directory "~/Nextcloud/L.Personal.Galaxy/website"
-  "The source folder of my blog.")
-
+;; Variables defined in C source code
 (setq ring-bell-function 'ignore)
 (setq tab-width 4)
 (setq use-file-dialog nil)
@@ -108,58 +91,76 @@
       '(read-only t cursor-intangible t face minibuffer-prompt))
 (setq max-mini-window-height 10)
 
-(defun my/emacs-config ()
-  "My literate Emacs configuration."
-  (interactive)
-  (find-file (expand-file-name "emacs.org" user-emacs-directory)))
+;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
+(defvar my-cloud "~/Nextcloud"
+  "This folder is My cloud.")
 
-(global-set-key (kbd "s-,") 'my/emacs-config)
+;; L.Personal.Galaxy location may change, but folders in this directory never change.
+(defvar my-galaxy (expand-file-name "L.Personal.Galaxy" my-cloud)
+  "This folder stores all the plain text files of my life.")
+
+(defvar my/web_archive (expand-file-name "web_archive/" my-galaxy)
+  "The folder save web pages.")
+
+(defvar website-directory "~/Nextcloud/L.Personal.Galaxy/website"
+  "The source folder of my blog.")
+
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
 
 ;; (setq use-package-compute-statistics t)
 ;; (setq use-package-verbose t)
 ;; (require 'init-benchmark)
-(require 'init-recentf)
 (require 'init-dashboard)
-(add-hook 'after-init-hook #'(lambda ()
-                               (require 'init-evil)
-                               (require 'init-font)
-                               (require 'init-theme)
-                               (require 'init-tab)
-                               (require 'init-frame)
-                               (require 'init-ui)
-                               (require 'init-builtin)
-                               (require 'init-window)))
 
-(run-with-timer 1 nil  #'(lambda ()
-                           (require 'init-evil+)
-                           (require 'init-buffer)
-                           (require 'init-dired)
-                           (require 'init-edit)
-                           (require 'init-completion)
-                           (require 'init-template)
-                           (require 'init-prog)
-                           (require 'init-sis)
-                           (require 'init-misc)
-                           (require 'init-search)
-                           (require 'init-git)
-                           (require 'init-helpful)
-                           (require 'init-spell)
-                           (require 'init-latex)
-                           (require 'init-translate)
-                           (require 'init-org)
-                           (require 'init-org+)
-                           (require 'init-note)
-                           (require 'init-blog)
-                           (require 'init-bib)
-                           (require 'init-gtd)
-                           (require 'init-finance)
-                           (require 'init-reader)
-                           (require 'init-elfeed)
-                           (require 'init-mail)
-                           (require 'init-emms)
-                           (require 'init-telega)
-                           (require 'init-vterm)
-                           (require 'init-chatgpt)))
+(add-hook 'after-init-hook (lambda ()
+                             (require 'init-font)
+                             (require 'init-theme)
+                             (require 'init-mode-line)
+                             (require 'init-evil)
+                             (require 'init-tab)
+                             (require 'init-frame)
+                             (require 'init-ui)
+                             (require 'init-builtin)))
+
+(run-with-timer 1 nil  (lambda ()
+                         (require 'init-crud)
+                         (require 'init-buffer)
+                         (require 'init-completion)
+                         (require 'init-dired)
+                         (require 'init-search)
+                         (require 'init-template)
+                         (require 'init-input-method)
+                         (require 'init-english)
+                         (require 'init-lsp)
+                         (require 'init-python)
+                         (require 'init-yaml)
+                         (require 'init-markdown)
+                         (require 'init-git)
+                         (require 'init-org)
+                         (require 'init-org+)
+                         (require 'init-note)
+                         (require 'init-gtd)
+                         (require 'init-finance)
+                         (require 'init-blog)
+                         (require 'init-bib)
+                         (require 'init-latex)
+                         (require 'init-reader)
+                         (require 'init-elfeed)
+                         (require 'init-mail)
+                         (require 'init-misc)
+                         (require 'init-music)
+                         (require 'init-telega)
+                         (require 'init-keybindings)))
+
+(defun my/emacs-config ()
+  "My literate Emacs configuration."
+  (interactive)
+  (find-file (expand-file-name "init.el" user-emacs-directory)))
+
+(global-set-key (kbd "s-,") 'my/emacs-config)
 
 (use-package server
   :hook (after-init . server-start))
@@ -171,6 +172,10 @@
   (setq gcmh-idle-delay 'auto)
   (setq gcmh-auto-idle-delay-factor 10)
   (setq gcmh-high-cons-threshold #x1000000))
+
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 (add-hook 'window-setup-hook
           (lambda ()

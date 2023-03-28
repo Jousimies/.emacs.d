@@ -1,10 +1,3 @@
-(use-package emacs-nerd-icons
-  :config
-  (setq emacs-nerd-icons-font-family "Hack Nerd Font Mono"))
-
-(use-package emacs-nerd-icons-dired
-  :hook (dired-mode . emacs-nerd-icons-dired-mode))
-
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
 
@@ -40,51 +33,6 @@
   (setq show-paren-style 'parenthesis)
   (setq show-paren-context-when-offscreen 'overlay))
 
-(defun my/mode-line-padding ()
-  (let* ((r-length (string-width (format-mode-line mode-line-misc-info))))
-    (propertize " "
-                'display `(space :align-to (- right ,(+ r-length 1))))))
-
-(setq mode-line-end-spaces
-      '(""
-        mode-line-misc-info
-        ))
-
-(add-to-list 'global-mode-string
-             '(:eval (propertize
-                      (concat
-                       "𝚻𝚨𝚩: "
-                       ;; (number-to-string (tab-bar--current-tab-index))
-                       ;; ": "
-                       (alist-get 'group (tab-bar--current-tab))) 'face 'font-lock-constant-face)))
-
-(setq mode-line-position-column-line-format '(" %l,%c"))
-
-(setq mode-line-percent-position '(-4 "%p"))
-
-(setq-default mode-line-format
-              `("%e"
-                mode-line-front-space
-                (:propertize ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote))
-                mode-line-frame-identification
-                mode-line-buffer-identification
-                "  "
-                mode-line-position
-                "  "
-                (vc-mode vc-mode)
-                (:eval (when buffer-read-only
-                         (concat "  "  (propertize "RO"
-                                                   'face 'font-lock-type-face
-                                                   'help-echo "Buffer is read-only"))))
-                "  "
-                (:eval (my/mode-line-padding))
-                mode-line-end-spaces))
-
-(use-package mode-line-bell
-  :defer 1
-  :config
-  (mode-line-bell-mode))
-
 (use-package rainbow-mode
   :hook (prog-mode . rainbow-mode))
 
@@ -107,13 +55,6 @@
 
 (use-package page-break-lines
   :hook (org-mode . page-break-lines-mode))
-
-(use-package prog-mode
-  :hook ((prog-mode . prettify-symbols-mode)
-         (LaTeX-mode . prettify-symbols-mode))
-  :config
-  (setq prettify-symbols-alist '(("lambda" . ?λ)
-                                 ("function" . ?𝑓))))
 
 (provide 'init-ui)
 ;;; init-ui.el ends here.

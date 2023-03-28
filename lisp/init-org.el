@@ -48,6 +48,9 @@
   :bind (:map org-mode-map
               ("C-c l" . org-store-link)))
 
+(use-package org-auto-tangle
+  :hook (org-mode . org-auto-tangle-mode))
+
 (use-package ob-core
   :after org
   :config
@@ -281,6 +284,44 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
   (let (reading-list)
     (append reading-list
             (file-expand-wildcards (expand-file-name "denote/books/*.org" my-galaxy)))))
+
+(defun add-symbol-to-region (beg end symbol)
+  (save-excursion
+    (goto-char end)
+    (insert (concat symbol " "))
+    (goto-char beg)
+    (insert (concat " " symbol))))
+
+(defun add-stars-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "*"))
+
+(defun add-equal-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "="))
+
+(defun add-underline-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "_"))
+
+(defun add-italic-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "/"))
+
+(defun add-plus-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "+"))
+
+(defhydra my/hydra-org-symbol (:color blue)
+      "
+    Add symbol to chinese char: "
+      ("*" add-stars-to-region)
+      ("=" add-equal-to-region)
+      ("_" add-underline-to-region)
+      ("/" add-italic-to-region)
+      ("+" add-plus-to-region))
+
+(global-set-key (kbd "s-b") 'my/hydra-org-symbol/body)
 
 (provide 'init-org)
 ;;; init-org.el ends here.

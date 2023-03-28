@@ -58,10 +58,21 @@
   :config
   (setq calc-window-height 15))
 
-(use-package autorevert
-  :hook (text-mode . global-auto-revert-mode))
+(use-package so-long
+  :hook (text-mode . global-so-long-mode))
+
+(use-package prog-mode
+  :hook ((prog-mode . prettify-symbols-mode)
+         (LaTeX-mode . prettify-symbols-mode))
+  :config
+  (setq prettify-symbols-alist '(("lambda" . ?λ)
+                                 ("function" . ?𝑓))))
 
 (add-hook 'prog-mode-hook 'outline-minor-mode)
+
+(use-package pixel-scroll
+  :config
+  (pixel-scroll-precision-mode))
 
 (use-package doc-view
   :defer t
@@ -70,14 +81,13 @@
   (setq doc-view-imenu-flatten t)
   (setq doc-view-continuous t))
 
+(use-package abbrev
+  :hook ((org-mode . abbrev-mode)
+         (LaTeX-mode . abbrev-mode)))
+
 (use-package bookmark
   :config
   (setq bookmark-default-file (expand-file-name "cache/bookmarks" user-emacs-directory)))
-
-(use-package select
-  :defer t
-  :config
-  (setq select-enable-primary t))
 
 (use-package url
   :defer t

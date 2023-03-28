@@ -3,6 +3,21 @@
   :config
   (setq org-cite-global-bibliography `(,(concat my-galaxy "/bibtexs/References.bib"))))
 
+(use-package bibtex-completion
+  :after org-roam-bibtex
+  :config
+  (setq bibtex-completion-bibliography org-cite-global-bibliography)
+  (setq bibtex-completion-notes-path (expand-file-name "roam/ref" my-galaxy))
+  (setq bibtex-completion-pdf-field "File")
+  (setq bibtex-completion-additional-search-fields '(keywords journal booktitle))
+  (setq bibtex-completion-pdf-symbol "P")
+  (setq bibtex-completion-notes-symbol "N")
+  (setq bibtex-completion-display-formats '((article . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
+                                            (inbook . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
+                                            (incollection . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+                                            (inproceedings . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+                                            (t . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*}"))))
+
 (use-package citar
   :commands citar-open-files citar-create-note
   :config
@@ -71,21 +86,6 @@ When `citar-denote-subdir' is non-nil, prompt for a subdirectory."
   "gno" 'citar-denote-open-note
   "gnf" 'my/citar-denote-find-ref-or-citation
   "gnN" 'citar-denote-dwim)
-
-(use-package bibtex-completion
-  :after org-roam-bibtex
-  :config
-  (setq bibtex-completion-bibliography org-cite-global-bibliography)
-  (setq bibtex-completion-notes-path (expand-file-name "roam/ref" my-galaxy))
-  (setq bibtex-completion-pdf-field "File")
-  (setq bibtex-completion-additional-search-fields '(keywords journal booktitle))
-  (setq bibtex-completion-pdf-symbol "P")
-  (setq bibtex-completion-notes-symbol "N")
-  (setq bibtex-completion-display-formats '((article . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
-                                            (inbook . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
-                                            (incollection . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-                                            (inproceedings . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-                                            (t . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*}"))))
 
 (use-package ebib
   :bind ("<f2>" . ebib)

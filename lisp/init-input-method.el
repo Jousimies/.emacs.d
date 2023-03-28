@@ -18,5 +18,13 @@
           (lambda ()
             (setq sis-default-cursor-color (foreground-color-at-point))))
 
-(provide 'init-sis)
-;;; init-sis.el ends here.
+(use-package pinyinlib
+  :after orderless
+  :config
+  (defun completion--regex-pinyin (str)
+    (orderless-regexp (pinyinlib-build-regexp-string str)))
+
+  (add-to-list 'orderless-matching-styles 'completion--regex-pinyin))
+
+(provide 'init-input-method)
+;;; init-input-method.el ends here.

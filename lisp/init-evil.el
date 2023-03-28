@@ -1,9 +1,18 @@
+;; init-evil.el --- Evil Modal editing. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package general
   :config
   (general-create-definer my/space-leader-def
     :prefix "SPC"
     :non-normal-prefix "M-SPC"
     :states '(normal visual insert emacs)))
+
+(my/space-leader-def
+  "r" 'consult-recent-file)
 
 (use-package hydra
   :commands defhydra)
@@ -33,9 +42,13 @@
   (setq evil-operator-state-tag " O ")
   (setq evil-emacs-state-tag " E ")
 
-  (define-key evil-insert-state-map (kbd "C-e") #'move-end-of-line)
-  (define-key evil-insert-state-map (kbd "C-a") #'move-beginning-of-line)
-  (define-key evil-insert-state-map (kbd "C-k") #'kill-line))
+  ;; https://github.com/zsxh/emacs.d/blob/master/lisp/init-evil.el
+  ;; remove all keybindings from insert-state keymap,it is VERY VERY important
+  (setcdr evil-insert-state-map nil)
+  ;; 把emacs模式下的按键绑定到Insert模式下
+  (define-key evil-insert-state-map (read-kbd-macro evil-toggle-key) 'evil-emacs-state)
+  ;; but [escape] should switch back to normal state
+  (define-key evil-insert-state-map [escape] 'evil-normal-state))
 
 (evil-define-key '(normal motion visual) 'global
   "ge" nil
@@ -46,12 +59,43 @@
               ("C-f" . evil-scroll-down)
               ("C-b" . evil-scroll-up)))
 
-(use-package which-key
+(use-package evil-collection
   :config
-  (setq which-key-show-early-on-C-h t)
-  (setq which-key-idle-delay 10000)
-  (setq which-key-idle-secondary-delay 0.05)
-  (which-key-mode))
+  (setq evil-collection-key-blacklist '("SPC" ","))
+  (setq forge-add-default-bindings nil)
+  (evil-collection-init))
+
+(use-package evil-commentary
+  :after evil
+  :config
+  (evil-commentary-mode))
+
+(use-package evil-surround
+  :after evil
+  :config
+  (global-evil-surround-mode))
+
+(use-package evil-embrace
+  :hook (org-mode . embrace-org-mode-hook)
+  :config
+  (evil-embrace-enable-evil-surround-integration))
+
+(use-package evil-easymotion
+  :after evil
+  :config
+  (evilem-default-keybindings "SPC"))
+
+(use-package anzu
+  :config
+  (global-anzu-mode 1))
+
+(use-package evil-anzu
+  :after evil anzu)
+
+(use-package evil-find-char-pinyin
+  :after evil
+  :config
+  (evil-find-char-pinyin-mode 1))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here.

@@ -26,7 +26,7 @@
   (vertico-mode)
   :config
   (setq vertico-count 15)
-  (setq vertico-resize t)
+  (setq vertico-resize nil)
   (setq vertico-cycle t))
 
 (use-package vertico-directory
@@ -59,8 +59,6 @@
 (use-package consult
   :commands consult-outline
   :hook (completion-list-mode . consult-preview-at-point-mode)
-  :general (my/space-leader-def
-             "r" 'consult-recent-file)
   :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-line)
@@ -156,6 +154,24 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
   )
+
+(use-package prescient
+  :demand t
+  :commands prescient-persist-mode
+  :config
+  (setq prescient-save-file (expand-file-name "cache/prescient-save.el" user-emacs-directory))
+  (prescient-persist-mode))
+
+(use-package vertico-prescient
+  :after prescient vertico
+  :config
+  (setq vertico-prescient-completion-styles '(orderless prescient partial-completion))
+  (vertico-prescient-mode))
+
+(use-package corfu-prescient
+  :after prescient corfu
+  :config
+  (corfu-prescient-mode))
 
 (provide 'init-completion)
 ;;; init-git.el ends here.

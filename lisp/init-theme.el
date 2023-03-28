@@ -1,3 +1,10 @@
+(use-package emacs-nerd-icons
+  :config
+  (setq emacs-nerd-icons-font-family "Hack Nerd Font Mono"))
+
+(use-package emacs-nerd-icons-dired
+  :hook (dired-mode . emacs-nerd-icons-dired-mode))
+
 (use-package modus-themes
   :defer t
   :config

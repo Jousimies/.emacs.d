@@ -1,6 +1,5 @@
 (use-package telega
-  :general (my/space-leader-def
-             "t" '(telega :wk "Telega"))
+  :commands telega
   :config
   (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))
   (setq telega-chat-fill-column 60)

@@ -4,7 +4,6 @@
                              (setq-local electric-indent-chars nil)))
          (beancount-mode . outline-minor-mode))
   :config
-
   ;; insert whole transaction instead of only insert date.
   (defun my/beancount-insert-transaction (&optional days)
     "Start a new timestamped directive with date shifted by DAYS from today."
@@ -42,15 +41,11 @@
 
   (add-hook 'evil-insert-state-entry-hook #'my/beancount-activate-input-method))
 
-(evil-define-key 'normal 'beancount-mode-map
-    "zf" 'beancount-fava)
-
 (use-package tablist
   :commands tablist-minor-mode)
 
 (use-package achive
-  :general (my/space-leader-def
-             "ms" '(achive :wk "Share"))
+  :commands archive
   :config
   (setq achive-language 'zh)
   (setq achive-cache-path (expand-file-name "cache/.achive" user-emacs-directory))
@@ -58,9 +53,6 @@
                                        (display-buffer-in-tab)
                                        (tab-name . "Misc")
                                        (tab-group . "Misc"))))
-
-(evil-define-key 'normal achive-visual-mode-map
-    "q" 'quit-window)
 
 (provide 'init-finance)
 ;;; init-finance.el ends here.

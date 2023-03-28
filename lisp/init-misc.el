@@ -1,5 +1,5 @@
-(use-package org-auto-tangle
-  :hook (org-mode . org-auto-tangle-mode))
+(use-package psearch
+  :commands psearch-replace psearch-patch)
 
 (use-package epkg
   :bind ("s-<f4>" . epkg-describe-package)
@@ -12,17 +12,7 @@
   (cl-pushnew 'epkg-marginalia-annotate-package
               (alist-get 'package marginalia-annotator-registry)))
 
-(use-package grab-mac-link
-  :commands grab-mac-link-dwim grab-mac-link-safari-1
-  :bind ("<f4>" . my/link-grab)
-  :preface
-  (defun my/link-grab ()
-    (interactive)
-    (grab-mac-link-dwim 'safari)))
-
 (use-package file-info
-  :general (my/space-leader-def
-             "mi" '(file-info-show :wk "File info"))
   :config
   (setq hydra-hint-display-type 'posframe)
   (setq hydra-posframe-show-params `(:poshandler posframe-poshandler-frame-center
@@ -31,10 +21,7 @@
                                                  :left-fringe 16
                                                  :right-fringe 16)))
 
-(use-package disk-usage
-  :general (my/space-leader-def
-             "m" '(:ignore t :wk "Misc")
-             "md" '(disk-usage :wk "Disk usage")))
+(use-package disk-usage)
 
 (use-package youtube-dl
   :commands youtube-dl
@@ -49,9 +36,6 @@
   (interactive)
   (shell-command "shortcuts run \"OCR Selected Area\"")
   (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
-
-(my/space-leader-def
-  "mo" '(my/ocr :wk "OCR"))
 
 (defun toggle-proxy ()
   "Toggle proxy for the url.el library."
@@ -79,9 +63,6 @@
 
 (run-with-idle-timer 2 nil (lambda ()
                              (proxy-enable)))
-
-(my/space-leader-def
-  "mp" '(toggle-proxy :wk "Proxy"))
 
 (use-package advance-words-count
   :bind ("M-=" . advance-words-count))
@@ -131,9 +112,6 @@ This function requires ImageMagick's convert utility to be installed and availab
          (to-launch (completing-read "launch: " apps)))
     (shell-command (format "defaults read \"%s\"Contents/Info.plist CFBundleIdentifier | xargs open -b" to-launch))))
 
-(my/space-leader-def
-  "mj" '(mac-launchpad :wk "Jump to App"))
-
 (defun xah-show-in-desktop ()
   "Show current file in desktop.
 This command can be called when in a file buffer or in `dired'."
@@ -159,12 +137,6 @@ This command can be called when in a file buffer or in `dired'."
                                "/usr/bin/xdg-open")))
         (start-process "" nil openFileProgram (shell-quote-argument $path)))))))
 
-(evil-define-key 'normal dired-mode-map
-  "e" 'xah-show-in-desktop)
-
-(evil-define-key '(normal visual) 'global
-  "gF" 'embark-open-externally)
-
 (defun jf/org-link-remove-link ()
   "Remove the link part of an `org-mode' link at point and keep only the description."
   (interactive)
@@ -178,9 +150,6 @@ This command can be called when in a file buffer or in `dired'."
           (let ((content (buffer-substring-no-properties content-begin content-end)))
             (delete-region link-begin link-end)
             (insert content)))))))
-
-(evil-declare-key 'normal 'global
-  "gX" 'jf/org-link-remove-link)
 
 (defun yt-set-time (time)
   "Set TIME in the YouTube link at point.)
@@ -229,9 +198,6 @@ This command can be called when in a file buffer or in `dired'."
       (insert new-url))
     (error "Not on a Youtube link")))
 
-(my/space-leader-def
-  "my" '(yt-set-time :wk "Youtube link time"))
-
 (defun my/inbox-file ()
   "Open inbox file."
   (interactive)
@@ -278,46 +244,35 @@ This command can be called when in a file buffer or in `dired'."
   ("p" my/plan-file "Plan file")
   ("r" my/reflection-file "Reflection"))
 
-(my/space-leader-def
-  "f" 'my/hydra-open-file/body)
+(use-package gptel
+  :commands gptel
+  :config
+  (setq gptel-use-curl nil)
+  (add-to-list 'display-buffer-alist '("^\\*ChatGPT\\*"
+                                       (display-buffer-pop-up-frame)
+                                       (window-parameters
+                                        (mode-line-format . none)))))
 
-(defun add-symbol-to-region (beg end symbol)
-  (save-excursion
-    (goto-char end)
-    (insert (concat symbol " "))
-    (goto-char beg)
-    (insert (concat " " symbol))))
-
-(defun add-stars-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "*"))
-
-(defun add-equal-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "="))
-
-(defun add-underline-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "_"))
-
-(defun add-italic-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "/"))
-
-(defun add-plus-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "+"))
-
-(defhydra my/hydra-org-symbol (:color blue)
-      "
-    Add symbol to chinese char: "
-      ("*" add-stars-to-region)
-      ("=" add-equal-to-region)
-      ("_" add-underline-to-region)
-      ("/" add-italic-to-region)
-      ("+" add-plus-to-region))
-
-(global-set-key (kbd "s-b") 'my/hydra-org-symbol/body)
+(use-package vterm
+  :commands vterm
+  :defer t
+  :config
+  (setq vterm-kill-buffer-on-exit t)
+  (setq vterm-max-scrollback 5000)
+  (add-to-list 'display-buffer-alist
+               '("\\*vterm\\*"
+                 (display-buffer-in-side-window)
+                 (window-height . 0.35)
+                 (side . bottom)
+                 (slot . -1))))
+(defun toggle-vterm ()
+  "Toggle vterm on or off."
+  (interactive)
+  (if (get-buffer-window "*vterm*")
+      (delete-window (get-buffer-window "*vterm*"))
+    (progn
+      (vterm)
+      (evil-insert 1))))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.

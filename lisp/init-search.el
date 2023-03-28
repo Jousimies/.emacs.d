@@ -5,24 +5,30 @@
   (setq rg-group-result t)
   (setq rg-show-columns t))
 
+(use-package help
+  :config
+  (setq help-window-select 'always)
+  (setq help-window-keep-selected t))
+
+(use-package helpful
+  :bind (([remap describe-function] . helpful-callable)
+         ([remap describe-variable] . helpful-variable)
+         ([remap describe-key] . helpful-key)))
+
+(autoload #'elisp-demos-advice-helpful-update "elisp-demos" nil t)
+(advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
+
+(use-package devdocs-browser
+  :commands devdocs-browser-install-doc devdocs-browser-open devdocs-browser-open-in
+  :config
+  (setq devdocs-browser-cache-directory (expand-file-name "cache/devdocs-browser/" user-emacs-directory)))
+
 ;; eww
 ;; Install readability first.
 ;; npm install -g readability-cli
 ;; (setq eww-retrieve-command '("readable"))
 
-;; Another choice `websearch'.
-;; Search engine
 (use-package engine-mode
-  :general (my/space-leader-def
-             "s" '(:ignore t :wk "Search")
-             "sb" '(engine/search-bookdouban :wk "Book")
-             "ss" '(engine/search-google :wk "Google")
-             "sg" '(engine/search-github :wk "Github")
-             "sw" '(engine/search-wikipedia :wk "Wiki")
-             "sm" '(engine/search-moviedouban :wk "Movie")
-             "sz" '(engine/search-zhihu :wk "Zhihu")
-             "sr" '(rg :wk "rg")
-             "sl" '(consult-git-grep :wk "git"))
   :config
   (defengine google "https://google.com/search?q=%s"
              :keybinding "g"
@@ -46,6 +52,36 @@
              :keybinding "z"
              :docstring "Search Zhihu.")
   (engine-mode))
+
+(use-package grab-mac-link
+  :commands grab-mac-link-dwim grab-mac-link-safari-1
+  :bind ("<f4>" . my/link-grab)
+  :preface
+  (defun my/link-grab ()
+    (interactive)
+    (grab-mac-link-dwim 'safari)))
+
+;;;###autoload
+(defun my/org-insert-web-page-archive ()
+  "Insert a file about web page archived locally into an Org file as reference."
+  (interactive)
+  (let* ((url (car (grab-mac-link-safari-1)))
+         (title (cadr (grab-mac-link-safari-1)))
+         (ID (format-time-string "%Y%m%dT%H%M%S"))
+         (new-title (concat ID "--" title))
+         (file-path (concat my/web_archive title ".html"))
+         (file-new-path (concat my/web_archive new-title ".html")))
+    (save-excursion
+      (goto-char (point-max))
+      (if (file-exists-p file-path)
+          (progn
+            (rename-file file-path file-new-path)
+            (insert "* ")
+            (org-insert-link nil file-new-path title)
+            (org-set-property "URL" url)
+            (org-set-tags "Reference")
+            (my/auto-change-file-paths))
+        (message "Please save web page first.")))))
 
 (provide 'init-search)
 ;;; init-search.el ends here.

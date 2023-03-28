@@ -88,5 +88,5 @@ With universal argument (C-u), pause playback instead of stopping."
 (use-package consult-emms
   :bind ("M-<f5>" . consult-emms-library))
 
-(provide 'init-emms)
-;;; init-emms.el ends here.
+(provide 'init-music)
+;;; init-music.el ends here.

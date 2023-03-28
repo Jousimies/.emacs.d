@@ -239,5 +239,8 @@
                                   "*\n\n" (format-time-string "%Y-%m-%d")
                                   "\n#+end_signature")))
 
+(use-package mu4e-column-faces
+  :hook (mu4e-headers-mode . mu4e-column-faces-mode))
+
 (provide 'init-mail)
 ;;; init-mail.el ends here.

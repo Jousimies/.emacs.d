@@ -8,22 +8,6 @@
   (setq org-agenda-window-setup 'other-tab)
   (setq org-agenda-align-tags-to-column -120))
 
-(evil-set-initial-state 'org-agenda-mode 'motion)
-(evil-define-key 'motion org-agenda-mode-map
-  (kbd "RET") 'org-agenda-switch-to
-  "/" 'org-agenda-filter
-  "SPC" 'nil
-  "gj" 'org-agenda-next-item
-  "gr" 'org-agenda-redo
-  "gR" 'org-agenda-redo-all
-  "t" 'org-agenda-todo
-  "u" 'org-agenda-undo
-  "I" 'org-agenda-clock-in
-  "O" 'org-agenda-clock-out
-  "cg" 'org-agenda-clock-goto
-  "cc" 'org-agenda-clock-cancel
-  "cr" 'org-agenda-clockreport-mode)
-
 ;;;###autoload
 (defun my/gtd-file ()
   (interactive)
@@ -52,8 +36,6 @@
 
 (use-package calendar
   :defer t
-  :general (my/space-leader-def
-             "c" '(calendar :wk "Calendar"))
   :config
   (setq calendar-view-diary-initially-flag t)
   (setq calendar-mark-diary-entries-flag t)
