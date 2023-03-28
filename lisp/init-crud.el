@@ -44,10 +44,10 @@
 
 (use-package recentf
   :config
-  (recentf-mode)
   (setq recentf-save-file (expand-file-name "cache/recentf" user-emacs-directory))
   (setq recentf-auto-cleanup 300)
-  (setq recentf-max-saved-items 1000))
+  (setq recentf-max-saved-items 1000)
+  (recentf-mode))
 
 (use-package autorevert
   :hook (text-mode . global-auto-revert-mode))
