@@ -1,5 +1,5 @@
 (use-package tex
-  :mode (".tex" . LaTeX-mode)
+  :mode ("\\.tex\\'" . LaTeX-mode)
   :init
   (load "auctex.el" nil t t)
   (load "preview-latex.el" nil t t)
