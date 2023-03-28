@@ -1,12 +1,3 @@
-(use-package jinx
-  :hook (org-mode . jinx-mode)
-  ;; :bind ("C-c c" . jinx-correct)
-  :bind (:map jinx-misspelled-map
-              ("C-;" . jinx-correct))
-  :config
-  (add-to-list 'jinx-exclude-regexps '(t "\\cc"))
-  (setq jinx-languages '("en" "fr" "de")))
-
 (use-package dictionary
   :bind ("M-#" . dictionary-lookup-definition)
   :config

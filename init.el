@@ -135,6 +135,7 @@
                          (require 'init-search)
                          (require 'init-template)
                          (require 'init-input-method)
+                         (require 'init-spell)
                          (require 'init-english)
                          (require 'init-lsp)
                          (require 'init-python)
