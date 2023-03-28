@@ -2,7 +2,6 @@ var
 etc
 build-emacs-macos
 emacs
-sdcv-dict
 cache
 emacs.org
 *.log
