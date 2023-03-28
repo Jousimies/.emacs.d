@@ -42,7 +42,7 @@
   "gF" 'embark-open-externally
   "glc" 'lc-corpus-capture-card
   "gld" 'osx-dictionary-search-pointer
-  ;; "glh" 'lsp-bridge-toggle-sdcv-helper
+  "glh" 'lsp-bridge-toggle-sdcv-helper
   "glk" 'dictionary-overlay-mark-word-unknown
   "glK" 'dictionary-overlay-mark-word-known
   "gll" 'my/gts-do-translate

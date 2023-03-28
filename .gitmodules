@@ -541,3 +541,6 @@
 [submodule "packages/jinx"]
 	path = packages/jinx
 	url = https://github.com/minad/jinx.git
+[submodule "packages/lsp-bridge"]
+	path = packages/lsp-bridge
+	url = https://github.com/manateelazycat/lsp-bridge.git
