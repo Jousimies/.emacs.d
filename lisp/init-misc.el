@@ -224,17 +224,16 @@ This command can be called when in a file buffer or in `dired'."
       (server-start))
   (message "Server has started"))
 
-(with-eval-after-load 'hydra
-  (defhydra my/hydra-open-file (:color blue)
-            "
+(defhydra my/hydra-open-file (:color blue)
+          "
   Open specific file.
   "
-            ("b" my/reading-record "Books Reading")
-            ("e" my/rss-source "RSS")
-            ("f" my/finance-file "Finance")
-            ("g" my/gtd-file "GTD")
-            ("i" my/inbox-file "Inbox file")
-            ("p" my/plan-file "Plan file")))
+          ("b" my/reading-record "Books Reading")
+          ("e" my/rss-source "RSS")
+          ("f" my/finance-file "Finance")
+          ("g" my/gtd-file "GTD")
+          ("i" my/inbox-file "Inbox file")
+          ("p" my/plan-file "Plan file"))
 
 (use-package gptel
   :commands gptel

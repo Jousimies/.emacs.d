@@ -121,6 +121,7 @@
 (require 'init-dashboard)
 
 (add-hook 'after-init-hook (lambda ()
+                             (require 'init-basic)
                              (require 'init-font)
                              (require 'init-theme)
                              (require 'init-mode-line)

@@ -24,6 +24,7 @@
                                         (delete-other-windows . t)))))
 
 (use-package denote
+  :bind ("C-c n l" . denote-link-or-create)
   :commands (denote denote-signature denote-subdirectory denote-rename-file-using-front-matter
                     denote-keywords-prompt
                     denote-rename-file
@@ -129,17 +130,16 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (advice-add 'denote-signature :before #'my/denote-signature-from-filename)
 
-(with-eval-after-load 'hydra
-  (defhydra my/hydra-denote-subdirectory (:color blue
-                                                 :hint nil)
-            "
+(defhydra my/hydra-denote-subdirectory (:color blue
+                                               :hint nil)
+          "
   Create denote in subdirectory:
 "
-            ("t" my/denote-term "Terminology")
-            ("b" my/denote-book "Books")
-            ("o" my/denote-outline "Outline")
-            ("r" citar-create-note "References")
-            ("q" nil)))
+          ("t" my/denote-term "Terminology")
+          ("b" my/denote-book "Books")
+          ("o" my/denote-outline "Outline")
+          ("r" citar-create-note "References")
+          ("q" nil))
 
 (defun my/denote-signature-or-subdirectory (arg)
   (interactive "P")

@@ -60,8 +60,8 @@
   (setq mu4e-maildir-shortcuts
         '(("/outlook/INBOX" . ?o)
           ("/outlook/Sent Messages" . ?O)
-          ("/gmail/INBOX" . ?g)
-          ("/gmail/[Gmail]/Sent Mail" . ?G)))
+          ("/[Gmail]/INBOX" . ?g)
+          ("/[Gmail]/Sent Mail" . ?G)))
   (setq mu4e-attachment-dir "~/Downloads/"))
 
 (use-package mu4e-view
