@@ -9,11 +9,6 @@
   (interactive)
   (switch-to-buffer "*Messages*"))
 
-(defun switch-to-scratch ()
-  "Quick switch to `*Scratch*' buffer."
-  (interactive)
-  (switch-to-buffer "*scratch*"))
-
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer))
 

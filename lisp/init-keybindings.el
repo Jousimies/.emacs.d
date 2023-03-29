@@ -26,7 +26,7 @@
   "my" '(yt-set-time :wk "Youtube link time")
 
   "b" '(:ignore t :wk "Buffer")
-  "bs" '(switch-to-scratch :wk "*scratch*")
+  "bs" '(scratch-buffer :wk "*scratch*")
   "bm" '(switch-to-message :wk "*message*")
 
   "c" '(calendar :wk "Calendar")
