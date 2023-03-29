@@ -12,7 +12,7 @@
                                                  :internal-border-width 2
                                                  :internal-border-color "#61AFEF"
                                                  :left-fringe 16
-                                                 :right-fringe 16))))
+                                                 :right-fringe 16)))
 
 (use-package which-key
   :config
