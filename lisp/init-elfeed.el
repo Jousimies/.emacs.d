@@ -1,3 +1,9 @@
+;; init-elfeed.el --- RSS reader. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package elfeed
   :config
   (defun elfeed-display-buffer (buf &optional act)

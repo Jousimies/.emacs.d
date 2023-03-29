@@ -1,9 +1,15 @@
+;; init-lsp.el --- LSP. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package eglot
   :after yasnippet
   :hook (LaTeX-mode . eglot-ensure))
 
 ;; lsp-bridge-toggle-sdcv-helper use pinyin to search english words,
-;; need to deactivate rime input method before search words.
+;; Disable corfu-mode to turn off cape-dabbrev temporarily.
 (autoload 'lsp-bridge-toggle-sdcv-helper "lsp-bridge" "" t)
 (defun my/toggle-corfu ()
   "Deactivate input method when sdcv helper enabled."

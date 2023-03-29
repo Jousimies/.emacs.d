@@ -1,3 +1,9 @@
+;; init-gtd.el --- Tasks management. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package org-agenda
   :bind ("C-<f12>" . org-agenda)
   :hook (org-agenda-finalize . #'org-agenda-find-same-or-today-or-agenda)

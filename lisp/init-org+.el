@@ -1,3 +1,9 @@
+;; init-org+.el --- Better org with third packages. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package olivetti
   :commands olivetti-mode)
 

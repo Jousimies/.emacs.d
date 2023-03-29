@@ -1,3 +1,9 @@
+;; init-reader.el --- Reader. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package pdf-tools
   :hook ((doc-view-mode . pdf-tools-install)
          (dirvish-setup . pdf-tools-install)

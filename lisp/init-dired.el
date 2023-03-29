@@ -1,3 +1,9 @@
+;; init-dired.el --- File manager. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package dired
   :bind (("C-x d" . dired)
          (:map dired-mode-map

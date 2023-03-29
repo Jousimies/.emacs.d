@@ -1,3 +1,9 @@
+;; init-dashboard.el --- Dashboard. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package dashboard
   :config
   (dashboard-setup-startup-hook)

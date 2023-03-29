@@ -1,3 +1,9 @@
+;; init-Blog.el --- Blog with hugo. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package ox-hugo
   :defer 3
   :after ox)

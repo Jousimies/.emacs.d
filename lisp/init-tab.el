@@ -1,3 +1,9 @@
+;; init-tab.el --- Tab. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package tab-bar
   :config
   (setq tab-bar-close-button-show nil)

@@ -1,3 +1,9 @@
+;; init-mode-line.el --- Mode line format. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (defun my/mode-line-padding ()
   (let* ((r-length (string-width (format-mode-line mode-line-misc-info))))
     (propertize " "

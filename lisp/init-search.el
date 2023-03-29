@@ -1,3 +1,9 @@
+;; init-search.el --- Search. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package rg
   :commands rg
   :config

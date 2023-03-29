@@ -1,3 +1,9 @@
+;; init-builtin.el --- Emacs Builtin. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (setq auto-save-list-file-prefix (expand-file-name "cache/auto-save-list/.saves-" user-emacs-directory))
 (setq inhibit-default-init t)
 (setq inhibit-startup-message t)

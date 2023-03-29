@@ -1,6 +1,12 @@
+;; init-mail.el --- E-mail management. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (setq user-full-name "Duan Ning")
 
-(defvar mu4e-outlook (auth-source-pick-first-password :host "mu4e" :user "outlook")
+(defvar mu4e-outlook "duan_n@outlook.com"
   "My outlook mail address.")
 
 (defvar mu4e-gmail (auth-source-pick-first-password :host "mu4e" :user "gmail")

@@ -1,13 +1,18 @@
+;; init-bib.el --- Bibtex management. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package oc
   :after org
   :config
-  (setq org-cite-global-bibliography `(,(concat my-galaxy "/bibtexs/References.bib"))))
+  (setq org-cite-global-bibliography my/reference-lists))
 
 (use-package bibtex-completion
-  :after org-roam-bibtex
   :config
-  (setq bibtex-completion-bibliography org-cite-global-bibliography)
-  (setq bibtex-completion-notes-path (expand-file-name "roam/ref" my-galaxy))
+  (setq bibtex-completion-bibliography my/reference-lists)
+  (setq bibtex-completion-notes-path (expand-file-name "denote/references" my-galaxy))
   (setq bibtex-completion-pdf-field "File")
   (setq bibtex-completion-additional-search-fields '(keywords journal booktitle))
   (setq bibtex-completion-pdf-symbol "P")
@@ -21,8 +26,8 @@
 (use-package citar
   :commands citar-open-files citar-create-note
   :config
-  (setq citar-bibliography `(,(concat my-galaxy "/bibtexs/References.bib")))
-  (setq citar-notes-paths `(,(expand-file-name "references" my-galaxy)))
+  (setq citar-bibliography my/reference-lists)
+  (setq citar-notes-paths `(,(expand-file-name "denote/references" my-galaxy)))
   (setq citar-library-file-extensions '("pdf" "jpg" "epub"))
   (setq citar-templates '((main . "${author editor:30} ${date year issued:4} ${title:48}")
                           (suffix . "${=key= id:15} ${=type=:12} ${tags keywords:*}")
@@ -31,9 +36,6 @@
   (setq citar-symbol-separator "  ")
   (setq citar-file-additional-files-separator "-")
   (setq citar-at-point-function 'embark-act))
-
-(evil-define-key 'normal 'global
-  "gnp" 'citar-open-files)
 
 (use-package citar-latex
   :after citar)
@@ -80,13 +82,6 @@ When `citar-denote-subdir' is non-nil, prompt for a subdirectory."
       (citar-denote-find-citation)
     (citar-denote-find-reference)))
 
-(evil-define-key '(normal visual motion) 'global
-  "gnk" 'citar-denote-add-citekey
-  "gnK" 'citar-denote-remove-citekey
-  "gno" 'citar-denote-open-note
-  "gnf" 'my/citar-denote-find-ref-or-citation
-  "gnN" 'citar-denote-dwim)
-
 (use-package ebib
   :bind ("<f2>" . ebib)
   :config
@@ -110,9 +105,6 @@ When `citar-denote-subdir' is non-nil, prompt for a subdirectory."
   (defun my/biblio-lookup-crossref ()
     (interactive)
     (biblio-lookup 'biblio-crossref-backend)))
-
-(evil-define-key '(normal visual) 'global
-  "gnc" 'my/biblio-lookup-crossref)
 
 (provide 'init-bib)
 ;;; init-bib.el ends here.

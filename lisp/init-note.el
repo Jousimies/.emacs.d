@@ -1,3 +1,9 @@
+;; init-note.el.el --- Note taking. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package ekg
   :commands (ekg-show-notes-in-trash
              ekg-show-notes-for-today
@@ -17,27 +23,6 @@
                                         (mode-line-format . none)
                                         (delete-other-windows . t)))))
 
-(evil-define-key '(normal visual) 'global
-    "ged" 'ekg-show-notes-for-today
-    "gee" 'ekg-show-notes-with-tag
-    "gea" 'ekg-show-notes-with-any-tags
-    "geA" 'ekg-show-notes-with-all-tags
-    "geb" 'ekg-browse-url
-    "ger" 'ekg-rename-tag)
-(evil-define-key 'normal ekg-notes-mode-map
-    "A" 'ekg-notes-any-tags
-    "B" 'ekg-notes-select-and-browse-url
-    "a" 'ekg-notes-any-note-tags
-    "b" 'ekg-notes-browse
-    "c" 'ekg-notes-create
-    "d" 'ekg-notes-delete
-    "n" 'ekg-notes-next
-    "o" 'ekg-notes-open
-    "p" 'ekg-notes-previous
-    "r" 'ekg-notes-remove
-    "t" 'ekg-notes-tag
-    "q" 'quit-window)
-
 (use-package denote
   :commands (denote denote-signature denote-subdirectory denote-rename-file-using-front-matter
                     denote-keywords-prompt
@@ -53,19 +38,8 @@
                                        (thread-last denote-directory (expand-file-name "term"))
                                        (thread-last denote-directory (expand-file-name "references")))))
 
-(evil-define-key '(normal visual motion) dired-mode-map
-  "gnr" 'denote-dired-rename-marked-files)
-
-(evil-define-key '(normal visual motion) org-mode-map
-  "gnr" 'denote-rename-file-using-front-matter
-  "gnl" 'denote-link-or-create)
-
 (use-package denote-org-dblock
   :commands denote-org-dblock-insert-backlinks denote-org-dblock-insert-links)
-
-(evil-define-key '(normal visual) org-mode-map
-  "gnL" 'denote-org-dblock-insert-links
-  "gnb" 'denote-org-dblock-insert-backlinks)
 
 (defvar prot-dired--limit-hist '()
   "Minibuffer history for `prot-dired-limit-regexp'.")
@@ -155,28 +129,23 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (advice-add 'denote-signature :before #'my/denote-signature-from-filename)
 
-(defhydra my/hydra-denote-subdirectory (:color blue
-                                               :hint nil)
-  "
+(with-eval-after-load 'hydra
+  (defhydra my/hydra-denote-subdirectory (:color blue
+                                                 :hint nil)
+            "
   Create denote in subdirectory:
 "
-  ("t" my/denote-term "Terminology")
-  ("b" my/denote-book "Books")
-  ("o" my/denote-outline "Outline")
-  ("r" citar-create-note "References")
-  ("q" nil))
+            ("t" my/denote-term "Terminology")
+            ("b" my/denote-book "Books")
+            ("o" my/denote-outline "Outline")
+            ("r" citar-create-note "References")
+            ("q" nil)))
 
 (defun my/denote-signature-or-subdirectory (arg)
   (interactive "P")
   (if arg
       (my/hydra-denote-subdirectory/body)
     (denote-signature)))
-
-(evil-define-key '(normal visual motion) 'global
-  "gns" 'my/denote-signature-or-subdirectory)
-
-(evil-define-key '(normal visual) 'global
-  "gni" 'my/org-insert-web-page-archive)
 
 (use-package dired-x
   :bind (:map dired-mode-map
@@ -206,9 +175,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
           ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
           ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy)))))
 
-(evil-define-key '(normal motion visual) 'global
-    "gnn" 'consult-notes)
-
 (defun my/new-article (article)
     (interactive "sTitle: ")
     (let ((filename (format "%s" article))
@@ -216,9 +182,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
       (find-file (concat my-galaxy "/articles/" filename ext))
       (insert "#+TITLE: " article "\n")
       (tempel-insert 'hugo)))
-
-(evil-define-key '(normal motion visual) 'global
-  "gna" 'my/new-article)
 
 (use-package org-transclusion
   :commands (org-transclusion-make-from-link
@@ -259,16 +222,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
                    (t
                     :foreground "white"))
                  'face-override-spec))
-
-(evil-define-key '(normal visual) org-mode-map
-  "gntm" 'org-transclusion-make-from-link
-  "gnta" 'org-transclusion-add
-  "gntA" 'org-transclusion-add-all
-  "gntr" 'org-transclusion-remove
-  "gntR" 'org-transclusion-remove-all
-  "gntg" 'org-transclusion-refresh
-  "gnto" 'org-transclusion-open-source
-  "gnts" 'org-transclusion-live-sync-start)
 
 (use-package org-noter
   :after org pdf-tools

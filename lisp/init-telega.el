@@ -1,3 +1,9 @@
+;; init-telega.el --- Telega. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package telega
   :commands telega
   :config

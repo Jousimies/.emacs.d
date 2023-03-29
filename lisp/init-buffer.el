@@ -1,3 +1,9 @@
+;; init-buffer.el --- Buffer manipulate. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (defun switch-to-message ()
   "Quick switch to `*Message*' buffer."
   (interactive)

@@ -1,11 +1,15 @@
+;; init-crud.el --- Add, delte, modify and check. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package auto-save
   :demand t
   :config
   (setq auto-save-silent t)
   (setq auto-save-delete-trailing-whitespace t)
   (auto-save-enable))
-
-(use-package undo-fu)
 
 (use-package undo-fu-session
   :after undo-fu

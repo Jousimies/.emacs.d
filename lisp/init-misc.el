@@ -1,3 +1,9 @@
+;; init-misc.el --- Misc. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package psearch
   :commands psearch-replace psearch-patch)
 
@@ -13,13 +19,7 @@
               (alist-get 'package marginalia-annotator-registry)))
 
 (use-package file-info
-  :config
-  (setq hydra-hint-display-type 'posframe)
-  (setq hydra-posframe-show-params `(:poshandler posframe-poshandler-frame-center
-                                                 :internal-border-width 2
-                                                 :internal-border-color "#61AFEF"
-                                                 :left-fringe 16
-                                                 :right-fringe 16)))
+  :commands file-info-show)
 
 (use-package disk-usage)
 
@@ -208,14 +208,6 @@ This command can be called when in a file buffer or in `dired'."
   (interactive)
   (find-file (expand-file-name "inbox/plan.org" my-galaxy)))
 
-(defun my/index-file ()
-  (interactive)
-  (find-file (expand-file-name "roam/main/index.org" my-galaxy)))
-
-(defun my/reflection-file ()
-  (interactive)
-  (find-file (expand-file-name "roam/main/reflection.org" my-galaxy)))
-
 (defun my/finance-file ()
   "Open finance file."
   (interactive)
@@ -232,17 +224,17 @@ This command can be called when in a file buffer or in `dired'."
       (server-start))
   (message "Server has started"))
 
-(defhydra my/hydra-open-file (:color blue)
-  "
+(with-eval-after-load 'hydra
+  (defhydra my/hydra-open-file (:color blue)
+            "
   Open specific file.
   "
-  ("b" my/reading-record "Books Reading")
-  ("e" my/rss-source "RSS")
-  ("f" my/finance-file "Finance")
-  ("g" my/gtd-file "GTD")
-  ("i" my/inbox-file "Inbox file")
-  ("p" my/plan-file "Plan file")
-  ("r" my/reflection-file "Reflection"))
+            ("b" my/reading-record "Books Reading")
+            ("e" my/rss-source "RSS")
+            ("f" my/finance-file "Finance")
+            ("g" my/gtd-file "GTD")
+            ("i" my/inbox-file "Inbox file")
+            ("p" my/plan-file "Plan file")))
 
 (use-package gptel
   :commands gptel

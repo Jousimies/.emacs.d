@@ -14,9 +14,6 @@
 (my/space-leader-def
   "r" 'consult-recent-file)
 
-(use-package hydra
-  :commands defhydra)
-
 (use-package evil
   :bind (:map evil-motion-state-map
               ("SPC" . nil)
@@ -29,9 +26,9 @@
   (setq evil-want-integration t)
   (setq evil-want-C-h-delete t)
   (setq evil-respect-visual-line-mode t)
+  (setq evil-undo-system 'undo-redo)
   :config
   (evil-mode)
-  (setq evil-undo-system 'undo-fu)
   (setq evil-visual-state-cursor 'hollow)
 
   (setq evil-normal-state-tag " 𝐍 ")

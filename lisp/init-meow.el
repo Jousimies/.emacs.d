@@ -1,3 +1,9 @@
+;; init-meow.el --- Meow Modal editing. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package meow
   :preface
   (defun meow-setup ()

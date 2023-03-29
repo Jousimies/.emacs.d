@@ -1,3 +1,9 @@
+;; init-git.el --- Version manager. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package magit
   :commands (magit magit-status magit-submodule-add)
   :bind ("C-x g" . magit)

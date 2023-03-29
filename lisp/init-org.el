@@ -1,3 +1,9 @@
+;; init-org.el --- Live in plain life with org-mode. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package org
   :config
   (setq org-ellipsis " ⇲")
@@ -16,8 +22,6 @@
         org-startup-with-inline-images t
         org-image-actual-width '(500)
         org-use-speed-commands t)
-  (setq org-preview-latex-default-process 'dvisvgm)
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
   (setq org-highlight-latex-and-related '(latex script))
   (setq org-enforce-todo-dependencies t)
   (setq org-enforce-todo-checkbox-dependencies t)
@@ -314,15 +318,15 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
   (interactive "r")
   (add-symbol-to-region beg end "+"))
 
-(defhydra my/hydra-org-symbol (:color blue)
-      "
+(with-eval-after-load 'hydra
+  (defhydra my/hydra-org-symbol (:color blue)
+            "
     Add symbol to chinese char: "
-      ("*" add-stars-to-region)
-      ("=" add-equal-to-region)
-      ("_" add-underline-to-region)
-      ("/" add-italic-to-region)
-      ("+" add-plus-to-region))
-
+            ("*" add-stars-to-region)
+            ("=" add-equal-to-region)
+            ("_" add-underline-to-region)
+            ("/" add-italic-to-region)
+            ("+" add-plus-to-region)))
 (global-set-key (kbd "s-b") 'my/hydra-org-symbol/body)
 
 (provide 'init-org)

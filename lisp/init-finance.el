@@ -1,3 +1,9 @@
+;; init-finance.el --- Finance manager. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package beancount
   :mode (".bean" . beancount-mode)
   :hook ((beancount-mode . (lambda ()

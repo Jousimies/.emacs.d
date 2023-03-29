@@ -1,3 +1,9 @@
+;; init-theme.el --- Themes. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package emacs-nerd-icons
   :config
   (setq emacs-nerd-icons-font-family "Hack Nerd Font Mono"))

@@ -1,3 +1,9 @@
+;; init-music.el --- Music. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 ;;;###autoload
 (defun my/music ()
     (interactive)

@@ -1,3 +1,9 @@
+;; init-checker.el --- Checker. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package ispell
   :defer t
   :config
@@ -21,5 +27,8 @@
   :commands flyspell-correct-wrapper
   :bind ([remap flyspell-auto-correct-previous-word] . flyspell-correct-wrapper))
 
-(provide 'init-spell)
-;;; init-translate.el ends here.
+(use-package flymake
+  :hook (prog-mode . flymake-mode))
+
+(provide 'init-checker)
+;;; init-checker.el ends here.

@@ -1,3 +1,9 @@
+;; init-markdown.el --- Markdown. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package markdown-mode
   :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
          ("README\\.md\\'" . gfm-mode))

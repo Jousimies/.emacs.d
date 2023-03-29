@@ -1,3 +1,9 @@
+;; init-english.el --- English and other language learning. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package dictionary
   :bind ("M-#" . dictionary-lookup-definition)
   :config

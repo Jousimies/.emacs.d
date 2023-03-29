@@ -1,3 +1,9 @@
+;; init-frame.el --- Frame and window. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package frame
   :config
   (add-to-list 'initial-frame-alist '(alpha . (85 . 100)))

@@ -1,3 +1,11 @@
+;; init-input-method.el --- Input methods. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;; Earlier, I use emacs-rime. Now, sis I selected.
+
+;;; Code:
+
 (use-package sis
   :config
   (setq sis-other-cursor-color "red")
@@ -18,6 +26,7 @@
           (lambda ()
             (setq sis-default-cursor-color (foreground-color-at-point))))
 
+;; Search file with first char.
 (use-package pinyinlib
   :after orderless
   :config

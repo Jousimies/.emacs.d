@@ -1,3 +1,9 @@
+;; init-completion.el --- Minibuffer and completion. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package minibuffer
   :config
   (setq completion-category-overrides '((file (styles basic partial-completion))))
@@ -50,7 +56,6 @@
                ("C-c C-o" . embark-export)
                ("C-c C-c" . embark-act)))
   :config
-  (setq prefix-help-command #'embark-prefix-help-command)
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil

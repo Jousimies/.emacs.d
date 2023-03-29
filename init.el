@@ -105,6 +105,9 @@
 (defvar website-directory "~/Nextcloud/L.Personal.Galaxy/website"
   "The source folder of my blog.")
 
+(defvar my/reference-lists `(,(concat my-galaxy "/bibtexs/References.bib")
+                             ,(concat my-cloud "/L.Calibre/calibre.bib")))
+
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -135,7 +138,7 @@
                          (require 'init-search)
                          (require 'init-template)
                          (require 'init-input-method)
-                         (require 'init-spell)
+                         (require 'init-checker)
                          (require 'init-english)
                          (require 'init-lsp)
                          (require 'init-python)
