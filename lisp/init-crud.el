@@ -4,12 +4,9 @@
 
 ;;; Code:
 
-(use-package auto-save
-  :demand t
+(use-package files
   :config
-  (setq auto-save-silent t)
-  (setq auto-save-delete-trailing-whitespace t)
-  (auto-save-enable))
+  (auto-save-visited-mode 1))
 
 (use-package undo-fu-session
   :after undo-fu
@@ -68,7 +65,8 @@
 
 (use-package whitespace-cleanup-mode
   :config
-  (whitespace-cleanup-mode))
+  (setq whitespace-cleanup-mode-preserve-point t)
+  (global-whitespace-cleanup-mode 1))
 
 (use-package expand-region
   :commands er/expand-region)

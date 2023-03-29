@@ -37,9 +37,6 @@
 [submodule "packages/annalist.el"]
 	path = packages/annalist.el
 	url = https://github.com/noctuid/annalist.el.git
-[submodule "packages/auto-save"]
-	path = packages/auto-save
-	url = https://github.com/manateelazycat/auto-save.git
 [submodule "packages/evil-commentary"]
 	path = packages/evil-commentary
 	url = https://github.com/linktohack/evil-commentary.git
