@@ -547,3 +547,12 @@
 [submodule "packages/diredfl"]
 	path = packages/diredfl
 	url = https://github.com/purcell/diredfl.git
+[submodule "packages/auto-save"]
+	path = packages/auto-save
+	url = https://github.com/manateelazycat/auto-save.git
+[submodule "packages/org-mpvi"]
+	path = packages/org-mpvi
+	url = https://github.com/lorniu/org-mpvi.git
+[submodule "packages/mpv.el"]
+	path = packages/mpv.el
+	url = https://github.com/kljohann/mpv.el.git

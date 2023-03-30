@@ -3,6 +3,8 @@ etc
 build-emacs-macos
 emacs
 cache
+tramp
+image-dired
 emacs.org
 *.log
 *.gz

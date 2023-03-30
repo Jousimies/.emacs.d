@@ -4,9 +4,12 @@
 
 ;;; Code:
 
-(use-package files
+(use-package auto-save
+  :demand t
   :config
-  (auto-save-visited-mode 1))
+  (setq auto-save-silent t)
+  (setq auto-save-delete-trailing-whitespace t)
+  (auto-save-enable))
 
 (use-package undo-fu-session
   :after undo-fu

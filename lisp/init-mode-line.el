@@ -33,6 +33,12 @@
                 mode-line-frame-identification
                 mode-line-buffer-identification
                 "  "
+                (:eval (let ((sys (coding-system-plist buffer-file-coding-system)))
+                         (if (memq (plist-get sys :category)
+                                   '(coding-category-undecided coding-category-utf-8))
+                             "UTF-8"
+                           (upcase (symbol-name (plist-get sys :name))))))
+                "  "
                 mode-line-position
                 "  "
                 (vc-mode vc-mode)

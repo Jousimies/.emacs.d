@@ -40,20 +40,19 @@
          (org-mode . org-appear-mode)))
 
 (use-package math-preview
+  :commands math-preview-all math-preview-clear-all
   :hook (org-mode . auto/math-preview-all)
-  :general (my/space-leader-def
-             "p" '(:ignore t :wk "Preview")
-             "pa" '(math-preview-all :wk "All")
-             "pA" '(math-preview-clear-all :wk "Clear All")
-             "pp" '(math-preview-at-point :wk "Point")
-             "pP" '(math-preview-clear-at-point :wk "Clear Point")
-             "pr" '(math-preview-region :wk "Region")
-             "pR" '(math-preview-clear-region :wk "Clear Region"))
   :config
   (setq math-preview-scale 1.1)
   (setq math-preview-raise 0.2)
   (setq math-preview-margin '(1 . 0))
   (add-to-list 'org-options-keywords "NO_MATH_PREVIEW:")
+
+  (defun my/org-download-rename (arg)
+    (interactive "P")
+    (if arg
+        (org-download-rename-last-file)
+      (org-download-rename-at-point)))
 
   (defun auto/math-preview-all ()
     "Auto update clock table."
@@ -62,17 +61,11 @@
       (save-excursion
         (goto-char 0)
         (unless (string-equal (cadar (org-collect-keywords '("NO_MATH_PREVIEW"))) "t")
-          (if (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
+          (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
               (math-preview-all)))))))
 
 (use-package org-download
   :hook (org-mode . org-download-enable)
-  :general (my/space-leader-def
-             "d" '(:ignore t :wk "Download")
-             "dc" '(org-download-clipboard :wk "Download Clipboard")
-             "dy" '(org-download-yank :wk "Download Yank")
-             "dr" '(org-download-rename-last-file :wk "Rename last file")
-             "dR" '(org-download-rename-at-point :wk "Rename point"))
   :init
   (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
   (setq org-download-heading-lvl nil)
@@ -93,7 +86,8 @@
       (previous-line)
       (while (re-search-forward (expand-file-name "~") nil t)
         (replace-match "~" t nil))))
-  (advice-add 'org-download-clipboard :after 'my/auto-change-file-paths))
+  (advice-add 'org-download-clipboard :after 'my/auto-change-file-paths)
+  (advice-add 'org-download-screenshot :after 'my/auto-change-file-paths))
 
 (use-package plantuml
   :general (my/space-leader-def

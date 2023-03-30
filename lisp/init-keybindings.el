@@ -34,6 +34,20 @@
   "v" '(toggle-vterm :wk "vterm")
   "f" '(my/hydra-open-file/body :wk "Files")
 
+  "d" '(:ignore t :wk "Download")
+  "dc" '(org-download-clipboard :wk "Clipboard")
+  "dr" '(my/org-download-rename :wk "Rename(arg)")
+  "ds" '(org-download-screenshot :wk "Screenshot")
+  "dy" '(org-download-yank :wk "Yank")
+
+  "p" '(:ignore t :wk "Preview")
+  "pa" '(math-preview-all :wk "All")
+  "pA" '(math-preview-clear-all :wk "Clear All")
+  "pp" '(math-preview-at-point :wk "Point")
+  "pP" '(math-preview-clear-at-point :wk "Clear Point")
+  "pr" '(math-preview-region :wk "Region")
+  "pR" '(math-preview-clear-region :wk "Clear Region")
+
   "s" '(:ignore t :wk "Search")
   "sb" '(engine/search-bookdouban :wk "Book")
   "ss" '(engine/search-google :wk "Google")
@@ -72,6 +86,7 @@
   "gnc" 'my/biblio-lookup-crossref
   "gnf" 'my/citar-denote-find-ref-or-citation
   "gnn" 'consult-notes
+  "gnN" 'denote-menu-list-notes
   "gnp" 'citar-open-files
   "gno" 'citar-denote-open-note
   "gns" 'my/denote-signature-or-subdirectory
@@ -98,7 +113,7 @@
   "t" 'ekg-notes-tag)
 
 (evil-define-key '(normal visual) org-mode-map
-  "gnN" 'citar-denote-dwim
+  "gnd" 'citar-denote-dwim
 
   "gnk" 'citar-denote-add-citekey
   "gnK" 'citar-denote-remove-citekey
@@ -148,6 +163,11 @@
 
 (evil-define-key 'normal sdcv-mode-map
   "q" 'quit-window)
+
+(evil-define-key 'normal denote-menu-mode-map
+    "//" 'denote-menu-filter
+    "/k" 'denote-menu-filter-by-keyword
+    "c" 'denote-menu-clear-filters)
 
 (provide 'init-keybindings)
 ;;; init-keybindings.el ends here.
