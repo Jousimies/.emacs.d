@@ -77,7 +77,7 @@
   (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
   (setq org-download-heading-lvl nil)
   :config
-  (setq org-download-screenshot-method 'screencapture)
+  (setq org-download-screenshot-method "screencapture -i %s")
   (setq org-download-abbreviate-filename-function 'expand-file-name)
   (setq org-download-timestamp "%Y%m%d%H%M%S")
   (setq org-download-display-inline-images nil)
