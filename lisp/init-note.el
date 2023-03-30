@@ -183,6 +183,9 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
       (insert "#+TITLE: " article "\n")
       (tempel-insert 'hugo)))
 
+(use-package denote-menu
+  :commands denote-menu-list-notes)
+
 (use-package org-transclusion
   :commands (org-transclusion-make-from-link
              org-transclusion-add

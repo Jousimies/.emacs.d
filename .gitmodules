@@ -541,3 +541,9 @@
 [submodule "packages/lsp-bridge"]
 	path = packages/lsp-bridge
 	url = https://github.com/manateelazycat/lsp-bridge.git
+[submodule "packages/org-modern"]
+	path = packages/org-modern
+	url = https://github.com/minad/org-modern.git
+[submodule "packages/diredfl"]
+	path = packages/diredfl
+	url = https://github.com/purcell/diredfl.git

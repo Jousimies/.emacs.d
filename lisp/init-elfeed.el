@@ -20,7 +20,7 @@
 (use-package elfeed-org
   :commands elfeed-org my/rss-source
   :config
-  (setq rmh-elfeed-org-files `(,(concat my-galaxy "/rss/elfeed.org")))
+  (setq rmh-elfeed-org-files `(,(concat my-galaxy "/denote/20230330T120149==5d2b3--rss-sources__elfeed_emacs.org")))
   (defun my/rss-source ()
     "Open elfeed config file."
     (interactive)

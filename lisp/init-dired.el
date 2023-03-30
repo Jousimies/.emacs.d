@@ -42,5 +42,8 @@
   :config
   (setq image-dired-dir (expand-file-name "cache/image-dired" user-emacs-directory)))
 
+(use-package diredfl
+  :hook (dired-mode . diredfl-mode))
+
 (provide 'init-dired)
 ;;; init-dired.el ends here.

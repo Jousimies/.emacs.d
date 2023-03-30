@@ -61,6 +61,17 @@
                  nil
                  (window-parameters (mode-line-format . none)))))
 
+(defun consult-outline-insert-heading (target)
+  (let* ((marker (plist-get
+                  (text-properties-at 0 target)
+                  'consult--candidate))
+         (headline-name (substring (org-no-properties target)
+                                   2 nil)))
+    (org-insert-link nil headline-name)))
+
+(with-eval-after-load 'embark
+  (define-key embark-general-map (kbd "h") #'consult-outline-insert-heading))
+
 (use-package consult
   :commands consult-outline
   :hook (completion-list-mode . consult-preview-at-point-mode)
