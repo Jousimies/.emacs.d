@@ -91,6 +91,9 @@
           ("I" "NC Inbox"
            plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/inbox.org")))
            "**** %?\n%U\n" :time-prompt t :tree-type week)
+          ("w" "Work log"
+                 plain (file+olp+datetree (lambda () (concat my-galaxy "/denote/worklog.org")))
+                 "**** %?\n%U\n" :time-prompt t :tree-type week)
           ("p" "Daily Plan"
            plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/plan.org")))
            "- [ ] %?\n%U\n" :time-prompt t :tree-type week)

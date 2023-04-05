@@ -10,20 +10,29 @@
                ("C-c l" . org-store-link)))
   :hook (dired-mode . dired-hide-details-mode)
   :config
-  (setq insert-directory-program "/opt/homebrew/bin/gls")
-  (setq dired-use-ls-dired t)
+  (when (executable-find "gls")
+
+    (setq dired-use-ls-dired nil)
+    (setq insert-directory-program "gls")
+    (setq dired-listing-switches
+          "-l --almost-all --human-readable --group-directories-first --no-group"))
+
   (setq dired-dwim-target t)
   (setq dired-auto-revert-buffer #'dired-buffer-stale-p)
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'top)
-  (setq dired-listing-switches
-        "-l --almost-all --human-readable --group-directories-first --no-group")
+
   (setq dired-auto-revert-buffer t)
   (add-to-list 'display-buffer-alist '((or (derived-mode . dired-mode)
                                            (derived-mode . dirvish-mode))
                                        (display-buffer-in-tab)
                                        (tab-name . "Dired")
                                        (tab-group . "Dired"))))
+
+(defun z/dired-insert-date-folder ()
+  "Create new directory with current date"
+  (interactive)
+  (dired-create-directory (format-time-string "%Y-%m-%d")))
 
 (defun my/eww-html-file ()
   (interactive)

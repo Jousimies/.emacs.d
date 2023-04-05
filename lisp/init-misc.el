@@ -4,20 +4,6 @@
 
 ;;; Code:
 
-(use-package psearch
-  :commands psearch-replace psearch-patch)
-
-(use-package epkg
-  :bind ("s-<f4>" . epkg-describe-package)
-  :config
-  (setq epkg-repository (expand-file-name "cache/epkgs" user-emacs-directory)))
-
-(use-package epkg-marginalia
-  :after (epkg marginalia)
-  :config
-  (cl-pushnew 'epkg-marginalia-annotate-package
-              (alist-get 'package marginalia-annotator-registry)))
-
 (use-package file-info
   :commands file-info-show)
 

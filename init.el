@@ -81,7 +81,7 @@
 (setq inhibit-compacting-font-caches t)
 (setq inhibit-quit nil)
 (setq fast-but-imprecise-scrolling t)
-(setq scroll-preserve-screen-position t)
+(setq scroll-preserve-screen-position 'always)
 (setq auto-save-list-file-name nil)
 (setq history-delete-duplicates t)
 (setq bidi-display-reordering nil)

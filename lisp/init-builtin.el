@@ -77,6 +77,7 @@
 (add-hook 'prog-mode-hook 'outline-minor-mode)
 
 (use-package pixel-scroll
+  :if (and window-system (>= emacs-major-version 29))
   :config
   (pixel-scroll-precision-mode))
 
@@ -107,6 +108,14 @@
 
 (use-package cursor-sensor
   :hook (minibuffer-setup . cursor-intangible-mode))
+
+(use-package compile
+  :config
+  (setq compilation-scroll-output t))
+
+(use-package shr
+  :config
+  (setq shr-max-image-proportion 0.7))
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here.

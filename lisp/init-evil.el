@@ -27,10 +27,7 @@
   (setq evil-want-C-h-delete t)
   (setq evil-respect-visual-line-mode t)
   (setq evil-undo-system 'undo-redo)
-  :config
-  (evil-mode)
   (setq evil-visual-state-cursor 'hollow)
-
   (setq evil-normal-state-tag " 𝐍 ")
   (setq evil-insert-state-tag " 𝐈 ")
   (setq evil-motion-state-tag " 𝐌 ")
@@ -38,6 +35,9 @@
   (setq evil-replace-state-tag " 𝐑 ")
   (setq evil-operator-state-tag " O ")
   (setq evil-emacs-state-tag " E ")
+
+  :config
+  (evil-mode)
 
   ;; https://github.com/zsxh/emacs.d/blob/master/lisp/init-evil.el
   ;; remove all keybindings from insert-state keymap,it is VERY VERY important

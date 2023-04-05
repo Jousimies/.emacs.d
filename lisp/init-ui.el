@@ -45,16 +45,24 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(defun pulse-line (&rest _)
-  "Pulse the current line."
-  (pulse-momentary-highlight-one-line (point)))
+(use-package pulse
+  :preface
+  (defun my-pulse-momentary (&rest _)
+    "Pulse the current line."
+    (pulse-momentary-highlight-one-line (point) 'next-error))
 
-(dolist (command '(evil-paste-after
-                   evil-paste-pop
-                   evil-paste-before
-                   evil-delete
-                   evil-delete-line))
-  (advice-add command :after #'pulse-line))
+  (defun my-recenter (&rest _)
+    "Recenter and pulse the current line."
+    (recenter)
+    (my-pulse-momentary))
+
+  :hook ((bookmark-after-jump next-error other-window
+                              dumb-jump-after-jump imenu-after-jump) . my-recenter)
+  :init (dolist (cmd '(recenter-top-bottom
+                       other-window windmove-do-window-select
+                       pop-to-mark-command pop-global-mark
+                       pager-page-down pager-page-up))
+          (advice-add cmd :after #'my-pulse-momentary)))
 
 (use-package color-identifiers-mode
   :hook (text-mode . global-color-identifiers-mode))
