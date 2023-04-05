@@ -4,12 +4,12 @@
 
 ;;; Code:
 
-(use-package emacs-nerd-icons
+(use-package nerd-icons
   :config
-  (setq emacs-nerd-icons-font-family "Hack Nerd Font Mono"))
+  (setq nerd-icons-font-family "Hack Nerd Font Mono"))
 
-(use-package emacs-nerd-icons-dired
-  :hook (dired-mode . emacs-nerd-icons-dired-mode))
+(use-package nerd-icons-dired
+  :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package modus-themes
   :defer t
