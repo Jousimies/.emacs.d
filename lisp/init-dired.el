@@ -48,7 +48,7 @@
 
 (use-package image-dired
   :bind ("C-c d" . image-dired)
-  :config
+  :init
   (setq image-dired-dir (expand-file-name "cache/image-dired" user-emacs-directory)))
 
 (provide 'init-dired)
