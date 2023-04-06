@@ -4,9 +4,20 @@
 
 ;;; Code:
 
+(use-package files
+  :config
+  (add-to-list 'major-mode-remap-alist
+               '(python-mode . python-ts-mode)))
+
+(use-package treesit
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(python "https://github.com/tree-sitter/tree-sitter-python.git")))
+
 (use-package eglot
   :after yasnippet
-  :hook (LaTeX-mode . eglot-ensure))
+  :hook ((LaTeX-mode . eglot-ensure)
+         (python-ts-mode . eglot-ensure)))
 
 ;; lsp-bridge-toggle-sdcv-helper use pinyin to search english words,
 ;; Disable corfu-mode to turn off cape-dabbrev temporarily.
