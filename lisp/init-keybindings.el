@@ -169,5 +169,8 @@
     "/k" 'denote-menu-filter-by-keyword
     "c" 'denote-menu-clear-filters)
 
+(evil-define-key 'normal vterm-mode-map
+  "q" 'quit-window)
+
 (provide 'init-keybindings)
 ;;; init-keybindings.el ends here.

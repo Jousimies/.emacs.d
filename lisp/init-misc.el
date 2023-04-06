@@ -231,25 +231,26 @@ This command can be called when in a file buffer or in `dired'."
                                         (mode-line-format . none)))))
 
 (use-package vterm
-  :commands vterm
-  :defer t
-  :config
-  (setq vterm-kill-buffer-on-exit t)
-  (setq vterm-max-scrollback 5000)
+  :commands vterm vterm-mode toggle-vterm
+  :init
   (add-to-list 'display-buffer-alist
-               '("\\*vterm\\*"
+               '((or "^\\*vterm"
+                     (derived-mode . vterm-mode) )
                  (display-buffer-in-side-window)
                  (window-height . 0.35)
                  (side . bottom)
-                 (slot . -1))))
+                 (slot . -1)))
+  :config
+  (setq vterm-kill-buffer-on-exit t)
+  (setq vterm-max-scrollback 5000))
+
+;;;###autoload
 (defun toggle-vterm ()
-  "Toggle vterm on or off."
   (interactive)
-  (if (get-buffer-window "*vterm*")
-      (delete-window (get-buffer-window "*vterm*"))
-    (progn
-      (vterm)
-      (evil-insert 1))))
+  (let ((buf (concat "*vterm-" (buffer-name))))
+    (unless (eq major-mode 'vterm-mode)
+      (switch-to-buffer (get-buffer-create buf))
+      (vterm-mode))))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.
