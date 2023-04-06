@@ -22,6 +22,10 @@
   (cl-pushnew 'epkg-marginalia-annotate-package
               (alist-get 'package marginalia-annotator-registry)))
 
+(use-package request
+  :config
+  (setq request-storage-directory (expand-file-name "cache/request" user-emacs-directory)))
+
 (defun fast-file-view-mode ()
   "Makes the buffer readonly and disables fontlock and other bells and whistles
    for faster viewing"
