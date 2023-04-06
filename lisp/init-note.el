@@ -226,10 +226,5 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
                     :foreground "white"))
                  'face-override-spec))
 
-(use-package org-noter
-  :after org pdf-tools
-  :config
-  (setq org-noter-notes-search-path `(,(expand-file-name "references" my-galaxy))))
-
 (provide 'init-note)
 ;;; init-note.el ends here.
