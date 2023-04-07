@@ -9,6 +9,13 @@
 (use-package sis
   :config
   (setq sis-other-cursor-color "red")
+  (face-spec-set 'sis-inline-face
+               '((((background light))
+                  :foreground "black" :background "#94d4ff")
+                 (t
+                  :foreground "black" :background "#a4d5f9"))
+               'face-override-spec)
+
   (setq sis-external-ism "im-select")
   (sis-ism-lazyman-config "com.apple.keylayout.ABC" "im.rime.inputmethod.Squirrel.Hans")
   (sis-global-cursor-color-mode t)
@@ -22,9 +29,23 @@
                            (eq major-mode 'telega-chat-mode))
                    'other))))
 
+
 (add-hook 'evil-insert-state-exit-hook
           (lambda ()
             (setq sis-default-cursor-color (foreground-color-at-point))))
+
+(defun my/apply-theme-and-cursor (appearance)
+    "Load theme, taking current system APPEARANCE into consideration."
+    (mapc #'disable-theme custom-enabled-themes)
+    (pcase appearance
+      ('light (progn
+                (load-theme 'modus-operandi t)
+                (setq sis-default-cursor-color (foreground-color-at-point))))
+      ('dark (progn
+               (load-theme 'modus-vivendi t)
+               (setq sis-default-cursor-color (foreground-color-at-point))))))
+
+(advice-add 'my/apply-theme :override 'my/apply-theme-and-cursor)
 
 ;; Search file with first char.
 (use-package pinyinlib
