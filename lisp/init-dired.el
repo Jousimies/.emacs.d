@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package dired
+  :commands dired-find-file
   :bind (("C-x d" . dired)
          (:map dired-mode-map
                ("C-c l" . org-store-link)))
@@ -40,6 +41,16 @@
     (eww (concat "file://" file))))
 
 (define-key dired-mode-map (kbd "C-c e") 'my/eww-html-file)
+
+;;;###autoload
+(defun open-with-default-app ()
+  "Open file with system default app in dired."
+  (interactive)
+  (let* ((file (dired-get-filename))
+        (ext (file-name-extension file)))
+    (if (member ext '("xlsx" "docx"))
+        (start-process "default-app" nil "open" file)
+      (dired-find-file))))
 
 (use-package dired-hide-dotfiles
   :hook (dired-mode . dired-hide-dotfiles-mode)

@@ -155,6 +155,7 @@
   "zf" 'beancount-fava)
 
 (evil-define-key '(normal visual motion) dired-mode-map
+  (kbd "RET") 'open-with-default-app
   "gnr" 'denote-dired-rename-marked-files
   "e" 'xah-show-in-desktop)
 
@@ -165,9 +166,9 @@
   "q" 'quit-window)
 
 (evil-define-key 'normal denote-menu-mode-map
-    "//" 'denote-menu-filter
-    "/k" 'denote-menu-filter-by-keyword
-    "c" 'denote-menu-clear-filters)
+  "//" 'denote-menu-filter
+  "/k" 'denote-menu-filter-by-keyword
+  "c" 'denote-menu-clear-filters)
 
 (evil-define-key 'normal vterm-mode-map
   "q" 'quit-window)
