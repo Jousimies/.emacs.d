@@ -45,11 +45,11 @@
   ;; 把emacs模式下的按键绑定到Insert模式下
   (define-key evil-insert-state-map (read-kbd-macro evil-toggle-key) 'evil-emacs-state)
   ;; but [escape] should switch back to normal state
-  (define-key evil-insert-state-map [escape] 'evil-normal-state))
+  (define-key evil-insert-state-map [escape] 'evil-normal-state)
 
-(evil-define-key '(normal motion visual) 'global
-  "ge" nil
-  "gn" nil)
+  (evil-define-key '(normal motion visual) 'global
+    "ge" nil
+    "gn" nil))
 
 (use-package evil-commands
   :bind (:map evil-motion-state-map
