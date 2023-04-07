@@ -51,7 +51,7 @@
   :commands tablist-minor-mode)
 
 (use-package achive
-  :commands archive
+  :commands achive
   :config
   (setq achive-language 'zh)
   (setq achive-cache-path (expand-file-name "cache/.achive" user-emacs-directory))
