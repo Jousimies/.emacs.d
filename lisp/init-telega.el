@@ -27,12 +27,7 @@
                                        (window-width . 0.4)
                                        (window-parameters
                                         (select . t)
-                                        (mode-line-format . none))))
-
-  (evil-define-key 'normal telega-root-mode-map
-    "gs" nil)
-  (evil-define-key 'normal telega-msg-button-map
-    "SPC" nil))
+                                        (mode-line-format . none)))))
 
 (use-package telega-notifications
   :hook (telega-load . telega-notifications-mode))
