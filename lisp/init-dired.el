@@ -47,7 +47,7 @@
   "Open file with system default app in dired."
   (interactive)
   (let* ((file (dired-get-filename))
-        (ext (file-name-extension file)))
+         (ext (file-name-extension file)))
     (if (member ext '("xlsx" "docx"))
         (start-process "default-app" nil "open" file)
       (dired-find-file))))

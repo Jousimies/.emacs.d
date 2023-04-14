@@ -26,18 +26,18 @@
 (use-package denote
   :bind ("C-c n l" . denote-link-or-create)
   :commands (denote denote-signature denote-subdirectory denote-rename-file-using-front-matter
-                    denote-keywords-prompt
-                    denote-rename-file
-                    denote-link-or-create)
+		    denote-keywords-prompt
+		    denote-rename-file
+		    denote-link-or-create)
   :hook (dired-mode . denote-dired-mode-in-directories)
   :config
   (setq denote-directory (expand-file-name "denote" my-galaxy))
   (setq denote-dired-directories (list denote-directory
-                                       (thread-last denote-directory (expand-file-name "books"))
-                                       (thread-last denote-directory (expand-file-name "outline"))
-                                       (thread-last denote-directory (expand-file-name "literature"))
-                                       (thread-last denote-directory (expand-file-name "term"))
-                                       (thread-last denote-directory (expand-file-name "references")))))
+				       (thread-last denote-directory (expand-file-name "books"))
+				       (thread-last denote-directory (expand-file-name "outline"))
+				       (thread-last denote-directory (expand-file-name "literature"))
+				       (thread-last denote-directory (expand-file-name "term"))
+				       (thread-last denote-directory (expand-file-name "references")))))
 
 (use-package denote-org-dblock
   :commands denote-org-dblock-insert-backlinks denote-org-dblock-insert-links)
@@ -86,6 +86,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
             'org
             (expand-file-name "literature" (denote-directory))
             nil)
+    ;; (my/org-insert-web-page-archive)
     (my/denote-reference-heading)
     (my/link-grab)
     (forward-line -3)))

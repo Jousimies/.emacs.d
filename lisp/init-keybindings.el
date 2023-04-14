@@ -173,8 +173,9 @@
 (evil-define-key 'normal vterm-mode-map
   "q" 'quit-window)
 
-(evil-define-key 'normal telega-chat-mode-map
-  "q" 'quit-window)
+;; (with-eval-after-load 'telega
+;;   (evil-define-key 'normal telega-chat-mode-map
+;;     "q" 'quit-window))
 
 (evil-define-key 'normal telega-root-mode-map
   "gs" nil)
