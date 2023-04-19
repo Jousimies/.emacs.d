@@ -102,9 +102,6 @@
 (defvar my/web_archive (expand-file-name "web_archive/" my-galaxy)
   "The folder save web pages.")
 
-(defvar website-directory "~/Nextcloud/L.Personal.Galaxy/website"
-  "The source folder of my blog.")
-
 (defvar my/reference-lists `(,(concat my-galaxy "/bibtexs/References.bib")
                              ,(concat my-cloud "/L.Calibre/calibre.bib")))
 

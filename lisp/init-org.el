@@ -296,6 +296,23 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
     (append reading-list
             (file-expand-wildcards (expand-file-name "denote/books/*.org" my-galaxy)))))
 
+(with-eval-after-load 'org
+  (add-to-list 'org-options-keywords "AUTO_EXPORT:"))
+
+(defun auto-export-blog ()
+  "Auto export blog."
+  (when (derived-mode-p 'org-mode)
+    (save-excursion
+      (goto-char 0)
+      (if (string-equal (car
+                         (cdr
+                          (car
+                           (org-collect-keywords '("AUTO_EXPORT")))))
+                        "t")
+          (org-publish-all)))))
+
+(add-hook 'after-save-hook 'auto-export-blog)
+
 (defun add-symbol-to-region (beg end symbol)
   (save-excursion
     (goto-char end)

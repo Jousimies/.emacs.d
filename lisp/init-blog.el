@@ -4,27 +4,23 @@
 
 ;;; Code:
 
-(use-package ox-hugo
-  :defer 3
-  :after ox)
-
 (use-package ox-html
   :after ox
   :config
+  (setq org-export-global-macros
+        '(("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@")))
   (setq org-html-preamble t)
   (setq org-html-preamble-format
-        '(("en" "<a href=\"/index.html\" class=\"button\">Home</a>
-               <a href=\"/notes/index.html\" class=\"button\">Notes</a>
-               <a href=\"/engineering/index.html\" class=\"button\">Engineering</a>
-               <a href=\"/movies/index.html\" class=\"button\">Movies</a>
-               <a href=\"/books/index.html\" class=\"button\">Books</a>
+      '(("en" "<a href=\"/index.html\" class=\"button\">Home</a>
+               <a href=\"/posts/index.html\" class=\"button\">Posts</a>
                <a href=\"/about.html\" class=\"button\">About</a>
                <hr>")))
 
   (setq org-html-postamble t)
 
   (setq org-html-postamble-format
-        '(("en" "<hr><div class=\"generated\">Created with %c on MacOS</div>")))
+        '(("en" "<hr><div class=\"info\"> <span class=\"created\">Created with %c on MacOS</span>
+ <span class=\"updated\">Updated: %d</span> </div>")))
 
   (setq org-html-head-include-default-style nil)
 
@@ -34,7 +30,22 @@
 (use-package ox-publish
   :after ox
   :config
-  (defvar my/publish-directory "~/shuyi.github.io")
+  ;; https://git.sr.ht/~taingram/taingram.org/tree/master/item/publish.el
+  (defun taingram--sitemap-dated-entry-format (entry style project)
+  "Sitemap PROJECT ENTRY STYLE format that includes date."
+  (let ((filename (org-publish-find-title entry project)))
+    (if (= (length filename) 0)
+        (format "*%s*" entry)
+      (format "{{{timestamp(%s)}}} [[file:%s][%s]]"
+              (format-time-string "%Y-%m-%d"
+                                  (org-publish-find-date entry project))
+              entry
+              filename))))
+
+  (defvar website-directory (expand-file-name "blogs_source" my-galaxy)
+    "The source folder of my blog.")
+
+  (defvar my/publish-directory "~/Blogs/")
 
   (setq org-publish-project-alist
         `(("site"
@@ -44,51 +55,26 @@
            :publishing-directory ,my/publish-directory
            :publishing-function org-html-publish-to-html)
 
-          ("notes"
-           :base-directory ,(expand-file-name "notes" website-directory)
+          ("posts"
+           :base-directory ,(expand-file-name "posts" website-directory)
            :base-extension "org"
-           :publishing-directory ,(expand-file-name "notes" my/publish-directory)
+           :publishing-directory ,(expand-file-name "posts" my/publish-directory)
            :publishing-function org-html-publish-to-html
+           :with-author t
            :auto-sitemap t
            :sitemap-filename "index.org"
-           :sitemap-title "Notes"
-           :sitemap-sort-files anti-chronologically)
-          ("books"
-           :base-directory ,(expand-file-name "books" website-directory)
-           :base-extension "org"
-           :publishing-directory ,(expand-file-name "books" my/publish-directory)
-           :publishing-function org-html-publish-to-html
-           :auto-sitemap t
-           :sitemap-filename "index.org"
-           :sitemap-title "Books"
-           :sitemap-sort-files anti-chronologically)
-          ("movies"
-           :base-directory ,(expand-file-name "movies" website-directory)
-           :base-extension "org"
-           :publishing-directory ,(expand-file-name "movies" my/publish-directory)
-           :publishing-function org-html-publish-to-html
-           :auto-sitemap t
-           :sitemap-filename "index.org"
-           :sitemap-title "Movies"
-           :sitemap-sort-files anti-chronologically)
-          ("engineering"
-           :base-directory ,(expand-file-name "engineering" website-directory)
-           :base-extension "org"
-           :publishing-directory ,(expand-file-name "engineering" my/publish-directory)
-           :publishing-function org-html-publish-to-html
-           :auto-sitemap t
-           :sitemap-filename "index.org"
-           :sitemap-title "Engineering"
-           :sitemap-sort-files anti-chronologically)
+           :sitemap-title "posts"
+           :sitemap-sort-files anti-chronologically
+           :sitemap-format-entry taingram--sitemap-dated-entry-format)
+
           ("static"
            :base-directory ,website-directory
-           :base-extension "css\\|txt\\|jpg\\|gif\\|png"
+           :base-extension "css\\|js\\|txt\\|jpg\\|gif\\|png"
            :recursive t
            :publishing-directory  ,my/publish-directory
            :publishing-function org-publish-attachment)
 
-          ("personal-website" :components ("site" "notes" "books"
-                                           "movies" "engineering" "static")))))
+          ("personal-website" :components ("site" "posts" "static")))))
 
 (provide 'init-blog)
 ;;; init-blog.el ends here.

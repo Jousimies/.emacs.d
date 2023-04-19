@@ -168,7 +168,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   :commands consult-notes
   :config
   (setq consult-notes-file-dir-sources
-        `(("Articles"  ?a  ,(concat my-galaxy "/articles"))
+        `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
           ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
           ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
           ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
@@ -180,9 +180,9 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
     (interactive "sTitle: ")
     (let ((filename (format "%s" article))
           (ext ".org"))
-      (find-file (concat my-galaxy "/articles/" filename ext))
+      (find-file (concat my-galaxy "/blogs_source/posts/" filename ext))
       (insert "#+TITLE: " article "\n")
-      (tempel-insert 'hugo)))
+      (tempel-insert 'blog)))
 
 (use-package denote-menu
   :commands denote-menu-list-notes)
