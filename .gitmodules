@@ -556,3 +556,12 @@
 [submodule "packages/mpv.el"]
 	path = packages/mpv.el
 	url = https://github.com/kljohann/mpv.el.git
+[submodule "packages/simple-httpd"]
+	path = packages/simple-httpd
+	url = https://github.com/briandowns/simple-httpd.git
+[submodule "packages/wakatime-ui.el"]
+	path = packages/wakatime-ui.el
+	url = https://github.com/Artawower/wakatime-ui.el.git
+[submodule "packages/wakatime-mode"]
+	path = packages/wakatime-mode
+	url = https://github.com/wakatime/wakatime-mode.git
