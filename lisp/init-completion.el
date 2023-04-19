@@ -38,12 +38,7 @@
 (use-package vertico-directory
   :after vertico
   :bind (:map vertico-map
-              ("C-DEL" . vertico-directory-up)))
-
-(use-package vertico-indexed
-  :after vertico
-  :config
-  (vertico-indexed-mode))
+              ("C-<backspace>" . vertico-directory-up)))
 
 (use-package vertico-indexed
   :after vertico
