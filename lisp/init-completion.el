@@ -70,8 +70,7 @@
   (let* ((marker (plist-get
                   (text-properties-at 0 target)
                   'consult--candidate))
-         (headline-name (substring (org-no-properties target)
-                                   2 nil)))
+         (headline-name (org-entry-get nil "ITEM")))
     (org-insert-link nil headline-name)))
 
 (with-eval-after-load 'embark
