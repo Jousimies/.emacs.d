@@ -89,5 +89,8 @@
             (my/auto-change-file-paths))
         (message "Please save web page first.")))))
 
+(use-package simple-httpd
+  :commands httpd-serve-directory)
+
 (provide 'init-search)
 ;;; init-search.el ends here.

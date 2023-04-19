@@ -109,14 +109,5 @@
   (setq pomm-state-file-location (expand-file-name "cache/pomm" user-emacs-directory))
   (pomm-mode-line-mode))
 
-(use-package org-alert
-  :after org
-  :config
-  (setq org-alert-interval 300)
-  (setq org-alert-notify-cutoff 10)
-  (setq org-alert-notify-after-event-cutoff 10)
-  (setq org-alert-notification-title "Org Agenda Reminder!")
-  (org-alert-enable))
-
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.
