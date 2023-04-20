@@ -65,8 +65,8 @@
   (let* ((marker (plist-get
                   (text-properties-at 0 target)
                   'consult--candidate))
-         (headline-name (org-entry-get nil "ITEM")))
-    (org-insert-link nil headline-name)))
+         (headline-name (cadr (split-string (org-no-properties target) "* "))))
+    (org-insert-link nil headline-name nil)))
 
 (with-eval-after-load 'embark
   (define-key embark-general-map (kbd "h") #'consult-outline-insert-heading))
