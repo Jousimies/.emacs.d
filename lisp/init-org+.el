@@ -89,6 +89,9 @@
   (advice-add 'org-download-clipboard :after 'my/auto-change-file-paths)
   (advice-add 'org-download-screenshot :after 'my/auto-change-file-paths))
 
+(use-package org-imgtog
+  :hook (org-mode . org-imgtog-mode))
+
 (use-package plantuml
   :general (my/space-leader-def
              "pm" '(plantuml-org-to-mindmap-open :wk "Mindmap")

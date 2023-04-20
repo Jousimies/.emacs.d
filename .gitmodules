@@ -565,3 +565,6 @@
 [submodule "packages/wakatime-mode"]
 	path = packages/wakatime-mode
 	url = https://github.com/wakatime/wakatime-mode.git
+[submodule "packages/org-imgtog"]
+	path = packages/org-imgtog
+	url = https://github.com/gaoDean/org-imgtog.git
