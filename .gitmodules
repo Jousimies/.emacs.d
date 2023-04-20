@@ -1,9 +1,6 @@
 [submodule "packages/magit"]
 	path = packages/magit
 	url = https://github.com/magit/magit.git
-[submodule "packages/no-littering"]
-	path = packages/no-littering
-	url = https://github.com/emacscollective/no-littering.git
 [submodule "packages/compat"]
 	path = packages/compat
 	url = https://github.com/emacs-compat/compat.git
@@ -463,9 +460,6 @@
 [submodule "packages/denote"]
 	path = packages/denote
 	url = https://github.com/protesilaos/denote.git
-[submodule "packages/meow"]
-	path = packages/meow
-	url = https://github.com/meow-edit/meow.git
 [submodule "packages/emacs-nerd-icons"]
 	path = packages/emacs-nerd-icons
 	url = https://github.com/rainstormstudio/emacs-nerd-icons.git
@@ -493,9 +487,6 @@
 [submodule "packages/org-web-tools"]
 	path = packages/org-web-tools
 	url = https://github.com/alphapapa/org-web-tools.git
-[submodule "packages/org-noter"]
-	path = packages/org-noter
-	url = https://github.com/org-noter/org-noter.git
 [submodule "packages/emacs-smart-input-source"]
 	path = packages/emacs-smart-input-source
 	url = https://github.com/laishulu/emacs-smart-input-source.git
@@ -541,30 +532,18 @@
 [submodule "packages/lsp-bridge"]
 	path = packages/lsp-bridge
 	url = https://github.com/manateelazycat/lsp-bridge.git
-[submodule "packages/org-modern"]
-	path = packages/org-modern
-	url = https://github.com/minad/org-modern.git
 [submodule "packages/diredfl"]
 	path = packages/diredfl
 	url = https://github.com/purcell/diredfl.git
 [submodule "packages/auto-save"]
 	path = packages/auto-save
 	url = https://github.com/manateelazycat/auto-save.git
-[submodule "packages/org-mpvi"]
-	path = packages/org-mpvi
-	url = https://github.com/lorniu/org-mpvi.git
 [submodule "packages/mpv.el"]
 	path = packages/mpv.el
 	url = https://github.com/kljohann/mpv.el.git
 [submodule "packages/simple-httpd"]
 	path = packages/simple-httpd
 	url = https://github.com/briandowns/simple-httpd.git
-[submodule "packages/wakatime-ui.el"]
-	path = packages/wakatime-ui.el
-	url = https://github.com/Artawower/wakatime-ui.el.git
-[submodule "packages/wakatime-mode"]
-	path = packages/wakatime-mode
-	url = https://github.com/wakatime/wakatime-mode.git
 [submodule "packages/org-imgtog"]
 	path = packages/org-imgtog
 	url = https://github.com/gaoDean/org-imgtog.git
