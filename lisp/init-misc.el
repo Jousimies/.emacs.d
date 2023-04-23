@@ -4,9 +4,6 @@
 
 ;;; Code:
 
-(use-package wakatime-ui
-  :demand t)
-
 (use-package file-info
   :commands file-info-show)
 

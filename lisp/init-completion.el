@@ -57,6 +57,11 @@
                ("C-c C-c" . embark-act)))
   :config
   (add-to-list 'display-buffer-alist
+               '("\\*Embark Actions\\*"
+                 (display-buffer-in-new-tab)
+                 (side . right)
+                 (width . 0.3)))
+  (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
                  (window-parameters (mode-line-format . none)))))
@@ -72,7 +77,7 @@
   (define-key embark-general-map (kbd "h") #'consult-outline-insert-heading))
 
 (use-package consult
-  :commands consult-outline
+  :commands consult-outline consult-find
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)

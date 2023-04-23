@@ -1,3 +1,9 @@
+;; init-basic.el --- Basic. -*- lexical-binding: t; no-byte-compile: t -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (use-package hydra
   :commands defhydra
   :config
@@ -13,6 +19,14 @@
 
 (use-package epkg
   :bind ("s-<f4>" . epkg-describe-package)
+  :init
+  (add-to-list 'display-buffer-alist '("^\\*Help\\*"
+                                       (display-buffer-in-tab)
+                                       (side . right)
+                                       (window-width . 0.5)
+                                       (window-parameters
+                                        (select . t)
+                                        (mode-line-format . none))))
   :config
   (setq epkg-repository (expand-file-name "cache/epkgs" user-emacs-directory)))
 

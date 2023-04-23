@@ -82,10 +82,6 @@ of the box `(w h)' inside the box `(cw ch)'."
   :config
   (setq switch-to-buffer-in-dedicated-window 'pop)
   (setq switch-to-buffer-obey-display-actions t)
-
-  (add-to-list 'display-buffer-alist '("\\.pdf"
-                                       (display-buffer-in-tab)
-                                       (tab-name . "PDF") (tab-group . "PDF")))
   (add-to-list 'display-buffer-alist '("\\*Outline"
                                        (display-buffer-in-side-window)
                                        (side . right)
@@ -98,19 +94,6 @@ of the box `(w h)' inside the box `(cw ch)'."
                                        (window-parameters
                                         (mode-line-format . none)
                                         (delete-other-windows . t))))
-  (add-to-list 'display-buffer-alist '("\\*Org Note\\*"
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (slot . 0)
-                                       (window-width . 0.5)
-                                       (window-parameters
-                                        (mode-line-format . none))))
-  (add-to-list 'display-buffer-alist '((or (derived-mode . org-mode)
-                                           (derived-mode . LaTeX-mode))
-                                       (display-buffer-in-tab)
-                                       (tab-name . "Edit") (tab-group . "Edit")
-                                       (select . t)))
-
   (add-to-list 'display-buffer-alist '((derived-mode . prog-mode)
                                        (display-buffer-in-tab)
                                        (tab-name . "Porg") (tab-group . "Prog")

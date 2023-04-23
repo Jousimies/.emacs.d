@@ -173,6 +173,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
           ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
           ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
           ("Outline"  ?o ,(expand-file-name "denote/outline" my-galaxy))
+          ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
           ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
           ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy)))))
 
@@ -183,6 +184,14 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
       (find-file (concat my-galaxy "/blogs_source/posts/" filename ext))
       (insert "#+TITLE: " article "\n")
       (tempel-insert 'blog)))
+
+(defun my/new-meeting (meet)
+  (interactive "sTitle: ")
+  (let ((filename (format "%s-%s" (format-time-string "%Y%m%d") meet))
+        (ext ".org"))
+    (find-file (concat my-galaxy "/meeting/" filename ext))
+    (insert "#+TITLE: " meet "\n")
+    (tempel-insert 'meeting)))
 
 (use-package denote-menu
   :commands denote-menu-list-notes)
@@ -226,6 +235,79 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
                    (t
                     :foreground "white"))
                  'face-override-spec))
+
+(use-package org-roam
+  :commands org-roam-node-find
+  :init
+  (setq org-roam-directory (file-truename (expand-file-name "roam" my-galaxy)))
+  :hook ((org-mode . org-roam-db-autosync-mode)
+         (org-mode . (lambda () (setq-local time-stamp-active t
+                                       time-stamp-start "#\\+MODIFIED:[ \t]*"
+                                       time-stamp-end "$"
+                                       time-stamp-format "\[%Y-%m-%d %3a %H:%M\]")
+                       (add-hook 'before-save-hook 'time-stamp nil 'local))))
+  :config
+  (setq org-roam-database-connector 'sqlite)
+  (setq org-roam-db-gc-threshold most-positive-fixnum)
+  (cl-defmethod org-roam-node-type ((node org-roam-node))
+    "Return the TYPE of NODE."
+    (condition-case nil
+        (file-name-nondirectory
+         (directory-file-name
+          (file-name-directory
+           (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (error "")))
+
+  (cl-defmethod org-roam-node-directories ((node org-roam-node))
+    (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
+        (format "(%s)" (car (split-string dirs "/")))
+      ""))
+
+  (cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
+    (let* ((count (caar (org-roam-db-query
+                         [:select (funcall count source)
+                                  :from links
+                                  :where (= dest $s1)
+                                  :and (= type "id")]
+                         (org-roam-node-id node)))))
+      (format "[%d]" count)))
+
+  (cl-defmethod org-roam-node-doom-filetitle ((node org-roam-node))
+    "Return the value of \"#+title:\" (if any) from file that NODE resides in.
+           If there's no file-level title in the file, return empty string."
+    (or (if (= (org-roam-node-level node) 0)
+            (org-roam-node-title node)
+          (org-roam-get-keyword "TITLE" (org-roam-node-file node)))
+        ""))
+
+  (cl-defmethod org-roam-node-doom-hierarchy ((node org-roam-node))
+    "Return hierarchy for NODE, constructed of its file title, OLP and direct title.
+           If some elements are missing, they will be stripped out."
+    (let ((title     (org-roam-node-title node))
+          (olp       (org-roam-node-olp   node))
+          (level     (org-roam-node-level node))
+          (filetitle (org-roam-node-doom-filetitle node))
+          (separator (propertize " > " 'face 'shadow)))
+      (cl-case level
+        ;; node is a top-level file
+        (0 filetitle)
+        ;; node is a level 1 heading
+        (1 (concat (propertize filetitle 'face '(shadow italic))
+                   separator title))
+        ;; node is a heading with an arbitrary outline path
+        (t (concat (propertize filetitle 'face '(shadow italic))
+                   separator (propertize (string-join olp " > ") 'face '(shadow italic))
+                   separator title)))))
+
+  ;; 获得文件的修改时间.
+  (cl-defmethod org-roam-node-date ((node org-roam-node))
+    (format-time-string "%Y-%m-%d" (org-roam-node-file-mtime node)))
+
+  (setq org-roam-node-display-template
+        (concat "${type:4} ${backlinkscount:3} "
+                (propertize "${doom-hierarchy:*}" 'face 'org-level-3)
+                (propertize "${tags:20}" 'face 'org-tag)
+                " ")))
 
 (provide 'init-note)
 ;;; init-note.el ends here.

@@ -5,54 +5,66 @@
 ;;; Code:
 
 (use-package org
+  :init
+  (add-to-list 'display-buffer-alist '((derived-mode . org-mode)
+                                       (display-buffer-in-tab)
+                                       (tab-name . "Edit") (tab-group . "Edit")
+                                       (select . t)))
+  (add-to-list 'display-buffer-alist '("\\*Org Note\\*"
+                                         (display-buffer-in-side-window)
+                                         (side . bottom)
+                                         (slot . 0)
+                                         (window-width . 0.5)
+                                         (window-parameters
+                                          (mode-line-format . none))))
   :config
   (setq org-ellipsis " ⇲")
   (setq org-modules '()
-	org-imenu-depth 4
-	org-return-follows-link t
-	org-image-actual-width nil
-	org-display-remote-inline-images 'download
-	org-log-into-drawer t
-	org-fast-tag-selection-single-key 'expert
-	org-adapt-indentation nil
-	org-fontify-quote-and-verse-blocks t
-	org-support-shift-select t
-	org-treat-S-cursor-todo-selection-as-state-change nil
-	org-hide-leading-stars nil
-	org-startup-with-inline-images t
-	org-image-actual-width '(500)
-	org-use-speed-commands t)
+        org-imenu-depth 4
+        org-return-follows-link t
+        org-image-actual-width nil
+        org-display-remote-inline-images 'download
+        org-log-into-drawer t
+        org-fast-tag-selection-single-key 'expert
+        org-adapt-indentation nil
+        org-fontify-quote-and-verse-blocks t
+        org-support-shift-select t
+        org-treat-S-cursor-todo-selection-as-state-change nil
+        org-hide-leading-stars nil
+        org-startup-with-inline-images t
+        org-image-actual-width '(500)
+        org-use-speed-commands t)
   (setq org-highlight-latex-and-related '(latex script))
   (setq org-enforce-todo-dependencies t)
   (setq org-enforce-todo-checkbox-dependencies t)
 
   (setq org-todo-repeat-to-state t)
   (setq org-todo-keywords
-	'((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)")))
+        '((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)")))
 
   (setq org-todo-keyword-faces
-	`(("NEXT" . (success . org-todo))
-	  ("TODO" . org-todo)
-	  ("CNCL" . (region . org-todo))
-	  ("WAIT" . (bold . org-todo))))
+        `(("NEXT" . (success . org-todo))
+          ("TODO" . org-todo)
+          ("CNCL" . (region . org-todo))
+          ("WAIT" . (bold . org-todo))))
 
   (setq org-priority-faces
-	'((?A . (bold . org-priority))
-	  (?B . org-priority)
-	  (?C . (shadow . org-priority))))
+        '((?A . (bold . org-priority))
+          (?B . org-priority)
+          (?C . (shadow . org-priority))))
 
   (setq org-todo-state-tags-triggers
-	(quote (("CNCL" ("CNCL" . t))
-		("WAIT" ("WAIT" . t))
-		("SOMEDAY" ("WAIT") ("SOMEDAY" . t))
-		(done ("WAIT") ("SOMEDAY"))
-		("TODO" ("WAIT") ("CNCL") ("SOMEDAY"))
-		("NEXT" ("WAIT") ("CNCL") ("SOMEDAY"))
-		("DONE" ("WAIT") ("CNCL") ("SOMEDAY")))))
+        (quote (("CNCL" ("CNCL" . t))
+                ("WAIT" ("WAIT" . t))
+                ("SOMEDAY" ("WAIT") ("SOMEDAY" . t))
+                (done ("WAIT") ("SOMEDAY"))
+                ("TODO" ("WAIT") ("CNCL") ("SOMEDAY"))
+                ("NEXT" ("WAIT") ("CNCL") ("SOMEDAY"))
+                ("DONE" ("WAIT") ("CNCL") ("SOMEDAY")))))
   :general (my/space-leader-def
-	     "pi" '(org-toggle-inline-images :wk "Images"))
+             "pi" '(org-toggle-inline-images :wk "Images"))
   :bind (:map org-mode-map
-	      ("C-c l" . org-store-link)))
+              ("C-c l" . org-store-link)))
 
 (setq org-tags-sort-function 'org-string-collate-greaterp)
 
@@ -83,8 +95,7 @@
          (:map org-capture-mode-map
               ([remap evil-save-and-close] . org-capture-finalize)
               ([remap evil-save-modified-and-close] . org-capture-finalize)
-              ([remap evil-quit] . org-capture-kill)
-              ("RET" . org-capture-finalize)) )
+              ([remap evil-quit] . org-capture-kill)))
   :config
   (setq org-capture-templates
         '(("i" "GTD Inbox"

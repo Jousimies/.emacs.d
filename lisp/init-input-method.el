@@ -29,7 +29,6 @@
                            (eq major-mode 'telega-chat-mode))
                    'other))))
 
-
 (add-hook 'evil-insert-state-exit-hook
           (lambda ()
             (setq sis-default-cursor-color (foreground-color-at-point))))
@@ -45,7 +44,7 @@
                (load-theme 'modus-vivendi t)
                (setq sis-default-cursor-color (foreground-color-at-point))))))
 
-(advice-add 'my/apply-theme :override 'my/apply-theme-and-cursor)
+(add-hook 'ns-system-appearance-change-functions 'my/apply-theme-and-cursor)
 
 ;; Search file with first char.
 (use-package pinyinlib

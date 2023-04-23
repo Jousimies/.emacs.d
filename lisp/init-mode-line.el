@@ -37,8 +37,8 @@
                              "UTF-8"
                            (upcase (symbol-name (plist-get sys :name))))))
                 "  "
-                mode-line-position
-                "  "
+                ;; mode-line-position
+                ;; "  "
                 (vc-mode vc-mode)
                 (:eval (when buffer-read-only
                          (concat "  "  (propertize "RO"

@@ -274,9 +274,6 @@
 [submodule "packages/esxml"]
 	path = packages/esxml
 	url = https://github.com/tali713/esxml.git
-[submodule "packages/pdf-tools"]
-	path = packages/pdf-tools
-	url = https://github.com/vedang/pdf-tools.git
 [submodule "packages/tablist"]
 	path = packages/tablist
 	url = https://github.com/politza/tablist.git
@@ -547,3 +544,12 @@
 [submodule "packages/org-imgtog"]
 	path = packages/org-imgtog
 	url = https://github.com/gaoDean/org-imgtog.git
+[submodule "packages/org-roam"]
+	path = packages/org-roam
+	url = https://github.com/org-roam/org-roam.git
+[submodule "packages/pdf-tools"]
+	path = packages/pdf-tools
+	url = https://github.com/vedang/pdf-tools.git
+[submodule "packages/emacs-application-framework"]
+	path = packages/emacs-application-framework
+	url = https://github.com/emacs-eaf/emacs-application-framework.git

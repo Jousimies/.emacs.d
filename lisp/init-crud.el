@@ -51,6 +51,7 @@
   (setq recentf-save-file (expand-file-name "cache/recentf" user-emacs-directory))
   (setq recentf-auto-cleanup 300)
   (setq recentf-max-saved-items 1000)
+  (setq recentf-exclude '(".pdf$"))
   (recentf-mode))
 
 (use-package autorevert
@@ -73,9 +74,6 @@
 
 (use-package expand-region
   :commands er/expand-region)
-
-(evil-define-key 'visual 'evil-visual-state-map
-    "v" 'er/expand-region)
 
 (use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)

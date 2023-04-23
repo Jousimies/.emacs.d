@@ -50,6 +50,7 @@
 
   "s" '(:ignore t :wk "Search")
   "sb" '(engine/search-bookdouban :wk "Book")
+  "sf" '(consult-find :wk "Files")
   "ss" '(engine/search-google :wk "Google")
   "sg" '(engine/search-github :wk "Github")
   "sw" '(engine/search-wikipedia :wk "Wiki")
@@ -83,6 +84,7 @@
 
   ;; Note taking
   "gna" 'my/new-article
+  "gnm" 'my/new-meeting
   "gnc" 'my/biblio-lookup-crossref
   "gnf" 'my/citar-denote-find-ref-or-citation
   "gnn" 'consult-notes
@@ -90,6 +92,7 @@
   "gnp" 'citar-open-files
   "gno" 'citar-denote-open-note
   "gns" 'my/denote-signature-or-subdirectory
+  "gnw" 'org-roam-node-find
 
   ;; EKG for fleeting notes
   "ged" 'ekg-show-notes-for-today
@@ -150,6 +153,9 @@
   "cg" 'org-agenda-clock-goto
   "cc" 'org-agenda-clock-cancel
   "cr" 'org-agenda-clockreport-mode)
+
+(evil-define-key 'visual 'evil-visual-state-map
+  "v" 'er/expand-region)
 
 (evil-define-key 'normal 'beancount-mode-map
   "zf" 'beancount-fava)
