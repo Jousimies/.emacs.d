@@ -42,13 +42,16 @@
 
 (define-key dired-mode-map (kbd "C-c e") 'my/eww-html-file)
 
+(defvar file-extensions-with-default-apps '("xlsx" "docx" "eps" "dwg" "psd")
+  "List of file extensions to open with default applications.")
+
 ;;;###autoload
 (defun open-with-default-app ()
   "Open file with system default app in dired."
   (interactive)
   (let* ((file (dired-get-filename))
          (ext (file-name-extension file)))
-    (if (member ext '("xlsx" "docx"))
+    (if (member ext file-extensions-with-default-apps)
         (start-process "default-app" nil "open" file)
       (dired-find-file))))
 
