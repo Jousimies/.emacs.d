@@ -80,7 +80,8 @@
                                        "#+ATTR_ORG: :width 500px"
                                        "#+ATTR_LATEX: :width 10cm :placement [!htpb]"
                                        "#+ATTR_HTML: :width 600px"))
-  (defun my/auto-change-file-paths ()
+
+  (defun my/auto-change-file-paths (&optional basename)
     (interactive)
     (save-excursion
       (previous-line)
