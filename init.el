@@ -115,6 +115,7 @@
   (setq use-package-verbose t)
   (require 'init-benchmark))
 
+(require 'init-crud)
 (require 'init-dashboard)
 
 (add-hook 'after-init-hook (lambda ()
@@ -129,7 +130,6 @@
                              (require 'init-builtin)))
 
 (run-with-timer 1 nil  (lambda ()
-                         (require 'init-crud)
                          (require 'init-buffer)
                          (require 'init-completion)
                          (require 'init-dired)
