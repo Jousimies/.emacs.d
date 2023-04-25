@@ -156,7 +156,7 @@
                          (require 'init-mail)
                          (require 'init-misc)
                          (require 'init-music)
-                         (require 'init-telega)
+                         ;; (require 'init-telega)
                          (require 'init-keybindings)))
 
 (use-package server
