@@ -31,7 +31,7 @@
                                        (display-buffer-in-tab)
                                        (tab-name . "Mail") (tab-group . "Mail")
                                        (select . t))))
-(run-with-idle-timer 2 nil (lambda ()
+(run-with-idle-timer 4 nil (lambda ()
                              (mu4e 'background)))
 
 (use-package mu4e-main
