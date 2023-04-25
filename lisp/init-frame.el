@@ -109,7 +109,7 @@ of the box `(w h)' inside the box `(cw ch)'."
                  'face-override-spec)
   (setq window-divider-default-bottom-width 1)
   (setq window-divider-default-places 'bottom-only)
-  (window-divider-mode -1))
+  (window-divider-mode 1))
 
 (use-package ace-window
   :bind ("C-x o" . ace-window))
