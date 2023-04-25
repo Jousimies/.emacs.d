@@ -106,7 +106,6 @@
   :hook (text-mode . delete-selection-mode))
 
 (use-package select
-  :defer t
   :config
   (setq select-enable-primary t))
 

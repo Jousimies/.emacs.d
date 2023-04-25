@@ -12,7 +12,6 @@
   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package modus-themes
-  :defer t
   :config
   (setq modus-themes-bold-constructs t)
   (setq modus-themes-italic-constructs t)
