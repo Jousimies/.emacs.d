@@ -9,12 +9,13 @@
   (interactive)
   (switch-to-buffer "*Messages*"))
 
-(ibuffer-auto-mode 1)
-
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer)
   :config
   (setq ibuffer-default-sorting-mode 'major-mode))
+
+(use-package ibuf-ext
+  :hook (ibuffer-mode . ibuffer-auto-mode))
 
 (use-package gc-buffers
   :config
