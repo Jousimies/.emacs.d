@@ -25,22 +25,23 @@
   (setq org-html-head-include-default-style nil)
 
   (setq org-html-head
-        "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/style.css\" />"))
+        "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/style.css\" />
+         <script src=\"js/copy.js\"></script> "))
 
 (use-package ox-publish
   :after ox
   :config
   ;; https://git.sr.ht/~taingram/taingram.org/tree/master/item/publish.el
   (defun taingram--sitemap-dated-entry-format (entry style project)
-  "Sitemap PROJECT ENTRY STYLE format that includes date."
-  (let ((filename (org-publish-find-title entry project)))
-    (if (= (length filename) 0)
-        (format "*%s*" entry)
-      (format "{{{timestamp(%s)}}} [[file:%s][%s]]"
-              (format-time-string "%Y-%m-%d"
-                                  (org-publish-find-date entry project))
-              entry
-              filename))))
+    "Sitemap PROJECT ENTRY STYLE format that includes date."
+    (let ((filename (org-publish-find-title entry project)))
+      (if (= (length filename) 0)
+          (format "*%s*" entry)
+        (format "{{{timestamp(%s)}}}   [[file:%s][%s]]"
+                (format-time-string "%Y-%m-%d"
+                                    (org-publish-find-date entry project))
+                entry
+                filename))))
 
   (defvar website-directory (expand-file-name "blogs_source" my-galaxy)
     "The source folder of my blog.")
