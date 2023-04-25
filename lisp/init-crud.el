@@ -54,6 +54,16 @@
   (setq recentf-exclude '(".pdf$"))
   (recentf-mode))
 
+(use-package register
+  :bind ("C-c f" . jump-to-register)
+  :config
+  (set-register ?g (cons 'file (expand-file-name "todos/org-gtd-tasks.org" my-galaxy)))
+  (set-register ?b (cons 'file (expand-file-name "denote/books/20230301T211439--Book-lists-and-reading-record__reading.org" my-galaxy)))
+  (set-register ?e (cons 'file (concat my-galaxy "/denote/20230330T120149==5d2b3--rss-sources__elfeed_emacs.org")))
+  (set-register ?f (cons 'file (expand-file-name "finance/beans/finance.bean" my-galaxy)))
+  (set-register ?i (cons 'file (expand-file-name "inbox/inbox.org" my-galaxy)))
+  (set-register ?p (cons 'file (expand-file-name "inbox/plan.org" my-galaxy))))
+
 (use-package autorevert
   :hook (text-mode . global-auto-revert-mode))
 

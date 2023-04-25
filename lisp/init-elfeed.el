@@ -18,13 +18,9 @@
   (setq elfeed-show-entry-switch #'elfeed-display-buffer))
 
 (use-package elfeed-org
-  :commands elfeed-org my/rss-source
+  :commands elfeed-org
   :config
-  (setq rmh-elfeed-org-files `(,(concat my-galaxy "/denote/20230330T120149==5d2b3--rss-sources__elfeed_emacs.org")))
-  (defun my/rss-source ()
-    "Open elfeed config file."
-    (interactive)
-    (find-file (car rmh-elfeed-org-files))))
+  (setq rmh-elfeed-org-files `(,(concat my-galaxy "/denote/20230330T120149==5d2b3--rss-sources__elfeed_emacs.org"))))
 
 (use-package elfeed-summary
   :general (my/space-leader-def

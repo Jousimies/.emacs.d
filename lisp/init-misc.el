@@ -184,43 +184,6 @@ This command can be called when in a file buffer or in `dired'."
       (insert new-url))
     (error "Not on a Youtube link")))
 
-(defun my/inbox-file ()
-  "Open inbox file."
-  (interactive)
-  (find-file (expand-file-name "inbox/inbox.org" my-galaxy)))
-
-(defun my/plan-file ()
-  "Open plan file."
-  (interactive)
-  (find-file (expand-file-name "inbox/plan.org" my-galaxy)))
-
-(defun my/finance-file ()
-  "Open finance file."
-  (interactive)
-  (find-file (expand-file-name "finance/beans/finance.bean" my-galaxy)))
-
-(defun my/reading-record ()
-  "Open reading record file."
-  (interactive)
-  (find-file (expand-file-name "denote/books/20230301T211439--Book-lists-and-reading-record__reading.org" my-galaxy)))
-
-(defun my/start-server ()
-  (interactive)
-  (if (not (server-running-p))
-      (server-start))
-  (message "Server has started"))
-
-(defhydra my/hydra-open-file (:color blue)
-          "
-  Open specific file.
-  "
-          ("b" my/reading-record "Books Reading")
-          ("e" my/rss-source "RSS")
-          ("f" my/finance-file "Finance")
-          ("g" my/gtd-file "GTD")
-          ("i" my/inbox-file "Inbox file")
-          ("p" my/plan-file "Plan file"))
-
 (use-package gptel
   :commands gptel
   :config

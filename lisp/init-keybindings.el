@@ -32,7 +32,6 @@
   "c" '(calendar :wk "Calendar")
   "t" '(telega :wk "Telega")
   "v" '(toggle-vterm :wk "vterm")
-  "f" '(my/hydra-open-file/body :wk "Files")
 
   "d" '(:ignore t :wk "Download")
   "dc" '(org-download-clipboard :wk "Clipboard")
