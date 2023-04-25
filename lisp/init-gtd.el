@@ -88,13 +88,7 @@
 (use-package alert
   :commands alert
   :config
-  (setq alert-default-style 'osx-notifier)
-  (defun my/alert-osx-notifier-notify (info)
-    (do-applescript (format "display notification %S with title %S"
-                            (plist-get info :message)
-                            (plist-get info :title)))
-    (alert-message-notify info))
-  (advice-add 'alert-osx-notifier-notify :override #'my/alert-osx-notifier-notify))
+  (setq alert-default-style 'osx-notifier))
 
 (use-package alarm-clock
   :bind ("C-M-<f12>" . alarm-clock-set)
