@@ -40,30 +40,5 @@
   :config
   (setq request-storage-directory (expand-file-name "cache/request" user-emacs-directory)))
 
-(defun fast-file-view-mode ()
-  "Makes the buffer readonly and disables fontlock and other bells and whistles
-   for faster viewing"
-  (interactive)
-  (setq buffer-read-only t)
-  (buffer-disable-undo)
-  (fundamental-mode)
-  (font-lock-mode -1)
-  (when (boundp 'anzu-mode)
-    (anzu-mode -1)))
-
-(defvar large-file-extensions '("pdf" "jpg" "eps" "png")
-  "A list of file extensions.")
-
-(defun large-find-file-hook ()
-  "If a file is over a given size, make the buffer read only."
-  (let* ((file-size (buffer-size))
-         (file-name (buffer-file-name))
-         (file-ext (file-name-extension file-name)))
-    (when (and (> file-size (* 1024 1024))
-               (not (member file-ext large-file-extensions)))
-      (fast-file-view-mode))))
-
-(add-hook 'find-file-hook 'large-find-file-hook)
-
 (provide 'init-basic)
 ;;; init-basic.el ends here.
