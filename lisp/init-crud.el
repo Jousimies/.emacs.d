@@ -11,6 +11,8 @@
   (setq auto-save-delete-trailing-whitespace t)
   (auto-save-enable))
 
+(use-package undo-fu)
+
 (use-package undo-fu-session
   :after undo-fu
   :config
