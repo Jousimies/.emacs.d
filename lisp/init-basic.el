@@ -51,10 +51,17 @@
   (when (boundp 'anzu-mode)
     (anzu-mode -1)))
 
+(defvar large-file-extensions '("pdf" "jpg" "eps" "png")
+  "A list of file extensions.")
+
 (defun large-find-file-hook ()
   "If a file is over a given size, make the buffer read only."
-  (when (> (buffer-size) (* 1024 1024))
-    (fast-file-view-mode)))
+  (let* ((file-size (buffer-size))
+         (file-name (buffer-file-name))
+         (file-ext (file-name-extension file-name)))
+    (when (and (> file-size (* 1024 1024))
+               (not (member file-ext large-file-extensions)))
+      (fast-file-view-mode))))
 
 (add-hook 'find-file-hook 'large-find-file-hook)
 
