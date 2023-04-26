@@ -30,7 +30,7 @@
   "bm" '(switch-to-message :wk "*message*")
 
   "c" '(calendar :wk "Calendar")
-  "t" '(telega :wk "Telega")
+  ;; "t" '(telega :wk "Telega")
   "v" '(toggle-vterm :wk "vterm")
 
   "d" '(:ignore t :wk "Download")
@@ -116,7 +116,6 @@
 
 (evil-define-key '(normal visual) org-mode-map
   "gnd" 'citar-denote-dwim
-
   "gnk" 'citar-denote-add-citekey
   "gnK" 'citar-denote-remove-citekey
 
@@ -134,7 +133,9 @@
   "gntR" 'org-transclusion-remove-all
   "gntg" 'org-transclusion-refresh
   "gnto" 'org-transclusion-open-source
-  "gnts" 'org-transclusion-live-sync-start)
+  "gnts" 'org-transclusion-live-sync-start
+
+  "zw" 'olivetti-mode)
 
 (evil-set-initial-state 'org-agenda-mode 'motion)
 
