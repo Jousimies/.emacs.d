@@ -6,8 +6,10 @@
 
 (use-package pdf-tools
   :load-path "~/.emacs.d/packages/pdf-tools/"
+  :commands pdf-tools-install
   :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
   :magic ("%PDF" . pdf-view-mode)
+  :hook (dirvish-setup . pdf-tools-install)
   :config
   (pdf-tools-install t nil t nil))
 

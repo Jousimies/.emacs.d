@@ -162,7 +162,11 @@
 (evil-define-key '(normal visual motion) dired-mode-map
   (kbd "RET") 'open-with-default-app
   "gnr" 'denote-dired-rename-marked-files
-  "e" 'xah-show-in-desktop)
+  "e" 'xah-show-in-desktop
+  "p" 'dired-preview)
+
+(evil-define-key 'normal dirvish-mode-map
+  "q" 'dirvish-quit)
 
 (evil-define-key 'normal achive-visual-mode-map
   "q" 'quit-window)

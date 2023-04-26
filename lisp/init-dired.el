@@ -55,6 +55,14 @@
         (start-process "default-app" nil "open" file)
       (dired-find-file))))
 
+(defun dired-preview ()
+  "Quick look the current file in macOS."
+  (interactive)
+  (let* ((file (dired-get-filename)))
+    (if (eq system-type 'darwin)
+        (call-process-shell-command (concat "qlmanage -p " (shell-quote-argument file)) nil nil)
+      (message "Not supported on this platform."))))
+
 (use-package dired-hide-dotfiles
   :hook (dired-mode . dired-hide-dotfiles-mode)
   :bind (:map dired-mode-map
@@ -64,6 +72,23 @@
   :bind ("C-c d" . image-dired)
   :init
   (setq image-dired-dir (expand-file-name "cache/image-dired" user-emacs-directory)))
+
+(use-package dirvish
+  :bind ([remap dired] . dirvish)
+  :config
+  (setq dirvish-use-header-line nil)
+  (setq dirvish-use-mode-line nil)
+  (setq dirvish-hide-cursor nil)
+  (with-eval-after-load 'doom-modeline
+    (setq dirvish-mode-line-height doom-modeline-height))
+
+  (setq dirvish-default-layout '(0 0.4 0.6))
+  (setq dirvish-header-line-format
+        '(:left (path) :right (free-space)))
+  (setq dirvish-mode-line-format
+        '(:left (sort file-time " " file-size symlink) :right (omit yank index)))
+  :hook ((dirvish-find-entry . (lambda (&rest _) (setq-local truncate-lines t)))
+         (dired-mode . dirvish-override-dired-mode)))
 
 (provide 'init-dired)
 ;;; init-dired.el ends here.
