@@ -42,7 +42,7 @@
 
 (define-key dired-mode-map (kbd "C-c e") 'my/eww-html-file)
 
-(defvar file-extensions-with-default-apps '("xlsx" "docx" "eps" "dwg" "psd")
+(defvar file-extensions-with-default-apps '("xls" "doc" "xlsx" "docx" "eps" "dwg" "psd")
   "List of file extensions to open with default applications.")
 
 ;;;###autoload
