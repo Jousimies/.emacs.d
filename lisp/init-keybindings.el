@@ -14,7 +14,7 @@
 
 (my/space-leader-def
   "m" '(:ignore t :wk "Misc")
-  "mc" '(gptel :wk "ChatGPT")
+  "mc" '(chatgpt-shell :wk "ChatGPT")
   "md" '(disk-usage :wk "Disk usage")
   "me" '(emacs-lisp-macroexpand :wk "Macro expand")
   "mi" '(file-info-show :wk "File info")

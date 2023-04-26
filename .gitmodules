@@ -556,3 +556,6 @@
 [submodule "packages/modus-themes"]
 	path = packages/modus-themes
 	url = https://git.sr.ht/~protesilaos/modus-themes
+[submodule "packages/chatgpt-shell"]
+	path = packages/chatgpt-shell
+	url = https://github.com/xenodium/chatgpt-shell.git

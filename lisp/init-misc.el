@@ -188,10 +188,22 @@ This command can be called when in a file buffer or in `dired'."
   :commands gptel
   :config
   (setq gptel-use-curl nil)
-  (add-to-list 'display-buffer-alist '("^\\*ChatGPT\\*"
+  (add-to-list 'display-buffer-alist '("^\\*[Cc]hat[Gg][Pp][Tt]\\*"
                                        (display-buffer-pop-up-frame)
                                        (window-parameters
                                         (mode-line-format . none)))))
+
+(use-package chatgpt-shell
+  :commands chatgpt-shell
+  :init
+  (add-to-list 'display-buffer-alist '("^\\*[cC]hat[gG][pP][tT]\\*"
+                                       (display-buffer-pop-up-frame)
+                                       (window-parameters
+                                        (mode-line-format . none))))
+  :config
+  (setq chatgpt-shell-openai-key
+        (lambda ()
+          (auth-source-pick-first-password :host "openai.com"))))
 
 (use-package vterm
   :commands vterm vterm-mode toggle-vterm
