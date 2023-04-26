@@ -77,6 +77,9 @@
   (with-eval-after-load 'pdf-view
     (define-key pdf-view-mode-map [remap pdf-misc-print-document] #'mrb/pdf-misc-print-pages)))
 
+(use-package saveplace-pdf-view
+  :after pdf-tools)
+
 (use-package nov
   :mode (".epub" . nov-mode)
   :config
