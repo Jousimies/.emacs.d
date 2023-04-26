@@ -9,7 +9,7 @@
          ("M-*" . tempel-insert))
   :config
   (setq tempel-path `("~/.emacs.d/template/tempel"
-                      ,(expand-file-name "template/tempel" my-galaxy))))
+                      ,(expand-file-name "config/tempel" my-galaxy))))
 
 (use-package yasnippet
   :defer 1
