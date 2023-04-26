@@ -54,12 +54,24 @@
         '((matches . (extrabold))
           (selection . (semibold italic text-also)))))
 
+(defun my/modus-cursor-color (var)
+  (let* ((cursor-color (assoc 'cursor var)))
+    (cadr (assoc (cadr cursor-color) var))))
+
 (defun my/apply-theme (appearance)
   "Load theme, taking current system APPEARANCE into consideration."
   (mapc #'disable-theme custom-enabled-themes)
   (pcase appearance
-    ('light (load-theme 'modus-operandi t))
-    ('dark (load-theme 'modus-vivendi t))))
+    ('light (progn
+              (load-theme 'modus-operandi t)
+              (when (boundp 'sis-default-cursor-color)
+                (setq sis-default-cursor-color
+                      (my/modus-cursor-color modus-operandi-palette)))))
+    ('dark (progn
+             (load-theme 'modus-vivendi-tinted t)
+             (when (boundp 'sis-default-cursor-color)
+               (setq sis-default-cursor-color
+                     (my/modus-cursor-color modus-vivendi-tinted-palette)))))))
 
 (add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
 
