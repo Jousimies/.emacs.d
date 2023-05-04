@@ -28,9 +28,6 @@
 [submodule "packages/emacsql"]
 	path = packages/emacsql
 	url = https://github.com/magit/emacsql.git
-[submodule "packages/evil-collection"]
-	path = packages/evil-collection
-	url = https://github.com/emacs-evil/evil-collection.git
 [submodule "packages/annalist.el"]
 	path = packages/annalist.el
 	url = https://github.com/noctuid/annalist.el.git
@@ -559,3 +556,18 @@
 [submodule "packages/chatgpt-shell"]
 	path = packages/chatgpt-shell
 	url = https://github.com/xenodium/chatgpt-shell.git
+[submodule "packages/evil-collection"]
+	path = packages/evil-collection
+	url = https://github.com/emacs-evil/evil-collection.git
+[submodule "packages/nerd-icons.el"]
+	path = packages/nerd-icons.el
+	url = https://github.com/rainstormstudio/nerd-icons.el.git
+[submodule "packages/nerd-icons-completion"]
+	path = packages/nerd-icons-completion
+	url = https://github.com/rainstormstudio/nerd-icons-completion.git
+[submodule "packages/nerd-icons-ibuffer"]
+	path = packages/nerd-icons-ibuffer
+	url = https://github.com/seagle0128/nerd-icons-ibuffer.git
+[submodule "packages/org-change"]
+	path = packages/org-change
+	url = https://github.com/drghirlanda/org-change.git

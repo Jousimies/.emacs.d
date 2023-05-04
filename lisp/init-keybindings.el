@@ -29,6 +29,7 @@
   "bs" '(scratch-buffer :wk "*scratch*")
   "bm" '(switch-to-message :wk "*message*")
 
+  "e" '(mu4e :wk "MAIL")
   "c" '(calendar :wk "Calendar")
   ;; "t" '(telega :wk "Telega")
   "v" '(toggle-vterm :wk "vterm")

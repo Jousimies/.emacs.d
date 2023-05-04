@@ -5,10 +5,7 @@
 ;;; Code:
 
 (use-package olivetti
-  :commands olivetti-mode
-  :hook ((org-mode . (lambda ()
-                      (when (> (window-width) 89)
-                        (olivetti-mode 1))))))
+  :commands olivetti-mode)
 
 (use-package toc-org
   :hook (org-mode . toc-org-mode))

@@ -7,6 +7,8 @@
 (use-package rg
   :commands rg
   :config
+  ;; https://github.com/dajva/rg.el/issues/142#issuecomment-1452525225
+  (add-to-list 'rg-finish-functions (lambda (buffer _) (pop-to-buffer buffer)))
   (rg-enable-default-bindings)
   (setq rg-group-result t)
   (setq rg-show-columns t))

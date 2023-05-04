@@ -15,8 +15,6 @@
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
   :commands mu4e
-  :general (my/space-leader-def
-             "e" '(mu4e :wk "MAIL"))
   :config
   (setq mu4e-confirm-quit nil)
   (add-to-list 'display-buffer-alist '((derived-mode . mu4e-main-mode)
@@ -33,6 +31,11 @@
                                        (select . t))))
 (run-with-idle-timer 4 nil (lambda ()
                              (mu4e 'background)))
+
+(use-package mu4e-vars
+  :after mu4e
+  :config
+  (setq mu4e-notification-support t))
 
 (use-package mu4e-main
   :after mu4e
@@ -104,11 +107,6 @@
 
   (add-to-list 'mu4e-view-actions '("download as html"  . extra-save-email-html))
   (add-to-list 'mu4e-view-actions '("print to PDF"  . extra-print-email-to-pdf)))
-
-(use-package mu4e-modeline
-  :after mu4e
-  :config
-  (mu4e-modeline-mode))
 
 (use-package mu4e-context
   :after mu4e
@@ -186,6 +184,9 @@
 (use-package mu4e-bookmarks
   :after mu4e
   :config
+  (setq mu4e-modeline-unread-items '("U:" . " "))
+  (setq mu4e-modeline-new-items '("N:" . " "))
+  (setq mu4e-modeline-all-clear '("C: " . " "))
   (setq mu4e-bookmarks '(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
                          ("date:today..now" "Today's messages" ?t)
                          ("flag:trashed" "Trashed" ?T)

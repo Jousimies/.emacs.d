@@ -90,6 +90,11 @@
   (advice-add 'org-babel-execute-src-block :before 'my/org-babel-execute-src-block)
   (setq org-confirm-babel-evaluate nil))
 
+(use-package ob-python
+  :after ob-core
+  :config
+  (setq org-babel-python-command "/usr/bin/python3"))
+
 (use-package org-capture
   :bind (("<f10>" . org-capture)
          (:map org-capture-mode-map
@@ -139,6 +144,23 @@
 :PLOT: %^{PLOT}
 :END:"))))
 
+(use-package org-attach
+  :after org
+  :init
+  (add-to-list 'display-buffer-alist
+               '("\\*Org Attach\\*"
+                 (display-buffer-in-side-window)
+                 (side . right)
+                 (window-width . 0.5)
+                 (window-parameters . ((no-other-window . t)
+                                       (mode-line-format . none)
+                                       (no-delete-other-windows . t)))))
+  :config
+  (setq org-attach-id-dir (expand-file-name "attach" my-galaxy))
+  (setq org-attach-id-to-path-function-list
+        '(org-attach-id-ts-folder-format
+          org-attach-id-uuid-folder-format)))
+
 ;;;###autoload
 (defun my/org-attach-visit-headline-from-dired ()
     "Go to the headline corresponding to this org-attach directory."
@@ -151,19 +173,6 @@
         (goto-char m)
         (move-marker m nil)
         (org-fold-show-context))))
-
-(use-package org-attach
-  :after org
-  :config
-  (setq org-attach-id-dir (expand-file-name "attach" my-galaxy))
-  (add-to-list 'display-buffer-alist
-               '("\\*Org Attach\\*"
-                 (display-buffer-in-side-window)
-                 (side . right)
-                 (window-width . 0.5)
-                 (window-parameters . ((no-other-window . t)
-                                       (mode-line-format . none)
-                                       (no-delete-other-windows . t))))))
 
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-'") #'my/org-attach-visit-headline-from-dired))

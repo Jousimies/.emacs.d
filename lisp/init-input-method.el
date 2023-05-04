@@ -22,7 +22,15 @@
   (sis-global-cursor-color-mode t)
   (sis-global-context-mode t)
   (sis-global-respect-mode t)
-  (sis-global-inline-mode t))
+  (sis-global-inline-mode t)
+  (add-to-list 'sis-context-detectors
+               (lambda (&rest _)
+                 (when (and (eq major-mode 'org-mode)
+                            (and (not (org-at-clock-log-p))
+                                 (not (org-at-table-p))
+                                 (not (org-in-src-block-p))
+                                 (not (org-at-timestamp-p))))
+                   'other))))
 
 (use-package rime
   :init

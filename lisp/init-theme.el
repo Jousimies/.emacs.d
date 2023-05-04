@@ -55,8 +55,7 @@
           (selection . (semibold italic text-also)))))
 
 (defun my/modus-cursor-color (var)
-  (let* ((cursor-color (assoc 'cursor var)))
-    (cadr (assoc (cadr cursor-color) var))))
+  (cadr (assoc (cadr (assoc 'cursor var)) var)))
 
 (defun my/apply-theme (appearance)
   "Load theme, taking current system APPEARANCE into consideration."

@@ -17,6 +17,9 @@
 (use-package ibuf-ext
   :hook (ibuffer-mode . ibuffer-auto-mode))
 
+(use-package nerd-icons-ibuffer
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+
 (use-package gc-buffers
   :config
   (gc-buffers-mode))
