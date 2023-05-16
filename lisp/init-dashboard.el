@@ -8,18 +8,18 @@
   :init
   (add-to-list 'display-buffer-alist '("\\*dashboard\\*"
                                        (display-buffer-in-tab)
+
                                        (window-parameters
                                         (mode-line-format . none))))
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-icon-type 'nerd-icons)
-  ;; (setq dashboard-set-file-icons t)
+  (setq dashboard-set-file-icons t)
   ;; (setq dashboard-set-heading-icons t)
   (setq dashboard-center-content t)
-  ;; (setq dashboard-set-init-info nil)
-  ;; (setq dashboard-set-footer nil)
+  (setq dashboard-set-init-info nil)
+  (setq dashboard-set-footer nil)
   (setq dashboard-banner-logo-title "EXPLORE THE WORLD, FULFILL YOUR BEING.")
-  ;; (setq dashboard-heading-icons nil)
   (setq dashboard-items '((recents  . 5)
                           (bookmarks . 5)
                           (registers . 5)))

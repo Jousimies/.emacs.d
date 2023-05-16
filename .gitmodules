@@ -571,3 +571,9 @@
 [submodule "packages/org-change"]
 	path = packages/org-change
 	url = https://github.com/drghirlanda/org-change.git
+[submodule "packages/vulpea"]
+	path = packages/vulpea
+	url = https://github.com/d12frosted/vulpea.git
+[submodule "packages/pdf-view-pagemark"]
+	path = packages/pdf-view-pagemark
+	url = https://github.com/kimim/pdf-view-pagemark.git

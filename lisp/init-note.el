@@ -309,5 +309,8 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
                 (propertize "${tags:20}" 'face 'org-tag)
                 " ")))
 
+(use-package org-change
+  :after org)
+
 (provide 'init-note)
 ;;; init-note.el ends here.

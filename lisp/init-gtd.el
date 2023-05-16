@@ -14,23 +14,19 @@
   (setq org-agenda-window-setup 'other-tab)
   (setq org-agenda-align-tags-to-column -120))
 
-;;;###autoload
-(defun my/gtd-file ()
-  (interactive)
-  (find-file (expand-file-name "todos/org-gtd-tasks.org" my-galaxy)))
-
 (use-package org-gtd
-  :commands org-gtd-capture org-gtd-engage org-gtd-process-inbox org-gtd-show-all-next org-gtd-show-stuck-projects
+  ;; :commands org-gtd-capture org-gtd-engage org-gtd-process-inbox org-gtd-show-all-next org-gtd-show-stuck-projects
   :bind (("<f12>" . org-gtd-engage)
          ("C-<f12>" . org-gtd-process-inbox)
          ("s-<f12>" . org-gtd-show-stuck-projects)
-         (:map org-gtd-process-map
-               ("C-c c" . org-gtd-choose)))
+         (:map org-gtd-clarify-map
+               ("C-c c" . org-gtd-organize)))
   :init
-  (setq org-gtd-update-ack "2.1.0")
+  (setq org-gtd-update-ack "3.0.0")
   :custom
   (org-gtd-directory (expand-file-name "todos" my-galaxy))
   (org-agenda-property-list '("DELEGATED_TO"))
+  (org-gtd-organize-hooks '(org-gtd-set-area-of-focus org-set-tags-command))
   :config
   (add-to-list 'org-agenda-files (expand-file-name "todos/org-gtd-tasks.org" my-galaxy)))
 
@@ -39,6 +35,77 @@
   :config
   (setq org-edna-use-inheritance t)
   (org-edna-load))
+
+(use-package vulpea
+  :after org-roam
+  :config
+  (defun vulpea-project-p ()
+    "Return non-nil if current buffer has any todo entry.
+  TODO entries marked as done are ignored, meaning the this
+  function returns nil if current buffer contains only completed
+  tasks."
+    (seq-find                                 ; (3)
+     (lambda (type)
+
+       (or (eq type 'todo)
+           (eq type 'done)))
+     (org-element-map                         ; (2)
+         (org-element-parse-buffer 'headline) ; (1)
+         'headline
+       (lambda (h)
+         (org-element-property :todo-type h)))))
+
+  (defun vulpea-buffer-p ()
+    "Return non-nil if the currently visited buffer is a note."
+    (and buffer-file-name
+         (string-prefix-p
+          (expand-file-name (file-name-as-directory org-roam-directory))
+          (file-name-directory buffer-file-name))))
+
+  (defun vulpea-project-update-tag ()
+    "Update PROJECT tag in the current buffer."
+    (when (and (not (active-minibuffer-window))
+               (vulpea-buffer-p))
+      (save-excursion
+        (goto-char (point-min))
+        (let* ((tags (vulpea-buffer-tags-get))
+               (original-tags tags))
+          (if (vulpea-project-p)
+              (setq tags (cons "project" tags))
+            (setq tags (remove "project" tags)))
+          ;; cleanup duplicates
+          (setq tags (seq-uniq tags))
+          ;; update tags if changed
+          (when (or (seq-difference tags original-tags)
+                    (seq-difference original-tags tags))
+            (apply #'vulpea-buffer-tags-set tags))))))
+
+  (defun vulpea-project-files ()
+    "Return a list of note files containing 'project' tag." ;
+    (seq-uniq
+     (seq-map
+      #'car
+      (org-roam-db-query
+       [:select [nodes:file]
+                :from tags
+                :left-join nodes
+                :on (= tags:node-id nodes:id)
+                :where (like tag (quote "%\"project\"%"))]))))
+
+  (defun vulpea-agenda-files-update (&rest _)
+    "Update the value of `org-agenda-files'."
+    (setq org-agenda-files (seq-uniq
+                            (append
+                             (vulpea-project-files)
+                             `(,(expand-file-name "todos/org-gtd-tasks.org" my-galaxy))))))
+
+  (add-hook 'find-file-hook #'vulpea-agenda-files-update)
+
+  (advice-add 'org-agenda :before #'vulpea-agenda-files-update)
+  (advice-add 'org-todo-list :before #'vulpea-agenda-files-update)
+
+  (add-hook 'find-file-hook #'vulpea-project-update-tag)
+  (add-hook 'before-save-hook #'vulpea-project-update-tag))
 
 (use-package calendar
   :defer t

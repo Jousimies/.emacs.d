@@ -80,6 +80,9 @@
 (use-package saveplace-pdf-view
   :after pdf-tools)
 
+(use-package pdf-view-pagemark
+  :hook (pdf-view-mode . pdf-view-pagemark-mode))
+
 (use-package nov
   :mode (".epub" . nov-mode)
   :init

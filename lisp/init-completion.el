@@ -45,12 +45,12 @@
   :config
   (vertico-indexed-mode))
 
-(use-package nerd-icons-completion
-  :config
-  (nerd-icons-completion-mode))
-
 (use-package marginalia
   :hook ((minibuffer-setup . marginalia-mode)))
+
+(use-package nerd-icons-completion
+  :config
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
 (use-package embark
   :commands embark-open-externally

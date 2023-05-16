@@ -28,9 +28,9 @@
   (undo-fu-session-global-mode))
 
 (use-package vundo
-  :bind ("C-x u" . vundo)
   :config
-  (setq vundo-glyph-alist vundo-unicode-symbols))
+  (setq vundo-glyph-alist vundo-unicode-symbols)
+  (advice-add #'evil-undo :override #'vundo))
 
 (use-package savehist
   :config

@@ -201,6 +201,7 @@ This command can be called when in a file buffer or in `dired'."
                                        (window-parameters
                                         (mode-line-format . none))))
   :config
+  (setq chatgpt-shell-history-path (expand-file-name "cache" user-emacs-directory))
   (setq chatgpt-shell-openai-key
         (lambda ()
           (auth-source-pick-first-password :host "openai.com"))))
