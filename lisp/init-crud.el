@@ -105,6 +105,12 @@
 (use-package delsel
   :hook (text-mode . delete-selection-mode))
 
+(use-package isearch
+  :config
+  (setq isearch-lazy-count t)
+  (setq lazy-count-prefix-format nil)
+  (setq lazy-count-suffix-format "   (%s/%s)"))
+
 (use-package select
   :config
   (setq select-enable-primary t))

@@ -82,13 +82,6 @@
   :config
   (evilem-default-keybindings "SPC"))
 
-(use-package anzu
-  :config
-  (global-anzu-mode 1))
-
-(use-package evil-anzu
-  :after evil anzu)
-
 (use-package evil-find-char-pinyin
   :after evil
   :config
