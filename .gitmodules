@@ -577,3 +577,9 @@
 [submodule "packages/pdf-view-pagemark"]
 	path = packages/pdf-view-pagemark
 	url = https://github.com/kimim/pdf-view-pagemark.git
+[submodule "packages/d2-mode"]
+	path = packages/d2-mode
+	url = https://github.com/andorsk/d2-mode.git
+[submodule "packages/org-footnote-assistant"]
+	path = packages/org-footnote-assistant
+	url = https://github.com/lazzalazza/org-footnote-assistant.git

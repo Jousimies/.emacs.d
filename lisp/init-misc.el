@@ -227,5 +227,9 @@ This command can be called when in a file buffer or in `dired'."
         (switch-to-buffer (get-buffer-create buf))
         (vterm-mode)))))
 
+(use-package d2-mode
+  :config
+  (setq d2-location "/opt/homebrew/bin/d2"))
+
 (provide 'init-misc)
 ;;; init-misc.el ends here.

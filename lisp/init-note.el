@@ -312,5 +312,8 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (use-package org-change
   :after org)
 
+(use-package org-footnote-assistant
+  :hook (org-mode . org-footnote-assistant-mode))
+
 (provide 'init-note)
 ;;; init-note.el ends here.
