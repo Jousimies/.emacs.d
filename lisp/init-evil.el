@@ -11,9 +11,6 @@
     :non-normal-prefix "M-SPC"
     :states '(normal visual insert emacs)))
 
-(my/space-leader-def
-  "r" 'consult-recent-file)
-
 (use-package evil
   :bind (:map evil-motion-state-map
               ("SPC" . nil)

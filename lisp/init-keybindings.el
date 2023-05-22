@@ -13,6 +13,7 @@
   (which-key-mode))
 
 (my/space-leader-def
+  "r" 'consult-recent-file
   "m" '(:ignore t :wk "Misc")
   "mc" '(chatgpt-shell :wk "ChatGPT")
   "md" '(disk-usage :wk "Disk usage")
