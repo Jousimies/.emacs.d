@@ -69,9 +69,6 @@
 (use-package autorevert
   :hook (text-mode . global-auto-revert-mode))
 
-(setq delete-by-moving-to-trash t)
-(setq trash-directory "~/.Trash")
-
 (use-package hungry-delete
   :custom
   (hungry-delete-chars-to-skip " \t\n\r\f\v")
@@ -80,9 +77,9 @@
          (org-mode . hungry-delete-mode)))
 
 (use-package whitespace-cleanup-mode
+  :hook (after-init . global-whitespace-cleanup-mode)
   :config
-  (setq whitespace-cleanup-mode-preserve-point t)
-  (global-whitespace-cleanup-mode 1))
+  (setq whitespace-cleanup-mode-preserve-point t))
 
 (use-package expand-region
   :commands er/expand-region)
@@ -104,12 +101,6 @@
 
 (use-package delsel
   :hook (text-mode . delete-selection-mode))
-
-(use-package isearch
-  :config
-  (setq isearch-lazy-count t)
-  (setq lazy-count-prefix-format nil)
-  (setq lazy-count-suffix-format "   (%s/%s)"))
 
 (use-package select
   :config

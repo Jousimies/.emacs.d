@@ -66,68 +66,23 @@
     (setq exec-path (split-string path-from-shell path-separator))))
 (set-exec-path-from-shell-PATH)
 
-;; Variables defined in C source code
-(setq ring-bell-function 'ignore)
-(setq tab-width 4)
-(setq use-file-dialog nil)
-(setq use-dialog-box nil)
-(setq use-short-answers t)
-(setq read-process-output-max #x10000)
-(setq create-lockfiles nil)
-(setq recenter-redisplay nil)
-(setq load-prefer-newer t)
-(setq next-screen-context-lines 5)
-(setq frame-inhibit-implied-resize t)
-(setq inhibit-compacting-font-caches t)
-(setq inhibit-quit nil)
-(setq fast-but-imprecise-scrolling t)
-(setq scroll-preserve-screen-position 'always)
-(setq auto-save-list-file-name nil)
-(setq history-delete-duplicates t)
-(setq bidi-display-reordering nil)
-(setq read-buffer-completion-ignore-case t)
-(setq completion-ignore-case t)
-(setq minibuffer-prompt-properties
-      '(read-only t cursor-intangible t face minibuffer-prompt))
-(setq max-mini-window-height 10)
-
-;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
-(defvar my-cloud "~/Nextcloud"
-  "This folder is My cloud.")
-
-;; L.Personal.Galaxy location may change, but folders in this directory never change.
-(defvar my-galaxy (expand-file-name "L.Personal.Galaxy" my-cloud)
-  "This folder stores all the plain text files of my life.")
-
-(defvar my/web_archive (expand-file-name "web_archive/" my-galaxy)
-  "The folder save web pages.")
-
-(defvar my/reference-lists `(,(concat my-galaxy "/bibtexs/References.bib")
-                             ,(concat my-cloud "/L.Calibre/calibre.bib")))
-
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-
 (when init-file-debug
   (setq use-package-compute-statistics t)
   (setq use-package-verbose t)
   (require 'init-benchmark))
 
+(require 'init-defaults)
+(require 'init-builtin)
 (require 'init-crud)
-(require 'init-dashboard)
 
 (add-hook 'after-init-hook (lambda ()
-                             (require 'init-basic)
                              (require 'init-font)
                              (require 'init-theme)
                              (require 'init-mode-line)
-                             (require 'init-evil)
                              (require 'init-tab)
                              (require 'init-frame)
                              (require 'init-ui)
-                             (require 'init-builtin)))
+                             (require 'init-evil)))
 
 (run-with-timer 1 nil  (lambda ()
                          (require 'init-buffer)
@@ -136,6 +91,7 @@
                          (require 'init-search)
                          (require 'init-template)
                          (require 'init-input-method)
+                         ;; languages
                          (require 'init-checker)
                          (require 'init-english)
                          (require 'init-lsp)
@@ -152,15 +108,8 @@
                          (require 'init-bib)
                          (require 'init-latex)
                          (require 'init-reader)
-                         (require 'init-elfeed)
-                         (require 'init-mail)
                          (require 'init-misc)
-                         (require 'init-music)
-                         ;; (require 'init-telega)
                          (require 'init-keybindings)))
-
-(use-package server
-  :hook (after-init . server-start))
 
 (use-package gcmh
   :hook ((after-init . gcmh-mode)

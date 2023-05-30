@@ -32,6 +32,8 @@
 
   "e" '(mu4e :wk "MAIL")
   "c" '(calendar :wk "Calendar")
+  "C" '(calc :wk "calc")
+
   ;; "t" '(telega :wk "Telega")
   "v" '(toggle-vterm :wk "vterm")
 

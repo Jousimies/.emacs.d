@@ -235,9 +235,6 @@
 [submodule "packages/auctex-latexmk"]
 	path = packages/auctex-latexmk
 	url = https://github.com/emacsmirror/auctex-latexmk.git
-[submodule "packages/ox-hugo"]
-	path = packages/ox-hugo
-	url = https://github.com/kaushalmodi/ox-hugo.git
 [submodule "packages/tomelr"]
 	path = packages/tomelr
 	url = https://github.com/kaushalmodi/tomelr.git
@@ -307,9 +304,6 @@
 [submodule "packages/yasnippet-snippets"]
 	path = packages/yasnippet-snippets
 	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
-[submodule "packages/youtube-dl-emacs"]
-	path = packages/youtube-dl-emacs
-	url = https://github.com/skeeto/youtube-dl-emacs.git
 [submodule "packages/pomm.el"]
 	path = packages/pomm.el
 	url = https://github.com/SqrtMinusOne/pomm.el.git
@@ -367,9 +361,6 @@
 [submodule "packages/emacs-dashboard"]
 	path = packages/emacs-dashboard
 	url = https://github.com/emacs-dashboard/emacs-dashboard.git
-[submodule "packages/svg-clock"]
-	path = packages/svg-clock
-	url = https://github.com/emacsmirror/svg-clock.git
 [submodule "packages/advance-words-count.el"]
 	path = packages/advance-words-count.el
 	url = https://github.com/LdBeth/advance-words-count.el.git
@@ -463,9 +454,6 @@
 [submodule "packages/git-timemachine"]
 	path = packages/git-timemachine
 	url = https://codeberg.org/pidu/git-timemachine.git
-[submodule "packages/gptel"]
-	path = packages/gptel
-	url = https://github.com/karthink/gptel.git
 [submodule "packages/rainbow-identifiers"]
 	path = packages/rainbow-identifiers
 	url = https://github.com/Fanael/rainbow-identifiers.git
@@ -496,12 +484,6 @@
 [submodule "packages/consult-emms"]
 	path = packages/consult-emms
 	url = https://github.com/Hugo-Heagren/consult-emms.git
-[submodule "packages/evil-anzu"]
-	path = packages/evil-anzu
-	url = https://github.com/emacsorphanage/evil-anzu.git
-[submodule "packages/anzu"]
-	path = packages/anzu
-	url = https://github.com/emacsorphanage/anzu.git
 [submodule "packages/evil-find-char-pinyin"]
 	path = packages/evil-find-char-pinyin
 	url = https://github.com/cute-jumper/evil-find-char-pinyin.git
@@ -547,9 +529,6 @@
 [submodule "packages/pdf-tools"]
 	path = packages/pdf-tools
 	url = https://github.com/vedang/pdf-tools.git
-[submodule "packages/emacs-application-framework"]
-	path = packages/emacs-application-framework
-	url = https://github.com/emacs-eaf/emacs-application-framework.git
 [submodule "packages/modus-themes"]
 	path = packages/modus-themes
 	url = https://git.sr.ht/~protesilaos/modus-themes
@@ -583,3 +562,9 @@
 [submodule "packages/org-footnote-assistant"]
 	path = packages/org-footnote-assistant
 	url = https://github.com/lazzalazza/org-footnote-assistant.git
+[submodule "packages/doom-modeline"]
+	path = packages/doom-modeline
+	url = https://github.com/seagle0128/doom-modeline.git
+[submodule "packages/shrink-path.el"]
+	path = packages/shrink-path.el
+	url = https://gitlab.com/bennya/shrink-path.el.git

@@ -25,14 +25,13 @@
   (setq evil-respect-visual-line-mode t)
   (setq evil-undo-system 'undo-fu)
   (setq evil-visual-state-cursor 'hollow)
-  (setq evil-normal-state-tag " 𝐍 ")
-  (setq evil-insert-state-tag " 𝐈 ")
-  (setq evil-motion-state-tag " 𝐌 ")
-  (setq evil-visual-state-tag " 𝐕 ")
-  (setq evil-replace-state-tag " 𝐑 ")
-  (setq evil-operator-state-tag " O ")
-  (setq evil-emacs-state-tag " E ")
-
+  (setq evil-normal-state-tag " 🅝")
+  (setq evil-insert-state-tag " 🅘")
+  (setq evil-motion-state-tag " 🅜")
+  (setq evil-visual-state-tag " 🅥")
+  (setq evil-replace-state-tag " 🅡")
+  (setq evil-operator-state-tag " 🅞")
+  (setq evil-emacs-state-tag " 🅔")
   :config
   (evil-mode)
 

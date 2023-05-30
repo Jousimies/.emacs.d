@@ -9,46 +9,30 @@
 
 (use-package disk-usage)
 
-(use-package youtube-dl
-  :commands youtube-dl
+(use-package vterm
+  :commands vterm vterm-mode toggle-vterm
+  :init
+  (add-to-list 'display-buffer-alist
+               '("^\\*vterm"
+                 (display-buffer-in-side-window)
+                 (window-height . 0.5)
+                 (side . bottom)
+                 (slot . -1)))
   :config
-  (setq youtube-dl-directory "~/Downloads/")
-  (setq youtube-dl-program "/opt/homebrew/bin/yt-dlp")
-  (setq youtube-dl-arguments
-        '("--no-mtime" "--restrict-filenames" "--format" "best" "--mark-watched")))
+  (setq vterm-kill-buffer-on-exit t)
+  (setq vterm-max-scrollback 5000)
+  (defun toggle-vterm ()
+    "Toggle vterm."
+    (interactive)
+    (let ((buf (concat "*vterm-" (buffer-name))))
+      (if (get-buffer buf)
+          (switch-to-buffer buf)
+        (switch-to-buffer (get-buffer-create buf))
+        (vterm-mode)))))
 
-(defun my/ocr ()
-"OCR with Macos system."
-  (interactive)
-  (shell-command "shortcuts run \"OCR Selected Area\"")
-  (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
-
-(defun toggle-proxy ()
-  "Toggle proxy for the url.el library."
-  (interactive)
-  (if url-proxy-services
-      (proxy-disable)
-    (proxy-enable)))
-
-(defun proxy-enable ()
-  "Enable proxy."
-  (interactive)
-  (setq url-proxy-services
-        '(("http" . "127.0.0.1:8118")
-          ("https" . "127.0.0.1:8118")
-          ("socks" . "127.0.0.1:8118")
-          ("no_proxy" . "0.0.0.0")))
-  (message "Proxy enabled! %s" (car url-proxy-services)))
-
-(defun proxy-disable ()
-  "Disable proxy."
-  (interactive)
-  (if url-proxy-services
-      (setq url-proxy-services nil))
-  (message "Proxy disabled!"))
-
-(run-with-idle-timer 2 nil (lambda ()
-                             (proxy-enable)))
+(use-package d2-mode
+  :config
+  (setq d2-location "/opt/homebrew/bin/d2"))
 
 (use-package advance-words-count
   :bind ("M-=" . advance-words-count))
@@ -77,26 +61,6 @@ This function requires ImageMagick's convert utility to be installed and availab
                          epsfile
                          pngfile)))
       (message "\n%d files were converted from EPS to PNG format." n))))
-
-(defun mac-launchpad/string-ends-with (s ending)
-  "Return non-nil if string S ends with ENDING."
-  (cond ((>= (length s) (length ending))
-         (let ((elength (length ending)))
-           (string= (substring s (- 0 elength)) ending)))
-        (t nil)))
-
-(defun mac-launchpad/find-mac-apps (folder)
-  (let* ((files (directory-files folder))
-         (without-dots (cl-delete-if (lambda (f) (or (string= "." f) (string= ".." f))) files))
-         (all-files (mapcar (lambda (f) (file-name-as-directory (concat (file-name-as-directory folder) f))) without-dots))
-         (result (cl-delete-if-not (lambda (s) (mac-launchpad/string-ends-with s ".app/")) all-files)))
-    result))
-
-(defun mac-launchpad ()
-  (interactive)
-  (let* ((apps (mac-launchpad/find-mac-apps "/Applications"))
-         (to-launch (completing-read "launch: " apps)))
-    (shell-command (format "defaults read \"%s\"Contents/Info.plist CFBundleIdentifier | xargs open -b" to-launch))))
 
 (defun xah-show-in-desktop ()
   "Show current file in desktop.
@@ -183,53 +147,6 @@ This command can be called when in a file buffer or in `dired'."
       (delete-region (car bounds) (cdr bounds))
       (insert new-url))
     (error "Not on a Youtube link")))
-
-(use-package gptel
-  :commands gptel
-  :config
-  (setq gptel-use-curl nil)
-  (add-to-list 'display-buffer-alist '("^\\*[Cc]hat[Gg][Pp][Tt]\\*"
-                                       (display-buffer-pop-up-frame)
-                                       (window-parameters
-                                        (mode-line-format . none)))))
-
-(use-package chatgpt-shell
-  :commands chatgpt-shell
-  :init
-  (add-to-list 'display-buffer-alist '("^\\*[cC]hat[gG][pP][tT]\\*"
-                                       (display-buffer-pop-up-frame)
-                                       (window-parameters
-                                        (mode-line-format . none))))
-  :config
-  (setq chatgpt-shell-history-path (expand-file-name "cache" user-emacs-directory))
-  (setq chatgpt-shell-openai-key
-        (lambda ()
-          (auth-source-pick-first-password :host "openai.com"))))
-
-(use-package vterm
-  :commands vterm vterm-mode toggle-vterm
-  :init
-  (add-to-list 'display-buffer-alist
-               '("^\\*vterm"
-                 (display-buffer-in-side-window)
-                 (window-height . 0.5)
-                 (side . bottom)
-                 (slot . -1)))
-  :config
-  (setq vterm-kill-buffer-on-exit t)
-  (setq vterm-max-scrollback 5000)
-  (defun toggle-vterm ()
-    "Toggle vterm."
-    (interactive)
-    (let ((buf (concat "*vterm-" (buffer-name))))
-      (if (get-buffer buf)
-          (switch-to-buffer buf)
-        (switch-to-buffer (get-buffer-create buf))
-        (vterm-mode)))))
-
-(use-package d2-mode
-  :config
-  (setq d2-location "/opt/homebrew/bin/d2"))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.

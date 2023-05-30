@@ -12,6 +12,7 @@
 (use-package simple
   :hook ((prog-mode . column-number-mode)
          (text-mode . size-indication-mode)
+         (text-mode . turn-on-visual-line-mode)
          (org-mode . turn-on-visual-line-mode)
          (LaTeX-mode . turn-on-visual-line-mode))
   :init
@@ -26,6 +27,7 @@
 (use-package files
   :defer t
   :config
+  (setq trash-directory "~/.Trash")
   (setq auto-save-default nil)
   (setq large-file-warning-threshold nil)
   (setq confirm-kill-processes nil)
@@ -33,7 +35,7 @@
   (setq make-backup-files nil)
   (setq view-read-only t)
   (setq kill-read-only-ok t)
-
+  ;; https://emacsredux.com/blog/2022/06/12/auto-create-missing-directories/
   (defun my/auto-create-missing-dirs ()
     (let ((target-dir (file-name-directory buffer-file-name)))
       (unless (file-exists-p target-dir)
@@ -55,8 +57,7 @@
   (setq message-sendmail-extra-arguments '("-a" "outlook")))
 
 (use-package calc
-  :general (my/space-leader-def
-             "C" '(calc :wk "calc"))
+  :commands calc
   :hook ((calc-trail-mode . (lambda ()
                               (setq-local mode-line-format nil)))
          (calc-mode . (lambda ()
@@ -102,7 +103,6 @@
   (setq url-configuration-directory (expand-file-name "cache/url" user-emacs-directory)))
 
 (use-package multisession
-  :defer t
   :config
   (setq multisession-directory (expand-file-name "cache/multisession" user-emacs-directory)))
 

@@ -29,8 +29,8 @@
                                        (display-buffer-in-tab)
                                        (tab-name . "Mail") (tab-group . "Mail")
                                        (select . t))))
-(run-with-idle-timer 4 nil (lambda ()
-                             (mu4e 'background)))
+;; (run-with-idle-timer 4 nil (lambda ()
+;;                              (mu4e 'background)))
 
 (use-package mu4e-vars
   :after mu4e
