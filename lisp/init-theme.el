@@ -11,48 +11,46 @@
 ;; (use-package nerd-icons-dired
 ;;   :hook (dired-mode . nerd-icons-dired-mode))
 
-(use-package modus-themes
-  :config
-  (setq modus-themes-bold-constructs t)
-  (setq modus-themes-italic-constructs t)
+(setq modus-themes-bold-constructs t)
+(setq modus-themes-italic-constructs t)
 
-  (setq modus-themes-common-palette-overrides
-        '(;; mode-line
-          (border-mode-line-active unspecified)
-          (border-mode-line-inactive unspecified)
-          (bg-mode-line-active bg-main)
-          (fg-mode-line-active fg-main)
+(setq modus-themes-common-palette-overrides
+      '(;; mode-line
+        (border-mode-line-active unspecified)
+        (border-mode-line-inactive unspecified)
+        (bg-mode-line-active bg-main)
+        (fg-mode-line-active fg-main)
 
-          ;; line-number
-          (fg-line-number-inactive "gray50")
-          (fg-line-number-active red-cooler)
-          (bg-line-number-inactive unspecified)
-          (bg-line-number-active unspecified)
-          ;; link
-          (underline-link border)
-          (underline-link-visited border)
-          (underline-link-symbolic border)
+        ;; line-number
+        (fg-line-number-inactive "gray50")
+        (fg-line-number-active red-cooler)
+        (bg-line-number-inactive unspecified)
+        (bg-line-number-active unspecified)
+        ;; link
+        (underline-link border)
+        (underline-link-visited border)
+        (underline-link-symbolic border)
 
-          ;; org agenda
-          (date-common cyan)   ; default value (for timestamps and more)
-          (date-deadline red-warmer)
-          (date-event magenta-warmer)
-          (date-holiday blue) ; for M-x calendar
-          (date-now yellow-warmer)
-          (date-scheduled magenta-cooler)
-          (date-weekday cyan-cooler)
-          (date-weekend blue-faint)
+        ;; org agenda
+        (date-common cyan)   ; default value (for timestamps and more)
+        (date-deadline red-warmer)
+        (date-event magenta-warmer)
+        (date-holiday blue) ; for M-x calendar
+        (date-now yellow-warmer)
+        (date-scheduled magenta-cooler)
+        (date-weekday cyan-cooler)
+        (date-weekend blue-faint)
 
-          ;; org heading
-          (fg-heading-1 blue-warmer)
-          (fg-heading-2 yellow-cooler)
-          (fg-heading-3 cyan-cooler)))
+        ;; org heading
+        (fg-heading-1 blue-warmer)
+        (fg-heading-2 yellow-cooler)
+        (fg-heading-3 cyan-cooler)))
 
-  (setq modus-themes-prompts '(extrabold italic))
+(setq modus-themes-prompts '(extrabold italic))
 
-  (setq modus-themes-completions
-        '((matches . (extrabold))
-          (selection . (semibold italic text-also)))))
+(setq modus-themes-completions
+      '((matches . (extrabold))
+        (selection . (semibold italic text-also))))
 
 (defun my/modus-cursor-color (var)
   (cadr (assoc (cadr (assoc 'cursor var)) var)))
