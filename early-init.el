@@ -1,5 +1,9 @@
 ;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
 
+;;; Commentary:
+
+;;; Code:
+
 ;; Profiling since here when in debug-mode
 (when init-file-debug
   (profiler-start 'cpu)

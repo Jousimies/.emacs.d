@@ -181,9 +181,6 @@
 [submodule "packages/olivetti"]
 	path = packages/olivetti
 	url = https://github.com/rnkn/olivetti.git
-[submodule "packages/toc-org"]
-	path = packages/toc-org
-	url = https://github.com/snosov1/toc-org.git
 [submodule "packages/org-superstar-mode"]
 	path = packages/org-superstar-mode
 	url = https://github.com/integral-dw/org-superstar-mode.git

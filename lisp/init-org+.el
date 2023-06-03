@@ -7,9 +7,6 @@
 (use-package olivetti
   :commands olivetti-mode)
 
-(use-package toc-org
-  :hook (org-mode . toc-org-mode))
-
 (use-package org-superstar
   :hook (org-mode . org-superstar-mode)
   :config

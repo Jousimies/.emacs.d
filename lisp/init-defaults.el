@@ -90,7 +90,7 @@
 (use-package hydra
   :commands defhydra
   :config
-  (setq hydra-hint-display-type 'posframe)
+  (setq hydra-hint-display-type 'lv)
   (setq hydra-posframe-show-params `(:poshandler posframe-poshandler-frame-center
                                                  :internal-border-width 2
                                                  :internal-border-color "#61AFEF"

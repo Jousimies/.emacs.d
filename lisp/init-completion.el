@@ -48,10 +48,6 @@
 (use-package marginalia
   :hook ((minibuffer-setup . marginalia-mode)))
 
-(use-package nerd-icons-completion
-  :config
-  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
-
 (use-package embark
   :commands embark-open-externally
   :bind (("C-." . embark-act)

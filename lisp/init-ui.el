@@ -3,6 +3,7 @@
 ;;; Commentary:
 
 ;;; Code:
+
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
 
