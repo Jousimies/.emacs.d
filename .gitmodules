@@ -151,12 +151,6 @@
 [submodule "packages/rime-regexp.el"]
 	path = packages/rime-regexp.el
 	url = https://github.com/colawithsauce/rime-regexp.el.git
-[submodule "packages/dired-hide-dotfiles"]
-	path = packages/dired-hide-dotfiles
-	url = https://github.com/mattiasb/dired-hide-dotfiles.git
-[submodule "packages/dirvish"]
-	path = packages/dirvish
-	url = https://github.com/alexluigit/dirvish.git
 [submodule "packages/consult-dir"]
 	path = packages/consult-dir
 	url = https://github.com/karthink/consult-dir.git
@@ -562,9 +556,12 @@
 [submodule "packages/org-footnote-assistant"]
 	path = packages/org-footnote-assistant
 	url = https://github.com/lazzalazza/org-footnote-assistant.git
-[submodule "packages/doom-modeline"]
-	path = packages/doom-modeline
-	url = https://github.com/seagle0128/doom-modeline.git
 [submodule "packages/shrink-path.el"]
 	path = packages/shrink-path.el
 	url = https://gitlab.com/bennya/shrink-path.el.git
+[submodule "packages/pdfgrep"]
+	path = packages/pdfgrep
+	url = https://github.com/jeremy-compostella/pdfgrep.git
+[submodule "packages/echo-bar.el"]
+	path = packages/echo-bar.el
+	url = https://github.com/benzanol/echo-bar.el

@@ -63,10 +63,13 @@
         (call-process-shell-command (concat "qlmanage -p " (shell-quote-argument file)) nil nil)
       (message "Not supported on this platform."))))
 
-(use-package dired-hide-dotfiles
-  :hook (dired-mode . dired-hide-dotfiles-mode)
+(use-package dired-x
+  :hook (dired-mode . dired-omit-mode)
   :bind (:map dired-mode-map
-              ("s-." . dired-hide-dotfiles-mode)))
+              ("s-." . dired-omit-mode))
+  :config
+  (setq dired-omit-verbose nil)
+  (setq dired-omit-files "^\\.[^.].*"))
 
 (use-package image-dired
   :bind ("C-c d" . image-dired)

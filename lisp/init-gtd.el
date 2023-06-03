@@ -36,76 +36,44 @@
   (setq org-edna-use-inheritance t)
   (org-edna-load))
 
-(use-package vulpea
-  :after org-roam
-  :config
-  (defun vulpea-project-p ()
-    "Return non-nil if current buffer has any todo entry.
-  TODO entries marked as done are ignored, meaning the this
-  function returns nil if current buffer contains only completed
-  tasks."
-    (seq-find                                 ; (3)
-     (lambda (type)
+;; https://www.armindarvish.com/en/post/emacs_workflow_dynamically_adding_files_to_org-agenda-files/
+(defun ad/agenda-file-p ()
+  (org-element-map
+      (org-element-parse-buffer 'headline)
+      'headline
+    (lambda (h)
+      (eq (org-element-property :todo-type h)
+          'todo))
+    nil 'first-match))
 
-       (or (eq type 'todo)
-           (eq type 'done)))
-     (org-element-map                         ; (2)
-         (org-element-parse-buffer 'headline) ; (1)
-         'headline
-       (lambda (h)
-         (org-element-property :todo-type h)))))
+(defun ad/org-agenda-update-files (&rest ARG)
+  (interactive)
+  (when (and (derived-mode-p 'org-mode) (buffer-file-name))
+    (message "updating org-agenda-files...")
+    ;; if there is an active TODO task, add this file to agenda files
+    (if (ad/agenda-file-p)
+        (add-to-list 'org-agenda-files (file-truename (buffer-file-name)))
+      ;; if there is no active TODO task, remove the file from agenda files if needed
+      (setq org-agenda-files (seq-difference org-agenda-files (list (buffer-file-name))))
+      (customize-save-variable 'org-agenda-files org-agenda-files))))
 
-  (defun vulpea-buffer-p ()
-    "Return non-nil if the currently visited buffer is a note."
-    (and buffer-file-name
-         (string-prefix-p
-          (expand-file-name (file-name-as-directory org-roam-directory))
-          (file-name-directory buffer-file-name))))
+(defun ad/org-agenda-cleanup-files (&rest ARG)
+  (interactive)
+  (let ((temp/org-agenda-files org-agenda-files))
+    (dolist (file org-agenda-files)
+      (if (not (file-exists-p file))
+          (setq temp/org-agenda-files (seq-difference temp/org-agenda-files (list file)))))
+    (setq org-agenda-files temp/org-agenda-files)))
 
-  (defun vulpea-project-update-tag ()
-    "Update PROJECT tag in the current buffer."
-    (when (and (not (active-minibuffer-window))
-               (vulpea-buffer-p))
-      (save-excursion
-        (goto-char (point-min))
-        (let* ((tags (vulpea-buffer-tags-get))
-               (original-tags tags))
-          (if (vulpea-project-p)
-              (setq tags (cons "project" tags))
-            (setq tags (remove "project" tags)))
-          ;; cleanup duplicates
-          (setq tags (seq-uniq tags))
-          ;; update tags if changed
-          (when (or (seq-difference tags original-tags)
-                    (seq-difference original-tags tags))
-            (apply #'vulpea-buffer-tags-set tags))))))
+;; Add or remove individual file
+(add-hook 'org-mode-hook (lambda () (add-hook 'find-file-hook #'ad/org-agenda-update-files)))
+(add-hook 'org-mode-hook (lambda () (add-hook 'before-save-hook #'ad/org-agenda-update-files)))
 
-  (defun vulpea-project-files ()
-    "Return a list of note files containing 'project' tag." ;
-    (seq-uniq
-     (seq-map
-      #'car
-      (org-roam-db-query
-       [:select [nodes:file]
-                :from tags
-                :left-join nodes
-                :on (= tags:node-id nodes:id)
-                :where (like tag (quote "%\"project\"%"))]))))
+;; remove non-existing files before building agenda
+(advice-add 'org-agenda :before #'ad/org-agenda-cleanup-files)
+(advice-add 'org-todo-list :before #'ad/org-agenda-cleanup-files)
 
-  (defun vulpea-agenda-files-update (&rest _)
-    "Update the value of `org-agenda-files'."
-    (setq org-agenda-files (seq-uniq
-                            (append
-                             (vulpea-project-files)
-                             `(,(expand-file-name "todos/org-gtd-tasks.org" my-galaxy))))))
-
-  (add-hook 'find-file-hook #'vulpea-agenda-files-update)
-
-  (advice-add 'org-agenda :before #'vulpea-agenda-files-update)
-  (advice-add 'org-todo-list :before #'vulpea-agenda-files-update)
-
-  (add-hook 'find-file-hook #'vulpea-project-update-tag)
-  (add-hook 'before-save-hook #'vulpea-project-update-tag))
+(add-to-list 'savehist-additional-variables 'org-agenda-files)
 
 (use-package calendar
   :defer t
@@ -151,18 +119,6 @@
   (setq diary-nonmarking-symbol "!")
 
   (setq diary-file (expand-file-name "diary/diary.org" my-galaxy)))
-
-(use-package alert
-  :commands alert
-  :config
-  (setq alert-default-style 'osx-notifier))
-
-(use-package alarm-clock
-  :bind ("C-M-<f12>" . alarm-clock-set)
-  :commands (alarm-clock-set alarm-clock-list-view)
-  :config
-  (setq alarm-clock-play-sound nil)
-  (setq alarm-clock-cache-file (expand-file-name "var/.alarm-clock.cache" user-emacs-directory)))
 
 (use-package pomm
   :bind ("M-<f12>" . pomm)
