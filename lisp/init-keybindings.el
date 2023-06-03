@@ -86,8 +86,6 @@
   "glw" 'popweb-dict-say-word
 
   ;; Note taking
-  "gna" 'my/new-article
-  "gnm" 'my/new-meeting
   "gnc" 'my/biblio-lookup-crossref
   "gnf" 'my/citar-denote-find-ref-or-citation
   "gnn" 'consult-notes
@@ -95,7 +93,7 @@
   "gnp" 'citar-open-files
   "gno" 'citar-denote-open-note
   "gns" 'my/denote-signature-or-subdirectory
-  "gnw" 'org-roam-node-find
+  "grf" 'org-roam-node-find
 
   ;; EKG for fleeting notes
   "ged" 'ekg-show-notes-for-today

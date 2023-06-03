@@ -120,6 +120,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   (interactive)
   (goto-char (point-max))
   (insert "\n* References\n"))
+
 ;;;###autoload
 (defun my/denote-signature-from-filename ()
   (interactive)
@@ -134,12 +135,14 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (defhydra my/hydra-denote-subdirectory (:color blue
                                                :hint nil)
           "
-  Create denote in subdirectory:
+  Create new note:
 "
-          ("t" my/denote-term "Terminology")
-          ("b" my/denote-book "Books")
+          ("a" my/new-article "Article")
+          ("b" my/denote-book "Book")
+          ("m" my/new-meeting "Meeting")
           ("o" my/denote-outline "Outline")
           ("r" citar-create-note "References")
+          ("t" my/denote-term "Terminology")
           ("q" nil))
 
 (defun my/denote-signature-or-subdirectory (arg)
@@ -147,6 +150,8 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   (if arg
       (my/hydra-denote-subdirectory/body)
     (denote-signature)))
+
+(global-set-key (kbd "<f3>") 'my/hydra-denote-subdirectory/body)
 
 (use-package dired-x
   :bind (:map dired-mode-map
@@ -165,7 +170,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
     (auto-revert-mode -1)))
 
 (use-package consult-notes
-  :commands consult-notes
+  :bind ("C-c n n" . consult-notes)
   :config
   (setq consult-notes-file-dir-sources
         `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
@@ -184,6 +189,8 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
       (find-file (concat my-galaxy "/blogs_source/posts/" filename ext))
       (insert "#+TITLE: " article "\n")
       (tempel-insert 'blog)))
+
+(global-set-key (kbd "C-c n a") 'my/new-article)
 
 (defun my/new-meeting (meet)
   (interactive "sTitle: ")
