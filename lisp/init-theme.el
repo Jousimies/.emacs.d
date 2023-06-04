@@ -8,8 +8,12 @@
   :config
   (setq nerd-icons-font-family "Hack Nerd Font Mono"))
 
-;; (use-package nerd-icons-dired
-;;   :hook (dired-mode . nerd-icons-dired-mode))
+(use-package nerd-icons-completion
+  :config
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
+(use-package nerd-icons-ibuffer
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 (setq modus-themes-bold-constructs t)
 (setq modus-themes-italic-constructs t)
