@@ -68,8 +68,22 @@
 
 (setq org-tags-sort-function 'org-string-collate-greaterp)
 
-(use-package org-auto-tangle
-  :hook (org-mode . org-auto-tangle-mode))
+(with-eval-after-load 'org
+  (add-to-list 'org-options-keywords "AUTO_TANGLE:"))
+
+(defun my/auto-tangle ()
+  "Auto export blog."
+  (when (derived-mode-p 'org-mode)
+    (save-excursion
+      (goto-char 0)
+      (if (string-equal (car
+                         (cdr
+                          (car
+                           (org-collect-keywords '("AUTO_TANGLE")))))
+                        "t")
+          (org-babel-tangle)))))
+
+(add-hook 'after-save-hook 'my/auto-tangle)
 
 (use-package ob-core
   :after org

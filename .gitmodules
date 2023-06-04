@@ -34,9 +34,6 @@
 [submodule "packages/evil-commentary"]
 	path = packages/evil-commentary
 	url = https://github.com/linktohack/evil-commentary.git
-[submodule "packages/org-auto-tangle"]
-	path = packages/org-auto-tangle
-	url = https://github.com/yilkalargaw/org-auto-tangle.git
 [submodule "packages/emacs-which-key"]
 	path = packages/emacs-which-key
 	url = https://github.com/justbur/emacs-which-key.git
