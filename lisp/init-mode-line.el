@@ -7,9 +7,8 @@
 (use-package echo-bar
   :config
   (echo-bar-mode 1)
-  (setq echo-bar-right-padding 0)
-  (setq echo-bar-format '("%e"
-                          (:eval (if (buffer-modified-p)
+  (setq echo-bar-right-padding 1)
+  (setq echo-bar-format '((:eval (if (buffer-modified-p)
                                      (propertize (buffer-name) 'face 'font-lock-preprocessor-face)
                                    mode-line-buffer-identification))
                           " " (:eval

@@ -33,13 +33,14 @@
                    'other))))
 
 (use-package rime
+  :defer t
   :init
   (setq rime-user-data-dir "~/Library/Rime/")
   (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
   (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory)))
+
 (use-package rime-regexp
-  :config
-  (rime-regexp-mode))
+  :hook (after-init . rime-regexp-mode))
 
 (provide 'init-input-method)
 ;;; init-input-method.el ends here.

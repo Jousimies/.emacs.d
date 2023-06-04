@@ -93,7 +93,7 @@
   "gnp" 'citar-open-files
   "gno" 'citar-denote-open-note
   "gns" 'my/denote-signature-or-subdirectory
-  "grf" 'org-roam-node-find
+  "gnw" 'org-roam-node-find
 
   ;; EKG for fleeting notes
   "ged" 'ekg-show-notes-for-today
