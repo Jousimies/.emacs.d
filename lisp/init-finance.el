@@ -50,15 +50,5 @@
 (use-package tablist
   :commands tablist-minor-mode)
 
-(use-package achive
-  :commands achive
-  :config
-  (setq achive-language 'zh)
-  (setq achive-cache-path (expand-file-name "cache/.achive" user-emacs-directory))
-  (add-to-list 'display-buffer-alist '("\\*A Chive\\*"
-                                       (display-buffer-in-tab)
-                                       (tab-name . "Misc")
-                                       (tab-group . "Misc"))))
-
 (provide 'init-finance)
 ;;; init-finance.el ends here.

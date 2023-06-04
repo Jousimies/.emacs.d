@@ -463,9 +463,6 @@
 [submodule "packages/emacs-smart-input-source"]
 	path = packages/emacs-smart-input-source
 	url = https://github.com/laishulu/emacs-smart-input-source.git
-[submodule "packages/achive"]
-	path = packages/achive
-	url = https://github.com/zakudriver/achive.git
 [submodule "packages/emms"]
 	path = packages/emms
 	url = https://git.savannah.gnu.org/git/emms.git
