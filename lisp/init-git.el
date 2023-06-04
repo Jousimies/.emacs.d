@@ -49,8 +49,8 @@ SPLITTER to determine the prefix to include."
     (let ((commit-type (completing-read "Commit title prefix: "
                                         my/vc-type nil t)))
       (goto-char (point-min))
-      (insert (car (s-split splitter commit-type)) "(scope)"))))
-
+      (insert (car (s-split splitter commit-type)) "():")
+      (backward-char 2))))
 
 (add-hook 'find-file-hook 'jf/git-commit-mode-hook)
 
