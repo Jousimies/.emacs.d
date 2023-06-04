@@ -57,7 +57,8 @@
   (setq message-sendmail-extra-arguments '("-a" "outlook")))
 
 (use-package calc
-  :commands calc
+  :general (my/space-leader-def
+             "C" '(calc :wk "calc"))
   :hook ((calc-trail-mode . (lambda ()
                               (setq-local mode-line-format nil)))
          (calc-mode . (lambda ()
@@ -103,6 +104,7 @@
   (setq url-configuration-directory (expand-file-name "cache/url" user-emacs-directory)))
 
 (use-package multisession
+  :defer t
   :config
   (setq multisession-directory (expand-file-name "cache/multisession" user-emacs-directory)))
 

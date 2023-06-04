@@ -10,7 +10,6 @@
 (use-package disk-usage)
 
 (use-package vterm
-  :commands vterm vterm-mode toggle-vterm
   :init
   (add-to-list 'display-buffer-alist
                '("^\\*vterm"
@@ -18,6 +17,8 @@
                  (window-height . 0.5)
                  (side . bottom)
                  (slot . -1)))
+  :general (my/space-leader-def
+             "v" '(toggle-vterm :wk "vterm"))
   :config
   (setq vterm-kill-buffer-on-exit t)
   (setq vterm-max-scrollback 5000)

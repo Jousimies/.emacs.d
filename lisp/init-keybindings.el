@@ -13,7 +13,6 @@
   (which-key-mode))
 
 (my/space-leader-def
-  "r" 'consult-recent-file
   "m" '(:ignore t :wk "Misc")
   "mc" '(chatgpt-shell :wk "ChatGPT")
   "md" '(disk-usage :wk "Disk usage")
@@ -31,11 +30,8 @@
   "bm" '(switch-to-message :wk "*message*")
 
   "e" '(mu4e :wk "MAIL")
-  "c" '(calendar :wk "Calendar")
-  "C" '(calc :wk "calc")
 
-  ;; "t" '(telega :wk "Telega")
-  "v" '(toggle-vterm :wk "vterm")
+  ;; "T" '(Telega :wk "Telega")
 
   "d" '(:ignore t :wk "Download")
   "dc" '(org-download-clipboard :wk "Clipboard")

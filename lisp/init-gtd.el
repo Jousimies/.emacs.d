@@ -76,7 +76,8 @@
 (add-to-list 'savehist-additional-variables 'org-agenda-files)
 
 (use-package calendar
-  :defer t
+  :general (my/space-leader-def
+             "c" '(calendar :wk "Calendar"))
   :config
   (setq calendar-view-diary-initially-flag t)
   (setq calendar-mark-diary-entries-flag t)

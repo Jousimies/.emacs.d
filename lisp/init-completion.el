@@ -91,7 +91,9 @@
          ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
          ([remap yank-pop] . consult-yank-pop)
          :map minibuffer-mode-map
-         ("C-r" . consult-history)))
+         ("C-r" . consult-history))
+  :general (my/space-leader-def
+             "r" 'consult-recent-file))
 
 (use-package consult-imenu
   :bind (([remap imenu] . consult-imenu)))
