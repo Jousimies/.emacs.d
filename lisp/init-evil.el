@@ -4,13 +4,6 @@
 
 ;;; Code:
 
-(use-package general
-  :config
-  (general-create-definer my/space-leader-def
-    :prefix "SPC"
-    :non-normal-prefix "M-SPC"
-    :states '(normal visual insert emacs)))
-
 (use-package evil
   :bind (:map evil-motion-state-map
               ("SPC" . nil)

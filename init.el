@@ -66,6 +66,13 @@
     (setq exec-path (split-string path-from-shell path-separator))))
 (set-exec-path-from-shell-PATH)
 
+(use-package general
+  :config
+  (general-create-definer my/space-leader-def
+    :prefix "SPC"
+    :non-normal-prefix "M-SPC"
+    :states '(normal visual insert emacs)))
+
 (when init-file-debug
   (setq use-package-compute-statistics t)
   (setq use-package-verbose t)
