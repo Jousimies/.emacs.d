@@ -49,7 +49,7 @@
 (defun ad/org-agenda-update-files (&rest ARG)
   (interactive)
   (when (and (derived-mode-p 'org-mode) (buffer-file-name))
-    (message "updating org-agenda-files...")
+    ;; (message "updating org-agenda-files...")
     ;; if there is an active TODO task, add this file to agenda files
     (if (ad/agenda-file-p)
         (add-to-list 'org-agenda-files (file-truename (buffer-file-name)))
