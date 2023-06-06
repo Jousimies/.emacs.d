@@ -66,11 +66,6 @@
   :config
   (evil-embrace-enable-evil-surround-integration))
 
-(use-package evil-easymotion
-  :after evil
-  :config
-  (evilem-default-keybindings "SPC"))
-
 (use-package evil-find-char-pinyin
   :after evil
   :config

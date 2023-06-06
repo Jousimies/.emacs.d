@@ -352,9 +352,6 @@
 [submodule "packages/emacs-toml"]
 	path = packages/emacs-toml
 	url = https://github.com/gongo/emacs-toml.git
-[submodule "packages/evil-easymotion"]
-	path = packages/evil-easymotion
-	url = https://github.com/PythonNut/evil-easymotion.git
 [submodule "packages/saveplace-pdf-view"]
 	path = packages/saveplace-pdf-view
 	url = https://github.com/nicolaisingh/saveplace-pdf-view.git
