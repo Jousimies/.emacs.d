@@ -66,6 +66,11 @@
     (setq exec-path (split-string path-from-shell path-separator))))
 (set-exec-path-from-shell-PATH)
 
+(when init-file-debug
+  (setq use-package-compute-statistics t)
+  (setq use-package-verbose t)
+  (require 'init-benchmark))
+
 (use-package general
   :config
   (general-create-definer my/space-leader-def
@@ -73,24 +78,18 @@
     :non-normal-prefix "M-SPC"
     :states '(normal visual insert emacs)))
 
-(when init-file-debug
-  (setq use-package-compute-statistics t)
-  (setq use-package-verbose t)
-  (require 'init-benchmark))
-
-(require 'init-defaults)
-(require 'init-crud)
 (require 'init-builtin)
 
 (add-hook 'after-init-hook (lambda ()
+                             (require 'init-defaults)
+                             (require 'init-crud)
                              (require 'init-font)
                              (require 'init-theme)
                              (require 'init-mode-line)
                              (require 'init-tab)
                              (require 'init-frame)
                              (require 'init-ui)
-                             (require 'init-evil)
-                             ))
+                             (require 'init-evil)))
 
 (run-with-timer 1 nil  (lambda ()
                          (require 'init-buffer)
@@ -100,7 +99,7 @@
                          (require 'init-template)
                          (require 'init-input-method)
                          ;; languages
-                         ;; (require 'init-checker)
+                         (require 'init-checker)
                          (require 'init-english)
                          (require 'init-lsp)
                          (require 'init-python)
@@ -117,8 +116,7 @@
                          (require 'init-latex)
                          (require 'init-reader)
                          (require 'init-misc)
-                         (require 'init-keybindings)
-                         ))
+                         (require 'init-keybindings)))
 
 (use-package gcmh
   :hook ((after-init . gcmh-mode)
