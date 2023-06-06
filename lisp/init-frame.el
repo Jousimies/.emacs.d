@@ -65,9 +65,6 @@
   (setq window-divider-default-places 'bottom-only)
   (window-divider-mode 1))
 
-(use-package ace-window
-  :bind ("C-x o" . ace-window))
-
 (defun my/scroll-other-windown-down ()
   "Scroll other window down."
   (interactive)

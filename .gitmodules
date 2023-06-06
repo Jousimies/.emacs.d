@@ -127,12 +127,6 @@
 [submodule "packages/emacs-gc-buffers"]
 	path = packages/emacs-gc-buffers
 	url = https://codeberg.org/akib/emacs-gc-buffers.git
-[submodule "packages/ace-window"]
-	path = packages/ace-window
-	url = https://github.com/abo-abo/ace-window.git
-[submodule "packages/avy"]
-	path = packages/avy
-	url = https://github.com/abo-abo/avy.git
 [submodule "packages/emacs-rime"]
 	path = packages/emacs-rime
 	url = https://github.com/DogLooksGood/emacs-rime.git
