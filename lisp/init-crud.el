@@ -36,7 +36,6 @@
   :config
   (setq savehist-file (expand-file-name "cache/history" user-emacs-directory))
   (setq history-length 1000
-        savehist-save-minibuffer-history 1
         savehist-additional-variables '(kill-ring
                                         search-ring
                                         regexp-search-ring)

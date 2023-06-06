@@ -10,6 +10,9 @@
 (setq inhibit-splash-screen t)
 
 (use-package simple
+  :bind ("C-c b s" . scratch-buffer)
+  :general (my/space-leader-def
+             "bs" '(scratch-buffer :wk "*Scratch*"))
   :hook ((prog-mode . column-number-mode)
          (text-mode . size-indication-mode)
          (text-mode . turn-on-visual-line-mode)

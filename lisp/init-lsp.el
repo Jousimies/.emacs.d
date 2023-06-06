@@ -36,6 +36,8 @@
   (add-hook 'evil-insert-state-exit-hook (lambda ()
                                            (if acm-enable-search-sdcv-words
                                                (lsp-bridge-toggle-sdcv-helper)))))
+(my/space-leader-def
+  "mh" '(lsp-bridge-toggle-sdcv-helper :wk "SDCV Helper"))
 
 (provide 'init-lsp)
 ;;; init-lsp.el ends here.

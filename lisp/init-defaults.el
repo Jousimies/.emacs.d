@@ -38,6 +38,9 @@
 (defvar my-galaxy (expand-file-name "L.Personal.Galaxy" my-cloud)
   "This folder stores all the plain text files of my life.")
 
+(defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
+  "The source folder of my blog.")
+
 (defvar my/web_archive (expand-file-name "web_archive/" my-galaxy)
   "The folder save web pages.")
 
@@ -101,7 +104,7 @@
   :commands psearch-replace psearch-patch)
 
 (use-package epkg
-  :bind ("s-<f4>" . epkg-describe-package)
+  :commands epkg-describe-package
   :init
   (add-to-list 'display-buffer-alist '("^\\*Help\\*"
                                        (display-buffer-in-tab)

@@ -217,8 +217,6 @@
       (kill-new mytmplink)
       (message "Copied %s to killring (clipboard)" mytmplink))))
 
-(global-set-key (kbd "C-<f4>") 'my/copy-idlink)
-
 (use-package org-src
   :after org
   :config

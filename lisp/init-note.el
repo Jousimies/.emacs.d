@@ -151,8 +151,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
       (my/hydra-denote-subdirectory/body)
     (denote-signature)))
 
-(global-set-key (kbd "<f3>") 'my/hydra-denote-subdirectory/body)
-
 (use-package dired-x
   :bind (:map dired-mode-map
               ("C-c v" . my/denote-signature-buffer))
@@ -186,7 +184,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
     (interactive "sTitle: ")
     (let ((filename (format "%s" article))
           (ext ".org"))
-      (find-file (concat my-galaxy "/blogs_source/posts/" filename ext))
+      (find-file (concat website-directory "posts/" filename ext))
       (insert "#+TITLE: " article "\n")
       (tempel-insert 'blog)))
 
@@ -244,7 +242,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
                  'face-override-spec))
 
 (use-package org-roam
-  :commands org-roam-node-find
+  :bind ("C-c n f" . org-roam-node-find)
   :init
   (setq org-roam-directory (file-truename (expand-file-name "roam" my-galaxy)))
   :hook ((org-mode . org-roam-db-autosync-mode)
@@ -318,9 +316,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (use-package org-change
   :after org)
-
-(use-package org-footnote-assistant
-  :hook (org-mode . org-footnote-assistant-mode))
 
 (provide 'init-note)
 ;;; init-note.el ends here.

@@ -40,7 +40,8 @@
   (let* ((file (dired-get-filename)))
     (eww (concat "file://" file))))
 
-(define-key dired-mode-map (kbd "C-c e") 'my/eww-html-file)
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "C-c e") 'my/eww-html-file))
 
 (defvar file-extensions-with-default-apps '("xls" "doc" "xlsx" "docx" "eps" "dwg" "psd")
   "List of file extensions to open with default applications.")

@@ -9,6 +9,12 @@
   (interactive)
   (switch-to-buffer "*Messages*"))
 
+(keymap-global-set "C-c b m" 'switch-to-message)
+
+(my/space-leader-def
+  "b" '(:ignore t :wk "Buffer")
+  "bm" '(switch-to-message :wk "*message*"))
+
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer)
   :config

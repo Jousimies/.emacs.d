@@ -5,9 +5,9 @@
 ;;; Code:
 
 (use-package file-info
-  :commands file-info-show)
-
-(use-package disk-usage)
+  :commands file-info-show
+  :general (my/space-leader-def
+             "fi" '(file-info-show :wk "File info")))
 
 (use-package vterm
   :init

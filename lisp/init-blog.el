@@ -43,9 +43,6 @@
                 entry
                 filename))))
 
-  (defvar website-directory (expand-file-name "blogs_source" my-galaxy)
-    "The source folder of my blog.")
-
   (defvar my/publish-directory "~/Blogs/")
 
   (setq org-publish-project-alist

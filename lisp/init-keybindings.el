@@ -12,52 +12,6 @@
   (setq which-key-idle-secondary-delay 0.05)
   (which-key-mode))
 
-(my/space-leader-def
-  "m" '(:ignore t :wk "Misc")
-  "mc" '(chatgpt-shell :wk "ChatGPT")
-  "md" '(disk-usage :wk "Disk usage")
-  "me" '(emacs-lisp-macroexpand :wk "Macro expand")
-  "mi" '(file-info-show :wk "File info")
-  "mh" '(lsp-bridge-toggle-sdcv-helper :wk "SDCV Helper" )
-  "mj" '(mac-launchpad :wk "Jump to App")
-  "mo" '(my/ocr :wk "OCR")
-  "mp" '(toggle-proxy :wk "Proxy")
-  "ms" '(achive :wk "Share")
-  "my" '(yt-set-time :wk "Youtube link time")
-
-  "b" '(:ignore t :wk "Buffer")
-  "bs" '(scratch-buffer :wk "*scratch*")
-  "bm" '(switch-to-message :wk "*message*")
-
-  "e" '(mu4e :wk "MAIL")
-
-  ;; "T" '(Telega :wk "Telega")
-
-  "d" '(:ignore t :wk "Download")
-  "dc" '(org-download-clipboard :wk "Clipboard")
-  "dr" '(my/org-download-rename :wk "Rename(arg)")
-  "ds" '(org-download-screenshot :wk "Screenshot")
-  "dy" '(org-download-yank :wk "Yank")
-
-  "p" '(:ignore t :wk "Preview")
-  "pa" '(math-preview-all :wk "All")
-  "pA" '(math-preview-clear-all :wk "Clear All")
-  "pp" '(math-preview-at-point :wk "Point")
-  "pP" '(math-preview-clear-at-point :wk "Clear Point")
-  "pr" '(math-preview-region :wk "Region")
-  "pR" '(math-preview-clear-region :wk "Clear Region")
-
-  "s" '(:ignore t :wk "Search")
-  "sb" '(engine/search-bookdouban :wk "Book")
-  "sf" '(consult-find :wk "Files")
-  "ss" '(engine/search-google :wk "Google")
-  "sg" '(engine/search-github :wk "Github")
-  "sw" '(engine/search-wikipedia :wk "Wiki")
-  "sm" '(engine/search-moviedouban :wk "Movie")
-  "sz" '(engine/search-zhihu :wk "Zhihu")
-  "sr" '(rg :wk "rg")
-  "sl" '(consult-git-grep :wk "git"))
-
 (evil-define-key '(normal visual motion) 'global
   "gb" 'tabspaces-switch-to-buffer
   "gs" 'tab-switch
@@ -183,13 +137,19 @@
 
 ;; (with-eval-after-load 'telega
 ;;   (evil-define-key 'normal telega-chat-mode-map
-;;     "q" 'quit-window))
+;;     "q" 'quit-window)
 
-(evil-define-key 'normal telega-root-mode-map
-  "gs" nil)
+;;   (evil-define-key 'normal telega-root-mode-map
+;;     "gs" nil)
 
-(evil-define-key 'normal telega-msg-button-map
-  "SPC" nil)
+;;   (evil-define-key 'normal telega-msg-button-map
+;;     "SPC" nil))
+(evil-define-key 'normal dired-mode-map
+  "/" 'consult-line)
+(evil-define-key 'normal org-mode-map
+  "gh" 'consult-outline)
+(evil-define-key 'normal LaTeX-mode-map
+  "gh" 'consult-outline)
 
 (provide 'init-keybindings)
 ;;; init-keybindings.el ends here.

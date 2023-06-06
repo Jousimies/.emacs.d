@@ -79,8 +79,8 @@
   (require 'init-benchmark))
 
 (require 'init-defaults)
-(require 'init-builtin)
 (require 'init-crud)
+(require 'init-builtin)
 
 (add-hook 'after-init-hook (lambda ()
                              (require 'init-font)
@@ -89,7 +89,8 @@
                              (require 'init-tab)
                              (require 'init-frame)
                              (require 'init-ui)
-                             (require 'init-evil)))
+                             (require 'init-evil)
+                             ))
 
 (run-with-timer 1 nil  (lambda ()
                          (require 'init-buffer)
@@ -99,7 +100,7 @@
                          (require 'init-template)
                          (require 'init-input-method)
                          ;; languages
-                         (require 'init-checker)
+                         ;; (require 'init-checker)
                          (require 'init-english)
                          (require 'init-lsp)
                          (require 'init-python)
@@ -116,7 +117,8 @@
                          (require 'init-latex)
                          (require 'init-reader)
                          (require 'init-misc)
-                         (require 'init-keybindings)))
+                         (require 'init-keybindings)
+                         ))
 
 (use-package gcmh
   :hook ((after-init . gcmh-mode)

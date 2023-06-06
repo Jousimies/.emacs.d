@@ -70,12 +70,6 @@
 [submodule "packages/rainbow-mode"]
 	path = packages/rainbow-mode
 	url = https://github.com/emacsmirror/rainbow-mode.git
-[submodule "packages/rainbow-delimiters"]
-	path = packages/rainbow-delimiters
-	url = https://github.com/Fanael/rainbow-delimiters.git
-[submodule "packages/color-identifiers-mode"]
-	path = packages/color-identifiers-mode
-	url = https://github.com/ankurdave/color-identifiers-mode.git
 [submodule "packages/helpful"]
 	path = packages/helpful
 	url = https://github.com/Wilfred/helpful.git
@@ -112,9 +106,6 @@
 [submodule "packages/file-info.el"]
 	path = packages/file-info.el
 	url = https://github.com/Artawower/file-info.el.git
-[submodule "packages/emacs-disk-usage"]
-	path = packages/emacs-disk-usage
-	url = https://gitlab.com/ambrevar/emacs-disk-usage.git
 [submodule "packages/hydra"]
 	path = packages/hydra
 	url = https://github.com/abo-abo/hydra.git
@@ -238,15 +229,6 @@
 [submodule "packages/grab-mac-link.el"]
 	path = packages/grab-mac-link.el
 	url = https://github.com/xuchunyang/grab-mac-link.el.git
-[submodule "packages/elfeed"]
-	path = packages/elfeed
-	url = https://github.com/skeeto/elfeed.git
-[submodule "packages/elfeed-org"]
-	path = packages/elfeed-org
-	url = https://github.com/remyhonig/elfeed-org.git
-[submodule "packages/elfeed-summary"]
-	path = packages/elfeed-summary
-	url = https://github.com/SqrtMinusOne/elfeed-summary.git
 [submodule "packages/emacs-libvterm"]
 	path = packages/emacs-libvterm
 	url = https://github.com/akermu/emacs-libvterm.git
@@ -292,18 +274,12 @@
 [submodule "packages/yasnippet-snippets"]
 	path = packages/yasnippet-snippets
 	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
-[submodule "packages/pomm.el"]
-	path = packages/pomm.el
-	url = https://github.com/SqrtMinusOne/pomm.el.git
 [submodule "packages/alert"]
 	path = packages/alert
 	url = https://github.com/jwiegley/alert.git
 [submodule "packages/org-alert"]
 	path = packages/org-alert
 	url = https://github.com/spegoraro/org-alert.git
-[submodule "packages/alarm-clock"]
-	path = packages/alarm-clock
-	url = https://github.com/wlemuel/alarm-clock.git
 [submodule "packages/flyspell-correct"]
 	path = packages/flyspell-correct
 	url = https://github.com/d12frosted/flyspell-correct.git
@@ -352,9 +328,6 @@
 [submodule "packages/advance-words-count.el"]
 	path = packages/advance-words-count.el
 	url = https://github.com/LdBeth/advance-words-count.el.git
-[submodule "packages/org-msg"]
-	path = packages/org-msg
-	url = https://github.com/jeremy-compostella/org-msg.git
 [submodule "packages/emacs-htmlize"]
 	path = packages/emacs-htmlize
 	url = https://github.com/hniksic/emacs-htmlize.git
@@ -376,18 +349,9 @@
 [submodule "packages/org-agenda-property"]
 	path = packages/org-agenda-property
 	url = https://github.com/Malabarba/org-agenda-property.git
-[submodule "packages/mu4e-alert"]
-	path = packages/mu4e-alert
-	url = https://github.com/iqbalansari/mu4e-alert.git
 [submodule "packages/ht.el"]
 	path = packages/ht.el
 	url = https://github.com/Wilfred/ht.el.git
-[submodule "packages/mu4e-marker-icons"]
-	path = packages/mu4e-marker-icons
-	url = https://repo.or.cz/mu4e-marker-icons.git
-[submodule "packages/mu4e-column-faces"]
-	path = packages/mu4e-column-faces
-	url = https://github.com/Alexander-Miller/mu4e-column-faces.git
 [submodule "packages/yaml-mode"]
 	path = packages/yaml-mode
 	url = https://github.com/yoshiki/yaml-mode.git
@@ -412,9 +376,6 @@
 [submodule "packages/popweb"]
 	path = packages/popweb
 	url = https://github.com/manateelazycat/popweb.git
-[submodule "packages/Focus"]
-	path = packages/Focus
-	url = https://github.com/larstvei/Focus.git
 [submodule "packages/org-anki"]
 	path = packages/org-anki
 	url = https://github.com/eyeinsky/org-anki.git
@@ -442,33 +403,15 @@
 [submodule "packages/git-timemachine"]
 	path = packages/git-timemachine
 	url = https://codeberg.org/pidu/git-timemachine.git
-[submodule "packages/rainbow-identifiers"]
-	path = packages/rainbow-identifiers
-	url = https://github.com/Fanael/rainbow-identifiers.git
 [submodule "packages/visual-fill-column"]
 	path = packages/visual-fill-column
 	url = https://codeberg.org/joostkremers/visual-fill-column.git
-[submodule "packages/telega.el"]
-	path = packages/telega.el
-	url = https://github.com/zevlg/telega.el.git
 [submodule "packages/denote-menu"]
 	path = packages/denote-menu
 	url = https://github.com/namilus/denote-menu.git
-[submodule "packages/org-web-tools"]
-	path = packages/org-web-tools
-	url = https://github.com/alphapapa/org-web-tools.git
 [submodule "packages/emacs-smart-input-source"]
 	path = packages/emacs-smart-input-source
 	url = https://github.com/laishulu/emacs-smart-input-source.git
-[submodule "packages/emms"]
-	path = packages/emms
-	url = https://git.savannah.gnu.org/git/emms.git
-[submodule "packages/lyrics-fetcher.el"]
-	path = packages/lyrics-fetcher.el
-	url = https://github.com/SqrtMinusOne/lyrics-fetcher.el.git
-[submodule "packages/consult-emms"]
-	path = packages/consult-emms
-	url = https://github.com/Hugo-Heagren/consult-emms.git
 [submodule "packages/evil-find-char-pinyin"]
 	path = packages/evil-find-char-pinyin
 	url = https://github.com/cute-jumper/evil-find-char-pinyin.git
@@ -484,18 +427,12 @@
 [submodule "packages/emacs-denote-refs"]
 	path = packages/emacs-denote-refs
 	url = https://codeberg.org/akib/emacs-denote-refs.git
-[submodule "packages/mu"]
-	path = packages/mu
-	url = https://github.com/djcb/mu.git
 [submodule "packages/jinx"]
 	path = packages/jinx
 	url = https://github.com/minad/jinx.git
 [submodule "packages/lsp-bridge"]
 	path = packages/lsp-bridge
 	url = https://github.com/manateelazycat/lsp-bridge.git
-[submodule "packages/diredfl"]
-	path = packages/diredfl
-	url = https://github.com/purcell/diredfl.git
 [submodule "packages/auto-save"]
 	path = packages/auto-save
 	url = https://github.com/manateelazycat/auto-save.git
@@ -532,12 +469,6 @@
 [submodule "packages/org-change"]
 	path = packages/org-change
 	url = https://github.com/drghirlanda/org-change.git
-[submodule "packages/vulpea"]
-	path = packages/vulpea
-	url = https://github.com/d12frosted/vulpea.git
-[submodule "packages/pdf-view-pagemark"]
-	path = packages/pdf-view-pagemark
-	url = https://github.com/kimim/pdf-view-pagemark.git
 [submodule "packages/d2-mode"]
 	path = packages/d2-mode
 	url = https://github.com/andorsk/d2-mode.git

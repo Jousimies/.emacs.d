@@ -42,9 +42,6 @@
 (use-package rainbow-mode
   :hook (prog-mode . rainbow-mode))
 
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
-
 (use-package pulse
   :preface
   (defun my-pulse-momentary (&rest _)
@@ -63,9 +60,6 @@
                        pop-to-mark-command pop-global-mark
                        pager-page-down pager-page-up))
           (advice-add cmd :after #'my-pulse-momentary)))
-
-(use-package color-identifiers-mode
-  :hook (text-mode . global-color-identifiers-mode))
 
 (use-package page-break-lines
   :hook (org-mode . page-break-lines-mode))

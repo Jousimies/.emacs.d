@@ -68,12 +68,12 @@
   (engine-mode))
 
 (use-package grab-mac-link
-  :commands grab-mac-link-dwim grab-mac-link-safari-1
-  :bind ("<f4>" . my/link-grab)
-  :preface
-  (defun my/link-grab ()
+  :commands grab-mac-link-dwim grab-mac-link-safari-1)
+
+;;;###autoload
+(defun my/link-grab ()
     (interactive)
-    (grab-mac-link-dwim 'safari)))
+    (grab-mac-link-dwim 'safari))
 
 ;;;###autoload
 (defun my/org-insert-web-page-archive ()
@@ -96,6 +96,24 @@
             (org-set-tags "Reference")
             (my/auto-change-file-paths))
         (message "Please save web page first.")))))
+
+(defhydra my/hydra-search (:color red
+                                  :hint nil)
+  "
+    Search and Browse:
+  "
+  ("b" browse-at-remote "Open remote" :exit t)
+  ("f" consult-find "Find file" :exit t)
+  ("l" my/link-grab "Grab link" :exit t)
+  ("p" epkg-describe-package "Search Emacs packages" :exit t)
+  ("r" rg "rg" :exit t)
+  ("g" engine/search-google "Google" :exit t)
+  ("w" engine/search-wikipedia "Wiki" :exit t)
+  ("m" engine/search-moviedouban "Douban" :exit t)
+  ("z" engine/search-zhihu "Zhihu" :exit t)
+  ("q" nil))
+
+(global-set-key (kbd "<f4>") 'my/hydra-search/body)
 
 (use-package simple-httpd
   :commands httpd-serve-directory)

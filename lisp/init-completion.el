@@ -98,13 +98,6 @@
 (use-package consult-imenu
   :bind (([remap imenu] . consult-imenu)))
 
-(evil-define-key 'normal dired-mode-map
-  "/" 'consult-line)
-(evil-define-key 'normal org-mode-map
-  "gh" 'consult-outline)
-(evil-define-key 'normal LaTeX-mode-map
-  "gh" 'consult-outline)
-
 (use-package consult-dir
   :bind (("C-x C-d" . consult-dir)
          (:map minibuffer-mode-map

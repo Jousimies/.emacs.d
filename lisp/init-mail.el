@@ -15,6 +15,8 @@
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
   :commands mu4e
+  :general (my/space-leader-def
+             "e" '(mu4e :wk "MAIL"))
   :config
   (setq mu4e-confirm-quit nil)
   (add-to-list 'display-buffer-alist '((derived-mode . mu4e-main-mode)
