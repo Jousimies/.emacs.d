@@ -4,11 +4,6 @@
 
 ;;; Code:
 
-(use-package file-info
-  :commands file-info-show
-  :general (my/space-leader-def
-             "fi" '(file-info-show :wk "File info")))
-
 (use-package vterm
   :init
   (add-to-list 'display-buffer-alist
@@ -17,8 +12,7 @@
                  (window-height . 0.5)
                  (side . bottom)
                  (slot . -1)))
-  :general (my/space-leader-def
-             "v" '(toggle-vterm :wk "vterm"))
+  :bind ("C-c v" . vterm)
   :config
   (setq vterm-kill-buffer-on-exit t)
   (setq vterm-max-scrollback 5000)

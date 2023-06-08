@@ -8,14 +8,29 @@
 (setq auto-mode-case-fold nil)
 
 (unless (or (daemonp) noninteractive init-file-debug)
-  (let ((old-file-name-handler-alist file-name-handler-alist))
+  ;; Prevent flashing of messages at startup
+  (when (display-graphic-p)
+    (setq-default inhibit-redisplay t
+                  inhibit-message t)
+    (defun reset-inhibit-vars ()
+      (setq-default inhibit-redisplay nil
+                    inhibit-message nil)
+      (redraw-frame))
+    (add-hook 'window-setup-hook #'reset-inhibit-vars)
+    (define-advice startup--load-user-init-file (:after (&rest _) reset-inhibit-vars)
+      (and init-file-had-error (reset-inhibit-vars))))
+
+  ;; Suppress file handlers operations at startup
+  ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
+  (let ((old-value file-name-handler-alist))
     (setq file-name-handler-alist nil)
+    (set-default-toplevel-value 'file-name-handler-alist file-name-handler-alist)
     (add-hook 'emacs-startup-hook
               (lambda ()
                 "Recover file name handlers."
                 (setq file-name-handler-alist
-                      (delete-dups (append file-name-handler-alist
-                                           old-file-name-handler-alist)))))))
+                      (delete-dups (append file-name-handler-alist old-value))))
+              101)))
 
 ;; https://github.com/manateelazycat/lazycat-emacs/blob/master/site-start.el
 (require 'cl-lib)
@@ -71,32 +86,25 @@
   (setq use-package-verbose t)
   (require 'init-benchmark))
 
-(use-package general
-  :config
-  (general-create-definer my/space-leader-def
-    :prefix "SPC"
-    :non-normal-prefix "M-SPC"
-    :states '(normal visual insert emacs)))
-
 (require 'init-builtin)
+(require 'init-base)
+(require 'init-font)
+(require 'init-theme)
+(require 'init-mode-line)
+(require 'init-tab)
+(require 'init-frame)
+(require 'init-ui)
+(require 'init-crud)
 
 (add-hook 'after-init-hook (lambda ()
-                             (require 'init-defaults)
-                             (require 'init-crud)
-                             (require 'init-font)
-                             (require 'init-theme)
-                             (require 'init-mode-line)
-                             (require 'init-tab)
-                             (require 'init-frame)
-                             (require 'init-ui)
-                             (require 'init-evil)))
+                             (require 'init-evil)
+                             (require 'init-buffer)
+                             (require 'init-completion)
+                             (require 'init-dired)
+                             (require 'init-search)
+                             (require 'init-template)))
 
 (run-with-timer 1 nil  (lambda ()
-                         (require 'init-buffer)
-                         (require 'init-completion)
-                         (require 'init-dired)
-                         (require 'init-search)
-                         (require 'init-template)
                          (require 'init-input-method)
                          ;; languages
                          (require 'init-checker)
@@ -117,15 +125,6 @@
                          (require 'init-reader)
                          (require 'init-misc)
                          (require 'init-keybindings)))
-
-(use-package gcmh
-  :hook ((after-init . gcmh-mode)
-         (focus-out . garbage-collect))
-  :config
-  (setq gc-cons-percentage 0.1)
-  (setq gcmh-idle-delay 'auto)
-  (setq gcmh-auto-idle-delay-factor 10)
-  (setq gcmh-high-cons-threshold #x1000000))
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (when (file-exists-p custom-file)

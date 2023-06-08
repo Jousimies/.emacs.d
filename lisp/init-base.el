@@ -47,9 +47,11 @@
                  (window-height . 0.2)
                  (side . bottom))))
 
+;;;###autoload
 (one-key-create-menu
    "Applications"
    '((("c" . "Calculator") . calc)
+     (("C" . "Calendar") . calendar)
      (("h" . "SDCV Helper") . lsp-bridge-toggle-sdcv-helper))
    t)
 

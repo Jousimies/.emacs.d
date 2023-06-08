@@ -4,13 +4,9 @@
 
 ;;; Code:
 
-(use-package which-key
-  :config
-  (setq which-key-sort-order #'which-key-prefix-then-key-order)
-  (setq which-key-show-early-on-C-h t)
-  (setq which-key-idle-delay 10000)
-  (setq which-key-idle-secondary-delay 0.05)
-  (which-key-mode))
+(one-key-create-menu
+   "Applications"
+   '((("c" . "Calculator") . calc)))
 
 (evil-define-key '(normal visual motion) 'global
   "gb" 'tabspaces-switch-to-buffer

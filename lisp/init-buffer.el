@@ -4,17 +4,6 @@
 
 ;;; Code:
 
-(defun switch-to-message ()
-  "Quick switch to `*Message*' buffer."
-  (interactive)
-  (switch-to-buffer "*Messages*"))
-
-(keymap-global-set "C-c b m" 'switch-to-message)
-
-(my/space-leader-def
-  "b" '(:ignore t :wk "Buffer")
-  "bm" '(switch-to-message :wk "*message*"))
-
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer)
   :config
@@ -26,6 +15,15 @@
 (use-package gc-buffers
   :config
   (gc-buffers-mode))
+
+(use-package gcmh
+  :hook ((after-init . gcmh-mode)
+         (focus-out . garbage-collect))
+  :config
+  (setq gc-cons-percentage 0.1)
+  (setq gcmh-idle-delay 'auto)
+  (setq gcmh-auto-idle-delay-factor 10)
+  (setq gcmh-high-cons-threshold #x1000000))
 
 (with-eval-after-load 'outline
   (define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)

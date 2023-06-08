@@ -132,23 +132,20 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (advice-add 'denote-signature :before #'my/denote-signature-from-filename)
 
-(defhydra my/hydra-denote-subdirectory (:color blue
-                                               :hint nil)
-          "
-  Create new note:
-"
-          ("a" my/new-article "Article")
-          ("b" my/denote-book "Book")
-          ("m" my/new-meeting "Meeting")
-          ("o" my/denote-outline "Outline")
-          ("r" citar-create-note "References")
-          ("t" my/denote-term "Terminology")
-          ("q" nil))
+(one-key-create-menu
+ "Notes"
+ '((("a" . "Article") . my/new-article)
+   (("b" . "Books") . my/denote-book)
+   (("m" . "Meeting") . my/new-meeting)
+   (("o" . "Outline") . my/denote-outline)
+   (("r" . "References") . citar-create-note)
+   (("t" . "Terminology") . my/denote-term))
+ t)
 
 (defun my/denote-signature-or-subdirectory (arg)
   (interactive "P")
   (if arg
-      (my/hydra-denote-subdirectory/body)
+      (one-key-menu-notes)
     (denote-signature)))
 
 (use-package dired-x

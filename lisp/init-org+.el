@@ -36,14 +36,6 @@
 (use-package math-preview
   :commands math-preview-all math-preview-clear-all
   :hook (org-mode . auto/math-preview-all)
-  :general (my/space-leader-def
-             "p" '(:ignore t :wk "Preview")
-             "pa" '(math-preview-all :wk "All")
-             "pA" '(math-preview-clear-all :wk "Clear All")
-             "pp" '(math-preview-at-point :wk "Point")
-             "pP" '(math-preview-clear-at-point :wk "Clear Point")
-             "pr" '(math-preview-region :wk "Region")
-             "pR" '(math-preview-clear-region :wk "Clear Region"))
   :config
   (setq math-preview-scale 1.1)
   (setq math-preview-raise 0.2)
@@ -62,12 +54,6 @@
 
 (use-package org-download
   :hook (org-mode . org-download-enable)
-  :general (my/space-leader-def
-             "d" '(:ignore t :wk "Download")
-             "dc" '(org-download-clipboard :wk "Clipboard")
-             "dr" '(my/org-download-rename :wk "Rename(arg)")
-             "ds" '(org-download-screenshot :wk "Screenshot")
-             "dy" '(org-download-yank :wk "Yank"))
   :init
   (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
   (setq org-download-heading-lvl nil)
@@ -102,9 +88,7 @@
   :hook (org-mode . org-imgtog-mode))
 
 (use-package plantuml
-  :general (my/space-leader-def
-             "pm" '(plantuml-org-to-mindmap-open :wk "Mindmap")
-             "ps" '(plantuml-org-to-wbs-open :wk "Work Breakdown Structure"))
+  :after org
   :config
   (setq plantuml-jar-path
         (concat (string-trim

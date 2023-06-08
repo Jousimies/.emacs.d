@@ -61,8 +61,6 @@
                 ("TODO" ("WAIT") ("CNCL") ("SOMEDAY"))
                 ("NEXT" ("WAIT") ("CNCL") ("SOMEDAY"))
                 ("DONE" ("WAIT") ("CNCL") ("SOMEDAY")))))
-  :general (my/space-leader-def
-             "pi" '(org-toggle-inline-images :wk "Images"))
   :bind (:map org-mode-map
               ("C-c l" . org-store-link)))
 
@@ -372,15 +370,15 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
   (interactive "r")
   (add-symbol-to-region beg end "+"))
 
-(defhydra my/hydra-org-symbol (:color blue)
-          "
-    Add symbol to chinese char: "
-          ("*" add-stars-to-region)
-          ("=" add-equal-to-region)
-          ("_" add-underline-to-region)
-          ("/" add-italic-to-region)
-          ("+" add-plus-to-region))
-(global-set-key (kbd "s-b") 'my/hydra-org-symbol/body)
+;; (defhydra my/hydra-org-symbol (:color blue)
+;;           "
+;;     Add symbol to chinese char: "
+;;           ("*" add-stars-to-region)
+;;           ("=" add-equal-to-region)
+;;           ("_" add-underline-to-region)
+;;           ("/" add-italic-to-region)
+;;           ("+" add-plus-to-region))
+;; (global-set-key (kbd "s-b") 'my/hydra-org-symbol/body)
 
 (provide 'init-org)
 ;;; init-org.el ends here.

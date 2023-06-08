@@ -16,9 +16,6 @@
 [submodule "packages/epkg"]
 	path = packages/epkg
 	url = https://github.com/emacscollective/epkg.git
-[submodule "packages/general.el"]
-	path = packages/general.el
-	url = https://github.com/noctuid/general.el.git
 [submodule "packages/llama"]
 	path = packages/llama
 	url = https://git.sr.ht/~tarsius/llama
@@ -34,9 +31,6 @@
 [submodule "packages/evil-commentary"]
 	path = packages/evil-commentary
 	url = https://github.com/linktohack/evil-commentary.git
-[submodule "packages/emacs-which-key"]
-	path = packages/emacs-which-key
-	url = https://github.com/justbur/emacs-which-key.git
 [submodule "packages/emacs-async"]
 	path = packages/emacs-async
 	url = https://github.com/jwiegley/emacs-async.git
@@ -103,12 +97,6 @@
 [submodule "packages/gcmh"]
 	path = packages/gcmh
 	url = https://gitlab.com/koral/gcmh.git
-[submodule "packages/file-info.el"]
-	path = packages/file-info.el
-	url = https://github.com/Artawower/file-info.el.git
-[submodule "packages/hydra"]
-	path = packages/hydra
-	url = https://github.com/abo-abo/hydra.git
 [submodule "packages/posframe"]
 	path = packages/posframe
 	url = https://github.com/tumashu/posframe.git
@@ -475,3 +463,6 @@
 [submodule "packages/echo-bar.el"]
 	path = packages/echo-bar.el
 	url = https://github.com/benzanol/echo-bar.el
+[submodule "packages/one-key"]
+	path = packages/one-key
+	url = https://github.com/manateelazycat/one-key.git

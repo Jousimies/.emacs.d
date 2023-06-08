@@ -4,15 +4,66 @@
 
 ;;; Code:
 
+;; Variables defined in C source code
+(setq ring-bell-function 'ignore)
+(setq tab-width 4)
+(setq use-file-dialog nil)
+(setq use-dialog-box nil)
+(setq use-short-answers t)
+(setq read-process-output-max #x10000)
+(setq create-lockfiles nil)
+(setq recenter-redisplay nil)
+(setq load-prefer-newer t)
+(setq next-screen-context-lines 5)
+(setq frame-inhibit-implied-resize t)
+(setq inhibit-compacting-font-caches t)
+(setq inhibit-quit nil)
+(setq fast-but-imprecise-scrolling t)
+(setq scroll-preserve-screen-position 'always)
+(setq auto-save-list-file-name nil)
+(setq history-delete-duplicates t)
+(setq bidi-display-reordering nil)
+(setq read-buffer-completion-ignore-case t)
+(setq completion-ignore-case t)
+(setq delete-by-moving-to-trash t)
+(setq minibuffer-prompt-properties
+      '(read-only t cursor-intangible t face minibuffer-prompt))
+(setq max-mini-window-height 10)
+
+;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
+(defvar my-cloud "~/Nextcloud"
+  "This folder is My cloud.")
+
+;; L.Personal.Galaxy location may change, but folders in this directory never change.
+(defvar my-galaxy (expand-file-name "L.Personal.Galaxy" my-cloud)
+  "This folder stores all the plain text files of my life.")
+
+(defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
+  "The source folder of my blog.")
+
+(defvar my/web_archive (expand-file-name "web_archive/" my-galaxy)
+  "The folder save web pages.")
+
+(defvar my/reference-lists `(,(concat my-galaxy "/bibtexs/References.bib")
+                             ,(concat my-cloud "/L.Calibre/calibre.bib")))
+
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+
+(use-package server
+  :config
+  (unless (server-running-p)
+    (server-start)))
+
 (setq auto-save-list-file-prefix (expand-file-name "cache/auto-save-list/.saves-" user-emacs-directory))
-(setq inhibit-default-init t)
+;; (setq inhibit-default-init t)
 (setq inhibit-startup-message t)
-(setq inhibit-splash-screen t)
+;; (setq inhibit-splash-screen t)
 
 (use-package simple
   :bind ("C-c b s" . scratch-buffer)
-  :general (my/space-leader-def
-             "bs" '(scratch-buffer :wk "*Scratch*"))
   :hook ((prog-mode . column-number-mode)
          (text-mode . size-indication-mode)
          (text-mode . turn-on-visual-line-mode)
@@ -51,8 +102,12 @@
   (setq ffap-machine-p-known 'reject))
 
 (use-package message
-  :defer t
+  :bind ("C-c b m" . switch-to-message)
   :config
+  (defun switch-to-message ()
+    "Quick switch to `*Message*' buffer."
+    (interactive)
+    (switch-to-buffer "*Messages*"))
   (setq message-kill-buffer-on-exit t)
   (setq message-kill-buffer-query nil)
   (setq message-sendmail-envelope-from 'header)
@@ -60,8 +115,7 @@
   (setq message-sendmail-extra-arguments '("-a" "outlook")))
 
 (use-package calc
-  :general (my/space-leader-def
-             "C" '(calc :wk "calc"))
+  :bind ("C-c s" . one-key-menu-applications)
   :hook ((calc-trail-mode . (lambda ()
                               (setq-local mode-line-format nil)))
          (calc-mode . (lambda ()
@@ -70,7 +124,8 @@
   (setq calc-window-height 15))
 
 (use-package so-long
-  :hook (text-mode . global-so-long-mode))
+  :config
+  (global-so-long-mode 1))
 
 (use-package prog-mode
   :hook ((prog-mode . prettify-symbols-mode)
@@ -113,14 +168,6 @@
 
 (use-package cursor-sensor
   :hook (minibuffer-setup . cursor-intangible-mode))
-
-(use-package compile
-  :config
-  (setq compilation-scroll-output t))
-
-(use-package shr
-  :config
-  (setq shr-max-image-proportion 0.7))
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here.

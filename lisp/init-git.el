@@ -60,8 +60,7 @@ SPLITTER to determine the prefix to include."
   (setq forge-database-file (expand-file-name "cache/forge-database.sqlite" user-emacs-directory)))
 
 (use-package git-timemachine
-  :general (my/space-leader-def
-             "mt" '(git-timemachine :wk "Timemachine")))
+  :commands git-timemachine)
 
 (use-package browse-at-remote
   :commands browse-at-remote)

@@ -56,7 +56,7 @@
   (recentf-mode))
 
 (use-package register
-  :bind ("C-c f" . jump-to-register)
+  :bind ("C-c f j" . jump-to-register)
   :config
   (set-register ?g (cons 'file (expand-file-name "todos/org-gtd-tasks.org" my-galaxy)))
   (set-register ?b (cons 'file (expand-file-name "denote/books/20230301T211439--Book-lists-and-reading-record__reading.org" my-galaxy)))

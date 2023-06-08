@@ -5,8 +5,9 @@
 ;;; Code:
 
 (use-package echo-bar
+  :hook (after-init . echo-bar-mode)
   :config
-  (echo-bar-mode 1)
+  (setq echo-bar-minibuffer nil)
   (setq echo-bar-right-padding 1)
   (setq echo-bar-format '((:eval (if (buffer-modified-p)
                                      (propertize (buffer-name) 'face 'font-lock-preprocessor-face)

@@ -79,7 +79,8 @@
 (use-package consult
   :commands consult-outline consult-find
   :hook (completion-list-mode . consult-preview-at-point-mode)
-  :bind (([remap apropos] . consult-apropos)
+  :bind (("C-c f r" . consult-recent-file)
+         ([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-line)
          ([remap locate] . consult-locate)
@@ -91,9 +92,7 @@
          ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
          ([remap yank-pop] . consult-yank-pop)
          :map minibuffer-mode-map
-         ("C-r" . consult-history))
-  :general (my/space-leader-def
-             "r" 'consult-recent-file))
+         ("C-r" . consult-history)))
 
 (use-package consult-imenu
   :bind (([remap imenu] . consult-imenu)))
@@ -194,7 +193,7 @@
          ("C-c p &" . cape-sgml)
          ("C-c p r" . cape-rfc1345))
   :init
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  ;; (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
   ;;(add-to-list 'completion-at-point-functions #'cape-history)
   ;;(add-to-list 'completion-at-point-functions #'cape-keyword)

@@ -9,7 +9,6 @@
   :bind (("M-$" . jinx-correct)
          ("C-M-$" . jinx-languages))
   :config
-  (setq jinx-languages '("en" "fr" "de"))
   (add-to-list 'jinx-exclude-regexps '(t "\\cc")))
 
 (provide 'init-checker)
