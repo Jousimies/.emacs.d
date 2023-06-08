@@ -20,8 +20,9 @@
   (setq gts-default-translator (gts-translator
                                 :picker (gts-noprompt-picker)
                                 :engines (list
-                                          (gts-bing-engine)
-                                          (gts-google-engine :parser (gts-google-summary-parser)))
+                                          ;; (gts-google-rpc-engine)
+                                          (gts-google-engine :parser (gts-google-summary-parser))
+                                          )
                                 :render (gts-buffer-render)))
 
   (defun my/gts-do-translate (arg)

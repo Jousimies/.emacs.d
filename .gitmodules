@@ -268,9 +268,6 @@
 [submodule "packages/Emacs-langtool"]
 	path = packages/Emacs-langtool
 	url = https://github.com/mhayashi1120/Emacs-langtool.git
-[submodule "packages/go-translate"]
-	path = packages/go-translate
-	url = https://github.com/lorniu/go-translate.git
 [submodule "packages/lingva.el"]
 	path = packages/lingva.el
 	url = https://codeberg.org/martianh/lingva.el.git
@@ -466,3 +463,6 @@
 [submodule "packages/one-key"]
 	path = packages/one-key
 	url = https://github.com/manateelazycat/one-key.git
+[submodule "packages/go-translate"]
+	path = packages/go-translate
+	url = https://github.com/lorniu/go-translate.git

@@ -4,14 +4,6 @@
 
 ;;; Code:
 
-(use-package socks
-  :init
-  (setq socks-override-functions 1)
-  (setq socks-noproxy '("localhost"))
-  :config
-  (setq url-gateway-method 'socks)
-  (setq socks-server '("Default server" "127.0.0.1" 1080 5)))
-
 (defun toggle-proxy ()
   "Toggle proxy for the url.el library."
   (interactive)
