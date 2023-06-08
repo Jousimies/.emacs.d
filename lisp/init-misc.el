@@ -12,7 +12,7 @@
                  (window-height . 0.5)
                  (side . bottom)
                  (slot . -1)))
-  :bind ("C-c v" . vterm)
+  :bind ("<f3>" . vterm)
   :config
   (setq vterm-kill-buffer-on-exit t)
   (setq vterm-max-scrollback 5000)
