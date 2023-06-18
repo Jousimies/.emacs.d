@@ -6,6 +6,7 @@ emacs
 cache
 tramp
 emacs.org
+elpa
 *.log
 *.gz
 *.pdf
