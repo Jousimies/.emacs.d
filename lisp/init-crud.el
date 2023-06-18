@@ -11,10 +11,7 @@
   (setq auto-save-delete-trailing-whitespace t)
   (auto-save-enable))
 
-(use-package undo-fu)
-
 (use-package undo-fu-session
-  :after undo-fu
   :config
   (setq undo-fu-session-directory (expand-file-name "cache/undo-fu-session" user-emacs-directory))
 

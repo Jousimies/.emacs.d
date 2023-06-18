@@ -106,10 +106,5 @@
 (use-package org-anki
   :commands org-anki-sync-entry org-anki-sync-all org-anki-delete-entry)
 
-(use-package org-contacts
-  :commands org-contacts
-  :config
-  (setq org-contacts-files `(,(expand-file-name "people/contacts.org" my-galaxy))))
-
 (provide 'init-org+)
 ;;; init-org+.el ends here.

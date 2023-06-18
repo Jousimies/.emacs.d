@@ -5,11 +5,11 @@
 ;;; Code:
 
 (use-package tab-bar
+  :hook (after-init . tab-bar-mode)
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-tab-hints nil)
-  (setq tab-bar-show nil)
-  (tab-bar-mode))
+  (setq tab-bar-show nil))
 
 (use-package tabspaces
   :commands tabspaces-switch-to-buffer

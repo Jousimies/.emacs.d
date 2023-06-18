@@ -4,10 +4,10 @@
 
 ;;; Code:
 
-(use-package frame
-  :config
-  ;; (add-to-list 'initial-frame-alist '(alpha . (90 . 100)))
-  (blink-cursor-mode -1))
+(add-to-list 'initial-frame-alist '(alpha . (90 . 100)))
+(blink-cursor-mode -1)
+;; (use-package frame
+;;   :config)
 
 (defun my/make-or-delete-frame ()
   (interactive)
@@ -18,6 +18,7 @@
 (global-set-key (kbd "s-n") 'my/make-or-delete-frame)
 
 (use-package winner
+  :hook (after-init . winner-mode)
   :config
   (setq winner-dont-bind-my-keys t)
   (setq winner-boring-buffers '("*Completions*"
@@ -29,10 +30,10 @@
                                 "*cvs*"
                                 "*Buffer List*"
                                 "*Ibuffer*"
-                                "*esh command on file*"))
-  (winner-mode))
+                                "*esh command on file*")))
 
 (use-package window
+  :defer t
   :config
   (setq switch-to-buffer-in-dedicated-window 'pop)
   (setq switch-to-buffer-obey-display-actions t)

@@ -66,6 +66,9 @@
                  nil
                  (window-parameters (mode-line-format . none)))))
 
+(use-package embark-consult
+  :after embark consult)
+
 (defun consult-outline-insert-heading (target)
   (let* ((marker (plist-get
                   (text-properties-at 0 target)

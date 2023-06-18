@@ -25,10 +25,6 @@
   (setq gcmh-auto-idle-delay-factor 10)
   (setq gcmh-high-cons-threshold #x1000000))
 
-(with-eval-after-load 'outline
-  (define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
-  (define-key outline-minor-mode-map (kbd "S-<tab>") 'bicycle-cycle-global))
-
 (use-package midnight
   :config
   (midnight-mode))

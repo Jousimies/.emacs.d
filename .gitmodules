@@ -466,3 +466,6 @@
 [submodule "packages/go-translate"]
 	path = packages/go-translate
 	url = https://github.com/lorniu/go-translate.git
+[submodule "packages/modus-themes"]
+	path = packages/modus-themes
+	url = https://github.com/protesilaos/modus-themes.git

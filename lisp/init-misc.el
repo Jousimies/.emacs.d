@@ -25,23 +25,6 @@
         (switch-to-buffer (get-buffer-create buf))
         (vterm-mode)))))
 
-(use-package chatgpt-shell
-  :commands chatgpt-shell
-  :init
-  (add-to-list 'display-buffer-alist '("^\\*[cC]hat[gG][pP][tT]\\*"
-                                       (display-buffer-pop-up-frame)
-                                       (window-parameters
-                                        (mode-line-format . none))))
-  :config
-  (setq chatgpt-shell-history-path (expand-file-name "cache" user-emacs-directory))
-  (setq chatgpt-shell-openai-key
-        (lambda ()
-          (auth-source-pick-first-password :host "openai.com"))))
-
-(use-package d2-mode
-  :config
-  (setq d2-location "/opt/homebrew/bin/d2"))
-
 (use-package advance-words-count
   :bind ("M-=" . advance-words-count))
 

@@ -54,6 +54,8 @@
     (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point)))
 
 (use-package citar-embark
+
+  :after citar
   :hook (org-mode . citar-embark-mode))
 
 (use-package citar-denote

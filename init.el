@@ -8,18 +8,6 @@
 (setq auto-mode-case-fold nil)
 
 (unless (or (daemonp) noninteractive init-file-debug)
-  ;; Prevent flashing of messages at startup
-  (when (display-graphic-p)
-    (setq-default inhibit-redisplay t
-                  inhibit-message t)
-    (defun reset-inhibit-vars ()
-      (setq-default inhibit-redisplay nil
-                    inhibit-message nil)
-      (redraw-frame))
-    (add-hook 'window-setup-hook #'reset-inhibit-vars)
-    (define-advice startup--load-user-init-file (:after (&rest _) reset-inhibit-vars)
-      (and init-file-had-error (reset-inhibit-vars))))
-
   ;; Suppress file handlers operations at startup
   ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
   (let ((old-value file-name-handler-alist))
@@ -110,18 +98,18 @@
                          (require 'init-checker)
                          (require 'init-english)
                          (require 'init-lsp)
-                         (require 'init-python)
-                         (require 'init-yaml)
+                         ;; (require 'init-python)
+                         ;; (require 'init-yaml)
                          (require 'init-markdown)
                          (require 'init-git)
                          (require 'init-org)
                          (require 'init-org+)
                          (require 'init-note)
                          (require 'init-gtd)
-                         (require 'init-finance)
+                         ;; (require 'init-finance)
                          (require 'init-blog)
                          (require 'init-bib)
-                         (require 'init-latex)
+                         ;; (require 'init-latex)
                          (require 'init-reader)
                          (require 'init-misc)
                          (require 'init-keybindings)))

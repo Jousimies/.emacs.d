@@ -15,26 +15,23 @@
   (setq org-agenda-align-tags-to-column -120))
 
 (use-package org-gtd
-  ;; :commands org-gtd-capture org-gtd-engage org-gtd-process-inbox org-gtd-show-all-next org-gtd-show-stuck-projects
-  :bind (("<f12>" . org-gtd-engage)
-         ("C-<f12>" . org-gtd-process-inbox)
-         ("s-<f12>" . org-gtd-show-stuck-projects)
-         (:map org-gtd-clarify-map
-               ("C-c c" . org-gtd-organize)))
+  :after org
+  :demand t
   :init
   (setq org-gtd-update-ack "3.0.0")
   :custom
   (org-gtd-directory (expand-file-name "todos" my-galaxy))
   (org-agenda-property-list '("DELEGATED_TO"))
   (org-gtd-organize-hooks '(org-gtd-set-area-of-focus org-set-tags-command))
+  (org-edna-use-inheritance t)
   :config
-  (add-to-list 'org-agenda-files (expand-file-name "todos/org-gtd-tasks.org" my-galaxy)))
-
-(use-package org-edna
-  :after org-gtd
-  :config
-  (setq org-edna-use-inheritance t)
-  (org-edna-load))
+  (org-edna-mode)
+  (add-to-list 'org-agenda-files (expand-file-name "todos/org-gtd-tasks.org" my-galaxy))
+  :bind (("<f12>" . org-gtd-engage)
+         ("C-<f12>" . org-gtd-process-inbox)
+         ("s-<f12>" . org-gtd-show-stuck-projects)
+         (:map org-gtd-clarify-map
+               ("C-c c" . org-gtd-organize))))
 
 ;; https://www.armindarvish.com/en/post/emacs_workflow_dynamically_adding_files_to_org-agenda-files/
 (defun ad/agenda-file-p ()
@@ -76,7 +73,6 @@
 (add-to-list 'savehist-additional-variables 'org-agenda-files)
 
 (use-package calendar
-  :bind ("C-c s" . one-key-menu-application)
   :config
   (setq calendar-view-diary-initially-flag t)
   (setq calendar-mark-diary-entries-flag t)
@@ -119,12 +115,6 @@
   (setq diary-nonmarking-symbol "!")
 
   (setq diary-file (expand-file-name "diary/diary.org" my-galaxy)))
-
-(use-package pomm
-  :bind ("M-<f12>" . pomm)
-  :config
-  (setq pomm-state-file-location (expand-file-name "cache/pomm" user-emacs-directory))
-  (pomm-mode-line-mode))
 
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.

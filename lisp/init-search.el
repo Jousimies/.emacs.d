@@ -32,11 +32,6 @@
 (autoload #'elisp-demos-advice-helpful-update "elisp-demos" nil t)
 (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
 
-(use-package devdocs-browser
-  :commands devdocs-browser-install-doc devdocs-browser-open devdocs-browser-open-in
-  :config
-  (setq devdocs-browser-cache-directory (expand-file-name "cache/devdocs-browser/" user-emacs-directory)))
-
 ;; eww
 ;; Install readability first.
 ;; npm install -g readability-cli
@@ -97,14 +92,8 @@
             (my/auto-change-file-paths))
         (message "Please save web page first.")))))
 
-(use-package one-key
-  :config
-  (add-to-list 'display-buffer-alist
-                 '("^\\*One-Key\\*"
-                   (display-buffer-in-side-window)
-                   (window-height . 0.2)
-                   (side . bottom)))
-  (one-key-create-menu
+;;;###autoload
+(one-key-create-menu
    "Search"
    '((("b" . "Open remote") . browse-at-remote)
      (("f" . "Find file") . consult-find)
@@ -115,7 +104,7 @@
      (("w" . "Wikipedia") . engine/search-wikipedia)
      (("m" . "Movie") . engine/search-moviedouban)
      (("z" . "Zhihu") . engine/search-zhihu))
-   t))
+   t)
 (global-set-key (kbd "<f4>") 'one-key-menu-search)
 
 (use-package simple-httpd

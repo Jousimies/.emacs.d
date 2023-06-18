@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package nerd-icons
+  :defer t
   :config
   (setq nerd-icons-font-family "Hack Nerd Font Mono"))
 
@@ -14,6 +15,7 @@
 (use-package nerd-icons-ibuffer
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
+(require 'modus-themes)
 (setq modus-themes-bold-constructs t)
 (setq modus-themes-italic-constructs t)
 

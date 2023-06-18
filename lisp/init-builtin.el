@@ -53,9 +53,9 @@
 (set-keyboard-coding-system 'utf-8)
 
 (use-package server
-  :config
-  (unless (server-running-p)
-    (server-start)))
+  :hook (after-init . (lambda ()
+                        (unless (server-running-p)
+                          (server-start)))))
 
 (setq auto-save-list-file-prefix (expand-file-name "cache/auto-save-list/.saves-" user-emacs-directory))
 ;; (setq inhibit-default-init t)
@@ -86,7 +86,8 @@
   (setq large-file-warning-threshold nil)
   (setq confirm-kill-processes nil)
   (setq confirm-kill-emacs nil)
-  (setq make-backup-files nil)
+  ;; (setq make-backup-files t)
+  ;; (setq backup-directory-alist '(("." . "~/.emacs.d/cache/backups")))
   (setq view-read-only t)
   (setq kill-read-only-ok t)
   ;; https://emacsredux.com/blog/2022/06/12/auto-create-missing-directories/
@@ -124,8 +125,7 @@
   (setq calc-window-height 15))
 
 (use-package so-long
-  :config
-  (global-so-long-mode 1))
+  :hook (after-init . global-so-long-mode))
 
 (use-package prog-mode
   :hook ((prog-mode . prettify-symbols-mode)
@@ -137,9 +137,7 @@
 (add-hook 'prog-mode-hook 'outline-minor-mode)
 
 (use-package pixel-scroll
-  :if (and window-system (>= emacs-major-version 29))
-  :config
-  (pixel-scroll-precision-mode))
+  :hook (after-init . pixel-scroll-precision-mode))
 
 (use-package doc-view
   :defer t
@@ -153,6 +151,7 @@
          (LaTeX-mode . abbrev-mode)))
 
 (use-package bookmark
+  :defer t
   :config
   (setq bookmark-default-file (expand-file-name "cache/bookmarks" user-emacs-directory)))
 

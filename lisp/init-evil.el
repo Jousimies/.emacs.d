@@ -16,7 +16,7 @@
   (setq evil-want-integration t)
   (setq evil-want-C-h-delete t)
   (setq evil-respect-visual-line-mode t)
-  (setq evil-undo-system 'undo-fu)
+  (setq evil-undo-system 'undo-redo)
   (setq evil-visual-state-cursor 'hollow)
   (setq evil-normal-state-tag " 🅝")
   (setq evil-insert-state-tag " 🅘")
