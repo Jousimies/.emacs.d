@@ -469,3 +469,6 @@
 [submodule "packages/modus-themes"]
 	path = packages/modus-themes
 	url = https://github.com/protesilaos/modus-themes.git
+[submodule "packages/benchmark-init-el"]
+	path = packages/benchmark-init-el
+	url = https://github.com/dholm/benchmark-init-el.git
