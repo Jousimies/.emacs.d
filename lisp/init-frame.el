@@ -4,10 +4,20 @@
 
 ;;; Code:
 
-(add-to-list 'initial-frame-alist '(alpha . (90 . 100)))
-(blink-cursor-mode -1)
-;; (use-package frame
-;;   :config)
+(use-package frame
+  :hook ((after-init . (lambda ()
+                         (blink-cursor-mode -1)))
+         (after-init . window-divider-mode))
+  :config
+  (add-to-list 'initial-frame-alist '(alpha . (90 . 100)))
+  (face-spec-set 'window-divider
+                 '((((background light))
+                    :foreground "#000000")
+                   (t
+                    :foreground "#FFFFFF"))
+                 'face-override-spec)
+  (setq window-divider-default-bottom-width 1)
+  (setq window-divider-default-places 'bottom-only))
 
 (defun my/make-or-delete-frame ()
   (interactive)
@@ -53,18 +63,6 @@
                                        (display-buffer-in-tab)
                                        (tab-name . "Porg") (tab-group . "Prog")
                                        (select . t))))
-
-(use-package frame
-  :config
-  (face-spec-set 'window-divider
-                 '((((background light))
-                    :foreground "#000000")
-                   (t
-                    :foreground "#FFFFFF"))
-                 'face-override-spec)
-  (setq window-divider-default-bottom-width 1)
-  (setq window-divider-default-places 'bottom-only)
-  (window-divider-mode 1))
 
 (defun my/scroll-other-windown-down ()
   "Scroll other window down."

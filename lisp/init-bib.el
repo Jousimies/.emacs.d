@@ -9,20 +9,6 @@
   :config
   (setq org-cite-global-bibliography my/reference-lists))
 
-(use-package bibtex-completion
-  :config
-  (setq bibtex-completion-bibliography my/reference-lists)
-  (setq bibtex-completion-notes-path (expand-file-name "denote/references" my-galaxy))
-  (setq bibtex-completion-pdf-field "File")
-  (setq bibtex-completion-additional-search-fields '(keywords journal booktitle))
-  (setq bibtex-completion-pdf-symbol "P")
-  (setq bibtex-completion-notes-symbol "N")
-  (setq bibtex-completion-display-formats '((article . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
-                                            (inbook . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
-                                            (incollection . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-                                            (inproceedings . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-                                            (t . "${=has-pdf=:1} ${=has-note=:1} ${year:4} ${author:36} ${title:*}"))))
-
 (use-package citar
   :commands citar-open-files citar-create-note
   :config
@@ -37,8 +23,8 @@
   (setq citar-file-additional-files-separator "-")
   (setq citar-at-point-function 'embark-act))
 
-(use-package citar-latex
-  :after citar)
+;; (use-package citar-latex
+;;   :after citar)
 
 (use-package citar-capf
   :hook ((LaTeX-mode . citar-capf-setup)
@@ -57,32 +43,6 @@
 
   :after citar
   :hook (org-mode . citar-embark-mode))
-
-(use-package citar-denote
-  :config
-  (setq citar-denote-subdir t)
-  (citar-denote-mode)
-
-  (defun my/citar-denote-create-note (citekey &optional _entry)
-    "Create a bibliography note for CITEKEY with properties ENTRY.
-
-The file type for the new note is determined by `citar-denote-file-type'.
-The title of the new note is set by `citar-denote-title-format'.
-When `citar-denote-subdir' is non-nil, prompt for a subdirectory."
-    (denote
-     (read-string "Title: " (citar-denote-generate-title citekey))
-     (citar-denote-keywords-prompt citekey)
-     citar-denote-file-type
-     (when citar-denote-subdir (expand-file-name "references" denote-directory)))
-    (citar-denote-add-reference citekey))
-
-  (advice-add 'citar-denote-create-note :override #'my/citar-denote-create-note))
-
-(defun my/citar-denote-find-ref-or-citation (arg)
-  (interactive "P")
-  (if arg
-      (citar-denote-find-citation)
-    (citar-denote-find-reference)))
 
 (use-package ebib
   :bind ("<f2>" . ebib)

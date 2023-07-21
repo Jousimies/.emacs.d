@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package isearch
+  :defer t
   :config
   (setq isearch-lazy-count t)
   (setq lazy-count-prefix-format nil)
@@ -20,6 +21,7 @@
   (setq rg-show-columns t))
 
 (use-package help
+  :defer t
   :config
   (setq help-window-select 'always)
   (setq help-window-keep-selected t))
@@ -38,6 +40,7 @@
 ;; (setq eww-retrieve-command '("readable"))
 
 (use-package engine-mode
+  :hook (after-init . engine-mode)
   :config
   (defengine google "https://google.com/search?q=%s"
              :keybinding "g"
@@ -59,8 +62,7 @@
              :docstring "Search Book DouBan.")
   (defengine zhihu "https://www.zhihu.com/search?type=content&q=%s"
              :keybinding "z"
-             :docstring "Search Zhihu.")
-  (engine-mode))
+             :docstring "Search Zhihu."))
 
 (use-package grab-mac-link
   :commands grab-mac-link-dwim grab-mac-link-safari-1)
@@ -91,21 +93,6 @@
             (org-set-tags "Reference")
             (my/auto-change-file-paths))
         (message "Please save web page first.")))))
-
-;;;###autoload
-(one-key-create-menu
-   "Search"
-   '((("b" . "Open remote") . browse-at-remote)
-     (("f" . "Find file") . consult-find)
-     (("l" . "Grab link") . my/link-grab)
-     (("p" . "Emacs packages search") . epkg-describe-package)
-     (("r" . "rg") . rg)
-     (("g" . "Google") . engine/search-google)
-     (("w" . "Wikipedia") . engine/search-wikipedia)
-     (("m" . "Movie") . engine/search-moviedouban)
-     (("z" . "Zhihu") . engine/search-zhihu))
-   t)
-(global-set-key (kbd "<f4>") 'one-key-menu-search)
 
 (use-package simple-httpd
   :commands httpd-serve-directory)

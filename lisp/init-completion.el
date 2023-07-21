@@ -4,17 +4,15 @@
 
 ;;; Code:
 
-(use-package minibuffer
-  :config
-  (setq completion-category-overrides '((file (styles basic partial-completion))))
-  (setq read-file-name-completion-ignore-case t)
+(setq completion-category-overrides '((file (styles basic partial-completion))))
+(setq read-file-name-completion-ignore-case t)
 
-  (setq-local completion-in-region-function
-              (lambda (&rest args)
-                (apply (if vertico-mode
-                           #'consult-completion-in-region
-                         #'completion--in-region)
-                       args))))
+(setq-local completion-in-region-function
+            (lambda (&rest args)
+              (apply (if vertico-mode
+                         #'consult-completion-in-region
+                       #'completion--in-region)
+                     args)))
 
 (setq tab-always-indent 'complete)
 
@@ -23,27 +21,22 @@
   (setq completion-styles '(orderless partial-completion)))
 
 (use-package vertico
-  :load-path "~/.emacs.d/packages/vertico"
-  :commands vertico-mode
+  ;; :load-path "~/.emacs.d/packages/vertico"
+  :hook (after-init . vertico-mode)
   :bind (:map vertico-map
               ("C-j" . vertico-next)
               ("C-k" . vertico-previous))
-  :init
-  (vertico-mode)
   :config
   (setq vertico-count 15)
   (setq vertico-resize nil)
   (setq vertico-cycle t))
 
 (use-package vertico-directory
-  :after vertico
   :bind (:map vertico-map
               ("C-<backspace>" . vertico-directory-up)))
 
 (use-package vertico-indexed
-  :after vertico
-  :config
-  (vertico-indexed-mode))
+  :hook (vertico-mode . vertico-indexed-mode))
 
 (use-package marginalia
   :hook ((minibuffer-setup . marginalia-mode)))
@@ -107,8 +100,8 @@
                ("C-x C-j" . consult-dir-jump-file))))
 
 (use-package corfu
+  :hook (after-init . global-corfu-mode)
   :config
-  (global-corfu-mode)
   (setq corfu-cycle t)
   (setq corfu-auto t)
   (setq corfu-auto-prefix 2)
@@ -133,6 +126,9 @@
 
 (use-package corfu-popupinfo
   :hook (corfu-mode . corfu-popupinfo-mode))
+
+(use-package corfu-prescient
+  :hook (corfu-mode . corfu-prescient-mode))
 
 (use-package kind-icon
   :commands kind-icon-margin-formatter
@@ -209,24 +205,6 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
   )
-
-(use-package prescient
-  :demand t
-  :commands prescient-persist-mode
-  :config
-  (setq prescient-save-file (expand-file-name "cache/prescient-save.el" user-emacs-directory))
-  (prescient-persist-mode))
-
-(use-package vertico-prescient
-  :after prescient vertico
-  :config
-  (setq vertico-prescient-completion-styles '(orderless prescient partial-completion))
-  (vertico-prescient-mode))
-
-(use-package corfu-prescient
-  :after prescient corfu
-  :config
-  (corfu-prescient-mode))
 
 (provide 'init-completion)
 ;;; init-git.el ends here.

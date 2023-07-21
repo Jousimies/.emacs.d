@@ -36,7 +36,7 @@
              (= m (car ny)))
         (setq dashboard-startup-banner (expand-file-name "src/banner2.txt" user-emacs-directory))
       (setq dashboard-startup-banner (expand-file-name (concat "src/" file) user-emacs-directory))
-      ))
+      )))
   ;; (setq dashboard-set-navigator nil)
   ;; (run-with-idle-timer (* 5 60) t 'dashboard-open))
 

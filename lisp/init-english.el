@@ -98,31 +98,6 @@
   (setq dictionary-overlay-python "/opt/homebrew/bin/python3.10")
   (dictionary-overlay-start))
 
-(defun my/siri-translate ()
-  (interactive)
-  (let ((tempfile (make-temp-file "siri-translate-" nil ".txt")))
-    (write-region
-     (format "%s" (thing-at-point 'paragraph)) nil tempfile)
-    (end-of-paragraph-text)
-    (shell-command (format "shortcuts run \"Translate File\" -i %s &" tempfile)))
-  (shell-command "open -b org.gnu.Emacs"))
-
-(defun my/siri-translate2english ()
-  (interactive)
-  (let ((tempfile (make-temp-file "siri-translate-" nil ".txt")))
-    (write-region
-     (format "%s" (thing-at-point 'paragraph)) nil tempfile)
-    (end-of-paragraph-text)
-    (shell-command (format "shortcuts run \"Translate File 2 English\" -i %s &" tempfile)))
-  (shell-command "open -b org.gnu.Emacs"))
-
-(defun language-to-zh-or-zh-to-english ()
-  (interactive)
-  (let ((string (thing-at-point 'paragraph)))
-    (if (eq (string-match "\\cC" string) nil)
-        (my/siri-translate)
-      (my/siri-translate2english))))
-
 (use-package emacs-azure-tts
   :commands emacs-azure-tts
   :preface

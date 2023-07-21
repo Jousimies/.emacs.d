@@ -9,8 +9,9 @@
               ("SPC" . nil)
               ("RET" . nil)
               ("TAB" . nil))
-  :hook (after-change-major-mode . (lambda ()
+  :hook ((after-change-major-mode . (lambda ()
                                      (setq-local evil-shift-width tab-width)))
+         (after-init . evil-mode))
   :init
   (setq evil-want-keybinding nil)
   (setq evil-want-integration t)
@@ -26,8 +27,7 @@
   (setq evil-operator-state-tag " 🅞")
   (setq evil-emacs-state-tag " 🅔")
   :config
-  (evil-mode)
-
+  (advice-add #'evil-undo :override #'vundo)
   ;; https://github.com/zsxh/emacs.d/blob/master/lisp/init-evil.el
   ;; remove all keybindings from insert-state keymap,it is VERY VERY important
   (setcdr evil-insert-state-map nil)
@@ -41,25 +41,23 @@
     "gn" nil))
 
 (use-package evil-commands
+  :after evil
   :bind (:map evil-motion-state-map
               ("C-f" . evil-scroll-down)
               ("C-b" . evil-scroll-up)))
 
 (use-package evil-collection
+  :commands evil-define-key
+  :hook (evil-mode . evil-collection-init)
   :config
   (setq evil-collection-key-blacklist '("SPC" ","))
-  (setq forge-add-default-bindings nil)
-  (evil-collection-init))
+  (setq forge-add-default-bindings nil))
 
 (use-package evil-commentary
-  :after evil
-  :config
-  (evil-commentary-mode))
+  :hook (evil-mode . evil-commentary-mode))
 
 (use-package evil-surround
-  :after evil
-  :config
-  (global-evil-surround-mode))
+  :hook (evil-mode . global-evil-surround-mode))
 
 (use-package evil-embrace
   :hook (org-mode . embrace-org-mode-hook)
@@ -67,9 +65,7 @@
   (evil-embrace-enable-evil-surround-integration))
 
 (use-package evil-find-char-pinyin
-  :after evil
-  :config
-  (evil-find-char-pinyin-mode 1))
+  :hook (evil-mode . evil-find-char-pinyin-mode))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here.

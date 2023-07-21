@@ -69,5 +69,8 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
   (message "init completed in %.2fms"
            (sanityinc/time-subtract-millis after-init-time before-init-time)))
 
+(require 'benchmark-init-loaddefs)
+(benchmark-init/activate)
+
 (provide 'init-benchmark)
 ;;; init-beanchmark.el ends here.

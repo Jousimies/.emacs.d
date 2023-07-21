@@ -53,7 +53,7 @@
               (math-preview-all)))))))
 
 (use-package org-download
-  :hook (org-mode . org-download-enable)
+  :commands org-download-clipboard org-download-yank org-download-screenshot org-download-rename-at-point
   :init
   (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
   (setq org-download-heading-lvl nil)
@@ -88,7 +88,7 @@
   :hook (org-mode . org-imgtog-mode))
 
 (use-package plantuml
-  :after org
+  :commands plantuml-org-to-mindmap-open plantuml-org-to-wbs-open
   :config
   (setq plantuml-jar-path
         (concat (string-trim

@@ -133,7 +133,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (advice-add 'denote-signature :before #'my/denote-signature-from-filename)
 
 (one-key-create-menu
- "Notes"
+ "New"
  '((("a" . "Article") . my/new-article)
    (("b" . "Books") . my/denote-book)
    (("m" . "Meeting") . my/new-meeting)
@@ -145,14 +145,10 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (defun my/denote-signature-or-subdirectory (arg)
   (interactive "P")
   (if arg
-      (one-key-menu-notes)
+      (one-key-menu-new)
     (denote-signature)))
 
-(use-package dired-x
-  :bind (:map dired-mode-map
-              ("C-c v" . my/denote-signature-buffer))
-  :config
-  (defun my/denote-signature-buffer ()
+(defun my/denote-signature-buffer ()
     (interactive)
     (switch-to-buffer "*denote-signatures*")
     (read-only-mode -1)
@@ -162,7 +158,10 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
       "ls -l | awk /==/ | sed  's/--/=@/3' | sort -t '=' -Vk 3,3 | sed 's/=@/--/' "))
     (dired-virtual denote-directory)
     (denote-dired-mode)
-    (auto-revert-mode -1)))
+    (auto-revert-mode -1))
+
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "C-c v") 'my/denote-signature-buffer))
 
 (use-package consult-notes
   :bind ("C-c n n" . consult-notes)
@@ -312,7 +311,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
                 " ")))
 
 (use-package org-change
-  :after org)
+  :commands org-change-add)
 
 (provide 'init-note)
 ;;; init-note.el ends here.

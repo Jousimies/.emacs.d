@@ -5,12 +5,12 @@
 ;;; Code:
 
 (use-package files
+  :defer t
   :config
   (add-to-list 'major-mode-remap-alist
                '(python-mode . python-ts-mode)))
 
-(use-package treesit
-  :config
+(with-eval-after-load 'treesit
   (add-to-list 'treesit-language-source-alist
                '(python "https://github.com/tree-sitter/tree-sitter-python.git")))
 

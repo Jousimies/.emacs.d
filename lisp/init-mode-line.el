@@ -26,10 +26,5 @@
                                                'face 'font-lock-warning-face
                                                'help-echo "Buffer is read-only"))))))
 
-(use-package mode-line-bell
-  :defer 1
-  :config
-  (mode-line-bell-mode))
-
 (provide 'init-mode-line)
 ;;; init-mode-line.el ends here.

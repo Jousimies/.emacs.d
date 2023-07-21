@@ -5,13 +5,13 @@
 ;;; Code:
 
 (use-package auto-save
-  :demand t
+  :hook (after-init . auto-save-enable)
   :config
   (setq auto-save-silent t)
-  (setq auto-save-delete-trailing-whitespace t)
-  (auto-save-enable))
+  (setq auto-save-delete-trailing-whitespace t))
 
 (use-package undo-fu-session
+  :hook (after-init . undo-fu-session-global-mode)
   :config
   (setq undo-fu-session-directory (expand-file-name "cache/undo-fu-session" user-emacs-directory))
 
@@ -21,36 +21,37 @@
      (file-name-concat undo-fu-session-directory
                        (md5 (convert-standard-filename (expand-file-name filename))))
      (undo-fu-session--file-name-ext)))
-  (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name)
-  (undo-fu-session-global-mode))
+  (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name))
 
 (use-package vundo
+  :commands vundo
   :config
-  (setq vundo-glyph-alist vundo-unicode-symbols)
-  (advice-add #'evil-undo :override #'vundo))
+  (setq vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package savehist
+  :hook (after-init . savehist-mode)
   :config
   (setq savehist-file (expand-file-name "cache/history" user-emacs-directory))
   (setq history-length 1000
         savehist-additional-variables '(kill-ring
                                         search-ring
                                         regexp-search-ring)
-        history-delete-duplicates t)
-  (savehist-mode))
+        history-delete-duplicates t))
 
 (use-package saveplace
+  :hook (after-init . save-place-mode)
   :config
-  (setq save-place-file (expand-file-name "cache/places" user-emacs-directory))
-  (save-place-mode))
+  (setq save-place-file (expand-file-name "cache/places" user-emacs-directory)))
 
 (use-package recentf
+  :hook (after-init . recentf-mode)
   :config
   (setq recentf-save-file (expand-file-name "cache/recentf" user-emacs-directory))
   (setq recentf-auto-cleanup 300)
   (setq recentf-max-saved-items 1000)
   (setq recentf-exclude '(".pdf$"))
-  (recentf-mode))
+  ;; (recentf-mode)
+  )
 
 (use-package register
   :bind ("C-c f j" . jump-to-register)
@@ -99,6 +100,7 @@
   :hook (text-mode . delete-selection-mode))
 
 (use-package select
+  :defer t
   :config
   (setq select-enable-primary t))
 

@@ -97,11 +97,6 @@
         (make-directory target-dir t))))
   (add-to-list 'find-file-not-found-functions #'my/auto-create-missing-dirs))
 
-(use-package ffap
-  :defer t
-  :config
-  (setq ffap-machine-p-known 'reject))
-
 (use-package message
   :bind ("C-c b m" . switch-to-message)
   :config
@@ -116,7 +111,7 @@
   (setq message-sendmail-extra-arguments '("-a" "outlook")))
 
 (use-package calc
-  :bind ("C-c s" . one-key-menu-applications)
+  :commands calc
   :hook ((calc-trail-mode . (lambda ()
                               (setq-local mode-line-format nil)))
          (calc-mode . (lambda ()

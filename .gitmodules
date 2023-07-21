@@ -220,9 +220,6 @@
 [submodule "packages/esxml"]
 	path = packages/esxml
 	url = https://github.com/tali713/esxml.git
-[submodule "packages/tablist"]
-	path = packages/tablist
-	url = https://github.com/politza/tablist.git
 [submodule "packages/nov.el"]
 	path = packages/nov.el
 	url = https://depp.brause.cc/nov.el.git
@@ -427,9 +424,6 @@
 [submodule "packages/pdf-tools"]
 	path = packages/pdf-tools
 	url = https://github.com/vedang/pdf-tools.git
-[submodule "packages/chatgpt-shell"]
-	path = packages/chatgpt-shell
-	url = https://github.com/xenodium/chatgpt-shell.git
 [submodule "packages/evil-collection"]
 	path = packages/evil-collection
 	url = https://github.com/emacs-evil/evil-collection.git
@@ -472,3 +466,6 @@
 [submodule "packages/benchmark-init-el"]
 	path = packages/benchmark-init-el
 	url = https://github.com/dholm/benchmark-init-el.git
+[submodule "packages/tablist"]
+	path = packages/tablist
+	url = https://github.com/emacsorphanage/tablist.git

@@ -15,9 +15,7 @@
          (profiler-report-mode . hl-line-mode)))
 
 (use-package display-line-numbers
-  :hook ((prog-mode . display-line-numbers-mode)
-         (org-mode . display-line-numbers-mode)
-         (LaTeX-mode . display-line-numbers-mode))
+  :hook (after-init . display-line-numbers-mode)
   :init
   (setq-default display-line-numbers-widen t)
   :config

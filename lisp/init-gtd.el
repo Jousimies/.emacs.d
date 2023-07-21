@@ -15,20 +15,18 @@
   (setq org-agenda-align-tags-to-column -120))
 
 (use-package org-gtd
-  :after org
-  :demand t
   :init
   (setq org-gtd-update-ack "3.0.0")
   :custom
-  (org-gtd-directory (expand-file-name "todos" my-galaxy))
+  ;; (org-gtd-directory (expand-file-name "todos" my-galaxy))
   (org-agenda-property-list '("DELEGATED_TO"))
   (org-gtd-organize-hooks '(org-gtd-set-area-of-focus org-set-tags-command))
   (org-edna-use-inheritance t)
   :config
   (org-edna-mode)
-  (add-to-list 'org-agenda-files (expand-file-name "todos/org-gtd-tasks.org" my-galaxy))
+  ;; (add-to-list 'org-agenda-files (expand-file-name "todos/org-gtd-tasks.org" my-galaxy))
   :bind (("<f12>" . org-gtd-engage)
-         ("C-<f12>" . org-gtd-process-inbox)
+         ;; ("C-<f12>" . org-gtd-process-inbox)
          ("s-<f12>" . org-gtd-show-stuck-projects)
          (:map org-gtd-clarify-map
                ("C-c c" . org-gtd-organize))))
@@ -70,9 +68,11 @@
 (advice-add 'org-agenda :before #'ad/org-agenda-cleanup-files)
 (advice-add 'org-todo-list :before #'ad/org-agenda-cleanup-files)
 
-(add-to-list 'savehist-additional-variables 'org-agenda-files)
+(with-eval-after-load 'savehist
+  (add-to-list 'savehist-additional-variables 'org-agenda-files))
 
 (use-package calendar
+  :commands calendar
   :config
   (setq calendar-view-diary-initially-flag t)
   (setq calendar-mark-diary-entries-flag t)
@@ -89,7 +89,6 @@
   (setq diary-date-forms diary-iso-date-forms))
 
 (use-package appt
-  :after calendar
   :hook (diary-mode . appt-activate)
   :config
   (setq appt-display-diary nil)
@@ -101,7 +100,8 @@
   (setq appt-message-warning-time 6))
 
 (use-package diary-lib
-  :after calendar
+  ;; :after calendar
+  :defer t
   :config
   (add-hook 'diary-list-entries-hook #'diary-sort-entries)
   (add-hook 'diary-mode-hook #'goto-address-mode)

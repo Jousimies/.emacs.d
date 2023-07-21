@@ -81,8 +81,7 @@
   :after pdf-tools)
 
 (use-package pdfgrep
-  :config
-  (pdfgrep-mode 1))
+  :hook (pdf-view-mode . pdfgrep-mode))
 
 (use-package nov
   :mode (".epub" . nov-mode)

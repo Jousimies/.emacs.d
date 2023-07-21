@@ -13,8 +13,7 @@
   :hook (ibuffer-mode . ibuffer-auto-mode))
 
 (use-package gc-buffers
-  :config
-  (gc-buffers-mode))
+  :hook (after-init . gc-buffers-mode))
 
 (use-package gcmh
   :hook ((after-init . gcmh-mode)
@@ -26,8 +25,7 @@
   (setq gcmh-high-cons-threshold #x1000000))
 
 (use-package midnight
-  :config
-  (midnight-mode))
+  :hook (after-init . midnight-mode))
 
 (use-package word-wrap-mode
   :hook (org-mode . word-wrap-whitespace-mode))

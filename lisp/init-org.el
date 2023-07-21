@@ -66,23 +66,6 @@
 
 (setq org-tags-sort-function 'org-string-collate-greaterp)
 
-(with-eval-after-load 'org
-  (add-to-list 'org-options-keywords "AUTO_TANGLE:"))
-
-(defun my/auto-tangle ()
-  "Auto export blog."
-  (when (derived-mode-p 'org-mode)
-    (save-excursion
-      (goto-char 0)
-      (if (string-equal (car
-                         (cdr
-                          (car
-                           (org-collect-keywords '("AUTO_TANGLE")))))
-                        "t")
-          (org-babel-tangle)))))
-
-(add-hook 'after-save-hook 'my/auto-tangle)
-
 (use-package ob-core
   :after org
   :config
@@ -157,7 +140,7 @@
 :END:"))))
 
 (use-package org-attach
-  :after org
+  :commands org-attach
   :init
   (add-to-list 'display-buffer-alist
                '("\\*Org Attach\\*"
@@ -222,7 +205,7 @@
   (setq org-src-ask-before-returning-to-edit-buffer nil))
 
 (use-package org-refile
-  :after org
+  :commands org-refile
   :config
   (setq org-refile-targets '((nil :maxlevel . 9)
                              (org-agenda-files :maxlevel . 9)))

@@ -5,7 +5,7 @@
 ;;; Code:
 
 (use-package nerd-icons
-  :defer t
+  :commands nerd-icons-codicon
   :config
   (setq nerd-icons-font-family "Hack Nerd Font Mono"))
 

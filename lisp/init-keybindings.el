@@ -5,147 +5,72 @@
 ;;; Code:
 
 (one-key-create-menu
-   "Applications"
-   '((("c" . "Calculator") . calc)))
+ "Applications"
+ '(
+   (("c" . "Calculator") . calc)
+   )
+ t)
 
-(evil-define-key '(normal visual motion) 'global
-  "gb" 'tabspaces-switch-to-buffer
-  "gs" 'tab-switch
+(one-key-create-menu
+ "Notes"
+ '(
+   (("n" . "Open Notes") . consult-notes)
+   (("N" . "New Notes") . my/denote-signature-or-subdirectory)
+   (("f" . "Node find") . org-roam-node-find)
+   )
+ t)
+(global-set-key (kbd "C-c n") 'one-key-menu-notes)
 
-  "gX" 'jf/org-link-remove-link
+(one-key-create-menu
+ "Languages"
+ '(
+   (("l" . "Translate") . my/gts-do-translate)
+   (("L" . "Lingva") . lingva-translate)
+   (("p" . "sdcv pointer+") . sdcv-search-pointer+)
+   (("P" . "sdcv pointer") . sdcv-search-pointer)
+   (("h" . "sdcv helper") . lsp-bridge-toggle-sdcv-helper)
+   (("r" . "Dictionary overlay toggle") . dictionary-overlay-toggle)
+   (("w" . "Say word") . popweb-dict-say-word)
+   )
+ t)
+;; (global-set-key (kbd "C-c l") 'one-key-menu-languages)
 
-  "gF" 'embark-open-externally
-
-  ;; Langrage learning
-  "glc" 'lc-corpus-capture-card
-  "gld" 'osx-dictionary-search-pointer
-  "glk" 'dictionary-overlay-mark-word-unknown
-  "glK" 'dictionary-overlay-mark-word-known
-  "gll" 'my/gts-do-translate
-  "glL" 'lingva-translate
-  "glP" 'sdcv-search-pointer
-  "glp" 'sdcv-search-pointer+
-  "glr" 'dictionary-overlay-toggle
-  "gls" 'emacs-azure-tts-sentence
-  "glt" 'powerthesaurus-lookup-dwim
-  "glv" 'lc-memo-review
-  "glw" 'popweb-dict-say-word
-
-  ;; Note taking
-  "gnc" 'my/biblio-lookup-crossref
-  "gnf" 'my/citar-denote-find-ref-or-citation
-  "gnn" 'consult-notes
-  "gnN" 'denote-menu-list-notes
-  "gnp" 'citar-open-files
-  "gno" 'citar-denote-open-note
-  "gns" 'my/denote-signature-or-subdirectory
-  "gnw" 'org-roam-node-find
-
-  ;; EKG for fleeting notes
-  "ged" 'ekg-show-notes-for-today
-  "gee" 'ekg-show-notes-with-tag
-  "gea" 'ekg-show-notes-with-any-tags
-  "geA" 'ekg-show-notes-with-all-tags
-  "geb" 'ekg-browse-url
-  "ger" 'ekg-rename-tag)
-
-(evil-define-key 'normal ekg-notes-mode-map
-  "A" 'ekg-notes-any-tags
-  "B" 'ekg-notes-select-and-browse-url
-  "a" 'ekg-notes-any-note-tags
-  "b" 'ekg-notes-browse
-  "c" 'ekg-notes-create
-  "d" 'ekg-notes-delete
-  "n" 'ekg-notes-next
-  "o" 'ekg-notes-open
-  "p" 'ekg-notes-previous
-  "r" 'ekg-notes-remove
-  "t" 'ekg-notes-tag)
-
-(evil-define-key '(normal visual) org-mode-map
-  "gnd" 'citar-denote-dwim
-  "gnk" 'citar-denote-add-citekey
-  "gnK" 'citar-denote-remove-citekey
-
-  "gnr" 'denote-rename-file-using-front-matter
-
-  "gni" 'my/org-insert-web-page-archive
-  "gnb" 'denote-org-dblock-insert-backlinks
-  "gnl" 'denote-link-or-create
-  "gnL" 'denote-org-dblock-insert-links
-
-  "gntm" 'org-transclusion-make-from-link
-  "gnta" 'org-transclusion-add
-  "gntA" 'org-transclusion-add-all
-  "gntr" 'org-transclusion-remove
-  "gntR" 'org-transclusion-remove-all
-  "gntg" 'org-transclusion-refresh
-  "gnto" 'org-transclusion-open-source
-  "gnts" 'org-transclusion-live-sync-start
-
-  "zw" 'olivetti-mode)
-
-(evil-set-initial-state 'org-agenda-mode 'motion)
-
-(evil-define-key 'motion org-agenda-mode-map
-  (kbd "RET") 'org-agenda-switch-to
-  "/" 'org-agenda-filter
-  "SPC" 'nil
-  "gj" 'org-agenda-next-item
-  "gr" 'org-agenda-redo
-  "gR" 'org-agenda-redo-all
-  "t" 'org-agenda-todo
-  "u" 'org-agenda-undo
-  "I" 'org-agenda-clock-in
-  "O" 'org-agenda-clock-out
-  "cg" 'org-agenda-clock-goto
-  "cc" 'org-agenda-clock-cancel
-  "cr" 'org-agenda-clockreport-mode)
+(one-key-create-menu
+ "Search"
+ '((("b" . "Browse remote") . browse-at-remote)
+   (("f" . "Find file") . consult-find)
+   (("l" . "Grab link") . my/link-grab)
+   (("p" . "Emacs packages search") . epkg-describe-package)
+   (("g" . "Google") . engine/search-google)
+   (("w" . "Wikipedia") . engine/search-wikipedia)
+   (("m" . "Movie") . engine/search-moviedouban)
+   (("z" . "Zhihu") . engine/search-zhihu))
+ t)
+(global-set-key (kbd "<f4>") 'one-key-menu-search)
 
 (evil-define-key 'visual 'evil-visual-state-map
   "v" 'er/expand-region)
 
-(evil-define-key 'normal 'beancount-mode-map
-  "zf" 'beancount-fava)
-
-(evil-define-key '(normal visual motion) dired-mode-map
-  (kbd "RET") 'open-with-default-app
-  "gnr" 'denote-dired-rename-marked-files
-  "e" 'xah-show-in-desktop
-  "p" 'dired-preview)
-
-(evil-define-key 'normal dirvish-mode-map
-  "q" 'dirvish-quit)
-
-(evil-define-key 'normal achive-visual-mode-map
-  "q" 'quit-window)
+(evil-define-key 'normal org-mode-map
+  "gh" 'consult-outline)
 
 (evil-define-key 'normal sdcv-mode-map
   "q" 'quit-window)
 
-(evil-define-key 'normal denote-menu-mode-map
-  "//" 'denote-menu-filter
-  "/k" 'denote-menu-filter-by-keyword
-  "c" 'denote-menu-clear-filters)
+(evil-define-key '(normal visual motion) 'global
+  "gb" 'tabspaces-switch-to-buffer
+  "gs" 'tab-switch
+  "gX" 'jf/org-link-remove-link
+  "gF" 'embark-open-externally
+  "gl" 'one-key-menu-languages)
 
-(evil-define-key 'normal vterm-mode-map
-  "q" 'quit-window)
+(evil-define-key '(normal visual motion) dired-mode-map
+    (kbd "RET") 'open-with-default-app
+    "e" 'xah-show-in-desktop
+    "p" 'dired-preview)
 
-;; (with-eval-after-load 'telega
-;;   (evil-define-key 'normal telega-chat-mode-map
-;;     "q" 'quit-window)
-
-;;   (evil-define-key 'normal telega-root-mode-map
-;;     "gs" nil)
-
-;;   (evil-define-key 'normal telega-msg-button-map
-;;     "SPC" nil))
-(evil-define-key 'normal dired-mode-map
-  "/" 'consult-line)
-(evil-define-key 'normal org-mode-map
-  "gh" 'consult-outline)
-(evil-define-key 'normal LaTeX-mode-map
-  "gh" 'consult-outline)
+(evil-define-key '(normal visual) org-mode-map
+  "zw" 'olivetti-mode)
 
 (provide 'init-keybindings)
 ;;; init-keybindings.el ends here.

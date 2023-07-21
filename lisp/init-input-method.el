@@ -7,6 +7,10 @@
 ;;; Code:
 
 (use-package sis
+  :hook ((after-init . sis-global-cursor-color-mode)
+         (after-init . sis-global-context-mode)
+         (after-init . sis-global-respect-mode)
+         (after-init . sis-global-inline-mode))
   :config
   (face-spec-set 'sis-inline-face
                  '((((background light))
@@ -18,14 +22,13 @@
   (sis-ism-lazyman-config "com.apple.keylayout.ABC" "im.rime.inputmethod.Squirrel.Hans")
   (setq sis-external-ism "im-select")
   (setq sis-other-cursor-color "red")
-  (setq sis-respect-evil-normal-escape nil)
+  ;; (setq sis-respect-evil-normal-escape nil)
 
-  (sis-global-cursor-color-mode t)
-  (sis-global-context-mode t)
-  (sis-global-respect-mode t)
-  (sis-global-inline-mode t)
-
-  (add-function :after after-focus-change-function 'sis-set-english)
+  ;; (sis-global-cursor-color-mode t)
+  ;; (sis-global-context-mode t)
+  ;; (sis-global-respect-mode t)
+  ;; (sis-global-inline-mode t)
+  ;; (add-function :after after-focus-change-function 'sis-set-english)
 
   (add-to-list 'sis-context-detectors
                (lambda (&rest _)
@@ -34,18 +37,18 @@
                                  (not (org-at-table-p))
                                  (not (org-in-src-block-p))
                                  (not (org-at-timestamp-p))))
-                   'other))))
+                   'other)))
+  )
 
 (use-package rime
   :defer t
-  :init
+  :config
   (setq rime-user-data-dir "~/Library/Rime/")
   (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
   (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory)))
 
 (use-package rime-regexp
-  :config
-  (rime-regexp-mode))
+  :hook (after-init . rime-regexp-mode))
 
 (provide 'init-input-method)
 ;;; init-input-method.el ends here.
