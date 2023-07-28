@@ -12,7 +12,7 @@
   (setq lazy-count-suffix-format "   (%s/%s)"))
 
 (use-package rg
-  :commands rg
+  :bind ("C-c s" . rg-menu)
   :config
   ;; https://github.com/dajva/rg.el/issues/142#issuecomment-1452525225
   (add-to-list 'rg-finish-functions (lambda (buffer _) (pop-to-buffer buffer)))
