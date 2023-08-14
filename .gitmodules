@@ -472,3 +472,9 @@
 [submodule "packages/diminish.el"]
 	path = packages/diminish.el
 	url = https://github.com/myrjola/diminish.el.git
+[submodule "packages/telega.el"]
+	path = packages/telega.el
+	url = https://github.com/zevlg/telega.el.git
+[submodule "packages/rainbow-identifiers"]
+	path = packages/rainbow-identifiers
+	url = https://github.com/Fanael/rainbow-identifiers.git

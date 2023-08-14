@@ -105,6 +105,7 @@
 (require 'init-misc)
 (require 'init-latex)
 (require 'init-finance)
+(require 'init-telega)
 
 (add-hook 'evil-mode-hook (lambda ()
                              (require 'init-keybindings)))
