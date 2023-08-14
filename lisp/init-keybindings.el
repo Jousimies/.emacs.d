@@ -23,6 +23,9 @@
 (evil-define-key 'normal sdcv-mode-map
   "q" 'quit-window)
 
+(evil-define-key 'normal beancount-mode-map
+  "zf" 'beancount-fava)
+
 (evil-define-key '(normal visual motion) 'global
   "gld" 'osx-dictionary-search-pointer
   "glk" 'dictionary-overlay-mark-word-unknown

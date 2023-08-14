@@ -57,45 +57,41 @@
     \item[C-h n] \humanreadable{View Emacs news}
   \end{keylist}
 
-  \section{one-key-menu}
+  \section{Global keymap}
+
+  \subsection{Buffers}
+  \begin{keylist}
+    \item[C-x b] consult-buffer
+    \item[C-x C-b] ibuffer
+    \item[C-c b s] switch-to-scratch
+    \item[C-c b m] switch-to-message
+    \item[gs] tab-switch
+    \item[gb] tabspaces-switch-to-buffer
+  \end{keylist}
+
   \subsection{Files}
   \begin{keylist}
-    \item[C-c f] \humanreadable{one-key-menu-files}
-    \item[C-c f n] \humanreadable{consult-notes}
-    \item[C-c f r] \humanreadable{org-roam-node-find}
-    \item[C-c f o] \humanreadable{citar-open-files}
-    \item[C-c f .] \humanreadable{consult-find}
+    \item[C-c f r] recentf-open-files
+    \item[C-x r j] jump-to-register
+    \item[gf] find-file-at-point
+    \item[gF] evil-find-file-at-point-with-line
   \end{keylist}
 
-  \subsection{New}
+  \subsection{Denote and roam}
   \begin{keylist}
-    \item[C-c n] \humanreadable{one-key-menu-new}
-    \item[C-c n a] \humanreadable{my/new-article}
-    \item[C-c n b] \humanreadable{my/denote-book}
-    \item[C-c n m] \humanreadable{my/new-meeting}
-    \item[C-c n o] \humanreadable{my/denote-outline}
-    \item[C-c n t] \humanreadable{my/denote-term}
-    \item[C-c n r] \humanreadable{citar-create-note}
+    \item[C-c n n] consult-notes
+    \item[C-c n a] my/new-article
+    \item[C-c n b] my/denote-book
+    \item[C-c n s] denote-signature
+    \item[C-c n m] my/new-meeting
+    \item[C-c n o] my/denote-outline
+    \item[C-c n t] my/denote-term
+    \item[C-c n r] citar-create-note
+    \item[C-c r f] org-roam-node-find
+    \item[C-c r i] org-roam-node-insert
   \end{keylist}
 
-  \subsection{Translate}
-  \begin{keylist}
-    \item[C-c t] \humanreadable{one-key-menu-translate}
-    \item[C-c t t] \humanreadable{my/gts-do-translate}
-    \item[C-c t T] \humanreadable{lingva-translate}
-    \item[C-c t p] \humanreadable{sdcv-search-pointer+}
-    \item[C-c t P] \humanreadable{sdcv-search-pointer}
-    \item[C-c t h] \humanreadable{lsp-bridge-toggle-sdcv-helper}
-    \item[C-c t r] \humanreadable{dictionary-overlay-toggle}
-    \item[C-c t w] \humanreadable{popweb-dict-say-word}
-  \end{keylist}
-
-  \section{Normal mode}
-  \begin{keylist}
-    \item[u] vundo
-  \end{keylist}
-
-  \section{Global keymap}
+  \subsection{Other}
   \begin{keylist}
     \item[C-x o] other-window
     \item[M-\#] dictionary-lookup-definition
@@ -107,15 +103,6 @@
     \item[f1] calibredb
     \item[f2] ebib
 
-    \item[f5] emms
-    \item[C-f5] my/toggle-emms
-    \item[C-u C-f5] emms-stop
-    \item[M-f5] consult-emms-library
-
-    \item[f8] my/link-grab
-    \item[s-f8] my/copy-idlink
-    \item[M-f8] my/menu--org-capture-safari
-
     \item[f10] org-capture
     \item[C-f10] ekg-capture
     \item[M-f10] ekg-capture-url
@@ -125,43 +112,38 @@
     \item[s-f12] org-gtd-show-stuck-projects
     \item[M-f12] pomm
 
-    \item[s-,] my/emacs-config
-
+    \item[s-z] vundo
+    \item[s-k] kill-current-buffer
     \item[s-n] my/make-or-delete-frame
     \item[s-\~] other-frame
-
     \item[s-/] evil-commentary-line
 
-    \item[C-x C-d] consult-dir
+    \item[M-g d] consult-dir
+    \item[M-g b] browse-at-remote
+    \item[M-g h] httpd-serve-directory
+    \item[C-;] embark-act
+    \item[M-.] embark-dwim
   \end{keylist}
+
   \section{Local keymaps}
   \subsection{vertico-map}
   \begin{keylist}
     \item[C-j] vertico-next
     \item[C-k] vertico-previous
     \item[C-u] vertico-directory-up
-    \item[C-c C-o] embark-export
-    \item[C-c C-c] embark-act
   \end{keylist}
   \subsection{minibuffer-local-map}
   \begin{keylist}
+    \item[C-;] embark-act
+    \item[C-c C-;] embark-export
+    \item[C-c C-l] embark-collect
+
     \item[C-r] consult-history
-    \item[C-x C-d] consult-dir
-    \item[C-x C-j] consult-dir-jump-file
-  \end{keylist}
-  \subsection{evil-insert-state-map}
-  \begin{keylist}
-    \item[C-e] move-end-of-line
-    \item[C-k] kill-line
-  \end{keylist}
-  \subsection{with-editor-mode-map}
-  \begin{keylist}
-    \item[RET] C-c C-c
   \end{keylist}
 
   \subsection{dired-mode-map}
   \begin{keylist}
-    \item[s-.] dired-hide-dotfiles-mode
+    \item[s-.] dired-omit-mode
     \item[e] xah-show-in-desktop
     \item[C-'] my/org-attach-visit-headline-from-dired
     \end{keylist}
@@ -169,20 +151,6 @@
   \subsection{evil-visual-state-map}
   \begin{keylist}
     \item[v] er/expand-region
-  \end{keylist}
-  \subsection{symbol-overlay-mode-map}
-  \begin{keylist}
-    \item[M-i] symbol-overlay-put
-    \item[M-I] symbol-overlay-remove-all
-    \item[M-n] symbol-overlay-jump-next
-    \item[M-p] symbol-overlay-jump-prev
-    \item[s-r] symbol-overlay-renameput
-  \end{keylist}
-
-  \subsection{outline-minor-mode-map}
-  \begin{keylist}
-    \item[C-<tab>] bicycle-cycle
-    \item[S-<tab>] bicycle-cycle-global
   \end{keylist}
 
   \subsection{flyspell-mode-map}
@@ -194,8 +162,7 @@
   \begin{keylist}
     \item[C-c l] org-store-link
     \item[C-c C-x @] citar-insert-citation
-    \item[RET] org-return
-    \item[z w] olivetti-mode
+    \item[zw] olivetti-mode
   \end{keylist}
 
   \subsection{calibredb-search-mode-map}
@@ -220,84 +187,7 @@
   \end{keylist}
 
 
-  \section{Space leader keys}
-  \subsection{Emacs Server}
-  \begin{keylist}
-    \item[C-c q r] restart-emacs
-    \end{keylist}
-
-  \subsection{Buffer}
-  \begin{keylist}
-    \item[SPC b k] kill-this-buffer
-    \item[SPC b s] switch-to-scratch
-    \item[SPC b m] switch-to-message
-  \end{keylist}
-
-  \subsection{File related}
-  \begin{keylist}
-    \item[e] xah-show-in-desktop
-    \item[SPC f b] my/reading-record
-    \item[SPC f e] my/rss-source
-    \item[SPC f i] my/inbox-file
-    \item[SPC f p] my/plan-file
-    \item[SPC f r] my/reflection-file
-    \item[SPC f g] my/gtd-file
-  \end{keylist}
-
-  \subsection{Misc}
-  \begin{keylist}
-    \item[SPC m d] disk-usage
-    \item[SPC m h] my/pdf-extract-highlight
-    \item[SPC m i] file-info-show
-    \item[SPC m j] mac-launchpad
-    \item[SPC m o] my/ocr
-    \item[SPC m p] toggle-proxy
-    \item[SPC m s] achive
-    \item[SPC m y] yt-set-time
-  \end{keylist}
-
-  \subsection{Org-mode}
-  \begin{keylist}
-    \item[SPC d c] org-download-clipboard
-    \item[SPC d y] org-download-yank
-    \item[SPC d r] org-download-rename-last-file
-    \item[SPC d R] org-download-rename-at-point
-    \item[SPC p m] plantuml-org-to-mindmap-open
-    \item[SPC p s] plantuml-org-to-wbs-open
-    \item[g n t a] org-transclusion-add
-    \item[g n t A] org-transclusion-add-all
-    \item[g n t r] org-transclusion-remove
-    \item[g n t R] org-transclusion-remove-all
-    \item[g n t g] org-transclusion-refresh
-    \item[g n t m] org-transclusion-make-from-link
-    \item[g n t o] org-transclusion-open-source
-    \item[g n t e] org-transclusion-live-sync-start
-    \item[SPC p a] math-preview-all
-    \item[SPC p A] math-preview-clear-all
-    \item[SPC p p] math-preview-at-point
-    \item[SPC p r] math-preview-region
-    \item[SPC p R] math-preview-clear-region
-  \end{keylist}
-
   \section{g prefix}
-  \subsection{ekg}
-  \begin{keylist}
-    \item[g e e] ekg-show-notes-with-tag
-    \item[g e d] ekg-show-notes-for-today
-    \item[g e A] ekg-show-notes-with-all-tag
-    \item[g e a] ekg-show-notes-with-any-tag
-    \item[g e b] ekg-browse-url
-    \item[g e r] ekg-rename-tag
-  \end{keylist}
-  \subsection{denote}
-  \begin{keylist}
-    \item[g n a] my/new-article
-    \item[g n n] consult-notes
-    \item[g n s] my/denote-signature-or-subdirectory
-    \item[g n l] denote-link-or-create
-    \item[g n r] denote-rename-file-using-front-matter
-  \end{keylist}
-
   \subsection{Language}
   \begin{keylist}
     \item[g l d] osx-dictionary-search-pointer
