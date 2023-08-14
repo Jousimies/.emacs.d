@@ -15,6 +15,7 @@
   (setq org-agenda-align-tags-to-column -120))
 
 (use-package org-gtd
+  :diminish org-edna-mode
   :init
   (setq org-gtd-update-ack "3.0.0")
   :custom

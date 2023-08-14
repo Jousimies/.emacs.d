@@ -22,7 +22,7 @@
 (push '(fullscreen . maximized) initial-frame-alist)
 
 ;; Disable mode-line when emacs startup.
-(setq-default mode-line-format nil)
+;; (setq-default mode-line-format nil)
 
 (setq byte-compile-warnings nil)
 

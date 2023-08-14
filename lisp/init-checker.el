@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package jinx
+  :diminish jinx-mode
   :hook (text-mode . jinx-mode)
   :bind (("M-$" . jinx-correct)
          ("C-M-$" . jinx-languages))

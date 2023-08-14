@@ -13,9 +13,11 @@
   :hook (ibuffer-mode . ibuffer-auto-mode))
 
 (use-package gc-buffers
+  :diminish gc-buffers-mode
   :hook (after-init . gc-buffers-mode))
 
 (use-package gcmh
+  :diminish gcmh-mode
   :hook ((after-init . gcmh-mode)
          (focus-out . garbage-collect))
   :config
@@ -23,12 +25,6 @@
   (setq gcmh-idle-delay 'auto)
   (setq gcmh-auto-idle-delay-factor 10)
   (setq gcmh-high-cons-threshold #x1000000))
-
-(use-package midnight
-  :hook (after-init . midnight-mode))
-
-(use-package word-wrap-mode
-  :hook (org-mode . word-wrap-whitespace-mode))
 
 (provide 'init-buffer)
 ;;; init-buffer.el ends here.

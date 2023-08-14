@@ -24,7 +24,7 @@
   (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name))
 
 (use-package vundo
-  :commands vundo
+  :bind ([remap undo] . vundo)
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols))
 
@@ -45,16 +45,17 @@
 
 (use-package recentf
   :hook (after-init . recentf-mode)
+  :bind ("C-c f r" . recentf-open-files)
   :config
   (setq recentf-save-file (expand-file-name "cache/recentf" user-emacs-directory))
   (setq recentf-auto-cleanup 300)
   (setq recentf-max-saved-items 1000)
-  (setq recentf-exclude '(".pdf$"))
-  ;; (recentf-mode)
-  )
+  (setq recentf-exclude '(".pdf$")))
 
 (use-package register
-  :bind ("C-c f j" . jump-to-register)
+  :bind ("C-x r j" . jump-to-register)
+  :custom
+  (register-preview-delay 0)
   :config
   (set-register ?g (cons 'file (expand-file-name "todos/org-gtd-tasks.org" my-galaxy)))
   (set-register ?b (cons 'file (expand-file-name "denote/books/20230301T211439--Book-lists-and-reading-record__reading.org" my-galaxy)))
@@ -67,6 +68,7 @@
   :hook (text-mode . global-auto-revert-mode))
 
 (use-package hungry-delete
+  :diminish hungry-delete-mode
   :custom
   (hungry-delete-chars-to-skip " \t\n\r\f\v")
   :hook ((text-mode . hungry-delete-mode)
@@ -74,9 +76,8 @@
          (org-mode . hungry-delete-mode)))
 
 (use-package whitespace-cleanup-mode
-  :hook (after-init . global-whitespace-cleanup-mode)
-  :config
-  (setq whitespace-cleanup-mode-preserve-point t))
+  :diminish whitespace-cleanup-mode
+  :hook (after-init . global-whitespace-cleanup-mode))
 
 (use-package expand-region
   :commands er/expand-region)

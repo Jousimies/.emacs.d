@@ -4,26 +4,32 @@
 
 ;;; Code:
 
-(use-package vterm
-  :init
-  (add-to-list 'display-buffer-alist
-               '("^\\*vterm"
-                 (display-buffer-in-side-window)
-                 (window-height . 0.5)
-                 (side . bottom)
-                 (slot . -1)))
-  :bind ("<f3>" . vterm)
-  :config
-  (setq vterm-kill-buffer-on-exit t)
-  (setq vterm-max-scrollback 5000)
-  (defun toggle-vterm ()
-    "Toggle vterm."
-    (interactive)
-    (let ((buf (concat "*vterm-" (buffer-name))))
-      (if (get-buffer buf)
-          (switch-to-buffer buf)
-        (switch-to-buffer (get-buffer-create buf))
-        (vterm-mode)))))
+(defun toggle-proxy ()
+  "Toggle proxy for the url.el library."
+  (interactive)
+  (if url-proxy-services
+      (proxy-disable)
+    (proxy-enable)))
+
+(defun proxy-enable ()
+  "Enable proxy."
+  (interactive)
+  (setq url-proxy-services
+        '(("http" . "127.0.0.1:8118")
+          ("https" . "127.0.0.1:8118")
+          ("socks" . "127.0.0.1:8118")
+          ("no_proxy" . "0.0.0.0")))
+  (message "Proxy enabled! %s" (car url-proxy-services)))
+
+(defun proxy-disable ()
+  "Disable proxy."
+  (interactive)
+  (if url-proxy-services
+      (setq url-proxy-services nil))
+  (message "Proxy disabled!"))
+
+(run-with-idle-timer 2 nil (lambda ()
+                             (proxy-enable)))
 
 (use-package advance-words-count
   :bind ("M-=" . advance-words-count))

@@ -22,12 +22,6 @@
   (sis-ism-lazyman-config "com.apple.keylayout.ABC" "im.rime.inputmethod.Squirrel.Hans")
   (setq sis-external-ism "im-select")
   (setq sis-other-cursor-color "red")
-  ;; (setq sis-respect-evil-normal-escape nil)
-
-  ;; (sis-global-cursor-color-mode t)
-  ;; (sis-global-context-mode t)
-  ;; (sis-global-respect-mode t)
-  ;; (sis-global-inline-mode t)
   ;; (add-function :after after-focus-change-function 'sis-set-english)
 
   (add-to-list 'sis-context-detectors
@@ -37,8 +31,7 @@
                                  (not (org-at-table-p))
                                  (not (org-in-src-block-p))
                                  (not (org-at-timestamp-p))))
-                   'other)))
-  )
+                   'other))))
 
 (use-package rime
   :defer t

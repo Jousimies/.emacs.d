@@ -54,25 +54,58 @@
     \item[C-h m] \humanreadable{describe mode}
     \item[C-h l] \humanreadable{show the keys you have pressed}
     \item[C-h f] \humanreadable{describe function}
+    \item[C-h n] \humanreadable{View Emacs news}
+  \end{keylist}
+
+  \section{one-key-menu}
+  \subsection{Files}
+  \begin{keylist}
+    \item[C-c f] \humanreadable{one-key-menu-files}
+    \item[C-c f n] \humanreadable{consult-notes}
+    \item[C-c f r] \humanreadable{org-roam-node-find}
+    \item[C-c f o] \humanreadable{citar-open-files}
+    \item[C-c f .] \humanreadable{consult-find}
+  \end{keylist}
+
+  \subsection{New}
+  \begin{keylist}
+    \item[C-c n] \humanreadable{one-key-menu-new}
+    \item[C-c n a] \humanreadable{my/new-article}
+    \item[C-c n b] \humanreadable{my/denote-book}
+    \item[C-c n m] \humanreadable{my/new-meeting}
+    \item[C-c n o] \humanreadable{my/denote-outline}
+    \item[C-c n t] \humanreadable{my/denote-term}
+    \item[C-c n r] \humanreadable{citar-create-note}
+  \end{keylist}
+
+  \subsection{Translate}
+  \begin{keylist}
+    \item[C-c t] \humanreadable{one-key-menu-translate}
+    \item[C-c t t] \humanreadable{my/gts-do-translate}
+    \item[C-c t T] \humanreadable{lingva-translate}
+    \item[C-c t p] \humanreadable{sdcv-search-pointer+}
+    \item[C-c t P] \humanreadable{sdcv-search-pointer}
+    \item[C-c t h] \humanreadable{lsp-bridge-toggle-sdcv-helper}
+    \item[C-c t r] \humanreadable{dictionary-overlay-toggle}
+    \item[C-c t w] \humanreadable{popweb-dict-say-word}
+  \end{keylist}
+
+  \section{Normal mode}
+  \begin{keylist}
+    \item[u] vundo
   \end{keylist}
 
   \section{Global keymap}
   \begin{keylist}
-    \item[C-x u] vundo
-    \item[C-x o] ace-window
+    \item[C-x o] other-window
     \item[M-\#] dictionary-lookup-definition
     \item[M-*] tempel-insert
     \item[M-+] tempel-complete
     \item[M-n] my/scroll-other-windown
     \item[M-p] my/scroll-other-windown-down
-    \item[C-.] embark-act
-    \item[C-;] embark-dwim
 
     \item[f1] calibredb
     \item[f2] ebib
-
-    \item[M-f4] browse-at-remote
-    \item[s-f4] epkg-describe-package
 
     \item[f5] emms
     \item[C-f5] my/toggle-emms

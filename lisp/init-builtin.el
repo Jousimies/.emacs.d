@@ -59,10 +59,11 @@
 
 (setq auto-save-list-file-prefix (expand-file-name "cache/auto-save-list/.saves-" user-emacs-directory))
 ;; (setq inhibit-default-init t)
-(setq inhibit-startup-message t)
+(setq inhibit-startup-screen t)
 ;; (setq inhibit-splash-screen t)
 
 (use-package simple
+  :diminish visual-line-mode
   :bind ("C-c b s" . scratch-buffer)
   :hook ((prog-mode . column-number-mode)
          (text-mode . size-indication-mode)
@@ -111,7 +112,7 @@
   (setq message-sendmail-extra-arguments '("-a" "outlook")))
 
 (use-package calc
-  :commands calc
+  :bind ("C-c a c" . calc)
   :hook ((calc-trail-mode . (lambda ()
                               (setq-local mode-line-format nil)))
          (calc-mode . (lambda ()
@@ -129,7 +130,9 @@
   (setq prettify-symbols-alist '(("lambda" . ?λ)
                                  ("function" . ?𝑓))))
 
-(add-hook 'prog-mode-hook 'outline-minor-mode)
+(use-package outline
+  :diminish outline-minor-mode
+  :hook (prog-mode . outline-minor-mode))
 
 (use-package pixel-scroll
   :hook (after-init . pixel-scroll-precision-mode))
@@ -142,6 +145,7 @@
   (setq doc-view-continuous t))
 
 (use-package abbrev
+  :diminish abbrev-mode
   :hook ((org-mode . abbrev-mode)
          (LaTeX-mode . abbrev-mode)))
 
@@ -162,6 +166,20 @@
 
 (use-package cursor-sensor
   :hook (minibuffer-setup . cursor-intangible-mode))
+
+(use-package midnight
+  :hook (after-init . midnight-mode))
+
+(use-package word-wrap-mode
+  :diminish word-wrap-whitespace-mode
+  :hook (org-mode . word-wrap-whitespace-mode))
+
+(use-package transient
+  :defer t
+  :config
+  (setq transient-levels-file (expand-file-name "cache/transient/levels.el" user-emacs-directory))
+  (setq transient-values-file (expand-file-name "cache/transient/values.el" user-emacs-directory))
+  (setq transient-history-file (expand-file-name "cache/transient/history.el" user-emacs-directory)))
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here.

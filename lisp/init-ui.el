@@ -15,7 +15,7 @@
          (profiler-report-mode . hl-line-mode)))
 
 (use-package display-line-numbers
-  :hook (after-init . display-line-numbers-mode)
+  :hook (prog-mode . display-line-numbers-mode)
   :init
   (setq-default display-line-numbers-widen t)
   :config
@@ -32,13 +32,15 @@
   (setq-default fill-column 90))
 
 (use-package paren
+  :diminish show-paren-mode
   :hook (text-mode . show-paren-mode)
   :config
   (setq show-paren-style 'parenthesis)
   (setq show-paren-context-when-offscreen 'overlay))
 
 (use-package rainbow-mode
-  :hook (prog-mode . rainbow-mode))
+  :hook (prog-mode . rainbow-mode)
+  :diminish rainbow-mode)
 
 (use-package pulse
   :preface
@@ -60,7 +62,8 @@
           (advice-add cmd :after #'my-pulse-momentary)))
 
 (use-package page-break-lines
-  :hook (org-mode . page-break-lines-mode))
+  :hook (org-mode . page-break-lines-mode)
+  :diminish page-break-lines-mode)
 
 (provide 'init-ui)
 ;;; init-ui.el ends here.

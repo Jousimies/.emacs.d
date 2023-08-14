@@ -24,7 +24,7 @@
                                         (delete-other-windows . t)))))
 
 (use-package denote
-  :bind ("C-c n l" . denote-link-or-create)
+  :bind ("C-c n s" . denote-signature)
   :commands (denote denote-signature denote-subdirectory denote-rename-file-using-front-matter
                     denote-keywords-prompt
                     denote-rename-file
@@ -132,16 +132,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (advice-add 'denote-signature :before #'my/denote-signature-from-filename)
 
-(one-key-create-menu
- "New"
- '((("a" . "Article") . my/new-article)
-   (("b" . "Books") . my/denote-book)
-   (("m" . "Meeting") . my/new-meeting)
-   (("o" . "Outline") . my/denote-outline)
-   (("r" . "References") . citar-create-note)
-   (("t" . "Terminology") . my/denote-term))
- t)
-
 (defun my/denote-signature-or-subdirectory (arg)
   (interactive "P")
   (if arg
@@ -161,7 +151,10 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
     (auto-revert-mode -1))
 
 (with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-c v") 'my/denote-signature-buffer))
+  (define-key dired-mode-map (kbd "C-,") 'my/denote-signature-buffer))
+
+(use-package denote-menu
+  :commands denote-menu-list-notes)
 
 (use-package consult-notes
   :bind ("C-c n n" . consult-notes)
@@ -183,7 +176,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
       (find-file (concat website-directory "posts/" filename ext))
       (insert "#+TITLE: " article "\n")
       (tempel-insert 'blog)))
-
 (global-set-key (kbd "C-c n a") 'my/new-article)
 
 (defun my/new-meeting (meet)
@@ -194,8 +186,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
     (insert "#+TITLE: " meet "\n")
     (tempel-insert 'meeting)))
 
-(use-package denote-menu
-  :commands denote-menu-list-notes)
+(global-set-key (kbd "C-c n m") 'my/new-meeting)
 
 (use-package org-transclusion
   :commands (org-transclusion-make-from-link
@@ -238,7 +229,10 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
                  'face-override-spec))
 
 (use-package org-roam
-  :bind ("C-c n f" . org-roam-node-find)
+  :bind (("C-c r f" . org-roam-node-find)
+         ("C-c r i" . org-roam-node-insert)
+         ("C-c r t a" . org-roam-tag-add)
+         ("C-c r t r" . org-roam-tag-remove))
   :init
   (setq org-roam-directory (file-truename (expand-file-name "roam" my-galaxy)))
   :hook ((org-mode . org-roam-db-autosync-mode)
@@ -247,9 +241,10 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
                                        time-stamp-end "$"
                                        time-stamp-format "\[%Y-%m-%d %3a %H:%M\]")
                        (add-hook 'before-save-hook 'time-stamp nil 'local))))
+  :custom
+  (org-roam-database-connector 'sqlite)
+  (org-roam-db-gc-threshold most-positive-fixnum)
   :config
-  (setq org-roam-database-connector 'sqlite)
-  (setq org-roam-db-gc-threshold most-positive-fixnum)
   (cl-defmethod org-roam-node-type ((node org-roam-node))
     "Return the TYPE of NODE."
     (condition-case nil
@@ -309,6 +304,11 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
                 (propertize "${doom-hierarchy:*}" 'face 'org-level-3)
                 (propertize "${tags:20}" 'face 'org-tag)
                 " ")))
+
+(use-package org-roam-db
+  :after org-roam
+  :config
+  (setq org-roam-db-location (expand-file-name "cache/org-roam.db" user-emacs-directory)))
 
 (use-package org-change
   :commands org-change-add)

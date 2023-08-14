@@ -6,8 +6,22 @@
 
 (use-package oc
   :after org
-  :config
-  (setq org-cite-global-bibliography my/reference-lists))
+  :custom
+  (org-cite-global-bibliography my/reference-lists))
+
+(use-package ebib
+  :bind ("<f2>" . ebib)
+  :custom
+  (ebib-preload-bib-files my/reference-lists)
+  (ebib-keywords (concat my-galaxy "/bibtexs/keywords.txt"))
+  (ebib-notes-directory (concat my-galaxy "/references"))
+  (ebib-filters-default-file (concat my-galaxy "/bibtexs/ebib-filters"))
+  (ebib-reading-list-file (concat my-galaxy "/bibtexs/reading_list.org"))
+  (ebib-keywords-field-keep-sorted t)
+  (ebib-keywords-file-save-on-exit 'always)
+  (ebib-index-columns
+        '(("Entry Key" 30 t) ("Note" 1 nil) ("Year" 6 t) ("Title" 50 t)))
+  (ebib-file-associations '(("ps" . "gv"))))
 
 (use-package citar
   :commands citar-open-files citar-create-note
@@ -23,8 +37,8 @@
   (setq citar-file-additional-files-separator "-")
   (setq citar-at-point-function 'embark-act))
 
-;; (use-package citar-latex
-;;   :after citar)
+(use-package citar-latex
+  :after citar)
 
 (use-package citar-capf
   :hook ((LaTeX-mode . citar-capf-setup)
@@ -40,33 +54,16 @@
     (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point)))
 
 (use-package citar-embark
-
+  :diminish citar-embark-mode
   :after citar
   :hook (org-mode . citar-embark-mode))
 
-(use-package ebib
-  :bind ("<f2>" . ebib)
-  :config
-  (setq ebib-preload-bib-files org-cite-global-bibliography)
-
-  (setq ebib-keywords (concat my-galaxy "/bibtexs/keywords.txt"))
-  (setq ebib-notes-directory (concat my-galaxy "/references"))
-  (setq ebib-filters-default-file (concat my-galaxy "/bibtexs/ebib-filters"))
-  (setq ebib-reading-list-file (concat my-galaxy "/bibtexs/reading_list.org"))
-
-  (setq ebib-keywords-field-keep-sorted t)
-  (setq ebib-keywords-file-save-on-exit 'always)
-
-  (setq ebib-index-columns
-        '(("Entry Key" 30 t) ("Note" 1 nil) ("Year" 6 t) ("Title" 50 t)))
-  (setq ebib-file-associations '(("ps" . "gv"))))
-
 (use-package biblio
-  :commands my/biblio-lookup-crossref
-  :config
-  (defun my/biblio-lookup-crossref ()
+  :commands biblio-lookup)
+
+(defun my/biblio-lookup-crossref ()
     (interactive)
-    (biblio-lookup 'biblio-crossref-backend)))
+    (biblio-lookup 'biblio-crossref-backend))
 
 (provide 'init-bib)
 ;;; init-bib.el ends here.

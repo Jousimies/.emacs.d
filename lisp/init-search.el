@@ -12,7 +12,7 @@
   (setq lazy-count-suffix-format "   (%s/%s)"))
 
 (use-package rg
-  :bind ("C-c s" . rg-menu)
+  :bind ("C-c s r" . rg-menu)
   :config
   ;; https://github.com/dajva/rg.el/issues/142#issuecomment-1452525225
   (add-to-list 'rg-finish-functions (lambda (buffer _) (pop-to-buffer buffer)))
@@ -41,6 +41,10 @@
 
 (use-package engine-mode
   :hook (after-init . engine-mode)
+  :bind (("C-c s g" . engine/search-google)
+         ("C-c s m" . engine/search-moviedouban)
+         ("C-c s w" . engine/search-wikipedia)
+         ("C-c s z" . engine/search-zhihu))
   :config
   (defengine google "https://google.com/search?q=%s"
              :keybinding "g"
@@ -95,7 +99,7 @@
         (message "Please save web page first.")))))
 
 (use-package simple-httpd
-  :commands httpd-serve-directory)
+  :bind ("M-g h" . httpd-serve-directory))
 
 (provide 'init-search)
 ;;; init-search.el ends here.

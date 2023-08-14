@@ -50,6 +50,7 @@
   (setq reftex-toc-split-windows-fraction 0.25))
 
 (use-package cdlatex
+  :diminish org-cdlatex-mode
   :hook ((LaTeX-mode . turn-on-cdlatex)
          (org-mode . org-cdlatex-mode)))
 

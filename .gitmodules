@@ -469,3 +469,6 @@
 [submodule "packages/tablist"]
 	path = packages/tablist
 	url = https://github.com/emacsorphanage/tablist.git
+[submodule "packages/diminish.el"]
+	path = packages/diminish.el
+	url = https://github.com/myrjola/diminish.el.git

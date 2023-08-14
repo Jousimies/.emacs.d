@@ -11,33 +11,37 @@
                                        (tab-name . "Edit") (tab-group . "Edit")
                                        (select . t)))
   (add-to-list 'display-buffer-alist '("\\*Org Note\\*"
-                                         (display-buffer-in-side-window)
-                                         (side . bottom)
-                                         (slot . 0)
-                                         (window-width . 0.5)
-                                         (window-parameters
-                                          (mode-line-format . none))))
-  :config
-  (setq org-ellipsis " ⇲")
-  (setq org-modules '()
-        org-imenu-depth 4
-        org-return-follows-link t
-        org-image-actual-width nil
-        org-display-remote-inline-images 'download
-        org-log-into-drawer t
-        org-fast-tag-selection-single-key 'expert
-        org-adapt-indentation nil
-        org-fontify-quote-and-verse-blocks t
-        org-support-shift-select t
-        org-treat-S-cursor-todo-selection-as-state-change nil
-        org-hide-leading-stars nil
-        org-startup-with-inline-images t
-        org-image-actual-width '(500)
-        org-use-speed-commands t)
-  (setq org-highlight-latex-and-related '(latex script))
-  (setq org-enforce-todo-dependencies t)
-  (setq org-enforce-todo-checkbox-dependencies t)
+                                       (display-buffer-in-side-window)
+                                       (side . bottom)
+                                       (slot . 0)
+                                       (window-width . 0.5)
+                                       (window-parameters
+                                        (mode-line-format . none))))
+  :bind (:map org-mode-map
+              ("C-c l" . org-store-link))
 
+  :custom
+  (org-ellipsis " ⇲")
+  (org-modules '())
+  (org-imenu-depth 4)
+  (org-return-follows-link t)
+  (org-image-actual-width nil)
+  (org-display-remote-inline-images 'download)
+  (org-log-into-drawer t)
+  (org-fast-tag-selection-single-key 'expert)
+  (org-adapt-indentation nil)
+  (org-fontify-quote-and-verse-blocks t)
+  (org-support-shift-select t)
+  (org-treat-S-cursor-todo-selection-as-state-change nil)
+  (org-hide-leading-stars nil)
+  (org-startup-with-inline-images t)
+  (org-image-actual-width '(500))
+  (org-use-speed-commands t)
+  (org-highlight-latex-and-related '(latex script))
+  (org-enforce-todo-dependencies t)
+  (org-enforce-todo-checkbox-dependencies t)
+  (org-tags-sort-function 'org-string-collate-greaterp)
+  :config
   (setq org-todo-repeat-to-state t)
   (setq org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)")))
@@ -61,10 +65,54 @@
                 ("TODO" ("WAIT") ("CNCL") ("SOMEDAY"))
                 ("NEXT" ("WAIT") ("CNCL") ("SOMEDAY"))
                 ("DONE" ("WAIT") ("CNCL") ("SOMEDAY")))))
-  :bind (:map org-mode-map
-              ("C-c l" . org-store-link)))
+  ;;   此处的设置来源：https://protesilaos.com/emacs/modus-themes
+  ;; 若升级 modus-themes 到 4.0 的版本，可能需要修改。
+  (defface my-org-emphasis-bold
+    '((default :inherit bold)
+      (((class color) (min-colors 88) (background light))
+       :foreground "#a60000")
+      (((class color) (min-colors 88) (background dark))
+       :foreground "#ff8059"))
+    "My bold emphasis for Org.")
 
-(setq org-tags-sort-function 'org-string-collate-greaterp)
+  (defface my-org-emphasis-italic
+    '((default :inherit italic)
+      (((class color) (min-colors 88) (background light))
+       :foreground "#005e00")
+      (((class color) (min-colors 88) (background dark))
+       :foreground "#44bc44"))
+    "My italic emphasis for Org.")
+
+  (defface my-org-emphasis-underline
+    '((default :inherit underline)
+      (((class color) (min-colors 88) (background light))
+       :foreground "#813e00")
+      (((class color) (min-colors 88) (background dark))
+       :foreground "#d0bc00"))
+    "My underline emphasis for Org.")
+
+  (defface my-org-emphasis-strike-through
+    '((default :strike-through t)
+      (((class color) (min-colors 88) (background light))
+       :foreground "#505050")
+      (((class color) (min-colors 88) (background dark))
+       :foreground "#a8a8a8"))
+    "My strike-through emphasis for Org.")
+
+  (defface my-org-emphasis-strike-through
+    '((((class color) (min-colors 88) (background light))
+       :strike-through "#972500" :foreground "#505050")
+      (((class color) (min-colors 88) (background dark))
+       :strike-through "#ef8b50" :foreground "#a8a8a8"))
+    "My strike-through emphasis for Org.")
+
+  (setq org-emphasis-alist
+        '(("*" my-org-emphasis-bold)
+          ("/" my-org-emphasis-italic)
+          ("_" my-org-emphasis-underline)
+          ("=" org-verbatim verbatim)
+          ("~" org-code verbatim)
+          ("+" my-org-emphasis-strike-through))))
 
 (use-package ob-core
   :after org
@@ -230,138 +278,6 @@
   (setq org-clock-clocktable-default-properties '(:maxlevel 5 :link t :tags t))
   (setq org-clock-persist-query-resume nil)
   (setq org-clock-report-include-clocking-task t))
-
-(use-package ol
-  :after org
-  :config
-  (setq org-link-frame-setup '((vm . vm-visit-folder-other-frame)
-                               (vm-imap . vm-visit-imap-folder-other-frame)
-                               (gnus . org-gnus-no-new-news)
-                               (file . find-file)
-                               (wl . wl-other-frame))))
-
-;; https://200ok.ch/posts/2022-12-07_streamline_your_org_mode_workflow_with_automatic_clock_table_recalculation.html
-;; Need add #+AUTOCALC_CLOCK_TABLES to org file.
-(with-eval-after-load 'org
-  (add-to-list 'org-options-keywords "AUTOCALC_CLOCK_TABLES:"))
-
-(defun autocalc-clocktable ()
-  "Auto update clock table."
-  (when (derived-mode-p 'org-mode)
-    (save-excursion
-      (goto-char 0)
-      (if (string-equal (car
-                         (cdr
-                          (car
-                           (org-collect-keywords '("AUTOCALC_CLOCK_TABLES")))))
-                        "t")
-          (progn
-            (goto-char (search-forward "clocktable"))
-            (org-ctrl-c-ctrl-c))))))
-
-(add-hook 'before-save-hook 'autocalc-clocktable)
-
-(defun my/org-find-time-file-property (property &optional anywhere)
-  "Return the position of the time file PROPERTY if it exists.
-When ANYWHERE is non-nil, search beyond the preamble."
-  (save-excursion
-    (goto-char (point-min))
-    (let ((first-heading
-           (save-excursion
-             (re-search-forward org-outline-regexp-bol nil t))))
-      (when (re-search-forward (format "^#\\+%s:" property)
-                               (if anywhere nil first-heading)
-                               t)
-        (point)))))
-
-(defun my/org-set-time-file-property (property &optional anywhere pos)
-  "Set the time file PROPERTY in the preamble.
-When ANYWHERE is non-nil, search beyond the preamble.
-If the position of the file PROPERTY has already been computed,
-it can be passed in POS.
-
-https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/lisp/zp-org.el#L194"
-  (when-let ((pos (or pos
-                      (my/org-find-time-file-property property))))
-    (save-excursion
-      (goto-char pos)
-      (if (looking-at-p " ")
-          (forward-char)
-        (insert " "))
-      (delete-region (point) (line-end-position))
-      (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
-        (insert now)))))
-
-(defun my/org-set-date ()
-  "Update the LAST_MODIFIED file property in the preamble.
-https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/lisp/zp-org.el#L212"
-  (when (and (derived-mode-p 'org-mode)
-             (buffer-modified-p))
-    (my/org-set-time-file-property "DATE")))
-
-(add-hook 'before-save-hook 'my/org-set-date)
-
-;; Get reading list from books directory for org-clock report.
-;; The org-clock report scope can be a function.
-(defun my/reading-list ()
-  "Get reading list."
-  (let (reading-list)
-    (append reading-list
-            (file-expand-wildcards (expand-file-name "denote/books/*.org" my-galaxy)))))
-
-(with-eval-after-load 'org
-  (add-to-list 'org-options-keywords "AUTO_EXPORT:"))
-
-(defun auto-export-blog ()
-  "Auto export blog."
-  (when (derived-mode-p 'org-mode)
-    (save-excursion
-      (goto-char 0)
-      (if (string-equal (car
-                         (cdr
-                          (car
-                           (org-collect-keywords '("AUTO_EXPORT")))))
-                        "t")
-          (org-publish-all)))))
-
-(add-hook 'after-save-hook 'auto-export-blog)
-
-(defun add-symbol-to-region (beg end symbol)
-  (save-excursion
-    (goto-char end)
-    (insert (concat symbol " "))
-    (goto-char beg)
-    (insert (concat " " symbol))))
-
-(defun add-stars-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "*"))
-
-(defun add-equal-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "="))
-
-(defun add-underline-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "_"))
-
-(defun add-italic-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "/"))
-
-(defun add-plus-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "+"))
-
-;; (defhydra my/hydra-org-symbol (:color blue)
-;;           "
-;;     Add symbol to chinese char: "
-;;           ("*" add-stars-to-region)
-;;           ("=" add-equal-to-region)
-;;           ("_" add-underline-to-region)
-;;           ("/" add-italic-to-region)
-;;           ("+" add-plus-to-region))
-;; (global-set-key (kbd "s-b") 'my/hydra-org-symbol/body)
 
 (provide 'init-org)
 ;;; init-org.el ends here.

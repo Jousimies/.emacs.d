@@ -33,7 +33,7 @@
 
 (use-package vertico-directory
   :bind (:map vertico-map
-              ("C-<backspace>" . vertico-directory-up)))
+              ("C-h" . vertico-directory-up)))
 
 (use-package vertico-indexed
   :hook (vertico-mode . vertico-indexed-mode))
@@ -43,11 +43,13 @@
 
 (use-package embark
   :commands embark-open-externally
-  :bind (("C-." . embark-act)
+  :bind (([remap describe-bindings] . embark-bindings)
+         ("C-;" . embark-act)
          ("M-." . embark-dwim)
-         (:map vertico-map
-               ("C-c C-o" . embark-export)
-               ("C-c C-c" . embark-act)))
+         (:map minibuffer-local-map
+               ("C-;" . embark-act)
+               ("C-c C-;" . embark-export)
+               ("C-c C-l" . embark-collect)))
   :config
   (add-to-list 'display-buffer-alist
                '("\\*Embark Actions\\*"
@@ -75,8 +77,7 @@
 (use-package consult
   :commands consult-outline consult-find
   :hook (completion-list-mode . consult-preview-at-point-mode)
-  :bind (("C-c f r" . consult-recent-file)
-         ([remap apropos] . consult-apropos)
+  :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-line)
          ([remap locate] . consult-locate)
@@ -94,31 +95,30 @@
   :bind (([remap imenu] . consult-imenu)))
 
 (use-package consult-dir
-  :bind (("C-x C-d" . consult-dir)
+  :bind (("M-g d" . consult-dir)
          (:map minibuffer-mode-map
-               ("C-x C-d" . consult-dir)
-               ("C-x C-j" . consult-dir-jump-file))))
+               ("M-g d" . consult-dir)
+               ("M-g j" . consult-dir-jump-file))))
 
 (use-package corfu
   :hook (after-init . global-corfu-mode)
   :config
   (setq corfu-cycle t)
   (setq corfu-auto t)
-  (setq corfu-auto-prefix 2)
-  (setq corfu-auto-delay 0.0)
+  (setq corfu-auto-prefix 1)
+  ;; (setq corfu-auto-delay 0.0)
   (setq corfu-preselect 'valid)
 
   (setq-default corfu-quit-no-match 'separator)
-
-  (defun corfu-enable-always-in-minibuffer ()
-    "Enable Corfu in the minibuffer if Vertico/Mct are not active."
-    (unless (or (bound-and-true-p mct--active)
-                (bound-and-true-p vertico--input)
-                (eq (current-local-map) read-passwd-map))
-      (setq-local corfu-auto nil) ;; Enable/disable auto completion
+  (defun corfu-enable-in-minibuffer ()
+    "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+    (when (where-is-internal #'completion-at-point (list (current-local-map)))
+      ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
       (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
                   corfu-popupinfo-delay nil)
       (corfu-mode 1)))
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
+
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package corfu-echo
@@ -134,7 +134,7 @@
   :commands kind-icon-margin-formatter
   :config
   (setq kind-icon-use-icons nil)
-  ;; (setq kind-icon-default-face 'corfu-default)
+  (setq kind-icon-default-face 'corfu-default)
   (setq kind-icon-mapping
         `(
           (array ,(nerd-icons-codicon "nf-cod-symbol_array") :face font-lock-type-face)
@@ -183,16 +183,15 @@
          ("C-c p k" . cape-keyword)
          ("C-c p s" . cape-symbol)
          ("C-c p a" . cape-abbrev)
-         ("C-c p i" . cape-ispell)
-         ("C-c p l" . cape-line)
          ("C-c p w" . cape-dict)
+         ("C-c p l" . cape-line)
          ("C-c p \\" . cape-tex)
          ("C-c p _" . cape-tex)
          ("C-c p ^" . cape-tex)
          ("C-c p &" . cape-sgml)
          ("C-c p r" . cape-rfc1345))
   :init
-  ;; (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
   ;;(add-to-list 'completion-at-point-functions #'cape-history)
   ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
@@ -200,7 +199,6 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
   ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
   ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
-  (add-to-list 'completion-at-point-functions #'cape-ispell)
   (add-to-list 'completion-at-point-functions #'cape-dict)
   ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
