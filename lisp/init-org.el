@@ -47,10 +47,11 @@
         '((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)")))
 
   (setq org-todo-keyword-faces
-        `(("NEXT" . (success . org-todo))
-          ("TODO" . org-todo)
-          ("CNCL" . (region . org-todo))
-          ("WAIT" . (bold . org-todo))))
+        '(("TODO" . (:inherit (bold org-todo)))
+          ("NEXT" . (:inherit (success org-todo)))
+          ("CNCL" . (:inherit (shadow org-todo)))
+          ("DONE" . (:inherit (button org-todo)))
+          ("WAIT" . (:inherit (warning org-todo)))))
 
   (setq org-priority-faces
         '((?A . (bold . org-priority))
