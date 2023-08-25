@@ -147,7 +147,7 @@
   :config
   (setq org-capture-templates
         '(("i" "GTD Inbox"
-           entry (file (lambda () (concat my-galaxy "/todos/inbox.org")))
+           entry (file (lambda () (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org")))
            "* %?\n%U\n" :time-prompt t :tree-type week)
           ("I" "NC Inbox"
            plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/inbox.org")))

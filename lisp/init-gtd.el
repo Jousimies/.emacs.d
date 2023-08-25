@@ -8,7 +8,7 @@
   :bind ("C-<f12>" . org-agenda)
   :hook (org-agenda-finalize . #'org-agenda-find-same-or-today-or-agenda)
   :config
-  (setq org-agenda-files (directory-files-recursively (expand-file-name "todos" my-galaxy) "org$"))
+  ;; (setq org-agenda-files (directory-files-recursively (expand-file-name "todos" my-galaxy) "org$"))
   (setq org-agenda-dim-blocked-tasks t)
   (setq org-agenda-compact-blocks t)
   (setq org-agenda-window-setup 'other-tab)
@@ -19,7 +19,7 @@
   :init
   (setq org-gtd-update-ack "3.0.0")
   :custom
-  ;; (org-gtd-directory (expand-file-name "todos" my-galaxy))
+  (org-gtd-directory (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org" mobile-document))
   (org-agenda-property-list '("DELEGATED_TO"))
   (org-gtd-organize-hooks '(org-gtd-set-area-of-focus org-set-tags-command))
   (org-edna-use-inheritance t)
@@ -27,8 +27,8 @@
   (org-edna-mode)
   ;; (add-to-list 'org-agenda-files (expand-file-name "todos/org-gtd-tasks.org" my-galaxy))
   :bind (("<f12>" . org-gtd-engage)
-         ;; ("C-<f12>" . org-gtd-process-inbox)
-         ("s-<f12>" . org-gtd-show-stuck-projects)
+         ("C-<f12>" . org-gtd-process-inbox)
+         ("s-<f12>" . org-gtd-review-stuck-projects)
          (:map org-gtd-clarify-map
                ("C-c c" . org-gtd-organize))))
 
