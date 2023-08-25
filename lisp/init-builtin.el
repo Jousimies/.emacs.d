@@ -31,6 +31,9 @@
 (setq max-mini-window-height 10)
 
 ;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
+(defvar mobile-document "~/Library/Mobile Documents/"
+  "This folder contains documents in icloud.")
+
 (defvar my-cloud "~/Nextcloud"
   "This folder is My cloud.")
 
