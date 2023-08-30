@@ -11,11 +11,10 @@
   :bind ("C-c s p" . epkg-describe-package)
   :init
   (add-to-list 'display-buffer-alist '("^\\*Help\\*"
-                                       (display-buffer-in-tab)
+                                       (display-buffer-same-window)
                                        (side . right)
                                        (window-width . 0.5)
                                        (window-parameters
-                                        (select . t)
                                         (mode-line-format . none))))
   :config
   (setq epkg-repository (expand-file-name "cache/epkgs" user-emacs-directory)))
