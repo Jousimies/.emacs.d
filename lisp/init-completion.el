@@ -42,10 +42,10 @@
   :hook ((minibuffer-setup . marginalia-mode)))
 
 (use-package embark
-  :commands embark-open-externally
   :bind (([remap describe-bindings] . embark-bindings)
          ("C-;" . embark-act)
          ("M-." . embark-dwim)
+         ("C-c f o" . embark-open-externally)
          (:map minibuffer-local-map
                ("C-;" . embark-act)
                ("C-c C-;" . embark-export)
