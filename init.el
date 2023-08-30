@@ -74,6 +74,8 @@
   (setq use-package-verbose t)
   (require 'init-benchmark))
 
+(require 'init-dashboard)
+
 (require 'init-core)
 (require 'init-builtin)
 (require 'init-font)
