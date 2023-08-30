@@ -43,7 +43,7 @@
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-c e") 'my/eww-html-file))
 
-(defvar file-extensions-with-default-apps '("xls" "doc" "xlsx" "docx" "eps" "dwg" "psd")
+(defvar file-extensions-with-default-apps '("xls" "doc" "xlsx" "docx" "eps" "dwg" "psd" "drawio")
   "List of file extensions to open with default applications.")
 
 ;;;###autoload
@@ -55,6 +55,8 @@
     (if (member ext file-extensions-with-default-apps)
         (start-process "default-app" nil "open" file)
       (dired-find-file))))
+
+(advice-add 'dired-find-file :override 'open-with-default-app)
 
 (defun dired-preview ()
   "Quick look the current file in macOS."
