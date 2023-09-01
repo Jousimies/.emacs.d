@@ -11,7 +11,7 @@
   ;; (setq org-agenda-files (directory-files-recursively (expand-file-name "todos" my-galaxy) "org$"))
   (setq org-agenda-dim-blocked-tasks t)
   (setq org-agenda-compact-blocks t)
-  (setq org-agenda-window-setup 'other-tab)
+  ;; (setq org-agenda-window-setup 'other-tab)
   (setq org-agenda-align-tags-to-column -120))
 
 (use-package org-gtd
@@ -23,6 +23,7 @@
   (org-agenda-property-list '("DELEGATED_TO"))
   (org-gtd-organize-hooks '(org-gtd-set-area-of-focus org-set-tags-command))
   (org-edna-use-inheritance t)
+  (org-gtd-areas-of-focus '("Carrer" "Health" "Family" "Finance" "Social" "Spiritual" "Entertainment" "Personal" "Community"))
   :config
   (org-edna-mode)
   ;; (add-to-list 'org-agenda-files (expand-file-name "todos/org-gtd-tasks.org" my-galaxy))

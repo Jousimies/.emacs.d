@@ -142,9 +142,9 @@
 (use-package org-capture
   :bind (("<f10>" . org-capture)
          (:map org-capture-mode-map
-              ([remap evil-save-and-close] . org-capture-finalize)
-              ([remap evil-save-modified-and-close] . org-capture-finalize)
-              ([remap evil-quit] . org-capture-kill)))
+               ([remap evil-save-and-close] . org-capture-finalize)
+               ([remap evil-save-modified-and-close] . org-capture-finalize)
+               ([remap evil-quit] . org-capture-kill)))
   :config
   (setq org-capture-templates
         '(("i" "GTD Inbox"
@@ -154,11 +154,13 @@
            plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/inbox.org")))
            "**** %?\n%U\n" :time-prompt t :tree-type week)
           ("w" "Work log"
-                 plain (file+olp+datetree (lambda () (concat my-galaxy "/denote/worklog.org")))
-                 "**** %?\n%U\n" :time-prompt t :tree-type week)
+           plain
+           (file+olp+datetree (lambda () (concat my-galaxy "/denote/worklog.org")))
+           (file "~/.emacs.d/template/tpl-worklog")
+           :time-prompt t :tree-type week)
           ("p" "Daily Plan"
            plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/plan.org")))
-           "- [ ] %?\n%U\n" :time-prompt t :tree-type week)
+           "%?\n%U\n" :time-prompt t :tree-type week)
           ("r" "Reflection"
            plain
            (file+olp+datetree (lambda () (concat my-galaxy "/roam/main/reflection.org")))
@@ -181,12 +183,12 @@
           ("m" "Movie"
            entry (file+headline (lambda () (concat my-galaxy "/roam/main/watchlist.org")) "Watching Lists")
            "* %?
-:PROPERTIES:
-:GENRE: %^{Film genre|Action|Adventure|Comedy|Drama|Fantasy|Horror|Musicals|Mystery|Romance|Science fiction|Sports|Thriller}
-:COUNTRY:
-:SCORE:
-:PLOT: %^{PLOT}
-:END:"))))
+  :PROPERTIES:
+  :GENRE: %^{Film genre|Action|Adventure|Comedy|Drama|Fantasy|Horror|Musicals|Mystery|Romance|Science fiction|Sports|Thriller}
+  :COUNTRY:
+  :SCORE:
+  :PLOT: %^{PLOT}
+  :END:"))))
 
 (use-package org-attach
   :commands org-attach
@@ -238,7 +240,7 @@
   "Copy idlink to clipboard."
   (interactive)
   (when (eq major-mode 'org-agenda-mode) ;switch to orgmode
-    (org-agenda-show)
+    ;; (org-agenda-show)
     (org-agenda-goto))
   (when (eq major-mode 'org-mode) ; do this only in org-mode buffers
     (let* ((mytmphead (nth 4 (org-heading-components)))
@@ -246,6 +248,8 @@
            (mytmplink (format "- [ ] [[id:%s][%s]]" mytmpid mytmphead)))
       (kill-new mytmplink)
       (message "Copied %s to killring (clipboard)" mytmplink))))
+(with-eval-after-load 'org-agenda
+  (define-key org-agenda-mode-map (kbd "<f8>") 'my/copy-idlink))
 
 (use-package org-src
   :after org
