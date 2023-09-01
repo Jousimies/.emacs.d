@@ -74,8 +74,6 @@
   (setq use-package-verbose t)
   (require 'init-benchmark))
 
-(require 'init-dashboard)
-
 (require 'init-core)
 (require 'init-builtin)
 (require 'init-font)
@@ -110,22 +108,28 @@
 (require 'init-finance)
 (require 'init-telega)
 
-(add-hook 'evil-mode-hook (lambda ()
-                             (require 'init-keybindings)))
-
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (when (file-exists-p custom-file)
   (load custom-file))
+
+(setq-default initial-scratch-message
+              (propertize
+               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you") 'face 'italic))
 
 (add-hook 'window-setup-hook
           (lambda ()
             (garbage-collect)
             (let ((curtime (current-time)))
-              (message "Times: init:%.06f total:%.06f gc-done:%d"
-                       (float-time (time-subtract after-init-time before-init-time))
-                       (float-time (time-subtract curtime before-init-time))
-                       gcs-done)))
-          90)
+              (with-current-buffer "*scratch*"
+                (goto-char (point-max))
+                (insert
+                 (concat "\n"
+                         (format ";; Emacs Startup Times: init:%.06f total:%.06f gc-done:%d"
+                                 (float-time (time-subtract after-init-time before-init-time))
+                                 (float-time (time-subtract curtime before-init-time))
+                                 gcs-done)
+                         "\n\n"))
+                90))))
 
 (provide 'init)
 ;;; init.el ends here.
