@@ -41,6 +41,7 @@
    '("2" . meow-expand-2)
    '("1" . meow-expand-1)
    '("-" . negative-argument)
+   '("=" . meow-indent)
    '(";" . meow-reverse)
    '("," . meow-inner-of-thing)
    '("." . meow-bounds-of-thing)
@@ -91,6 +92,8 @@
    '("z" . meow-pop-selection)
    '("'" . repeat)
    '("<escape>" . ignore)))
+  :diminish meow-normal-mode meow-insert-mode
+  :bind ("s-/" . meow-comment)
   :config
   (meow-setup)
   (meow-global-mode 1))
