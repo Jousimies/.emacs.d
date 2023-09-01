@@ -27,5 +27,14 @@
 (setq byte-compile-warnings nil)
 
 (fset 'display-startup-echo-area-message 'ignore)
+;; (load-theme 'modus-vivendi t)
+(defun my/apply-theme (appearance)
+  "Load theme, taking current system APPEARANCE into consideration."
+  (mapc #'disable-theme custom-enabled-themes)
+  (pcase appearance
+    ('light (load-theme 'modus-operandi t))
+    ('dark (load-theme 'modus-vivendi t))))
+
+(add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
 
 ;;; early-init.el ends here
