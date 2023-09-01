@@ -93,8 +93,8 @@
    '("'" . repeat)
    '("<escape>" . ignore)))
   :diminish meow-normal-mode meow-insert-mode
-  :bind ("s-/" . meow-comment)
   :config
+  (global-set-key (kbd "s-/") 'meow-comment)
   (meow-setup)
   (meow-global-mode 1))
 
