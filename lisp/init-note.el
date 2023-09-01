@@ -230,6 +230,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (use-package org-roam
   :bind (("C-c r f" . org-roam-node-find)
+         ("C-c r b" . org-roam-buffer-toggle)
          ("C-c r i" . org-roam-node-insert)
          ("C-c r t a" . org-roam-tag-add)
          ("C-c r t r" . org-roam-tag-remove))
@@ -245,6 +246,12 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   (org-roam-database-connector 'sqlite)
   (org-roam-db-gc-threshold most-positive-fixnum)
   :config
+  (add-to-list 'display-buffer-alist '("\\*org-roam\\*"
+                                         (display-buffer-in-side-window)
+                                         (side . right)
+                                         (window-width . 0.35)
+                                         (window-parameters
+                                          (mode-line-format . none))))
   (cl-defmethod org-roam-node-type ((node org-roam-node))
     "Return the TYPE of NODE."
     (condition-case nil
