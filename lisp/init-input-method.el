@@ -31,7 +31,10 @@
                                  (not (org-at-table-p))
                                  (not (org-in-src-block-p))
                                  (not (org-at-timestamp-p))))
-                   'other))))
+                   'other)))
+  (with-eval-after-load 'meow
+    (add-to-list 'sis-context-hooks 'meow-insert-enter-hook)
+    (add-hook 'meow-insert-exit-hook #'sis-set-english)))
 
 (use-package rime
   :defer t
