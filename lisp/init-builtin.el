@@ -101,6 +101,9 @@
         (make-directory target-dir t))))
   (add-to-list 'find-file-not-found-functions #'my/auto-create-missing-dirs))
 
+(use-package ffap
+  :bind ("C-c f f" . find-file-at-point))
+
 (use-package message
   :bind ("C-c b m" . switch-to-message)
   :config
