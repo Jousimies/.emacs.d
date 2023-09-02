@@ -12,18 +12,23 @@
                  (window-height . 0.5)
                  (side . bottom)
                  (slot . -1)))
-  :bind ("<f3>" . toggle-vterm)
+  :bind ("<f5>" . toggle-vterm)
   :config
   (setq vterm-kill-buffer-on-exit t)
   (setq vterm-max-scrollback 5000)
+  ;; (defun toggle-vterm ()
+  ;;   "Toggle vterm."
+  ;;   (interactive)
+  ;;   (let ((buf (concat "*vterm-" (buffer-name))))
+  ;;     (if (get-buffer buf)
+  ;;         (switch-to-buffer buf)
+  ;;       (switch-to-buffer (get-buffer-create buf))
+  ;;       (vterm-mode))))
   (defun toggle-vterm ()
     "Toggle vterm."
     (interactive)
     (let ((buf (concat "*vterm-" (buffer-name))))
-      (if (get-buffer buf)
-          (switch-to-buffer buf)
-        (switch-to-buffer (get-buffer-create buf))
-        (vterm-mode)))))
+      (vterm buf))))
 
 (provide 'init-shell)
 ;;; init-shell.el ends here.
