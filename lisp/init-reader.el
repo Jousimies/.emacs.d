@@ -106,9 +106,7 @@
   (setq calibredb-size-show t)
   (setq calibredb-format-character-icons t)
 
-  (setq calibredb-ref-default-bibliography (expand-file-name "calibre.bib" calibredb-root-dir))
-
-  (evil-set-initial-state 'calibredb-search-mode 'emacs))
+  (setq calibredb-ref-default-bibliography (expand-file-name "calibre.bib" calibredb-root-dir)))
 
 (provide 'init-reader)
 ;;; init-reader.el ends here.
