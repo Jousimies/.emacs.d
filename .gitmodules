@@ -10,9 +10,6 @@
 [submodule "packages/with-editor"]
 	path = packages/with-editor
 	url = https://github.com/magit/with-editor.git
-[submodule "packages/evil"]
-	path = packages/evil
-	url = https://github.com/emacs-evil/evil.git
 [submodule "packages/epkg"]
 	path = packages/epkg
 	url = https://github.com/emacscollective/epkg.git
@@ -28,9 +25,6 @@
 [submodule "packages/annalist.el"]
 	path = packages/annalist.el
 	url = https://github.com/noctuid/annalist.el.git
-[submodule "packages/evil-commentary"]
-	path = packages/evil-commentary
-	url = https://github.com/linktohack/evil-commentary.git
 [submodule "packages/emacs-async"]
 	path = packages/emacs-async
 	url = https://github.com/jwiegley/emacs-async.git
@@ -226,12 +220,6 @@
 [submodule "packages/mode-line-bell"]
 	path = packages/mode-line-bell
 	url = https://github.com/purcell/mode-line-bell.git
-[submodule "packages/evil-surround"]
-	path = packages/evil-surround
-	url = https://github.com/emacs-evil/evil-surround.git
-[submodule "packages/evil-embrace.el"]
-	path = packages/evil-embrace.el
-	url = https://github.com/cute-jumper/evil-embrace.el.git
 [submodule "packages/embrace.el"]
 	path = packages/embrace.el
 	url = https://github.com/cute-jumper/embrace.el.git
@@ -385,9 +373,6 @@
 [submodule "packages/emacs-smart-input-source"]
 	path = packages/emacs-smart-input-source
 	url = https://github.com/laishulu/emacs-smart-input-source.git
-[submodule "packages/evil-find-char-pinyin"]
-	path = packages/evil-find-char-pinyin
-	url = https://github.com/cute-jumper/evil-find-char-pinyin.git
 [submodule "packages/pinyinlib.el"]
 	path = packages/pinyinlib.el
 	url = https://github.com/cute-jumper/pinyinlib.el.git
@@ -424,9 +409,6 @@
 [submodule "packages/pdf-tools"]
 	path = packages/pdf-tools
 	url = https://github.com/vedang/pdf-tools.git
-[submodule "packages/evil-collection"]
-	path = packages/evil-collection
-	url = https://github.com/emacs-evil/evil-collection.git
 [submodule "packages/nerd-icons.el"]
 	path = packages/nerd-icons.el
 	url = https://github.com/rainstormstudio/nerd-icons.el.git
