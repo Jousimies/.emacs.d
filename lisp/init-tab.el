@@ -6,13 +6,14 @@
 
 (use-package tab-bar
   :hook (after-init . tab-bar-mode)
+  :bind ("C-c b t" . tab-switch)
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-tab-hints nil)
   (setq tab-bar-show nil))
 
 (use-package tabspaces
-  :commands tabspaces-switch-to-buffer
+  :bind ("C-c b b" . tabspaces-switch-to-buffer)
   :hook (tab-bar . tabspaces-mode)
   :config
   (setq tabspaces-session-file
