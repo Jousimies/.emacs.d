@@ -125,5 +125,8 @@ of the box `(w h)' inside the box `(cw ch)'."
 
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
 
+(use-package ace-window
+  :bind ("M-o" . ace-window))
+
 (provide 'init-frame)
 ;;; init-frame.el ends here.

@@ -70,9 +70,6 @@
 [submodule "packages/expand-region.el"]
 	path = packages/expand-region.el
 	url = https://github.com/magnars/expand-region.el.git
-[submodule "packages/ctrlf"]
-	path = packages/ctrlf
-	url = https://github.com/radian-software/ctrlf.git
 [submodule "packages/corfu"]
 	path = packages/corfu
 	url = https://github.com/minad/corfu.git
@@ -370,9 +367,6 @@
 [submodule "packages/denote-menu"]
 	path = packages/denote-menu
 	url = https://github.com/namilus/denote-menu.git
-[submodule "packages/emacs-smart-input-source"]
-	path = packages/emacs-smart-input-source
-	url = https://github.com/laishulu/emacs-smart-input-source.git
 [submodule "packages/pinyinlib.el"]
 	path = packages/pinyinlib.el
 	url = https://github.com/cute-jumper/pinyinlib.el.git
@@ -466,3 +460,9 @@
 [submodule "packages/meow"]
 	path = packages/meow
 	url = https://github.com/meow-edit/meow.git
+[submodule "packages/ace-window"]
+	path = packages/ace-window
+	url = https://github.com/abo-abo/ace-window.git
+[submodule "packages/avy"]
+	path = packages/avy
+	url = https://github.com/abo-abo/avy.git
