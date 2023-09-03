@@ -121,9 +121,6 @@
 [submodule "packages/marginalia"]
 	path = packages/marginalia
 	url = https://github.com/minad/marginalia.git
-[submodule "packages/org-roam-ui"]
-	path = packages/org-roam-ui
-	url = https://github.com/org-roam/org-roam-ui.git
 [submodule "packages/org-transclusion"]
 	path = packages/org-transclusion
 	url = https://github.com/nobiot/org-transclusion.git
@@ -190,9 +187,6 @@
 [submodule "packages/tomelr"]
 	path = packages/tomelr
 	url = https://github.com/kaushalmodi/tomelr.git
-[submodule "packages/ekg"]
-	path = packages/ekg
-	url = https://github.com/ahyatt/ekg.git
 [submodule "packages/triples"]
 	path = packages/triples
 	url = https://github.com/ahyatt/triples.git
@@ -397,9 +391,6 @@
 [submodule "packages/org-imgtog"]
 	path = packages/org-imgtog
 	url = https://github.com/gaoDean/org-imgtog.git
-[submodule "packages/org-roam"]
-	path = packages/org-roam
-	url = https://github.com/org-roam/org-roam.git
 [submodule "packages/pdf-tools"]
 	path = packages/pdf-tools
 	url = https://github.com/vedang/pdf-tools.git
