@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package nerd-icons
+  :defer t
   :config
   (setq nerd-icons-font-family "Hack Nerd Font Mono"))
 
@@ -12,7 +13,8 @@
   :hook (marginalia-mode . nerd-icons-completion-marginalia-setup))
 
 (use-package nerd-icons-dired
-  :hook (dired-mode . nerd-icons-dired-mode))
+  :hook (dired-mode . nerd-icons-dired-mode)
+  :diminish nerd-icons-dired-mode)
 
 (use-package nerd-icons-ibuffer
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
