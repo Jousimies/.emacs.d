@@ -20,15 +20,12 @@
                                         (im-change-cursor-color)))))
            (meow-insert-exit .  (lambda ()
                                   (deactivate-input-method)
-                                  (set-cursor-color im-default-cursor-color))))
+                                  (set-cursor-color (foreground-color-at-point)))))
     :init
     (setq rime-title " ")
     :config
     (defvar im-cursor-color "red"
       "The color for input method.")
-
-    (defvar im-default-cursor-color (frame-parameter nil 'cursor-color)
-      "The default cursor color.")
 
     (defun im--chinese-p ()
       "Check if the current input state is Chinese."
@@ -43,7 +40,8 @@
       (interactive)
       (set-cursor-color (if (im--chinese-p)
                             im-cursor-color
-                          im-default-cursor-color)))
+                          (foreground-color-at-point))))
+
     (setq default-input-method "rime")
     (setq rime-user-data-dir "~/Library/Rime/")
     (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
