@@ -91,7 +91,6 @@
 (require 'init-dired)
 (require 'init-search)
 (require 'init-template)
-(require 'init-checker)
 (require 'init-dict)
 (require 'init-lsp)
 (require 'init-git)
