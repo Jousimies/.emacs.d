@@ -124,7 +124,7 @@
                 (goto-char (point-max))
                 (insert
                  (concat "\n"
-                         (format ";; Emacs Startup Times: init:%.06f total:%.06f gc-done:%d"
+                         (format ";; Emacs Startup Times: init:%.03f total:%.03f gc-done:%d"
                                  (float-time (time-subtract after-init-time before-init-time))
                                  (float-time (time-subtract curtime before-init-time))
                                  gcs-done)
