@@ -44,12 +44,7 @@
   :hook (pdf-view-mode . pdf-annot-minor-mode)
   :bind (:map pdf-annot-edit-contents-minor-mode-map
               ("<return>" . pdf-annot-edit-contents-commit)
-              ("<S-return>" . newline))
-  :config
-  (evil-declare-key 'normal pdf-view-mode-map
-    "gh" 'pdf-annot-add-highlight-markup-annotation
-    "ga" 'pdf-annot-add-text-annotation
-    "gd" 'pdf-annot-delete))
+              ("<S-return>" . newline)))
 
 (use-package pdf-sync
   :hook (pdf-view-mode . pdf-sync-minor-mode))

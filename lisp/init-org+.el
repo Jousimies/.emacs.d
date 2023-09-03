@@ -5,7 +5,7 @@
 ;;; Code:
 
 (use-package olivetti
-  :commands olivetti-mode)
+  :bind ("C-c t o" . olivetti-mode))
 
 (use-package org-superstar
   :hook (org-mode . org-superstar-mode)

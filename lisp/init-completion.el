@@ -88,6 +88,7 @@
          ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
          ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
          ([remap yank-pop] . consult-yank-pop)
+         ("C-c n g" . consult-ripgrep)
          :map minibuffer-mode-map
          ("C-r" . consult-history)))
 
