@@ -4,27 +4,10 @@
 
 ;;; Code:
 
-(use-package ekg
-  :commands (ekg-show-notes-in-trash
-             ekg-show-notes-for-today
-             ekg-show-notes-with-tag
-             ekg-show-notes-with-all-tags
-             ekg-show-notes-with-any-tags
-             ekg-show-rename-tag
-             ekg-browse-url)
-  :bind (("C-<f10>" . ekg-capture)
-         (:map ekg-notes-mode-map
-               ("q" . quit-window)))
-  :config
-  (setq triples-default-database-filename (expand-file-name "database/triples.db" my-galaxy))
-  (add-to-list 'display-buffer-alist '("^\\*ekg\\|^\\*EKG"
-                                       (display-buffer-pop-up-frame)
-                                       (window-parameters
-                                        (mode-line-format . none)
-                                        (delete-other-windows . t)))))
-
 (use-package denote
-  :bind ("C-c n s" . denote-signature)
+  :bind (("C-c n s" . denote-signature)
+         ("C-c n i" . denote-insert-link)
+         ("C-c n r" . denote-rename-file-using-front-matter))
   :commands (denote denote-signature denote-subdirectory denote-rename-file-using-front-matter
                     denote-keywords-prompt
                     denote-rename-file
@@ -146,6 +129,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
     (insert
      (shell-command-to-string
       "ls -l | awk /==/ | sed  's/--/=@/3' | sort -t '=' -Vk 3,3 | sed 's/=@/--/' "))
+    (dired-clear-alist)
     (dired-virtual denote-directory)
     (denote-dired-mode)
     (auto-revert-mode -1))
@@ -227,95 +211,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
                    (t
                     :foreground "white"))
                  'face-override-spec))
-
-(use-package org-roam
-  :bind (("C-c r f" . org-roam-node-find)
-         ("C-c r b" . org-roam-buffer-toggle)
-         ("C-c r i" . org-roam-node-insert)
-         ("C-c r t a" . org-roam-tag-add)
-         ("C-c r t r" . org-roam-tag-remove))
-  :init
-  (setq org-roam-directory (file-truename (expand-file-name "roam" my-galaxy)))
-  :hook ((org-mode . org-roam-db-autosync-mode)
-         (org-mode . (lambda () (setq-local time-stamp-active t
-                                       time-stamp-start "#\\+MODIFIED:[ \t]*"
-                                       time-stamp-end "$"
-                                       time-stamp-format "\[%Y-%m-%d %3a %H:%M\]")
-                       (add-hook 'before-save-hook 'time-stamp nil 'local))))
-  :custom
-  (org-roam-database-connector 'sqlite)
-  (org-roam-db-gc-threshold most-positive-fixnum)
-  :config
-  (add-to-list 'display-buffer-alist '("\\*org-roam\\*"
-                                         (display-buffer-in-side-window)
-                                         (side . right)
-                                         (window-width . 0.35)
-                                         (window-parameters
-                                          (mode-line-format . none))))
-  (cl-defmethod org-roam-node-type ((node org-roam-node))
-    "Return the TYPE of NODE."
-    (condition-case nil
-        (file-name-nondirectory
-         (directory-file-name
-          (file-name-directory
-           (file-relative-name (org-roam-node-file node) org-roam-directory))))
-      (error "")))
-
-  (cl-defmethod org-roam-node-directories ((node org-roam-node))
-    (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
-        (format "(%s)" (car (split-string dirs "/")))
-      ""))
-
-  (cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
-    (let* ((count (caar (org-roam-db-query
-                         [:select (funcall count source)
-                                  :from links
-                                  :where (= dest $s1)
-                                  :and (= type "id")]
-                         (org-roam-node-id node)))))
-      (format "[%d]" count)))
-
-  (cl-defmethod org-roam-node-doom-filetitle ((node org-roam-node))
-    "Return the value of \"#+title:\" (if any) from file that NODE resides in.
-           If there's no file-level title in the file, return empty string."
-    (or (if (= (org-roam-node-level node) 0)
-            (org-roam-node-title node)
-          (org-roam-get-keyword "TITLE" (org-roam-node-file node)))
-        ""))
-
-  (cl-defmethod org-roam-node-doom-hierarchy ((node org-roam-node))
-    "Return hierarchy for NODE, constructed of its file title, OLP and direct title.
-           If some elements are missing, they will be stripped out."
-    (let ((title     (org-roam-node-title node))
-          (olp       (org-roam-node-olp   node))
-          (level     (org-roam-node-level node))
-          (filetitle (org-roam-node-doom-filetitle node))
-          (separator (propertize " > " 'face 'shadow)))
-      (cl-case level
-        ;; node is a top-level file
-        (0 filetitle)
-        ;; node is a level 1 heading
-        (1 (concat (propertize filetitle 'face '(shadow italic))
-                   separator title))
-        ;; node is a heading with an arbitrary outline path
-        (t (concat (propertize filetitle 'face '(shadow italic))
-                   separator (propertize (string-join olp " > ") 'face '(shadow italic))
-                   separator title)))))
-
-  ;; 获得文件的修改时间.
-  (cl-defmethod org-roam-node-date ((node org-roam-node))
-    (format-time-string "%Y-%m-%d" (org-roam-node-file-mtime node)))
-
-  (setq org-roam-node-display-template
-        (concat "${type:4} ${backlinkscount:3} "
-                (propertize "${doom-hierarchy:*}" 'face 'org-level-3)
-                (propertize "${tags:20}" 'face 'org-tag)
-                " ")))
-
-(use-package org-roam-db
-  :after org-roam
-  :config
-  (setq org-roam-db-location (expand-file-name "cache/org-roam.db" user-emacs-directory)))
 
 (use-package org-change
   :commands org-change-add)
