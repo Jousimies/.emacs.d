@@ -7,8 +7,7 @@
 (use-package frame
   :hook ((after-init . (lambda ()
                          (blink-cursor-mode -1)))
-         ;; (after-init . window-divider-mode)
-         )
+         (after-init . window-divider-mode))
   :config
   (add-to-list 'initial-frame-alist '(alpha . (90 . 100)))
   (face-spec-set 'window-divider
