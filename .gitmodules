@@ -457,3 +457,9 @@
 [submodule "packages/avy"]
 	path = packages/avy
 	url = https://github.com/abo-abo/avy.git
+[submodule "packages/jeison"]
+	path = packages/jeison
+	url = https://github.com/SavchenkoValeriy/jeison.git
+[submodule "packages/writegood-mode"]
+	path = packages/writegood-mode
+	url = https://github.com/bnbeckwith/writegood-mode.git
