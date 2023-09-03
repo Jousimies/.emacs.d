@@ -7,7 +7,9 @@
 (use-package denote
   :bind (("C-c n s" . denote-signature)
          ("C-c n i" . denote-insert-link)
-         ("C-c n r" . denote-rename-file-using-front-matter))
+         ("C-c n r" . denote-rename-file-using-front-matter)
+         ("C-c n k" . denote-keywords-add)
+         ("C-c n K" . denote-keywords-remove))
   :commands (denote denote-signature denote-subdirectory denote-rename-file-using-front-matter
                     denote-keywords-prompt
                     denote-rename-file
