@@ -4,11 +4,6 @@
 
 ;;; Code:
 
-(use-package org
-  :config
-  (setq org-preview-latex-default-process 'dvisvgm)
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2)))
-
 (use-package tex
   :mode ("\\.tex\\'" . LaTeX-mode)
   :init

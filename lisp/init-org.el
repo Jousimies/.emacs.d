@@ -19,7 +19,6 @@
                                         (mode-line-format . none))))
   :bind (:map org-mode-map
               ("C-c l" . org-store-link))
-
   :custom
   (org-ellipsis " ⇲")
   (org-modules '())
@@ -42,6 +41,8 @@
   (org-enforce-todo-checkbox-dependencies t)
   (org-tags-sort-function 'org-string-collate-greaterp)
   :config
+  (setq org-preview-latex-default-process 'dvisvgm)
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
   (setq org-todo-repeat-to-state t)
   (setq org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)")))
