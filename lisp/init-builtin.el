@@ -118,7 +118,7 @@
   (setq message-sendmail-extra-arguments '("-a" "outlook")))
 
 (use-package calc
-  :bind ("C-c a c" . calc)
+  :bind ("C-c a C" . calc)
   :hook ((calc-trail-mode . (lambda ()
                               (setq-local mode-line-format nil)))
          (calc-mode . (lambda ()

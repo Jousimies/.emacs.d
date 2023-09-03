@@ -84,6 +84,8 @@ This command can be called when in a file buffer or in `dired'."
                                "/usr/bin/xdg-open")))
         (start-process "" nil openFileProgram (shell-quote-argument $path)))))))
 
+(global-set-key (kbd "C-c f d") 'xah-show-in-desktop)
+
 (defun jf/org-link-remove-link ()
   "Remove the link part of an `org-mode' link at point and keep only the description."
   (interactive)

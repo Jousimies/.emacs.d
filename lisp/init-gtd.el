@@ -34,7 +34,7 @@
                ("C-c c" . org-gtd-organize))))
 
 (use-package calendar
-  :commands calendar
+  :bind ("C-c a c" . calendar)
   :config
   (setq calendar-view-diary-initially-flag t)
   (setq calendar-mark-diary-entries-flag t)
@@ -62,7 +62,6 @@
   (setq appt-message-warning-time 6))
 
 (use-package diary-lib
-  ;; :after calendar
   :defer t
   :config
   (add-hook 'diary-list-entries-hook #'diary-sort-entries)
