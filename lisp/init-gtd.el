@@ -33,46 +33,6 @@
          (:map org-gtd-clarify-map
                ("C-c c" . org-gtd-organize))))
 
-;; https://www.armindarvish.com/en/post/emacs_workflow_dynamically_adding_files_to_org-agenda-files/
-(defun ad/agenda-file-p ()
-  (org-element-map
-      (org-element-parse-buffer 'headline)
-      'headline
-    (lambda (h)
-      (eq (org-element-property :todo-type h)
-          'todo))
-    nil 'first-match))
-
-(defun ad/org-agenda-update-files (&rest ARG)
-  (interactive)
-  (when (and (derived-mode-p 'org-mode) (buffer-file-name))
-    ;; (message "updating org-agenda-files...")
-    ;; if there is an active TODO task, add this file to agenda files
-    (if (ad/agenda-file-p)
-        (add-to-list 'org-agenda-files (file-truename (buffer-file-name)))
-      ;; if there is no active TODO task, remove the file from agenda files if needed
-      (setq org-agenda-files (seq-difference org-agenda-files (list (buffer-file-name)))))))
-
-(defun ad/org-agenda-cleanup-files (&rest ARG)
-  (interactive)
-  (let ((temp/org-agenda-files org-agenda-files))
-    (dolist (file org-agenda-files)
-      (if (not (file-exists-p file))
-          (setq temp/org-agenda-files (seq-difference temp/org-agenda-files (list file)))))
-    (setq org-agenda-files temp/org-agenda-files)))
-
-;; Add or remove individual file
-(add-hook 'org-mode-hook (lambda () (add-hook 'find-file-hook #'ad/org-agenda-update-files)))
-(add-hook 'org-mode-hook (lambda () (add-hook 'before-save-hook #'ad/org-agenda-update-files)))
-(add-hook 'kill-emacs-hook (lambda () (customize-save-variable 'org-agenda-files org-agenda-files)))
-
-;; remove non-existing files before building agenda
-(advice-add 'org-agenda :before #'ad/org-agenda-cleanup-files)
-(advice-add 'org-todo-list :before #'ad/org-agenda-cleanup-files)
-
-(with-eval-after-load 'savehist
-  (add-to-list 'savehist-additional-variables 'org-agenda-files))
-
 (use-package calendar
   :commands calendar
   :config
