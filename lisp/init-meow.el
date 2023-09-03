@@ -94,6 +94,7 @@
    '("<escape>" . ignore)))
   :diminish meow-normal-mode meow-insert-mode
   :config
+  (setq meow-use-clipboard t)
   (global-set-key (kbd "s-/") 'meow-comment)
   (meow-setup)
   (meow-global-mode 1))
