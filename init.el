@@ -79,7 +79,7 @@
 (require 'init-font)
 (require 'init-theme)
 (require 'init-meow)
-;; (require 'init-mode-line)
+(require 'init-mode-line)
 (require 'init-tab)
 (require 'init-frame)
 (require 'init-ui)
