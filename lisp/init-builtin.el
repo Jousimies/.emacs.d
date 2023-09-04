@@ -48,7 +48,7 @@
   "The folder save web pages.")
 
 (defvar my/reference-lists `(,(concat my-galaxy "/bibtexs/References.bib")
-                             ,(concat my-cloud "/L.Calibre/calibre.bib")))
+                             ,(concat my-galaxy "/bibtexs/Books.bib")))
 
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
