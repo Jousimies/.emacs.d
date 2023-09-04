@@ -23,11 +23,11 @@
   (setq org-appear-autolinks t)
   (setq org-appear-trigger 'manual)
   :hook ((org-mode . (lambda ()
-                       (add-hook 'evil-insert-state-entry-hook
+                       (add-hook 'meow-insert-enter-hook
                                  #'org-appear-manual-start
                                  nil
                                  t)
-                       (add-hook 'evil-insert-state-exit-hook
+                       (add-hook 'meow-insert-exit-hook
                                  #'org-appear-manual-stop
                                  nil
                                  t)))
