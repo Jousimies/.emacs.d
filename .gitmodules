@@ -172,9 +172,6 @@
 [submodule "packages/ebib"]
 	path = packages/ebib
 	url = https://github.com/joostkremers/ebib.git
-[submodule "packages/helm-bibtex"]
-	path = packages/helm-bibtex
-	url = https://github.com/tmalsburg/helm-bibtex.git
 [submodule "packages/scihub.el"]
 	path = packages/scihub.el
 	url = https://github.com/emacs-pe/scihub.el.git
@@ -199,9 +196,6 @@
 [submodule "packages/emacs-libvterm"]
 	path = packages/emacs-libvterm
 	url = https://github.com/akermu/emacs-libvterm.git
-[submodule "packages/calibredb.el"]
-	path = packages/calibredb.el
-	url = https://github.com/chenyanming/calibredb.el.git
 [submodule "packages/esxml"]
 	path = packages/esxml
 	url = https://github.com/tali713/esxml.git
