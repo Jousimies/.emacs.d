@@ -111,8 +111,8 @@
                       ,(expand-file-name "config/tempel" my-galaxy))))
 
 (use-package rime
-  :hook ((meow-insert-enter . (lambda ()
-                                (rime-activate nil)))
+  :hook ((input-method-activate . (lambda ()
+                                    (rime-activate nil)))
          (meow-insert-enter . (lambda ()
                                 (if (and (not (rime--should-inline-ascii-p))
                                          (eq major-mode 'org-mode)
