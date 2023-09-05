@@ -1,5 +1,5 @@
 #+TITLE: Jousimies's Personal Emacs Configuration
-#+DATE: [2023-02-27 Mon 14:13]
+#+DATE: [2023-09-05 Tue 10:53]
 
 * Interface Show
 #+ATTR_ORG: :width 800px
@@ -23,7 +23,7 @@
 #+ATTR_HTML: :width 500px
 [[file:src/emacscando.png]]
 
-* How I manage my packages
+* Packages management
 尝试过的 Emacs 配置方式有多种，有 ~package.el~ ~straight.el~ ~git submodule~ ~borg.el~ 。
 
 2023-02-26 目前升级到 Emacs 29.0.60，使用 git submodule 和 use-package 相结合的方式管理 Packages。
@@ -40,17 +40,17 @@
   git submodule foreach git checkout master
 #+end_src
 * About note taking
-作为一名非程序员，使用 Emacs 就是奔着 org-mode 来的。Emacs 中能进行任务管理，财务管理，笔记管理都是建立在 org-mode 之上的。Org-mode 在这方面的确很强大。
+作为一名非程序员，使用 Emacs 就是奔着使用 org-mode 管理笔记文件来的，此外，Emacs 还能进行任务管理，财务管理等等。
 
-笔记的作用：存储信息、帮助思考和理解信息、创造知识之间的链接。大脑的优势在于思考，而不是信息的存储。当下最火的笔记管理方式非 Zettelkasten 默属。关于 Zettelkasten 的概念可以看 How to take smart notes 这本书。
+Emacs and Org-mode is awesome!!!
 
-我使用过的笔记软件有很多，在遇到 Emacs 前，尝试过的有 PKM 软件，Mediawiki，Tiddly wiki，Onenote，印象笔记，蚂蚁笔记，Simplenote，Joplin 等等。Onenote 是私有格式，意味着当我需要夸平台时，其专有格式会给我带来麻烦。印象笔记也是如此，而且印象笔记的付费一言难尽。在这些软件中来回尝试了多次之后，发现没有一个能长久使用的，或多或少的存在痛点。
+为什么要进行笔记管理，原因是大脑的优势在于思考，不在于信息的存储。这就体现出笔记在存储信息、帮助思考和理解信息、创造知识之间的链接的作用。
 
-在了解过 markdown，org-mode 等概念后，结合以上软件的使用体验，我确立了对于笔记管理的要求：​*本地储存，格式可控* 。这个要求 markdown 和 org-mode 都可以满足，这两种语言之上都有着相对应的软件实现，obsidian 和 org-roam。当然除了 org-roam 之外，还有其他的实现，但是我只使用 org-roam。
+在遇到 Emacs 前，使用过的笔记软件有很多，有 PKM 软件，Mediawiki，Tiddly wiki，Onenote，印象笔记，蚂蚁笔记，Simplenote，Joplin 等等。在这些软件中来回尝试了多次之后，发现没有一个能长久使用的，或多或少的存在痛点。Onenote 是私有格式，意味着当我需要夸平台时，其专有格式会给我带来麻烦。印象笔记也是如此，而且印象笔记的付费一言难尽。
 
-Org-mode 相比 markdown，特性还是要丰富很多， markdown 相对比较简陋。 org-mode 写完之后可以根据需要将其转化为其他的格式，我需要的如 =html= =docx= =latex= 。
+在了解过 markdown，org-mode 等概念后，结合以上软件的使用体验，我确立了对于笔记管理的要求是 *纯文本、本地储存，格式可控* 。
 
-Org-mode 是 Emacs 上最强大的笔记应用，如果不是为了进行笔记管理，我很大概率是不使用 Emacs 的（难调较，需要大量的时间，众多的特性中迷失自我）。
+当下最火的笔记管理方式非 Zettelkasten 默属，关于 Zettelkasten 的概念可以看 How to take smart notes 这本书。Emacs 上的 org-roam 和 denote 等包都可以实践该笔记管理准则，我使用 denote 管理笔记。
 
 * Keybindings
 [[./src/keybinding.png]]
@@ -75,28 +75,19 @@ If I have seen further, it is by standing on the shoulders of giants. ---- Sir I
 + https://github.com/raxod502/radian
 + https://tecosaur.github.io/emacs-config/config.html
 
-* ELISP 学习
+* ELISP learning
 - [[https://manateelazycat.github.io/emacs/2022/11/18/write-emacs-plugin.html][Emacs 插件开发手册]]
 - [[http://smacs.github.io/elisp/][Emacs Lisp 简明教程 - 水木社区Emacs版]]
 - [[https://www.youtube.com/watch?v=RQK_DaaX34Q&list=PLEoMzSkcN8oPQtn7FQEF3D7sroZbXuPZ7][Introduction to Emacs Lisp - Learning Emacs Lisp #1 - YouTube]]
 
-
-看完以上3个的内容Emacs-lisp 就算入门了。
-
-* The difference between with setq and setq-default
-
+* Differences
+** ~setq~ and ~setq-default~
 + [[https://stackoverflow.com/questions/18172728/the-difference-between-setq-and-setq-default-in-emacs-lisp][elisp - The difference between setq and setq-default in Emacs Lisp - Stack Overflow]]
 
 If a variable is buffer-local, then setq sets its local value in the current buffer
 and setq-default sets the global default value.
 
 If a variable is not buffer-local, then setq and setq-default do the same thing.
-
-* Org-mode
-
-+ [[https://irreal.org/blog/?p=11123][Code vs. Verbatim in Org Mode | Irreal]]
-
-* Differences
 
 ** ~emacs-startup-hook~ vs ~after-init-hook~
 The difference between the two hooks is that ~emacs-startup-hook~ runs after the user's init file has been loaded, while ~after-init-hook~ runs after Emacs has finished initializing the packages and variables.
@@ -108,10 +99,3 @@ The difference between the two hooks is that ~emacs-startup-hook~ runs after the
   (add-hook 'evil-mode-hook #'evil-collection-init)
 #+end_src
 The first approach will load and initialize =evil-collection= as soon as evil is loaded, while the second approach will only load and initialize =evil-collection= when =evil-mode= is enabled.
-
-* About Emacs startup
-Emacs 29.0.60 不开 dashboard 情况下启动时间 0.5s 左右，实际启动时间约 2s. 如果开启 dashboard，等所有的界面准备结束约 3.5s.
-
-不要太在意 Emacs 的启动时间，只有在启动电脑或者升级 Emacs 的时候才要重启 Emacs。
-
-https://irreal.org/blog/?p=11176
