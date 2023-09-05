@@ -24,7 +24,8 @@
   (ebib-file-associations '(("ps" . "gv"))))
 
 (use-package citar
-  :commands citar-open-files citar-create-note
+  :bind (("C-c r o" . citar-open-files)
+         ("C-c r n" . citar-create-note))
   :config
   (setq citar-bibliography my/reference-lists)
   (setq citar-notes-paths `(,(expand-file-name "denote/references" my-galaxy)))
@@ -59,7 +60,7 @@
   :hook (org-mode . citar-embark-mode))
 
 (use-package biblio
-  :commands biblio-lookup)
+  :bind ("C-c s r" . biblio-lookup))
 
 (defun my/biblio-lookup-crossref ()
     (interactive)

@@ -4,10 +4,25 @@
 
 ;;; Code:
 
-(use-package meow
-  :preface
-  (defun meow-setup ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+(use-package meow-core
+  :diminish meow-normal-mode meow-insert-mode
+  :hook (after-init . meow-global-mode))
+
+(use-package meow-var
+  :after meow-core
+  :config
+  (add-to-list 'meow-mode-state-list '(nov-mode . normal))
+  (setq meow-use-clipboard t))
+
+(use-package meow-util
+  :after meow-core)
+
+(use-package meow-command
+  :bind ("s-/" . meow-comment))
+
+(use-package meow-helpers
+  :after meow-core
+  :config
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
    '("k" . meow-prev)
@@ -75,7 +90,8 @@
    '("O" . meow-to-block)
    '("p" . meow-yank)
    '("q" . meow-quit)
-   '("Q" . meow-goto-line)
+   ;; '("Q" . meow-goto-line)
+   '("Q" . consult-outline)
    '("r" . meow-replace)
    '("R" . meow-swap-grab)
    '("s" . meow-kill)
@@ -83,6 +99,7 @@
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
    '("v" . meow-visit)
+   '("V" . ace-pinyin-dwim)
    '("w" . meow-mark-word)
    '("W" . meow-mark-symbol)
    '("x" . meow-line)
@@ -92,13 +109,6 @@
    '("z" . meow-pop-selection)
    '("'" . repeat)
    '("<escape>" . ignore)))
-  :diminish meow-normal-mode meow-insert-mode
-  :config
-  (add-to-list 'meow-mode-state-list '(nov-mode . normal))
-  (setq meow-use-clipboard t)
-  (global-set-key (kbd "s-/") 'meow-comment)
-  (meow-setup)
-  (meow-global-mode 1))
 
 (provide 'init-meow)
 ;;; init-meow.el ends here.

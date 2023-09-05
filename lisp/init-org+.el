@@ -53,7 +53,10 @@
               (math-preview-all)))))))
 
 (use-package org-download
-  :commands org-download-clipboard org-download-yank org-download-screenshot org-download-rename-at-point
+  :bind (("C-c d c" . org-download-clipboard)
+         ("C-c d y" . org-download-yank)
+         ("C-c d s" . org-download-screenshot)
+         ("C-c d r" . org-download-rename-at-point))
   :init
   (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
   (setq org-download-heading-lvl nil)

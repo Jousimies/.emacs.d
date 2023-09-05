@@ -79,8 +79,11 @@
   :diminish whitespace-cleanup-mode
   :hook (after-init . global-whitespace-cleanup-mode))
 
+(use-package ace-pinyin
+  :hook (after-init . ace-pinyin-global-mode))
+
 (use-package expand-region
-  :commands er/expand-region)
+  :bind ("C-=" . er/expand-region))
 
 (use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)
@@ -100,10 +103,62 @@
 (use-package delsel
   :hook (text-mode . delete-selection-mode))
 
-(use-package select
-  :defer t
+(use-package tempel
+  :bind (("M-+" . tempel-complete)
+         ("M-*" . tempel-insert))
   :config
-  (setq select-enable-primary t))
+  (setq tempel-path `("~/.emacs.d/template/tempel"
+                      ,(expand-file-name "config/tempel" my-galaxy))))
+
+(use-package rime
+  :hook ((meow-insert-enter . (lambda ()
+                                (rime-activate nil)))
+         (meow-insert-enter . (lambda ()
+                                (if (and (not (rime--should-inline-ascii-p))
+                                         (eq major-mode 'org-mode)
+                                         (not (org-at-clock-log-p))
+                                         (not (org-at-table-p))
+                                         (not (org-at-timestamp-p))
+                                         (not (and (bolp) (org-on-heading-p))))
+                                    (progn
+                                      (activate-input-method "rime")
+                                      (im-change-cursor-color)))))
+         (meow-insert-exit . (lambda ()
+                               (deactivate-input-method)
+                               (set-cursor-color (foreground-color-at-point)))))
+  :config
+  (setq rime-title " ")
+  (defvar im-cursor-color "red"
+    "The color for input method.")
+
+  (defun im--chinese-p ()
+    "Check if the current input state is Chinese."
+    (if (featurep 'rime)
+        (and (rime--should-enable-p)
+             (not (rime--should-inline-ascii-p))
+             current-input-method)
+      current-input-method))
+
+  (defun im-change-cursor-color ()
+    "Set cursor color depending on input method."
+    (interactive)
+    (set-cursor-color (if (im--chinese-p)
+                          im-cursor-color
+                        (foreground-color-at-point))))
+
+  (setq default-input-method "rime")
+  (setq rime-user-data-dir "~/Library/Rime/")
+  (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
+  (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
+  (setq rime-disable-predicates '(rime-predicate-prog-in-code-p
+                                  rime-predicate-org-in-src-block-p
+                                  rime-predicate-org-latex-mode-p
+                                  rime-predicate-tex-math-or-command-p))
+  (setq rime-inline-predicates '(rime-predicate-space-after-cc-p
+                                 rime-predicate-after-alphabet-char-p)))
+
+(use-package rime-regexp
+  :hook (minibuffer-mode . rime-regexp-mode))
 
 (provide 'init-crud)
 ;;; init-crud.el ends here.

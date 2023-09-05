@@ -5,12 +5,14 @@
 ;;; Code:
 
 (use-package dashboard
+  :demand t
   :init
   (add-to-list 'display-buffer-alist '("\\*dashboard\\*"
                                        (display-buffer-in-tab)
 
                                        (window-parameters
                                         (mode-line-format . none))))
+  :bind ("C-c b d" . dashboard-open)
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-icon-type 'nerd-icons)
@@ -24,7 +26,8 @@
                           (bookmarks . 5)
                           (registers . 5)))
   (require 'cal-china)
-  (defvar dashboard-banner '("xemacs_color.svg" "gnu_color.svg" "banner.txt"))
+  ;; (defvar dashboard-banner '("xemacs_color.svg" "gnu_color.svg" "banner.txt"))
+  (defvar dashboard-banner '("banner.txt"))
   (let* ((ny (calendar-gregorian-from-absolute
               (cadr (assoc 1 (calendar-chinese-year
                               (string-to-number
@@ -37,8 +40,8 @@
         (setq dashboard-startup-banner (expand-file-name "src/banner2.txt" user-emacs-directory))
       (setq dashboard-startup-banner (expand-file-name (concat "src/" file) user-emacs-directory))
       )))
-  ;; (setq dashboard-set-navigator nil)
-  ;; (run-with-idle-timer (* 5 60) t 'dashboard-open))
+;; (setq dashboard-set-navigator nil)
+;; (run-with-idle-timer (* 5 60) t 'dashboard-open))
 
 (provide 'init-dashboard)
 ;;; init-dashboard.el ends here.

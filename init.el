@@ -74,23 +74,17 @@
   (setq use-package-verbose t)
   (require 'init-benchmark))
 
+(require 'init-dashboard)
+
 (require 'init-core)
 (require 'init-builtin)
-(require 'init-font)
-(require 'init-theme)
-(require 'init-meow)
-(require 'init-mode-line)
-(require 'init-tab)
-(require 'init-frame)
 (require 'init-ui)
-(require 'init-input-method)
+(require 'init-meow)
 (require 'init-crud)
-;; (require 'init-evil)
 (require 'init-buffer)
 (require 'init-completion)
 (require 'init-dired)
 (require 'init-search)
-(require 'init-template)
 (require 'init-dict)
 (require 'init-lsp)
 (require 'init-git)
@@ -106,10 +100,6 @@
 (require 'init-latex)
 (require 'init-finance)
 (require 'init-telega)
-
-(setq custom-file (locate-user-emacs-file "custom.el"))
-(when (file-exists-p custom-file)
-  (load custom-file))
 
 (setq-default initial-scratch-message
               (propertize

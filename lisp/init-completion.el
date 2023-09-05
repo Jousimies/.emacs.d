@@ -16,9 +16,10 @@
 
 (setq tab-always-indent 'complete)
 
-(use-package orderless
-  :config
-  (setq completion-styles '(orderless partial-completion)))
+(add-hook 'minibuffer-mode-hook
+          #'(lambda ()
+              (require 'orderless)
+              (setq completion-styles '(orderless partial-completion))))
 
 (use-package vertico
   ;; :load-path "~/.emacs.d/packages/vertico"
@@ -88,7 +89,7 @@
          ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
          ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
          ([remap yank-pop] . consult-yank-pop)
-         ("C-c n g" . consult-ripgrep)
+         ("C-c s g" . consult-ripgrep)
          :map minibuffer-mode-map
          ("C-r" . consult-history)))
 

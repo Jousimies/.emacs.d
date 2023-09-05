@@ -4,33 +4,6 @@
 
 ;;; Code:
 
-(defun toggle-proxy ()
-  "Toggle proxy for the url.el library."
-  (interactive)
-  (if url-proxy-services
-      (proxy-disable)
-    (proxy-enable)))
-
-(defun proxy-enable ()
-  "Enable proxy."
-  (interactive)
-  (setq url-proxy-services
-        '(("http" . "127.0.0.1:8118")
-          ("https" . "127.0.0.1:8118")
-          ("socks" . "127.0.0.1:8118")
-          ("no_proxy" . "0.0.0.0")))
-  (message "Proxy enabled! %s" (car url-proxy-services)))
-
-(defun proxy-disable ()
-  "Disable proxy."
-  (interactive)
-  (if url-proxy-services
-      (setq url-proxy-services nil))
-  (message "Proxy disabled!"))
-
-(run-with-idle-timer 2 nil (lambda ()
-                             (proxy-enable)))
-
 (use-package advance-words-count
   :bind ("M-=" . advance-words-count))
 
@@ -58,33 +31,6 @@ This function requires ImageMagick's convert utility to be installed and availab
                          epsfile
                          pngfile)))
       (message "\n%d files were converted from EPS to PNG format." n))))
-
-(defun xah-show-in-desktop ()
-  "Show current file in desktop.
-This command can be called when in a file buffer or in `dired'."
-  (interactive)
-  (let (($path (if (buffer-file-name) (buffer-file-name) default-directory)))
-    (cond
-     ((string-equal system-type "windows-nt")
-      (shell-command
-       (format "PowerShell -Command Start-Process Explorer -FilePath %s"
-               (shell-quote-argument default-directory))))
-     ((string-equal system-type "darwin")
-      (if (eq major-mode 'dired-mode)
-          (let (($files (dired-get-marked-files )))
-            (if (eq (length $files) 0)
-                (shell-command (concat "open " (shell-quote-argument (expand-file-name default-directory ))))
-              (shell-command (concat "open -R " (shell-quote-argument (car (dired-get-marked-files )))))))
-        (shell-command
-         (concat "open -R " (shell-quote-argument $path)))))
-     ((string-equal system-type "gnu/linux")
-      (let ((process-connection-type nil)
-            (openFileProgram (if (file-exists-p "/usr/bin/gvfs-open")
-                                 "/usr/bin/gvfs-open"
-                               "/usr/bin/xdg-open")))
-        (start-process "" nil openFileProgram (shell-quote-argument $path)))))))
-
-(global-set-key (kbd "C-c f d") 'xah-show-in-desktop)
 
 (defun jf/org-link-remove-link ()
   "Remove the link part of an `org-mode' link at point and keep only the description."
@@ -149,3 +95,9 @@ This command can be called when in a file buffer or in `dired'."
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.
+
+(defun my/ocr ()
+"OCR with Macos system."
+  (interactive)
+  (shell-command "shortcuts run \"OCR Selected Area\"")
+  (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))

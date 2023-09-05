@@ -4,31 +4,16 @@
 
 ;;; Code:
 
-(use-package vterm
+(use-package vterm-toggle
+  :bind (("<f5>" . vterm-toggle)
+         ("C-<f5>" . vterm-toggle-cd))
   :init
   (add-to-list 'display-buffer-alist
-               '("^\\*vterm"
-                 (display-buffer-in-side-window)
-                 (window-height . 0.5)
-                 (side . bottom)
-                 (slot . -1)))
-  :bind ("<f5>" . toggle-vterm)
-  :config
-  (setq vterm-kill-buffer-on-exit t)
-  (setq vterm-max-scrollback 5000)
-  ;; (defun toggle-vterm ()
-  ;;   "Toggle vterm."
-  ;;   (interactive)
-  ;;   (let ((buf (concat "*vterm-" (buffer-name))))
-  ;;     (if (get-buffer buf)
-  ;;         (switch-to-buffer buf)
-  ;;       (switch-to-buffer (get-buffer-create buf))
-  ;;       (vterm-mode))))
-  (defun toggle-vterm ()
-    "Toggle vterm."
-    (interactive)
-    (let ((buf (concat "*vterm-" (buffer-name))))
-      (vterm buf))))
+                 '("^\\*vterm"
+                   (display-buffer-in-side-window)
+                   (window-height . 0.5)
+                   (side . bottom)
+                   (slot . -1))))
 
 (provide 'init-shell)
 ;;; init-shell.el ends here.

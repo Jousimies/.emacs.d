@@ -174,46 +174,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (global-set-key (kbd "C-c n m") 'my/new-meeting)
 
-(use-package org-transclusion
-  :commands (org-transclusion-make-from-link
-             org-transclusion-add
-             org-transclusion-add-all
-             org-transclusion-remove
-             org-transclusion-remove-all
-             org-transclusion-refresh
-             org-transclusion-open-source
-             org-transclusion-live-sync-start)
-  :config
-  ;; https://github.com/nobiot/org-transclusion/issues/160#issuecomment-1377714791
-  (defun denote-org-transclusion-add (link plist)
-    (when (string= "denote" (org-element-property :type link))
-      (let* ((denote-id (org-element-property :path link))
-             (file-path (denote-get-path-by-id denote-id))
-             (new-link (with-temp-buffer
-                         (insert "file:")
-                         (insert file-path)
-                         (beginning-of-buffer)
-                         (org-element-link-parser))))
-        (org-transclusion-add-org-file new-link plist))))
-  (cl-pushnew 'denote-org-transclusion-add org-transclusion-add-functions)
-
-  (psearch-patch org-transclusion-make-from-link
-    (psearch-replace '`(string= type "id")
-                     '`(string= type "denote")))
-
-  (face-spec-set 'org-transclusion-fringe
-                 '((((background light))
-                    :foreground "black")
-                   (t
-                    :foreground "white"))
-                 'face-override-spec)
-  (face-spec-set 'org-transclusion-source-fringe
-                 '((((background light))
-                    :foreground "black")
-                   (t
-                    :foreground "white"))
-                 'face-override-spec))
-
 (use-package org-change
   :commands org-change-add)
 

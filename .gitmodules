@@ -361,9 +361,6 @@
 [submodule "packages/psearch.el"]
 	path = packages/psearch.el
 	url = https://github.com/twlz0ne/psearch.el.git
-[submodule "packages/popup-el"]
-	path = packages/popup-el
-	url = https://github.com/auto-complete/popup-el
 [submodule "packages/emacs-denote-refs"]
 	path = packages/emacs-denote-refs
 	url = https://codeberg.org/akib/emacs-denote-refs.git
@@ -457,3 +454,9 @@
 [submodule "packages/writegood-mode"]
 	path = packages/writegood-mode
 	url = https://github.com/bnbeckwith/writegood-mode.git
+[submodule "packages/vterm-toggle"]
+	path = packages/vterm-toggle
+	url = https://github.com/jixiuf/vterm-toggle.git
+[submodule "packages/ace-pinyin"]
+	path = packages/ace-pinyin
+	url = https://github.com/cute-jumper/ace-pinyin.git

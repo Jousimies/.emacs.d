@@ -17,7 +17,6 @@
     (setq insert-directory-program "gls")
     (setq dired-listing-switches
           "-l --almost-all --human-readable --group-directories-first --no-group"))
-
   (setq dired-dwim-target t)
   (setq dired-auto-revert-buffer #'dired-buffer-stale-p)
   (setq dired-recursive-copies 'always)
@@ -81,6 +80,33 @@
               ("C-c l" . image-dired))
   :init
   (setq image-dired-dir (expand-file-name "cache/image-dired" user-emacs-directory)))
+
+(defun xah-show-in-desktop ()
+  "Show current file in desktop.
+This command can be called when in a file buffer or in `dired'."
+  (interactive)
+  (let (($path (if (buffer-file-name) (buffer-file-name) default-directory)))
+    (cond
+     ((string-equal system-type "windows-nt")
+      (shell-command
+       (format "PowerShell -Command Start-Process Explorer -FilePath %s"
+               (shell-quote-argument default-directory))))
+     ((string-equal system-type "darwin")
+      (if (eq major-mode 'dired-mode)
+          (let (($files (dired-get-marked-files )))
+            (if (eq (length $files) 0)
+                (shell-command (concat "open " (shell-quote-argument (expand-file-name default-directory ))))
+              (shell-command (concat "open -R " (shell-quote-argument (car (dired-get-marked-files )))))))
+        (shell-command
+         (concat "open -R " (shell-quote-argument $path)))))
+     ((string-equal system-type "gnu/linux")
+      (let ((process-connection-type nil)
+            (openFileProgram (if (file-exists-p "/usr/bin/gvfs-open")
+                                 "/usr/bin/gvfs-open"
+                               "/usr/bin/xdg-open")))
+        (start-process "" nil openFileProgram (shell-quote-argument $path)))))))
+
+(global-set-key (kbd "C-c f d") 'xah-show-in-desktop)
 
 (provide 'init-dired)
 ;;; init-dired.el ends here.
