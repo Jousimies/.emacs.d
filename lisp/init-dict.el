@@ -62,7 +62,7 @@
   (if arg
       (sdcv-search-pointer)
     (sdcv-search-pointer+)))
-(global-set-key (kbd "s-3") 'my/search-dictionary)
+(global-set-key (kbd "M-#") 'my/search-dictionary)
 (global-set-key (kbd "C-c l i") 'sdcv-search-input)
 
 (use-package powerthesaurus

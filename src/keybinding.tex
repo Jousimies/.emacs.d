@@ -61,23 +61,23 @@
 
   \subsection{Buffers}
   \begin{keylist}
-    \item[C-x b] consult-buffer
-    \item[C-x C-b] ibuffer
+    \item[C-x C-b] consult-buffer
+    \item[C-x b] ibuffer
     \item[C-c b s] switch-to-scratch
     \item[C-c b m] switch-to-message
-    \item[gs] tab-switch
-    \item[gb] tabspaces-switch-to-buffer
+    \item[C-c b b] tab-switch
+    \item[C-c b t] tabspaces-switch-to-buffer
   \end{keylist}
 
   \subsection{Files}
   \begin{keylist}
     \item[C-c f r] recentf-open-files
-    \item[C-x r j] jump-to-register
-    \item[gf] find-file-at-point
-    \item[gF] evil-find-file-at-point-with-line
+    \item[C-c f f] find-file-at-point
+    \item[C-c f d] xah-show-in-desktop
+    \item[C-c f o] embark-open-externally
   \end{keylist}
 
-  \subsection{Denote and roam}
+  \subsection{Denote}
   \begin{keylist}
     \item[C-c n n] consult-notes
     \item[C-c n a] my/new-article
@@ -86,31 +86,42 @@
     \item[C-c n m] my/new-meeting
     \item[C-c n o] my/denote-outline
     \item[C-c n t] my/denote-term
-    \item[C-c n r] citar-create-note
-    \item[C-c r f] org-roam-node-find
-    \item[C-c r i] org-roam-node-insert
+    \item[C-c n r] denote-rename-file-using-front-matter
+    \item[C-c n i] denote-insert-link
+    \item[C-c n k] denote-keywords-add
+    \item[C-c n K] denote-keywords-remove
+  \end{keylist}
+
+  \subsection{Languages}
+  \begin{keylist}
+    \item[M-\#] my/search-dictionary
+    \item[C-u M-\#] \humanreadable{Show dict result in buffer}
+    \item[C-c l l] my/gts-do-translate
+    \item[C-u C-c l l] \humanreadable{Copy translate result to kill ring}
+    \item[C-c l i] sdcv-search-input
+    \item[C-c l p] powerthesaurus-lookup-dwim
+    \item[C-c l r] dictionary-overlay-toggle
+    \item[C-c l R] dictionary-overlay-render-buffer
+    \item[C-c l s] popweb-dict-say-word
+    \item[C-c l S] emacs-azure-tts-sentence
+    \item[C-c l w] writegood-mode
   \end{keylist}
 
   \subsection{Other}
   \begin{keylist}
-    \item[C-x o] other-window
-    \item[M-\#] dictionary-lookup-definition
+    \item[M-o] ace-window
     \item[M-*] tempel-insert
     \item[M-+] tempel-complete
     \item[M-n] my/scroll-other-windown
     \item[M-p] my/scroll-other-windown-down
 
-    \item[f1] calibredb
     \item[f2] ebib
 
     \item[f10] org-capture
-    \item[C-f10] ekg-capture
-    \item[M-f10] ekg-capture-url
 
     \item[f12] org-gtd-engage
     \item[C-f12] org-gtd-process-inbox
     \item[s-f12] org-gtd-show-stuck-projects
-    \item[M-f12] pomm
 
     \item[s-z] vundo
     \item[s-k] kill-current-buffer
@@ -144,68 +155,11 @@
   \subsection{dired-mode-map}
   \begin{keylist}
     \item[s-.] dired-omit-mode
-    \item[e] xah-show-in-desktop
     \item[C-'] my/org-attach-visit-headline-from-dired
+    \item[C-;] prot-dired-limit-regexp
     \end{keylist}
 
-  \subsection{evil-visual-state-map}
-  \begin{keylist}
-    \item[v] er/expand-region
-  \end{keylist}
-
-  \subsection{flyspell-mode-map}
-  \begin{keylist}
-    \item[C-;] flyspell-correct-wrapper
-  \end{keylist}
-
-  \subsection{org-mode-map}
-  \begin{keylist}
-    \item[C-c l] org-store-link
-    \item[C-c C-x @] citar-insert-citation
-    \item[zw] olivetti-mode
-  \end{keylist}
-
-  \subsection{calibredb-search-mode-map}
-  \begin{keylist}
-    \item[C-c l] calibredb-copy-as-org-link
-  \end{keylist}
-
-  \subsection{mu4e-headers-mode-map}
-  \begin{keylist}
-    \item[C-c l] org-store-link
-  \end{keylist}
-
-  \subsection{org-agenda-mode-map}
-  \begin{keylist}
-    \item[C-j] org-agenda-next-line
-    \item[C-k] org-agenda-previous-line
-  \end{keylist}
-
-  \subsection{beacount-mode-map}
-  \begin{keylist}
-    \item[z f] beancount-fava
-  \end{keylist}
-
-
-  \section{g prefix}
-  \subsection{Language}
-  \begin{keylist}
-    \item[g l d] osx-dictionary-search-pointer
-    \item[gll \& C-u gll] my/gts-do-translate
-    \item[g l L] lingva-translate
-    \item[g l P] sdcv-search-pointer
-    \item[g l p] sdcv-search-pointer+
-    \item[g l t] powerthesaurus-lookup-dwim
-    \item[g l r] dictionary-overlay-render-buffer
-    \item[g l k] dictionary-overlay-mark-word-unknown
-    \item[g l K] dictionary-overlay-mark-word-known
-  \end{keylist}
-  \subsection{Links}
-  \begin{keylist}
-    \item[g x] browse-url-at-point
-    \item[g X] jf/org-link-remove-link
-  \end{keylist}
-\end{multicols}
+  \end{multicols}
 \end{document}
 
 %%% Local Variables:
