@@ -83,10 +83,13 @@
   (setq async-shell-command-display-buffer nil))
 
 (use-package files
-  :defer t
+  ;; :defer t
+  :hook (after-init . auto-save-visited-mode)
   :config
   (setq trash-directory "~/.Trash")
   (setq auto-save-default nil)
+  (setq auto-save-visited-interval 1)
+  (setq save-silently t)
   (setq large-file-warning-threshold nil)
   (setq confirm-kill-processes nil)
   (setq confirm-kill-emacs nil)

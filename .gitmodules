@@ -367,9 +367,6 @@
 [submodule "packages/lsp-bridge"]
 	path = packages/lsp-bridge
 	url = https://github.com/manateelazycat/lsp-bridge.git
-[submodule "packages/auto-save"]
-	path = packages/auto-save
-	url = https://github.com/manateelazycat/auto-save.git
 [submodule "packages/mpv.el"]
 	path = packages/mpv.el
 	url = https://github.com/kljohann/mpv.el.git

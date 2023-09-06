@@ -4,12 +4,6 @@
 
 ;;; Code:
 
-(use-package auto-save
-  :hook (after-init . auto-save-enable)
-  :config
-  (setq auto-save-silent t)
-  (setq auto-save-delete-trailing-whitespace t))
-
 (use-package undo-fu-session
   :hook (after-init . undo-fu-session-global-mode)
   :config
