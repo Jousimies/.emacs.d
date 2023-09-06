@@ -59,24 +59,34 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-;") 'prot-dired-limit-regexp))
 
-(defun my/menu--org-capture-safari ()
+(defun my/org-capture-safari-literature ()
   "Create an `literature' denote entry from Safari page."
   (interactive)
-  (let* ((link-title-pair (grab-mac-link-safari-1))
-         (url (car link-title-pair))
-         (title (cadr link-title-pair))
-         (keywords (denote-keywords-prompt)))
-    (denote title
-            keywords
-            'org
-            (expand-file-name "literature" (denote-directory))
-            nil)
-    ;; (my/org-insert-web-page-archive)
-    (my/denote-reference-heading)
-    (my/link-grab)
-    (forward-line -3)))
+  (let* ((url (car (grab-mac-link-safari-1)))
+         (title (cadr (grab-mac-link-safari-1)))
+         (keywords (denote-keywords-prompt))
+         (ID (format-time-string "%Y%m%dT%H%M%S"))
+         (new-title (concat ID "--" title))
+         (file-path (concat my/web_archive title ".html"))
+         (file-new-path (concat my/web_archive new-title ".html")))
+    (if (not (file-exists-p file-path))
+        (message "Please save webpage first!!!")
+      ;; (x-popup-dialog (selected-frame) '("Please save web page first!!!" ("OK" . :yes))
+      (rename-file file-path file-new-path)
+      (denote title
+              keywords
+              'org
+              (expand-file-name "literature" (denote-directory))
+              nil)
+      (save-excursion
+        (goto-char (point-max))
+        (insert "* ")
+        (org-insert-link nil file-new-path title)
+        (org-set-property "URL" url)
+        (org-set-tags "Reference")
+        (my/auto-change-file-paths)))))
 
-(global-set-key (kbd "M-<f10>") 'my/menu--org-capture-safari)
+(global-set-key (kbd "M-<f10>") 'my/org-capture-safari-literature)
 
 (cl-defun my/denote-subdirectory (subdirectory)
   (denote

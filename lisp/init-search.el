@@ -67,43 +67,7 @@
 (defun my/link-grab ()
   (interactive)
   (grab-mac-link-dwim 'safari))
-;;;###autoload
-
-(defun my--buffer-contain-reference-heading-p ()
-  "Delete the 'References' heading and its content in the current buffer if it exists."
-  (org-element-map (org-element-parse-buffer 'headline) 'headline
-    (lambda (headline)
-      (string= (org-element-property :title headline) "References"))
-    nil
-    'first-match))
-
-(defun my/org-insert-web-page-archive ()
-  "Insert a file about web page archived locally into an Org file as reference."
-  (interactive)
-  (let* ((url (car (grab-mac-link-safari-1)))
-         (title (cadr (grab-mac-link-safari-1)))
-         (ID (format-time-string "%Y%m%dT%H%M%S"))
-         (new-title (concat ID "--" title))
-         (file-path (concat my/web_archive title ".html"))
-         (file-new-path (concat my/web_archive new-title ".html")))
-    (when (my--buffer-contain-reference-heading-p)
-      (org-element-map (org-element-parse-buffer 'headline) 'headline
-        (lambda (headline)
-          (let ((start (org-element-property :begin headline))
-                (end (org-element-property :end headline)))
-            (delete-region start end)))
-        nil))
-    (save-excursion
-      (goto-char (point-max))
-      (if (file-exists-p file-path)
-          (progn
-            (rename-file file-path file-new-path)
-            (insert "* ")
-            (org-insert-link nil file-new-path title)
-            (org-set-property "URL" url)
-            (org-set-tags "Reference")
-            (my/auto-change-file-paths))
-        (message "Please save web page first.")))))
+(global-set-key (kbd "C-<f10>") 'my/link-grab)
 
 (use-package simple-httpd
   :bind ("M-g h" . httpd-serve-directory))
