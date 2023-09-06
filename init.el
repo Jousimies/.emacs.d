@@ -76,12 +76,11 @@
 
 (require 'init-dashboard)
 
-(require 'init-core)
+(require 'init-base)
 (require 'init-builtin)
 (require 'init-ui)
 (require 'init-meow)
 (require 'init-crud)
-(require 'init-buffer)
 (require 'init-completion)
 (require 'init-dired)
 (require 'init-search)

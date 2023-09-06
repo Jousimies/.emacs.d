@@ -95,6 +95,7 @@
    '("r" . meow-replace)
    '("R" . meow-swap-grab)
    '("s" . meow-kill)
+   '("S" . my/add-symbol-to-region)
    '("t" . meow-till)
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)

@@ -75,7 +75,7 @@
   (setq diary-comment-end "")
   (setq diary-nonmarking-symbol "!")
 
-  (setq diary-file (expand-file-name "diary/diary.org" my-galaxy)))
+  (setq diary-file (expand-file-name "logs/diary.org" my-galaxy)))
 
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.

@@ -192,6 +192,45 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
 
 (add-hook 'after-save-hook 'auto-export-blog)
 
+(defun add-symbol-to-region (beg end symbol)
+  (save-excursion
+    (goto-char end)
+    (insert (concat symbol " "))
+    (goto-char beg)
+    (insert (concat " " symbol))))
+
+(defun add-stars-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "*"))
+
+(defun add-equal-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "="))
+
+(defun add-underline-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "_"))
+
+(defun add-italic-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "/"))
+
+(defun add-plus-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "+"))
+
+;;;###autoload
+(transient-define-prefix my/add-symbol-to-region ()
+  "Add symbol."
+  ["Commands"
+   ("*" "star" add-stars-to-region)
+   ("=" "equal" add-equal-to-region)
+   ("_" "underline" add-underline-to-region)
+   ("+" "plus" add-plus-to-region)
+   ("/" "italic" add-italic-to-region)
+   ]
+  [("q" "Quit"           transient-quit-one)])
+
 (use-package org-anki
   :commands org-anki-sync-entry org-anki-sync-all org-anki-delete-entry)
 

@@ -187,5 +187,17 @@
   (setq transient-values-file (expand-file-name "cache/transient/values.el" user-emacs-directory))
   (setq transient-history-file (expand-file-name "cache/transient/history.el" user-emacs-directory)))
 
+(use-package ibuffer
+  :bind ("C-x C-b" . ibuffer)
+  :config
+  (setq ibuffer-default-sorting-mode 'major-mode))
+
+(use-package ibuf-ext
+  :hook (ibuffer-mode . ibuffer-auto-mode))
+
+(use-package gc-buffers
+  :diminish gc-buffers-mode
+  :hook (after-init . gc-buffers-mode))
+
 (provide 'init-builtin)
 ;;; init-builtin.el ends here.

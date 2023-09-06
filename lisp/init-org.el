@@ -151,38 +151,37 @@
         '(("i" "GTD Inbox"
            entry (file (lambda () (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org")))
            "* %?\n%U\n" :time-prompt t :tree-type week)
-          ("I" "NC Inbox"
-           plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/inbox.org")))
-           "**** %?\n%U\n" :time-prompt t :tree-type week)
+          ;; ("I" "NC Inbox"
+          ;;  plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/inbox.org")))
+          ;;  "**** %?\n%U\n" :time-prompt t :tree-type week)
           ("w" "Work log"
            plain
-           (file+olp+datetree (lambda () (concat my-galaxy "/denote/worklog.org")))
+           (file+olp+datetree (lambda () (concat my-galaxy "/logs/worklog.org")))
            (file "~/.emacs.d/template/tpl-worklog")
            :time-prompt t :tree-type week)
-          ("p" "Daily Plan"
-           plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/plan.org")))
-           "%?\n%U\n" :time-prompt t :tree-type week)
+          ;; ("p" "Daily Plan"
+          ;;  plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/plan.org")))
+          ;;  "%?\n%U\n" :time-prompt t :tree-type week)
           ("r" "Reflection"
            plain
-           (file+olp+datetree (lambda () (concat my-galaxy "/roam/main/reflection.org")))
+           (file+olp+datetree (lambda () (concat my-galaxy "/logs/reflection.org")))
            (file "~/.emacs.d/template/tpl-daily-reflection")
            :time-prompt t :tree-type week)
-          ("a" "Anki Deck")
-          ("ae" "Deck: English"
-           entry (file (lambda ()
-                         (concat my-galaxy "/anki/anki_english.org")))
-           "* %?\n" :jump-to-captured t)
-          ("ac" "Deck: Civil Engineering"
-           entry (file (lambda ()
-                         (concat my-galaxy "/anki/anki_engineering.org")))
-           "* %?\n" :jump-to-captured t)
-          ("s" "Code snippets"
-           entry (file (lambda ()
-                         (concat my-galaxy "/scripts/snippets.org")))
-           "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
-          ;; ("l" "Lists")
+          ;; ("a" "Anki Deck")
+          ;; ("ae" "Deck: English"
+          ;;  entry (file (lambda ()
+          ;;                (concat my-galaxy "/anki/anki_english.org")))
+          ;;  "* %?\n" :jump-to-captured t)
+          ;; ("ac" "Deck: Civil Engineering"
+          ;;  entry (file (lambda ()
+          ;;                (concat my-galaxy "/anki/anki_engineering.org")))
+          ;;  "* %?\n" :jump-to-captured t)
+          ;; ("s" "Code snippets"
+          ;;  entry (file (lambda ()
+          ;;                (concat my-galaxy "/scripts/snippets.org")))
+          ;;  "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
           ("m" "Movie"
-           entry (file+headline (lambda () (concat my-galaxy "/roam/main/watchlist.org")) "Watching Lists")
+           entry (file+headline (lambda () (concat my-galaxy "/logs/watchlist.org")) "Watching Lists")
            "* %?
   :PROPERTIES:
   :GENRE: %^{Film genre|Action|Adventure|Comedy|Drama|Fantasy|Horror|Musicals|Mystery|Romance|Science fiction|Sports|Thriller}

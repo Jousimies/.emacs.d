@@ -93,11 +93,11 @@ This function requires ImageMagick's convert utility to be installed and availab
       (insert new-url))
     (error "Not on a Youtube link")))
 
-(provide 'init-misc)
-;;; init-misc.el ends here.
-
 (defun my/ocr ()
 "OCR with Macos system."
   (interactive)
   (shell-command "shortcuts run \"OCR Selected Area\"")
   (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
+
+(provide 'init-misc)
+;;; init-misc.el ends here.
