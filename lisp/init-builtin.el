@@ -17,6 +17,7 @@
 (setq next-screen-context-lines 5)
 (setq frame-inhibit-implied-resize t)
 (setq inhibit-compacting-font-caches t)
+(setq frame-resize-pixelwise t)
 (setq inhibit-quit nil)
 (setq fast-but-imprecise-scrolling t)
 (setq scroll-preserve-screen-position 'always)

@@ -27,7 +27,7 @@
 (setq byte-compile-warnings nil)
 
 (fset 'display-startup-echo-area-message 'ignore)
-;; (load-theme 'modus-vivendi t)
+
 (defun my/apply-theme (appearance)
   "Load theme, taking current system APPEARANCE into consideration."
   (mapc #'disable-theme custom-enabled-themes)

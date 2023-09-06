@@ -142,7 +142,7 @@
                          (blink-cursor-mode -1)))
          (after-init . window-divider-mode))
   :config
-  (add-to-list 'initial-frame-alist '(alpha . (90 . 100)))
+  (add-to-list 'initial-frame-alist '(alpha . (85 . 100)))
   (face-spec-set 'window-divider
                  '((((background light))
                     :foreground "#000000")
