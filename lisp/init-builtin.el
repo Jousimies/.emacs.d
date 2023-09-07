@@ -94,7 +94,7 @@
   (setq large-file-warning-threshold nil)
   (setq confirm-kill-processes nil)
   (setq confirm-kill-emacs nil)
-  ;; (setq make-backup-files t)
+  (setq make-backup-files nil)
   ;; (setq backup-directory-alist '(("." . "~/.emacs.d/cache/backups")))
   (setq view-read-only t)
   (setq kill-read-only-ok t)

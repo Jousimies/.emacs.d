@@ -181,12 +181,6 @@
 [submodule "packages/auctex-latexmk"]
 	path = packages/auctex-latexmk
 	url = https://github.com/emacsmirror/auctex-latexmk.git
-[submodule "packages/tomelr"]
-	path = packages/tomelr
-	url = https://github.com/kaushalmodi/tomelr.git
-[submodule "packages/triples"]
-	path = packages/triples
-	url = https://github.com/ahyatt/triples.git
 [submodule "packages/engine-mode"]
 	path = packages/engine-mode
 	url = https://github.com/hrs/engine-mode.git
