@@ -192,6 +192,10 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
   (interactive "r")
   (add-symbol-to-region beg end "*"))
 
+(defun add-verbatim-to-region (beg end)
+  (interactive "r")
+  (add-symbol-to-region beg end "~"))
+
 (defun add-equal-to-region (beg end)
   (interactive "r")
   (add-symbol-to-region beg end "="))
@@ -214,6 +218,7 @@ https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/
   ["Commands"
    ("*" "star" add-stars-to-region)
    ("=" "equal" add-equal-to-region)
+   ("~" "verbatim" add-verbatim-to-region)
    ("_" "underline" add-underline-to-region)
    ("+" "plus" add-plus-to-region)
    ("/" "italic" add-italic-to-region)
