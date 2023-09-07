@@ -284,5 +284,8 @@
   (setq org-clock-persist-query-resume nil)
   (setq org-clock-report-include-clocking-task t))
 
+(use-package org-indent
+  :hook (org-mode . org-indent-mode))
+
 (provide 'init-org)
 ;;; init-org.el ends here.
