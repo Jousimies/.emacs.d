@@ -9,6 +9,25 @@
   :custom
   (org-cite-global-bibliography my/reference-lists))
 
+(use-package bibtex
+  :mode ("\\.bib\\'" . bibtex-mode)
+  :config
+  (setq bibtex-align-at-equal-sign t)
+  (setq bibtex-autokey-year-length 4
+        bibtex-autokey-name-year-separator "-"
+        bibtex-autokey-year-title-separator "-"
+        bibtex-autokey-titleword-separator "-"
+        bibtex-autokey-titlewords 2
+        bibtex-autokey-titlewords-stretch 1
+        bibtex-autokey-titleword-length 5))
+
+(use-package zotra
+  :bind (("C-c r a" . zotra-add-entry-from-url)
+         ("C-c r A" . zotra-add-entry-from-search))
+  :config
+  (setq zotra-cli-command "~/zotra-cli/bin/index.js")
+  (setq zotra-default-bibliography (expand-file-name "bibtexs/References.bib" my-galaxy)))
+
 (use-package ebib
   :bind ("<f2>" . ebib)
   :custom
@@ -25,6 +44,7 @@
 
 (use-package citar
   :bind (("C-c r o" . citar-open-files)
+         ("C-c r O" . citar-open)
          ("C-c r n" . citar-create-note))
   :config
   (setq citar-bibliography my/reference-lists)
@@ -55,16 +75,8 @@
     (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point)))
 
 (use-package citar-embark
-  :diminish citar-embark-mode
   :after citar
   :hook (org-mode . citar-embark-mode))
-
-(use-package biblio
-  :bind ("C-c s r" . biblio-lookup))
-
-(defun my/biblio-lookup-crossref ()
-    (interactive)
-    (biblio-lookup 'biblio-crossref-backend))
 
 (provide 'init-bib)
 ;;; init-bib.el ends here.

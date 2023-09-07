@@ -96,15 +96,7 @@ of the box `(w h)' inside the box `(cw ch)'."
   (add-to-list 'display-buffer-alist '("\\*Outline"
                                        (display-buffer-in-side-window)
                                        (side . right)
-                                       (window-width . 0.5)
-                                       (window-parameters
-                                        (mode-line-format . none))))
-  (add-to-list 'display-buffer-alist '("\\*toc\\*"
-                                       (display-buffer-reuse-window display-buffer-in-side-window)
-                                       (side . left)
-                                       (window-parameters
-                                        (mode-line-format . none)
-                                        (delete-other-windows . t))))
+                                       (window-width . 0.5)))
   (add-to-list 'display-buffer-alist '((derived-mode . prog-mode)
                                        (display-buffer-in-tab)
                                        (tab-name . "Porg") (tab-group . "Prog")

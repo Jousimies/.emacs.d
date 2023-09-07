@@ -15,6 +15,9 @@
                      args)))
 
 (setq tab-always-indent 'complete)
+;; https://emacs-china.org/t/macos-save-silently-t/24086
+(setq inhibit-message-regexps '("^Saving" "^Wrote"))
+(setq set-message-functions '(inhibit-message))
 
 (add-hook 'minibuffer-mode-hook
           #'(lambda ()
@@ -35,9 +38,8 @@
 (use-package vertico-directory
   :bind (:map vertico-map
               ("C-h" . vertico-directory-up)))
-
-(use-package vertico-indexed
-  :hook (vertico-mode . vertico-indexed-mode))
+;; (use-package vertico-indexed
+;;   :hook (vertico-mode . vertico-indexed-mode))
 
 (use-package marginalia
   :hook ((minibuffer-setup . marginalia-mode)))
@@ -59,8 +61,9 @@
                  (width . 0.3)))
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
+                 (display-buffer-in-side-window)
+                 (side . right)
+                 (width . 0.3))))
 
 (use-package embark-consult
   :after embark consult)
@@ -129,8 +132,8 @@
 (use-package corfu-popupinfo
   :hook (corfu-mode . corfu-popupinfo-mode))
 
-(use-package corfu-prescient
-  :hook (corfu-mode . corfu-prescient-mode))
+;; (use-package corfu-prescient
+;;   :hook (corfu-mode . corfu-prescient-mode))
 
 (use-package kind-icon
   :commands kind-icon-margin-formatter

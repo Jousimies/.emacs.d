@@ -51,18 +51,14 @@
   :custom
   (register-preview-delay 0)
   :config
-  (set-register ?g (cons 'file (expand-file-name "todos/org-gtd-tasks.org" my-galaxy)))
+  (set-register ?g (cons 'file (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org/org-gtd-tasks.org" mobile-document)))
   (set-register ?b (cons 'file (expand-file-name "denote/books/20230301T211439--Book-lists-and-reading-record__reading.org" my-galaxy)))
-  (set-register ?e (cons 'file (concat my-galaxy "/denote/20230330T120149==5d2b3--rss-sources__elfeed_emacs.org")))
-  (set-register ?f (cons 'file (expand-file-name "finance/beans/finance.bean" my-galaxy)))
-  (set-register ?i (cons 'file (expand-file-name "inbox/inbox.org" my-galaxy)))
-  (set-register ?p (cons 'file (expand-file-name "inbox/plan.org" my-galaxy))))
+  (set-register ?f (cons 'file (expand-file-name "finance/beans/finance.bean" my-galaxy))))
 
 (use-package autorevert
   :hook (text-mode . global-auto-revert-mode))
 
 (use-package hungry-delete
-  :diminish hungry-delete-mode
   :custom
   (hungry-delete-chars-to-skip " \t\n\r\f\v")
   :hook ((text-mode . hungry-delete-mode)
@@ -101,6 +97,7 @@
                       ,(expand-file-name "config/tempel" my-galaxy))))
 
 (use-package rime
+  :commands rime--should-inline-ascii-p
   :hook ((input-method-activate . (lambda ()
                                     (rime-activate nil)))
          (meow-insert-enter . (lambda ()
@@ -116,8 +113,12 @@
          (meow-insert-exit . (lambda ()
                                (deactivate-input-method)
                                (set-cursor-color (foreground-color-at-point)))))
-  :config
+  :bind (:map rime-mode-map
+              ("M-j" . rime-force-enable))
+
+  :preface
   (setq rime-title " ")
+  :config
   (defvar im-cursor-color "red"
     "The color for input method.")
 

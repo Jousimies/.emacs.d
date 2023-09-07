@@ -4,23 +4,6 @@
 
 ;;; Code:
 
-(use-package tab-bar
-  :hook (after-init . tab-bar-mode)
-  :bind ("C-c b t" . tab-switch)
-  :config
-  (setq tab-bar-close-button-show nil)
-  (setq tab-bar-tab-hints nil)
-  (setq tab-bar-show nil))
-
-(use-package tabspaces
-  :bind ("C-c b b" . tabspaces-switch-to-buffer)
-  :hook (tab-bar . tabspaces-mode)
-  :config
-  (setq tabspaces-session-file
-        (expand-file-name "cache/tabsession.el" user-emacs-directory))
-  (setq tabspaces-include-buffers '())
-  (setq tabspaces-use-filtered-buffers-as-default t))
-
 (set-face-attribute 'default nil :font "Iosevka Term" :height 160)
 (when (display-graphic-p)
   (dolist (charset '(kana han cjk-misc bopomofo))
@@ -38,11 +21,27 @@
   :hook (marginalia-mode . nerd-icons-completion-marginalia-setup))
 
 (use-package nerd-icons-dired
-  :hook (dired-mode . nerd-icons-dired-mode)
-  :diminish nerd-icons-dired-mode)
+  :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package nerd-icons-ibuffer
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+
+(use-package tab-bar
+  :hook (after-init . tab-bar-mode)
+  :bind ("C-c b t" . tab-switch)
+  :config
+  (setq tab-bar-close-button-show nil)
+  (setq tab-bar-tab-hints nil)
+  (setq tab-bar-show nil))
+
+(use-package tabspaces
+  :bind ("C-c b b" . tabspaces-switch-to-buffer)
+  :hook (tab-bar . tabspaces-mode)
+  :config
+  (setq tabspaces-session-file
+        (expand-file-name "cache/tabsession.el" user-emacs-directory))
+  (setq tabspaces-include-buffers '())
+  (setq tabspaces-use-filtered-buffers-as-default t))
 
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
@@ -72,15 +71,13 @@
   (setq-default fill-column 90))
 
 (use-package paren
-  :diminish show-paren-mode
   :hook (text-mode . show-paren-mode)
   :config
   (setq show-paren-style 'parenthesis)
   (setq show-paren-context-when-offscreen 'overlay))
 
 (use-package rainbow-mode
-  :hook (prog-mode . rainbow-mode)
-  :diminish rainbow-mode)
+  :hook (prog-mode . rainbow-mode))
 
 (use-package pulse
   :preface
@@ -102,47 +99,14 @@
           (advice-add cmd :after #'my-pulse-momentary)))
 
 (use-package page-break-lines
-  :hook (org-mode . page-break-lines-mode)
-  :diminish page-break-lines-mode)
-
-(use-package echo-bar
-  :hook (after-init . echo-bar-mode)
-  :config
-  (setq echo-bar-minibuffer nil)
-  (setq echo-bar-right-padding 1)
-  (setq echo-bar-format '((:eval (if (buffer-modified-p)
-                                     (propertize (buffer-name) 'face 'font-lock-preprocessor-face)
-                                   (propertize (buffer-name) 'face 'bold)))
-                          (:eval (with-eval-after-load 'org
-                                   (when (org-clocking-p)
-                                     (propertize (format " [%s] (%s)"
-                                                         (org-duration-from-minutes
-                                                          (floor (org-time-convert-to-integer
-                                                                  (org-time-since org-clock-start-time))
-                                                                 60))
-                                                         org-clock-heading)
-                                                 'face 'org-clock-overlay))))
-                          " " (:eval
-                               (let ((sys (coding-system-plist buffer-file-coding-system)))
-                                 (if (memq (plist-get sys :category)
-                                           '(coding-category-undecided coding-category-utf-8))
-                                     "UTF-8"
-                                   (upcase (symbol-name (plist-get sys :name))))))
-                          " " (:eval (propertize (if (listp mode-name)
-                                                     (car mode-name)
-                                                   mode-name)
-                                                 'face 'font-lock-type-face))
-                          (:eval (when buffer-read-only
-                                   (propertize " "
-                                               'face 'font-lock-warning-face
-                                               'help-echo "Buffer is read-only"))))))
+  :hook (org-mode . page-break-lines-mode))
 
 (use-package frame
-  :hook ((after-init . (lambda ()
-                         (blink-cursor-mode -1)))
-         (after-init . window-divider-mode))
+  :defer t
+  :hook (after-init . (lambda ()
+                        (blink-cursor-mode -1)))
   :config
-  (add-to-list 'initial-frame-alist '(alpha . (85 . 100)))
+  (add-to-list 'initial-frame-alist '(alpha . (90 . 100)))
   (face-spec-set 'window-divider
                  '((((background light))
                     :foreground "#000000")
@@ -232,12 +196,6 @@ of the box `(w h)' inside the box `(cw ch)'."
                                        (window-width . 0.5)
                                        (window-parameters
                                         (mode-line-format . none))))
-  (add-to-list 'display-buffer-alist '("\\*toc\\*"
-                                       (display-buffer-reuse-window display-buffer-in-side-window)
-                                       (side . left)
-                                       (window-parameters
-                                        (mode-line-format . none)
-                                        (delete-other-windows . t))))
   (add-to-list 'display-buffer-alist '((derived-mode . prog-mode)
                                        (display-buffer-in-tab)
                                        (tab-name . "Porg") (tab-group . "Prog")

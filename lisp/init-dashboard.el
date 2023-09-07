@@ -6,12 +6,8 @@
 
 (use-package dashboard
   :demand t
-  :init
-  (add-to-list 'display-buffer-alist '("\\*dashboard\\*"
-                                       (display-buffer-in-tab)
-
-                                       (window-parameters
-                                        (mode-line-format . none))))
+  :hook (dashboard-mode . (lambda ()
+                            (setq-local mode-line-format nil)))
   :bind ("C-c b d" . dashboard-open)
   :config
   (dashboard-setup-startup-hook)

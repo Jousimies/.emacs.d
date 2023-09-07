@@ -5,23 +5,19 @@
 ;;; Code:
 
 (use-package meow-core
-  :diminish meow-normal-mode meow-insert-mode
   :hook (after-init . meow-global-mode))
 
 (use-package meow-var
-  :after meow-core
+  :defer t
   :config
   (add-to-list 'meow-mode-state-list '(nov-mode . normal))
   (setq meow-use-clipboard t))
-
-(use-package meow-util
-  :after meow-core)
 
 (use-package meow-command
   :bind ("s-/" . meow-comment))
 
 (use-package meow-helpers
-  :after meow-core
+  :defer t
   :config
   (meow-motion-overwrite-define-key
    '("j" . meow-next)

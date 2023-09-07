@@ -6,6 +6,7 @@
 
 (use-package tex
   :mode ("\\.tex\\'" . LaTeX-mode)
+  :hook (LaTeX-mode . turn-on-reftex)
   :init
   (load "auctex.el" nil t t)
   (load "preview-latex.el" nil t t)
@@ -38,14 +39,12 @@
   :hook (LaTeX-mode . auctex-latexmk-setup))
 
 (use-package reftex
-  :hook ((LaTeX-mode . turn-on-reftex)
-         (reftex-toc-mode . menu-bar--visual-line-mode-enable))
+  :commands turn-on-reftex
   :config
   (setq reftex-toc-split-windows-horizontally t)
   (setq reftex-toc-split-windows-fraction 0.25))
 
 (use-package cdlatex
-  :diminish org-cdlatex-mode
   :hook ((LaTeX-mode . turn-on-cdlatex)
          (org-mode . org-cdlatex-mode)))
 
@@ -109,9 +108,6 @@
                                         "entoc" "ps" "spl" "bbl"))
 
   (setq org-latex-prefer-user-labels t))
-
-(use-package ox-beamer
-  :after org)
 
 (provide 'init-latex)
 ;;; init-latex.el ends here.

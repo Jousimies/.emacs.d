@@ -77,7 +77,6 @@
 (require 'init-dashboard)
 
 (require 'init-base)
-(require 'init-builtin)
 (require 'init-ui)
 (require 'init-meow)
 (require 'init-crud)
@@ -91,7 +90,6 @@
 (require 'init-org+)
 (require 'init-note)
 (require 'init-bib)
-(require 'init-blog)
 (require 'init-gtd)
 (require 'init-reader)
 (require 'init-shell)
@@ -99,6 +97,20 @@
 (require 'init-latex)
 (require 'init-finance)
 (require 'init-telega)
+
+(define-minor-mode minor-mode-blackout-mode
+  "Hides minor modes from the mode line."
+  :init-value t)
+(add-hook 'after-init-hook #'(lambda ()
+                               (catch 'done
+                                 (mapc (lambda (x)
+                                         (when (and (consp x)
+                                                    (equal (cadr x) '("" minor-mode-alist)))
+                                           (let ((original (copy-sequence x)))
+                                             (setcar x 'minor-mode-blackout-mode)
+                                             (setcdr x (list "" original)))
+                                           (throw 'done t)))
+                                       mode-line-modes))))
 
 (setq-default initial-scratch-message
               (propertize

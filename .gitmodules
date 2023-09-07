@@ -187,9 +187,6 @@
 [submodule "packages/nov.el"]
 	path = packages/nov.el
 	url = https://depp.brause.cc/nov.el.git
-[submodule "packages/mode-line-bell"]
-	path = packages/mode-line-bell
-	url = https://github.com/purcell/mode-line-bell.git
 [submodule "packages/embrace.el"]
 	path = packages/embrace.el
 	url = https://github.com/cute-jumper/embrace.el.git
@@ -214,9 +211,6 @@
 [submodule "packages/org-alert"]
 	path = packages/org-alert
 	url = https://github.com/spegoraro/org-alert.git
-[submodule "packages/flyspell-correct"]
-	path = packages/flyspell-correct
-	url = https://github.com/d12frosted/flyspell-correct.git
 [submodule "packages/Emacs-langtool"]
 	path = packages/Emacs-langtool
 	url = https://github.com/mhayashi1120/Emacs-langtool.git
@@ -238,15 +232,6 @@
 [submodule "packages/dictionary-overlay"]
 	path = packages/dictionary-overlay
 	url = https://github.com/ginqi7/dictionary-overlay.git
-[submodule "packages/grammarly"]
-	path = packages/grammarly
-	url = https://github.com/emacs-grammarly/grammarly.git
-[submodule "packages/flycheck-grammarly"]
-	path = packages/flycheck-grammarly
-	url = https://github.com/emacs-grammarly/flycheck-grammarly.git
-[submodule "packages/flycheck"]
-	path = packages/flycheck
-	url = https://github.com/flycheck/flycheck.git
 [submodule "packages/emacs-request"]
 	path = packages/emacs-request
 	url = https://github.com/tkf/emacs-request.git
@@ -388,9 +373,6 @@
 [submodule "packages/pdfgrep"]
 	path = packages/pdfgrep
 	url = https://github.com/jeremy-compostella/pdfgrep.git
-[submodule "packages/echo-bar.el"]
-	path = packages/echo-bar.el
-	url = https://github.com/benzanol/echo-bar.el
 [submodule "packages/go-translate"]
 	path = packages/go-translate
 	url = https://github.com/lorniu/go-translate.git
@@ -403,9 +385,6 @@
 [submodule "packages/tablist"]
 	path = packages/tablist
 	url = https://github.com/emacsorphanage/tablist.git
-[submodule "packages/diminish.el"]
-	path = packages/diminish.el
-	url = https://github.com/myrjola/diminish.el.git
 [submodule "packages/telega.el"]
 	path = packages/telega.el
 	url = https://github.com/zevlg/telega.el.git
@@ -436,3 +415,9 @@
 [submodule "packages/ace-pinyin"]
 	path = packages/ace-pinyin
 	url = https://github.com/cute-jumper/ace-pinyin.git
+[submodule "packages/esxml"]
+	path = packages/esxml
+	url = https://github.com/tali713/esxml.git
+[submodule "packages/zotra"]
+	path = packages/zotra
+	url = https://github.com/mpedramfar/zotra.git

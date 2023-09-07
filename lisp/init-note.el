@@ -6,15 +6,13 @@
 
 (use-package denote
   :bind (("C-c n s" . denote-signature)
-         ("C-c n i" . denote-insert-link)
+         ("C-c n i" . denote-link)
          ("C-c n r" . denote-rename-file-using-front-matter)
          ("C-c n k" . denote-keywords-add)
          ("C-c n K" . denote-keywords-remove))
-  :commands (denote denote-signature denote-subdirectory denote-rename-file-using-front-matter
-                    denote-keywords-prompt
-                    denote-rename-file
-                    denote-link-or-create)
-  :hook (dired-mode . denote-dired-mode-in-directories)
+  :hook ((dired-mode . denote-dired-mode-in-directories)
+         (after-init . (lambda ()
+                         (require 'denote))))
   :config
   (setq denote-directory (expand-file-name "denote" my-galaxy))
   (setq denote-dired-directories (list denote-directory
@@ -149,9 +147,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-,") 'my/denote-signature-buffer))
 
-(use-package denote-menu
-  :commands denote-menu-list-notes)
-
 (use-package consult-notes
   :bind ("C-c n n" . consult-notes)
   :config
@@ -184,8 +179,91 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (global-set-key (kbd "C-c n m") 'my/new-meeting)
 
-(use-package org-change
-  :commands org-change-add)
+;; https://200ok.ch/posts/2022-12-07_streamline_your_org_mode_workflow_with_automatic_clock_table_recalculation.html
+;; Need add #+AUTOCALC_CLOCK_TABLES to org file.
+(with-eval-after-load 'org
+  (add-to-list 'org-options-keywords "AUTOCALC_CLOCK_TABLES:"))
+
+(defun autocalc-clocktable ()
+  "Auto update clock table."
+  (when (derived-mode-p 'org-mode)
+    (save-excursion
+      (goto-char 0)
+      (if (string-equal (car
+                         (cdr
+                          (car
+                           (org-collect-keywords '("AUTOCALC_CLOCK_TABLES")))))
+                        "t")
+          (progn
+            (goto-char (search-forward "clocktable"))
+            (org-ctrl-c-ctrl-c))))))
+
+(add-hook 'before-save-hook 'autocalc-clocktable)
+
+;; https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/lisp/zp-org.el#L194
+(defun my/org-find-time-file-property (property &optional anywhere)
+  "Return the position of the time file PROPERTY if it exists.
+When ANYWHERE is non-nil, search beyond the preamble."
+  (save-excursion
+    (goto-char (point-min))
+    (let ((first-heading
+           (save-excursion
+             (re-search-forward org-outline-regexp-bol nil t))))
+      (when (re-search-forward (format "^#\\+%s:" property)
+                               (if anywhere nil first-heading)
+                               t)
+        (point)))))
+
+(defun my/org-set-time-file-property (property &optional anywhere pos)
+  "Set the time file PROPERTY in the preamble.
+When ANYWHERE is non-nil, search beyond the preamble.
+If the position of the file PROPERTY has already been computed,
+it can be passed in POS."
+
+  (when-let ((pos (or pos
+                      (my/org-find-time-file-property property))))
+    (save-excursion
+      (goto-char pos)
+      (if (looking-at-p " ")
+          (forward-char)
+        (insert " "))
+      (delete-region (point) (line-end-position))
+      (let* ((now (format-time-string "[%Y-%m-%d %a %H:%M]")))
+        (insert now)))))
+
+;; https://github.com/zaeph/.emacs.d/blob/615ac37be6bd78c37e967fdb43d28897a4116583/lisp/zp-org.el#L212
+(defun my/org-set-date ()
+  "Update the LAST_MODIFIED file property in the preamble."
+  (when (and (derived-mode-p 'org-mode)
+             (buffer-modified-p))
+    (my/org-set-time-file-property "DATE")))
+
+(add-hook 'before-save-hook 'my/org-set-date)
+
+;; Get reading list from books directory for org-clock report.
+;; The org-clock report scope can be a function.
+(defun my/reading-list ()
+  "Get reading list."
+  (let (reading-list)
+    (append reading-list
+            (file-expand-wildcards (expand-file-name "denote/books/*.org" my-galaxy)))))
+
+(with-eval-after-load 'org
+  (add-to-list 'org-options-keywords "AUTO_EXPORT:"))
+
+(defun auto-export-blog ()
+  "Auto export blog."
+  (when (derived-mode-p 'org-mode)
+    (save-excursion
+      (goto-char 0)
+      (if (string-equal (car
+                         (cdr
+                          (car
+                           (org-collect-keywords '("AUTO_EXPORT")))))
+                        "t")
+          (org-publish-all)))))
+
+(add-hook 'after-save-hook 'auto-export-blog)
 
 (provide 'init-note)
 ;;; init-note.el ends here.

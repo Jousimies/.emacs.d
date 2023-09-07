@@ -26,8 +26,8 @@
                                        (side . right)
                                        (window-width . 0.4)
                                        (window-parameters
-                                        (select . t)
-                                        (mode-line-format . none)))))
+                                        (mode-line-format . none)
+                                        (select . t)))))
 
 (provide 'init-telega)
 ;;; init-telega.el ends here.

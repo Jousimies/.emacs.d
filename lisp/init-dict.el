@@ -132,7 +132,6 @@
   (dictionary-overlay-start))
 
 (use-package jinx
-  :diminish jinx-mode
   :hook (text-mode . jinx-mode)
   :bind ("s-4" . jinx-correct)
   :config

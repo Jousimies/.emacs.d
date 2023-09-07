@@ -21,9 +21,6 @@
 (push '(width . 100) default-frame-alist)
 (push '(fullscreen . maximized) initial-frame-alist)
 
-;; Disable mode-line when emacs startup.
-(setq-default mode-line-format nil)
-
 (setq byte-compile-warnings nil)
 
 (fset 'display-startup-echo-area-message 'ignore)

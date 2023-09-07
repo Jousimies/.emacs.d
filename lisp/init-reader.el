@@ -75,9 +75,6 @@
 (use-package saveplace-pdf-view
   :after pdf-tools)
 
-(use-package pdfgrep
-  :hook (pdf-view-mode . pdfgrep-mode))
-
 (use-package nov
   :mode (".epub" . nov-mode)
   :init

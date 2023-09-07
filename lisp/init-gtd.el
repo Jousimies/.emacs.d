@@ -8,14 +8,11 @@
   :bind ("C-<f12>" . org-agenda)
   :hook (org-agenda-finalize . #'org-agenda-find-same-or-today-or-agenda)
   :config
-  ;; (setq org-agenda-files (directory-files-recursively (expand-file-name "todos" my-galaxy) "org$"))
   (setq org-agenda-dim-blocked-tasks t)
   (setq org-agenda-compact-blocks t)
-  ;; (setq org-agenda-window-setup 'other-tab)
   (setq org-agenda-align-tags-to-column -120))
 
 (use-package org-gtd
-  :diminish org-edna-mode
   :init
   (setq org-gtd-update-ack "3.0.0")
   :custom
@@ -23,15 +20,31 @@
   (org-agenda-property-list '("DELEGATED_TO"))
   (org-gtd-organize-hooks '(org-gtd-set-area-of-focus org-set-tags-command))
   (org-edna-use-inheritance t)
-  (org-gtd-areas-of-focus '("Carrer" "Health" "Family" "Finance" "Social" "Spiritual" "Entertainment" "Personal" "Community"))
+  (org-gtd-areas-of-focus '("Family Life"
+                            "Career"
+                            "Health and wellness"
+                            "Community involvement"
+                            "Financial management"
+                            "Travel and exploration"
+                            "Hobbies and Interests"
+                            "Personal development"
+                            "Social and relationships"
+                            "Retirement planning"))
+  (org-gtd-engage-prefix-width 24)
+  (org-gtd-clarify-show-horizons 'right)
   :config
+  (setq org-agenda-files `(,(expand-file-name "org-gtd-tasks.org" org-gtd-directory)
+                           ,(expand-file-name "org-gtd-tasks.org_archive" org-gtd-directory)))
+
   (org-edna-mode)
-  ;; (add-to-list 'org-agenda-files (expand-file-name "todos/org-gtd-tasks.org" my-galaxy))
   :bind (("<f12>" . org-gtd-engage)
-         ("C-<f12>" . org-gtd-process-inbox)
-         ("s-<f12>" . org-gtd-review-stuck-projects)
+         ("C-c t i" . org-gtd-process-inbox)
+         ("C-c t c" . org-gtd-clarify-item)
+         ("C-c t C" . org-gtd-clarify-agenda-item)
+         ("C-c t r" . org-gtd-review-area-of-focus)
+         ("C-c t s" . org-gtd-review-stuck-projects)
          (:map org-gtd-clarify-map
-               ("C-c c" . org-gtd-organize))))
+               ("C-c C-c" . org-gtd-organize))))
 
 (use-package calendar
   :bind ("C-c a c" . calendar)
