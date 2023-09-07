@@ -139,9 +139,6 @@
 [submodule "packages/olivetti"]
 	path = packages/olivetti
 	url = https://github.com/rnkn/olivetti.git
-[submodule "packages/org-superstar-mode"]
-	path = packages/org-superstar-mode
-	url = https://github.com/integral-dw/org-superstar-mode.git
 [submodule "packages/org-download"]
 	path = packages/org-download
 	url = https://github.com/abo-abo/org-download.git
@@ -154,9 +151,6 @@
 [submodule "packages/plantuml-emacs"]
 	path = packages/plantuml-emacs
 	url = https://github.com/ginqi7/plantuml-emacs.git
-[submodule "packages/org-rainbow-tags"]
-	path = packages/org-rainbow-tags
-	url = https://github.com/KaratasFurkan/org-rainbow-tags.git
 [submodule "packages/biblio.el"]
 	path = packages/biblio.el
 	url = https://github.com/cpitclaudel/biblio.el.git

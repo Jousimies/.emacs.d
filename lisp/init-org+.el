@@ -7,17 +7,6 @@
 (use-package olivetti
   :bind ("C-c t o" . olivetti-mode))
 
-(use-package org-superstar
-  :hook (org-mode . org-superstar-mode)
-  :config
-  (setq org-superstar-headline-bullets-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼"))
-  ;; (setq org-superstar-headline-bullets-list '("1" "2" "3" "4" "5" "6" "7"))
-  ;; (setq org-superstar-headline-bullets-list '("①" "②" "③" "④" "⑤" "⑥"))
-  (setq org-hide-leading-stars t))
-
-(use-package org-rainbow-tags
-  :hook (org-mode . org-rainbow-tags-mode))
-
 (use-package org-appear
   :config
   (setq org-appear-autolinks t)
