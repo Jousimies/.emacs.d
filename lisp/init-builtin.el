@@ -84,8 +84,8 @@
   (setq async-shell-command-display-buffer nil))
 
 (use-package files
-  ;; :defer t
-  :hook (after-init . auto-save-visited-mode)
+  :hook ((after-init . auto-save-visited-mode)
+         (before-save . auto-save-delete-trailing-whitespace-except-current-line))
   :config
   (setq trash-directory "~/.Trash")
   (setq auto-save-default nil)
@@ -103,7 +103,21 @@
     (let ((target-dir (file-name-directory buffer-file-name)))
       (unless (file-exists-p target-dir)
         (make-directory target-dir t))))
-  (add-to-list 'find-file-not-found-functions #'my/auto-create-missing-dirs))
+  (add-to-list 'find-file-not-found-functions #'my/auto-create-missing-dirs)
+  (defun auto-save-delete-trailing-whitespace-except-current-line ()
+    (interactive)
+    (when (not (string-prefix-p "inbox" (buffer-name (buffer-base-buffer))))
+      (let ((begin (line-beginning-position))
+            (end (point)))
+        (save-excursion
+          (when (< (point-min) begin)
+            (save-restriction
+              (narrow-to-region (point-min) (1- begin))
+              (delete-trailing-whitespace)))
+          (when (> (point-max) end)
+            (save-restriction
+              (narrow-to-region end (point-max))
+              (delete-trailing-whitespace))))))))
 
 (use-package ffap
   :bind ("C-c f f" . find-file-at-point))

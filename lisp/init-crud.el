@@ -69,10 +69,6 @@
          (prog-mode . hungry-delete-mode)
          (org-mode . hungry-delete-mode)))
 
-(use-package whitespace-cleanup-mode
-  :diminish whitespace-cleanup-mode
-  :hook (after-init . global-whitespace-cleanup-mode))
-
 (use-package ace-pinyin
   :hook (after-init . ace-pinyin-global-mode))
 

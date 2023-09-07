@@ -205,9 +205,6 @@
 [submodule "packages/embrace.el"]
 	path = packages/embrace.el
 	url = https://github.com/cute-jumper/embrace.el.git
-[submodule "packages/whitespace-cleanup-mode"]
-	path = packages/whitespace-cleanup-mode
-	url = https://github.com/purcell/whitespace-cleanup-mode.git
 [submodule "packages/tempel"]
 	path = packages/tempel
 	url = https://github.com/minad/tempel.git
@@ -406,9 +403,6 @@
 [submodule "packages/echo-bar.el"]
 	path = packages/echo-bar.el
 	url = https://github.com/benzanol/echo-bar.el
-[submodule "packages/one-key"]
-	path = packages/one-key
-	url = https://github.com/manateelazycat/one-key.git
 [submodule "packages/go-translate"]
 	path = packages/go-translate
 	url = https://github.com/lorniu/go-translate.git
