@@ -267,9 +267,15 @@
   (setq org-refile-active-region-within-subtree t))
 
 (use-package org-clock
-  :after org
   :commands org-clocking-p
+  :hook ((org-clock-in . my/afplay-clock-in)
+         (org-clock-out . my/afplay-clock-out))
   :config
+  (defun my/afplay-clock-in ()
+    (async-shell-command "afplay /System/Library/Sounds/Ping.aiff"))
+  (defun my/afplay-clock-out ()
+    (async-shell-command "afplay /System/Library/Sounds/Basso.aiff"))
+
   (org-clock-persistence-insinuate)
   (setq org-clock-persist-file (expand-file-name "cache/org-clock-save.el" user-emacs-directory))
   (setq org-clock-history-length 23)
