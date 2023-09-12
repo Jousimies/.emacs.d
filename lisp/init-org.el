@@ -268,6 +268,7 @@
 
 (use-package org-clock
   :commands org-clocking-p
+  :bind ("C-c p i" . my/toggle-punch-in-or-out)
   :hook ((org-clock-in . my/afplay-clock-in)
          (org-clock-out . my/afplay-clock-out))
   :config
@@ -286,7 +287,160 @@
   (setq org-clock-persist t)
   (setq org-clock-clocktable-default-properties '(:maxlevel 5 :link t :tags t))
   (setq org-clock-persist-query-resume nil)
-  (setq org-clock-report-include-clocking-task t))
+  (setq org-clock-report-include-clocking-task t)
+  (setq bh/keep-clock-running nil)
+
+  (defun bh/is-task-p ()
+    "Any task with a todo keyword and no subtask."
+    (save-restriction
+      (widen)
+      (let ((has-subtask)
+            (subtree-end (save-excursion (org-end-of-subtree t)))
+            (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+        (save-excursion
+          (forward-line 1)
+          (while (and (not has-subtask)
+                      (< (point) subtree-end)
+                      (re-search-forward "^\*+ " subtree-end t))
+            (when (member (org-get-todo-state) org-todo-keywords-1)
+              (setq has-subtask t))))
+        (and is-a-task (not has-subtask)))))
+  (defun bh/is-project-p ()
+    "Any task with a todo keyword subtask."
+    (save-restriction
+      (widen)
+      (let ((has-subtask)
+            (subtree-end (save-excursion (org-end-of-subtree t)))
+            (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+        (save-excursion
+          (forward-line 1)
+          (while (and (not has-subtask)
+                      (< (point) subtree-end)
+                      (re-search-forward "^\*+ " subtree-end t))
+            (when (member (org-get-todo-state) org-todo-keywords-1)
+              (setq has-subtask t))))
+        (and is-a-task has-subtask))))
+  (defun bh/find-project-task ()
+    "Move point to the parent (project) task if any."
+    (save-restriction
+      (widen)
+      (let ((parent-task (save-excursion (org-back-to-heading 'invisible-ok) (point))))
+        (while (org-up-heading-safe)
+          (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
+            (setq parent-task (point))))
+        (goto-char parent-task)
+        parent-task)))
+  (defun bh/is-project-subtree-p ()
+    "Any task with a todo keyword that is in a project subtree.
+ Callers of this function already widen the buffer view."
+    (let ((task (save-excursion (org-back-to-heading 'invisible-ok)
+                                (point))))
+      (save-excursion
+        (bh/find-project-task)
+        (if (equal (point) task)
+            nil
+          t))))
+  (defun bh/clock-in-to-next (kw) ;; kw should not been deleted.
+    "Switch a task from TODO to NEXT when clocking in.
+ Skips capture tasks, projects, and subprojects.
+ Switch projects and subprojects from NEXT back to TODO"
+    (when (not (and (boundp 'org-capture-mode) org-capture-mode))
+      (cond
+       ((and (member (org-get-todo-state) (list "TODO"))
+             (bh/is-task-p))
+        "NEXT")
+       ((and (member (org-get-todo-state) (list "NEXT"))
+             (bh/is-project-p))
+        "TODO"))))
+  (defun bh/punch-in (arg)
+    "Start continuous clocking and set the default task to the selected task.
+ If `ARG' is nil, set the Organization task
+ as the default task."
+    (interactive "p")
+    (setq bh/keep-clock-running t)
+    (if (equal major-mode 'org-agenda-mode)
+        ;;
+        ;; We're in the agenda
+        ;;
+        (let* ((marker (org-get-at-bol 'org-hd-marker))
+               (tags (org-with-point-at marker (org-get-tags))))
+          (if (and (eq arg 4) tags)
+              (org-agenda-clock-in '(16))
+            (bh/clock-in-default-task-as-default)))
+      ;;
+      ;; We are not in the agenda
+      ;;
+      (save-restriction
+        (widen)
+                                        ; Find the tags on the current task
+        (if (and (equal major-mode 'org-mode) (not (org-before-first-heading-p)) (eq arg 4))
+            (org-clock-in '(16))
+          (bh/clock-in-default-task-as-default)))))
+  (defun bh/punch-out ()
+    "Punch out."
+    (interactive)
+    (setq bh/keep-clock-running nil)
+    (when (org-clock-is-active)
+      (org-clock-out))
+    (org-agenda-remove-restriction-lock))
+  (defun bh/clock-in-default-task ()
+    "Clock In default task with specific ID."
+    (save-excursion
+      (org-with-point-at org-clock-default-task
+        (org-clock-in))))
+  (defun bh/clock-in-parent-task ()
+    "Move point to the parent (project) task if any and clock in."
+    (let ((parent-task))
+      (save-excursion
+        (save-restriction
+          (widen)
+          (while (and (not parent-task) (org-up-heading-safe))
+            (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
+              (setq parent-task (point))))
+          (if parent-task
+              (org-with-point-at parent-task
+                (org-clock-in))
+            (when bh/keep-clock-running
+              (bh/clock-in-default-task)))))))
+  (defvar bh/default-task-id "20230912T181100.221961")
+  (defun bh/clock-in-default-task-as-default ()
+    "Clock in default task."
+    (interactive)
+    (org-with-point-at (org-id-find bh/default-task-id 'marker)
+      (org-clock-in '(16))))
+  (defun bh/clock-out-maybe ()
+    "Clock out."
+    (when (and bh/keep-clock-running
+               (not org-clock-clocking-in)
+               (marker-buffer org-clock-default-task)
+               (not org-clock-resolving-clocks-due-to-idleness))
+      (bh/clock-in-parent-task)))
+
+  (add-hook 'org-clock-out-hook 'bh/clock-out-maybe 'append)
+
+  (defun bh/clock-in-last-task (arg)
+    "Clock in the interrupted task if there is one.
+ Skip the default task and get the next one.
+ A prefix `ARG' forces clock in of the default task."
+    (interactive "p")
+    (let ((clock-in-to-task
+           (cond
+            ((eq arg 4) org-clock-default-task)
+            ((and (org-clock-is-active)
+                  (equal org-clock-default-task (cadr org-clock-history)))
+             (caddr org-clock-history))
+            ((org-clock-is-active) (cadr org-clock-history))
+            ((equal org-clock-default-task (car org-clock-history)) (cadr org-clock-history))
+            (t (car org-clock-history)))))
+      (widen)
+      (org-with-point-at clock-in-to-task
+        (org-clock-in nil))))
+  (defun my/toggle-punch-in-or-out ()
+    "Start clock or stop it when there is a clocking."
+    (interactive)
+    (if (org-clocking-p)
+        (bh/punch-out)
+      (bh/punch-in nil))))
 
 (use-package org-indent
   :hook (org-mode . org-indent-mode))
