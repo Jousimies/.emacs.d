@@ -93,8 +93,9 @@
          ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
          ([remap yank-pop] . consult-yank-pop)
          ("C-c s g" . consult-ripgrep)
+         ("C-c f a" . consult-find)
          :map minibuffer-mode-map
-         ("C-r" . consult-history)))
+         ("C-h" . consult-history)))
 
 (use-package consult-imenu
   :bind (([remap imenu] . consult-imenu)))
