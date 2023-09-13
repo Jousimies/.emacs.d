@@ -147,26 +147,13 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-,") 'my/denote-signature-buffer))
 
-(use-package consult-notes
-  :bind ("C-c n n" . consult-notes)
-  :config
-  (setq consult-notes-file-dir-sources
-        `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
-          ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
-          ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
-          ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
-          ("Outline"  ?o ,(expand-file-name "denote/outline" my-galaxy))
-          ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
-          ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
-          ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy)))))
-
 (defun my/new-article (article)
-    (interactive "sTitle: ")
-    (let ((filename (format "%s" article))
-          (ext ".org"))
-      (find-file (concat website-directory "posts/" filename ext))
-      (insert "#+TITLE: " article "\n")
-      (tempel-insert 'blog)))
+  (interactive "sTitle: ")
+  (let ((filename (format "%s" article))
+        (ext ".org"))
+    (find-file (concat website-directory "posts/" filename ext))
+    (insert "#+TITLE: " article "\n")
+    (tempel-insert 'blog)))
 (global-set-key (kbd "C-c n a") 'my/new-article)
 
 (defun my/new-meeting (meet)
@@ -178,6 +165,25 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
     (tempel-insert 'meeting)))
 
 (global-set-key (kbd "C-c n m") 'my/new-meeting)
+
+(defun my/note-in-folder (folder)
+  "Open a file in a specific folder."
+  (interactive)
+  (let ((default-directory (expand-file-name folder my-galaxy)))
+    (call-interactively 'find-file)))
+
+(global-set-key (kbd "C-c f n") (lambda () (interactive)
+                                  (my/note-in-folder "denote/")))
+(global-set-key (kbd "C-c f b") (lambda () (interactive)
+                                  (my/note-in-folder "denote/books/")))
+(global-set-key (kbd "C-c f o") (lambda () (interactive)
+                                  (my/note-in-folder "denote/outline/")))
+(global-set-key (kbd "C-c f t") (lambda () (interactive)
+                                  (my/note-in-folder "denote/term/")))
+(global-set-key (kbd "C-c f l") (lambda () (interactive)
+                                  (my/note-in-folder "denote/literature/")))
+(global-set-key (kbd "C-c f m") (lambda () (interactive)
+                                  (my/note-in-folder "meeting/")))
 
 ;; https://200ok.ch/posts/2022-12-07_streamline_your_org_mode_workflow_with_automatic_clock_table_recalculation.html
 ;; Need add #+AUTOCALC_CLOCK_TABLES to org file.

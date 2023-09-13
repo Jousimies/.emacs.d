@@ -19,30 +19,12 @@
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
 (setq set-message-functions '(inhibit-message))
 
-(add-hook 'minibuffer-mode-hook
-          #'(lambda ()
-              (require 'orderless)
-              (setq completion-styles '(orderless partial-completion))))
-
-(use-package vertico
-  ;; :load-path "~/.emacs.d/packages/vertico"
-  :hook (after-init . vertico-mode)
-  :bind (:map vertico-map
-              ("C-j" . vertico-next)
-              ("C-k" . vertico-previous))
-  :config
-  (setq vertico-count 15)
-  (setq vertico-resize nil)
-  (setq vertico-cycle t))
-
-(use-package vertico-directory
-  :bind (:map vertico-map
-              ("C-h" . vertico-directory-up)))
-;; (use-package vertico-indexed
-;;   :hook (vertico-mode . vertico-indexed-mode))
-
-(use-package marginalia
-  :hook ((minibuffer-setup . marginalia-mode)))
+(use-package icomplete
+  :hook ((after-init . fido-vertical-mode)
+         (icomplete-minibuffer-setup . (lambda ()
+                                         (require 'orderless)
+                                         (setq-local completion-styles
+                                                     '(orderless flex))))))
 
 (use-package embark
   :bind (([remap describe-bindings] . embark-bindings)
@@ -77,34 +59,6 @@
 
 (with-eval-after-load 'embark
   (define-key embark-general-map (kbd "h") #'consult-outline-insert-heading))
-
-(use-package consult
-  :commands consult-outline consult-find
-  :hook (completion-list-mode . consult-preview-at-point-mode)
-  :bind (([remap apropos] . consult-apropos)
-         ([remap bookmark-jump] . consult-bookmark)
-         ([remap goto-line] . consult-line)
-         ([remap locate] . consult-locate)
-         ([remap load-theme] . consult-theme)
-         ([remap man] . consult-man)
-         ([remap recentf-open-files] . consult-recent-file)
-         ([remap switch-to-buffer] . consult-buffer)
-         ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
-         ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
-         ([remap yank-pop] . consult-yank-pop)
-         ("C-c s g" . consult-ripgrep)
-         ("C-c f a" . consult-find)
-         :map minibuffer-mode-map
-         ("C-h" . consult-history)))
-
-(use-package consult-imenu
-  :bind (([remap imenu] . consult-imenu)))
-
-(use-package consult-dir
-  :bind (("M-g d" . consult-dir)
-         (:map minibuffer-mode-map
-               ("M-g d" . consult-dir)
-               ("M-g j" . consult-dir-jump-file))))
 
 (use-package corfu
   :hook (after-init . global-corfu-mode)
