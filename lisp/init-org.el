@@ -255,6 +255,11 @@
   (setq org-src-window-setup 'current-window)
   (setq org-src-ask-before-returning-to-edit-buffer nil))
 
+(use-package org-goto
+  :after org
+  :config
+  (setq org-goto-interface 'outline-path-completion))
+
 (use-package org-refile
   :commands org-refile
   :config
