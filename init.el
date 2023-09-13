@@ -98,6 +98,10 @@
 (require 'init-finance)
 (require 'init-telega)
 
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(when (file-exists-p custom-file)
+  (load custom-file))
+
 (define-minor-mode minor-mode-blackout-mode
   "Hides minor modes from the mode line."
   :init-value t)
