@@ -52,11 +52,11 @@
     (let* ((file (dired-get-filename))
            (ext (file-name-extension file)))
       (if (member ext file-extensions-with-default-apps)
-          (start-process "default-app" nil "open" file)
+          (browse-url-of-dired-file)
         (dired-find-file))))
 
 (with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-<return>") 'open-with-default-app))
+  (define-key dired-mode-map (kbd "<return>") 'open-with-default-app))
 
 (defun dired-preview ()
   "Quick look the current file in macOS."
