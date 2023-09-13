@@ -250,9 +250,6 @@
 [submodule "packages/sketchviz"]
 	path = packages/sketchviz
 	url = https://github.com/gpotter2/sketchviz.git
-[submodule "packages/page-break-lines"]
-	path = packages/page-break-lines
-	url = https://github.com/purcell/page-break-lines.git
 [submodule "packages/citar-denote"]
 	path = packages/citar-denote
 	url = https://github.com/pprevos/citar-denote.git
@@ -421,3 +418,6 @@
 [submodule "packages/zotra"]
 	path = packages/zotra
 	url = https://github.com/mpedramfar/zotra.git
+[submodule "packages/form-feed"]
+	path = packages/form-feed
+	url = https://depp.brause.cc/form-feed.git

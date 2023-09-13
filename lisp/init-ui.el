@@ -98,8 +98,8 @@
                        pager-page-down pager-page-up))
           (advice-add cmd :after #'my-pulse-momentary)))
 
-(use-package page-break-lines
-  :hook (org-mode . page-break-lines-mode))
+(use-package form-feed
+  :hook (org-mode . form-feed-mode))
 
 (use-package frame
   :defer t
