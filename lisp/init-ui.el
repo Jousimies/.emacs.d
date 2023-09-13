@@ -18,7 +18,7 @@
   (setq nerd-icons-font-family "Hack Nerd Font Mono"))
 
 (use-package nerd-icons-completion
-  :hook (marginalia-mode . nerd-icons-completion-marginalia-setup))
+  :hook (minibuffer-setup . nerd-icons-completion-mode))
 
 (use-package nerd-icons-dired
   :hook (dired-mode . nerd-icons-dired-mode))
