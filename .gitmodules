@@ -109,12 +109,6 @@
 [submodule "packages/rime-regexp.el"]
 	path = packages/rime-regexp.el
 	url = https://github.com/colawithsauce/rime-regexp.el.git
-[submodule "packages/epkg-marginalia"]
-	path = packages/epkg-marginalia
-	url = https://github.com/emacscollective/epkg-marginalia.git
-[submodule "packages/marginalia"]
-	path = packages/marginalia
-	url = https://github.com/minad/marginalia.git
 [submodule "packages/org-transclusion"]
 	path = packages/org-transclusion
 	url = https://github.com/nobiot/org-transclusion.git
@@ -142,9 +136,6 @@
 [submodule "packages/plantuml-emacs"]
 	path = packages/plantuml-emacs
 	url = https://github.com/ginqi7/plantuml-emacs.git
-[submodule "packages/biblio.el"]
-	path = packages/biblio.el
-	url = https://github.com/cpitclaudel/biblio.el.git
 [submodule "packages/citar"]
 	path = packages/citar
 	url = https://github.com/emacs-citar/citar.git
