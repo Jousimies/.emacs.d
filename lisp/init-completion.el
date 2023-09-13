@@ -47,19 +47,6 @@
                  (side . right)
                  (width . 0.3))))
 
-(use-package embark-consult
-  :after embark consult)
-
-(defun consult-outline-insert-heading (target)
-  (let* ((marker (plist-get
-                  (text-properties-at 0 target)
-                  'consult--candidate))
-         (headline-name (cadr (split-string (org-no-properties target) "* "))))
-    (org-insert-link nil headline-name nil)))
-
-(with-eval-after-load 'embark
-  (define-key embark-general-map (kbd "h") #'consult-outline-insert-heading))
-
 (use-package corfu
   :hook (after-init . global-corfu-mode)
   :config

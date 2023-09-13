@@ -139,5 +139,20 @@
    ]
   [("q" "Quit"           transient-quit-one)])
 
+;; https://www.reddit.com/r/emacs/comments/yjobc2/comment/iur16c7/
+(defun nf/parse-headline (x)
+  (plist-get (cadr x) :raw-value))
+
+(defun nf/get-headlines ()
+  (org-element-map (org-element-parse-buffer) 'headline #'nf/parse-headline))
+
+(defun nf/link-to-headline ()
+  "Insert an internal link to a headline."
+  (interactive)
+  (let* ((headlines (nf/get-headlines))
+         (choice (completing-read "Headings: " headlines nil t))
+         (desc (read-string "Description: " choice)))
+    (org-insert-link buffer-file-name (concat "*" choice) desc)))
+
 (provide 'init-org+)
 ;;; init-org+.el ends here.
