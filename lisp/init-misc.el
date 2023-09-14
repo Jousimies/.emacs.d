@@ -98,6 +98,7 @@ This function requires ImageMagick's convert utility to be installed and availab
   (interactive)
   (shell-command "shortcuts run \"OCR Selected Area\"")
   (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
+(global-set-key (kbd "C-c o c") 'my/ocr)
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.
