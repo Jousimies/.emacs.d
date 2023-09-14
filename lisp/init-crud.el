@@ -39,7 +39,7 @@
 
 (use-package recentf
   :hook (after-init . recentf-mode)
-  :bind ("C-c f r" . recentf-open-files)
+  :bind ("C-c f r" . recentf-open)
   :config
   (setq recentf-save-file (expand-file-name "cache/recentf" user-emacs-directory))
   (setq recentf-auto-cleanup 300)
