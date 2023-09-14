@@ -95,49 +95,18 @@
     (shell-command (format "pandoc %s -o %s --reference-doc=%s" (buffer-file-name) docx-file template-file))
     (message "Convert finish: %s" docx-file)))
 
-(defun add-symbol-to-region (beg end symbol)
+(defun my/add-symbol-to-region (beg end symbol)
+  "Add a SYMBOL to the BEG and END of region."
+  (interactive "r\nsEnter symbol(+_~=*/): ")
   (save-excursion
     (goto-char end)
-    (insert (concat symbol " "))
+    (insert symbol)
+    (unless (looking-at " ")
+      (insert " "))
     (goto-char beg)
-    (insert (concat " " symbol))))
-
-(defun add-stars-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "*"))
-
-(defun add-verbatim-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "~"))
-
-(defun add-equal-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "="))
-
-(defun add-underline-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "_"))
-
-(defun add-italic-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "/"))
-
-(defun add-plus-to-region (beg end)
-  (interactive "r")
-  (add-symbol-to-region beg end "+"))
-
-;;;###autoload
-(transient-define-prefix my/add-symbol-to-region ()
-  "Add symbol."
-  ["Commands"
-   ("*" "star" add-stars-to-region)
-   ("=" "equal" add-equal-to-region)
-   ("~" "verbatim" add-verbatim-to-region)
-   ("_" "underline" add-underline-to-region)
-   ("+" "plus" add-plus-to-region)
-   ("/" "italic" add-italic-to-region)
-   ]
-  [("q" "Quit"           transient-quit-one)])
+    (unless (or (bolp) (looking-back " "))
+      (insert " "))
+    (insert symbol)))
 
 ;; https://www.reddit.com/r/emacs/comments/yjobc2/comment/iur16c7/
 (defun nf/parse-headline (x)
