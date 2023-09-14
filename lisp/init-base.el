@@ -18,9 +18,7 @@
   (add-to-list 'display-buffer-alist '("^\\*Help\\*"
                                        (display-buffer-same-window)
                                        (side . right)
-                                       (window-width . 0.5)))
-  :config
-  (setq epkg-repository (expand-file-name "cache/epkgs" user-emacs-directory)))
+                                       (window-width . 0.5))))
 
 (with-eval-after-load 'org
   (add-to-list 'org-options-keywords "AUTO_TANGLE:")
@@ -156,7 +154,8 @@
  ;;; Third-part packages
     (setq tabspaces-session-file (var "tabspaces-session.eld"))
     (setq undo-fu-session-directory (var "undo-fu-session/"))
-    (setq nov-save-place-file (var "nov-save-place.el"))))
+    (setq nov-save-place-file (var "nov-save-place.el"))
+    (setq epkg-repository (var "epkgs"))))
 
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
