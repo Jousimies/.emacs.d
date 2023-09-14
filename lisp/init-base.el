@@ -22,12 +22,6 @@
   :config
   (setq epkg-repository (expand-file-name "cache/epkgs" user-emacs-directory)))
 
-(use-package epkg-marginalia
-  :defer t
-  :config
-  (cl-pushnew 'epkg-marginalia-annotate-package
-              (alist-get 'package marginalia-annotator-registry)))
-
 (use-package request
   :defer t
   :config
