@@ -47,6 +47,8 @@
          ("C-c r O" . citar-open)
          ("C-c r n" . citar-create-note))
   :config
+  (add-hook 'minibuffer-setup-hook
+      (lambda () (setq truncate-lines t)))
   (setq citar-bibliography my/reference-lists)
   (setq citar-notes-paths `(,(expand-file-name "denote/references" my-galaxy)))
   (setq citar-library-file-extensions '("pdf" "jpg" "epub"))

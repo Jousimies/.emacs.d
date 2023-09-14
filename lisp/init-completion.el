@@ -20,7 +20,7 @@
 (setq set-message-functions '(inhibit-message))
 
 (use-package icomplete
-  :hook ((after-init . fido-vertical-mode)
+  :hook ((after-init . icomplete-vertical-mode)
          (icomplete-minibuffer-setup . (lambda ()
                                          (require 'orderless)
                                          (setq-local completion-styles
