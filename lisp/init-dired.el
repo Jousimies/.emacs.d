@@ -66,6 +66,9 @@
         (call-process-shell-command (concat "qlmanage -p " (shell-quote-argument file)) nil nil)
       (message "Not supported on this platform."))))
 
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "C-<return>") #'dired-preview))
+
 (use-package dired-x
   :hook (dired-mode . dired-omit-mode)
   :bind (:map dired-mode-map
