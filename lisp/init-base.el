@@ -4,6 +4,8 @@
 
 ;;; Code:
 
+(setq initial-major-mode 'fundamental-mode)
+
 (setq url-proxy-services
       '(("http" . "127.0.0.1:8118")
         ("https" . "127.0.0.1:8118")
