@@ -62,9 +62,6 @@
 (use-package ace-pinyin
   :hook (after-init . ace-pinyin-global-mode))
 
-(use-package expand-region
-  :bind ("C-=" . er/expand-region))
-
 (use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)
   :config

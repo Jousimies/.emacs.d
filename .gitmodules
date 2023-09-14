@@ -67,9 +67,6 @@
 [submodule "packages/elisp-refs"]
 	path = packages/elisp-refs
 	url = https://github.com/Wilfred/elisp-refs.git
-[submodule "packages/expand-region.el"]
-	path = packages/expand-region.el
-	url = https://github.com/magnars/expand-region.el.git
 [submodule "packages/corfu"]
 	path = packages/corfu
 	url = https://github.com/minad/corfu.git
