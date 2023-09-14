@@ -75,11 +75,8 @@
   (setq dired-omit-files "^\\.[^.].*"))
 
 (use-package image-dired
-  :after dired
   :bind (:map dired-mode-map
-              ("C-c l" . image-dired))
-  :init
-  (setq image-dired-dir (expand-file-name "cache/image-dired" user-emacs-directory)))
+              ("C-c l" . image-dired)))
 
 (defun xah-show-in-desktop ()
   "Show current file in desktop.

@@ -82,7 +82,6 @@
                                            (display-buffer-in-tab)
                                            (tab-name . "PDF") (tab-group . "PDF")))
   :config
-  (setq nov-save-place-file (expand-file-name "cache/nov-places" user-emacs-directory))
   (setq nov-unzip-program (executable-find "bsdtar")
         nov-unzip-args '("-xC" directory "-f" filename)))
 

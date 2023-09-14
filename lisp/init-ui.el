@@ -38,8 +38,6 @@
   :bind ("C-c b b" . tabspaces-switch-to-buffer)
   :hook (tab-bar . tabspaces-mode)
   :config
-  (setq tabspaces-session-file
-        (expand-file-name "cache/tabsession.el" user-emacs-directory))
   (setq tabspaces-include-buffers '())
   (setq tabspaces-use-filtered-buffers-as-default t))
 

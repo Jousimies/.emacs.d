@@ -22,11 +22,6 @@
   :config
   (setq epkg-repository (expand-file-name "cache/epkgs" user-emacs-directory)))
 
-(use-package request
-  :defer t
-  :config
-  (setq request-storage-directory (expand-file-name "cache/request" user-emacs-directory)))
-
 (with-eval-after-load 'org
   (add-to-list 'org-options-keywords "AUTO_TANGLE:")
 
@@ -100,6 +95,69 @@
 (defvar my/reference-lists `(,(concat my-galaxy "/bibtexs/References.bib")
                              ,(concat my-galaxy "/bibtexs/Books.bib")))
 
+(defvar no-littering-etc-directory
+  (expand-file-name (convert-standard-filename "etc/") user-emacs-directory)
+  "The directory where packages place their configuration files.
+   This variable has to be set before `no-littering' is loaded.")
+
+(defvar no-littering-var-directory
+  (expand-file-name (convert-standard-filename "var/") user-emacs-directory)
+  "The directory where packages place their persistent data files.
+   This variable has to be set before `no-littering' is loaded.")
+
+   ;;;###autoload
+(defun no-littering-expand-etc-file-name (file)
+  "Expand filename FILE relative to `no-littering-etc-directory'."
+  (expand-file-name (convert-standard-filename file)
+                    no-littering-etc-directory))
+
+   ;;;###autoload
+(defun no-littering-expand-var-file-name (file)
+  "Expand filename FILE relative to `no-littering-var-directory'."
+  (expand-file-name (convert-standard-filename file)
+                    no-littering-var-directory))
+
+(cl-letf (((symbol-function 'etc)
+           (symbol-function #'no-littering-expand-etc-file-name))
+          ((symbol-function 'var)
+           (symbol-function #'no-littering-expand-var-file-name)))
+  (make-directory no-littering-etc-directory t)
+  (make-directory no-littering-var-directory t)
+  (with-no-warnings ; many of these variables haven't been defined yet
+
+ ;;; Built-in packages
+    (setq abbrev-file-name (etc "abbrev.el"))
+    (setq auto-insert-directory (etc "auto-insert/"))
+    (setq request-storage-directory (var "request/storage/"))
+    (setq org-clock-persist-file (var "org/clock-persist.el"))
+    (setq org-id-locations-file (var "org/id-locations.el"))
+    (setq org-persist-directory (var "org/persist/"))
+    (setq org-publish-timestamp-directory (var "org/timestamps/"))
+    (setq auto-save-list-file-prefix (var "auto-save/sessions/"))
+    (setq bookmark-default-file (var "bookmark-default.el"))
+    (setq url-cache-directory (var "url/cache/"))
+    (setq url-configuration-directory (var "url/"))
+    (setq url-cookie-file (var "url/cookies.el"))
+    (setq url-history-file (var "url/history.el"))
+    (setq multisession-directory (var "multisession/"))
+    (setq transient-history-file (var "transient/history.el"))
+    (setq transient-levels-file (etc "transient/levels.el"))
+    (setq transient-values-file (etc "transient/values.el"))
+    (setq savehist-file (var "savehist.el"))
+    (setq save-place-file (var "save-place.el"))
+    (setq recentf-save-file (var "recentf-save.el"))
+    (setq image-dired-db-file (var "image-dired/db.el"))
+    (setq image-dired-dir (var "image-dired/"))
+    (setq image-dired-gallery-dir (var "image-dired/gallery/"))
+    (setq image-dired-temp-image-file (var "image-dired/temp-image"))
+    (setq image-dired-temp-rotate-image-file (var "image-dired/temp-rotate-image"))
+
+    (eval-after-load 'org `(make-directory ,(var "org/") t))
+ ;;; Third-part packages
+    (setq tabspaces-session-file (var "tabspaces-session.eld"))
+    (setq undo-fu-session-directory (var "undo-fu-session/"))
+    (setq nov-save-place-file (var "nov-save-place.el"))))
+
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -110,7 +168,6 @@
                         (unless (server-running-p)
                           (server-start)))))
 
-(setq auto-save-list-file-prefix (expand-file-name "cache/auto-save-list/.saves-" user-emacs-directory))
 ;; (setq inhibit-default-init t)
 (setq inhibit-startup-screen t)
 ;; (setq inhibit-splash-screen t)
@@ -219,21 +276,6 @@
   :hook ((org-mode . abbrev-mode)
          (LaTeX-mode . abbrev-mode)))
 
-(use-package bookmark
-  :defer t
-  :config
-  (setq bookmark-default-file (expand-file-name "cache/bookmarks" user-emacs-directory)))
-
-(use-package url
-  :defer t
-  :config
-  (setq url-configuration-directory (expand-file-name "cache/url" user-emacs-directory)))
-
-(use-package multisession
-  :defer t
-  :config
-  (setq multisession-directory (expand-file-name "cache/multisession" user-emacs-directory)))
-
 (use-package cursor-sensor
   :hook (minibuffer-setup . cursor-intangible-mode))
 
@@ -242,13 +284,6 @@
 
 (use-package word-wrap-mode
   :hook (org-mode . word-wrap-whitespace-mode))
-
-(use-package transient
-  :commands transient-define-prefix
-  :config
-  (setq transient-levels-file (expand-file-name "cache/transient/levels.el" user-emacs-directory))
-  (setq transient-values-file (expand-file-name "cache/transient/values.el" user-emacs-directory))
-  (setq transient-history-file (expand-file-name "cache/transient/history.el" user-emacs-directory)))
 
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer)

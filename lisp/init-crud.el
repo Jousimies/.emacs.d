@@ -7,8 +7,6 @@
 (use-package undo-fu-session
   :hook (after-init . undo-fu-session-global-mode)
   :config
-  (setq undo-fu-session-directory (expand-file-name "cache/undo-fu-session" user-emacs-directory))
-
   (defun my/undo-fu-session--make-file-name (filename)
     "Take the path FILENAME and return a name base on this."
     (concat
@@ -25,7 +23,6 @@
 (use-package savehist
   :hook (after-init . savehist-mode)
   :config
-  (setq savehist-file (expand-file-name "cache/history" user-emacs-directory))
   (setq history-length 1000
         savehist-additional-variables '(kill-ring
                                         search-ring
@@ -33,15 +30,12 @@
         history-delete-duplicates t))
 
 (use-package saveplace
-  :hook (after-init . save-place-mode)
-  :config
-  (setq save-place-file (expand-file-name "cache/places" user-emacs-directory)))
+  :hook (after-init . save-place-mode))
 
 (use-package recentf
   :hook (after-init . recentf-mode)
   :bind ("C-c f r" . recentf-open)
   :config
-  (setq recentf-save-file (expand-file-name "cache/recentf" user-emacs-directory))
   (setq recentf-auto-cleanup 300)
   (setq recentf-max-saved-items 1000)
   (setq recentf-exclude '(".pdf$")))

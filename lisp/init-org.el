@@ -229,7 +229,6 @@
 (use-package org-id
   :after org
   :config
-  (setq org-id-locations-file (expand-file-name "cache/.org-id-locations" user-emacs-directory))
   (setq org-id-method 'ts)
   (setq org-id-link-to-org-use-id 'create-if-interactive))
 
@@ -283,7 +282,6 @@
     (async-shell-command "afplay /System/Library/Sounds/Basso.aiff"))
 
   (org-clock-persistence-insinuate)
-  (setq org-clock-persist-file (expand-file-name "cache/org-clock-save.el" user-emacs-directory))
   (setq org-clock-history-length 23)
   (setq org-clock-in-resume t)
   (setq org-clock-into-drawer "LOGCLOCK")
