@@ -73,7 +73,8 @@
     (define-key pdf-view-mode-map [remap pdf-misc-print-document] #'mrb/pdf-misc-print-pages)))
 
 (use-package saveplace-pdf-view
-  :after pdf-tools)
+  :hook (pdf-tools-enabled . (lambda ()
+                               (require 'saveplace-pdf-view))))
 
 (use-package nov
   :mode (".epub" . nov-mode)
