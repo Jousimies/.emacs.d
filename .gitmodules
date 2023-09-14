@@ -397,3 +397,6 @@
 [submodule "packages/form-feed"]
 	path = packages/form-feed
 	url = https://depp.brause.cc/form-feed.git
+[submodule "packages/welcome-dashboard"]
+	path = packages/welcome-dashboard
+	url = https://github.com/konrad1977/welcome-dashboard.git
