@@ -100,11 +100,20 @@
   :hook (org-mode . form-feed-mode))
 
 (use-package frame
-  :defer t
+  :bind ("C-c t a" . set-alpha-background)
   :hook (after-init . (lambda ()
                         (blink-cursor-mode -1)))
   :config
-  (add-to-list 'initial-frame-alist '(alpha . (90 . 100)))
+  (defun set-alpha-background (&optional alpha-value)
+    "Set the alpha background of the current frame based on ALPHA-VALUE."
+    (interactive (list (read-number "Enter alpha value (50-99): " 50)))
+    (setq alpha-value (or alpha-value 50))
+    (let ((current-alpha (or (frame-parameter nil 'alpha) 100)))
+      (cond ((eq current-alpha 100)
+             (modify-frame-parameters nil `((alpha . ,alpha-value))))
+            ((< current-alpha 100)
+             (modify-frame-parameters nil '((alpha . 100)))))))
+
   (face-spec-set 'window-divider
                  '((((background light))
                     :foreground "#000000")
