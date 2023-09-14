@@ -99,6 +99,10 @@
 (use-package go-translate
   :bind (("C-c l l" . my/gts-do-translate))
   :config
+  (add-to-list 'display-buffer-alist '("^\\*Go-Translate\\*"
+                                           (display-buffer-in-side-window)
+                                           (side . bottom)
+                                           (height . 0.3)))
   (setq gts-buffer-follow-p t)
   (setq gts-translate-list '(("en" "zh")))
   (setq gts-default-translator (gts-translator
