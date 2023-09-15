@@ -70,5 +70,10 @@
 (use-package simple-httpd
   :bind ("M-g h" . httpd-serve-directory))
 
+(use-package bard
+  :bind ("C-c a b" . bard-chat)
+  :config
+  (setq bard-http-proxy "http://127.0.0.1:8118"))
+
 (provide 'init-search)
 ;;; init-search.el ends here.

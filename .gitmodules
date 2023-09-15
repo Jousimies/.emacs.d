@@ -382,3 +382,6 @@
 [submodule "packages/form-feed"]
 	path = packages/form-feed
 	url = https://depp.brause.cc/form-feed.git
+[submodule "packages/Bard.el"]
+	path = packages/Bard.el
+	url = https://github.com/AllTheLife/Bard.el.git

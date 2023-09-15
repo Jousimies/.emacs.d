@@ -116,7 +116,6 @@
  ;;; Built-in packages
     (setq abbrev-file-name (etc "abbrev.el"))
     (setq auto-insert-directory (etc "auto-insert/"))
-    (setq request-storage-directory (var "request/storage/"))
     (setq org-clock-persist-file (var "org/clock-persist.el"))
     (setq org-id-locations-file (var "org/id-locations.el"))
     (setq org-persist-directory (var "org/persist/"))
@@ -142,6 +141,8 @@
 
     (eval-after-load 'org `(make-directory ,(var "org/") t))
  ;;; Third-part packages
+    (setq request-storage-directory (var "request/storage/"))
+    (setq bard-cookie-token-path (var "bard_cookie_token.txt"))
     (setq tabspaces-session-file (var "tabspaces-session.eld"))
     (setq undo-fu-session-directory (var "undo-fu-session/"))
     (setq nov-save-place-file (var "nov-save-place.el"))
