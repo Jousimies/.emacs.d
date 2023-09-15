@@ -12,11 +12,11 @@
   (setq lazy-count-suffix-format "   (%s/%s)"))
 
 (use-package rg
-  :bind ("C-c s g" . rg)
+  ;; :bind ("C-c s g" . rg)
   :config
   ;; https://github.com/dajva/rg.el/issues/142#issuecomment-1452525225
   (add-to-list 'rg-finish-functions (lambda (buffer _) (pop-to-buffer buffer)))
-  ;; (rg-enable-default-bindings)
+  (rg-enable-default-bindings)
   (setq rg-group-result t)
   (setq rg-show-columns t))
 
@@ -34,32 +34,29 @@
 (autoload #'elisp-demos-advice-helpful-update "elisp-demos" nil t)
 (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
 
-;; eww
-;; Install readability first.
-;; npm install -g readability-cli
-;; (setq eww-retrieve-command '("readable"))
-
-(use-package engine-mode
-  :bind (("C-c s s" . engine/search-google)
-         ("C-c s m" . engine/search-moviedouban)
-         ("C-c s b" . engine/search-bookdouban)
-         ("C-c s w" . engine/search-wikipedia)
-         ("C-c s z" . engine/search-zhihu))
+(use-package webjump
+  :bind ("C-c w" . webjump)
   :config
-  (defengine google "https://google.com/search?q=%s"
-             :docstring "Search Google.")
-  (defengine wikipedia "https://en.wikipedia.org/wiki/Special:Search?search=%s"
-             :docstring "Search Wikipedia.")
-  (defengine github "https://github.com/search?ref=simplesearch&q=%s"
-             :docstring "Search GitHub.")
-  (defengine youtube "http://www.youtube.com/results?aq=f&oq=&search_query=%s"
-             :docstring "Search YouTube.")
-  (defengine moviedouban "https://search.douban.com/movie/subject_search?search_text=%s"
-             :docstring "Search Moive DouBan.")
-  (defengine bookdouban "https://search.douban.com/book/subject_search?search_text=%s"
-             :docstring "Search Book DouBan.")
-  (defengine zhihu "https://www.zhihu.com/search?type=content&q=%s"
-             :docstring "Search Zhihu."))
+  (add-to-list 'webjump-sites
+               '("ZhiHu" . [simple-query
+                            "www.zhihu.com"
+                            "www.zhihu.com/search?type=content&q=" ""]))
+  (add-to-list 'webjump-sites
+               '("Github" . [simple-query
+                             "github.com"
+                             "github.com/search?q=" ""]))
+  (add-to-list 'webjump-sites
+               '("Douban Books" . [simple-query
+                                   "search.douban.com"
+                                   "https://search.douban.com/book/subject_search?search_text=" ""]))
+  (add-to-list 'webjump-sites
+               '("Douban Movies" . [simple-query
+                                    "search.douban.com"
+                                    "https://search.douban.com/movie/subject_search?search_text=" ""]))
+  (add-to-list 'webjump-sites
+               '("Youtube" . [simple-query
+                              "www.youtube.com"
+                              "http://www.youtube.com/results?aq=f&oq=&search_query=" ""])))
 
 (use-package grab-mac-link
   :commands grab-mac-link-dwim grab-mac-link-safari-1)

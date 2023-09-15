@@ -154,9 +154,6 @@
 [submodule "packages/auctex-latexmk"]
 	path = packages/auctex-latexmk
 	url = https://github.com/emacsmirror/auctex-latexmk.git
-[submodule "packages/engine-mode"]
-	path = packages/engine-mode
-	url = https://github.com/hrs/engine-mode.git
 [submodule "packages/grab-mac-link.el"]
 	path = packages/grab-mac-link.el
 	url = https://github.com/xuchunyang/grab-mac-link.el.git
