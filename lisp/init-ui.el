@@ -105,14 +105,23 @@
                         (blink-cursor-mode -1)))
   :config
   (defun set-alpha-background (&optional alpha-value)
-    "Set the alpha background of the current frame based on ALPHA-VALUE."
-    (interactive (list (read-number "Enter alpha value (50-99): " 50)))
+    "Set the alpha background of the current frame based on ALPHA-VALUE.
+
+    If no alpha value is provided, the function will switch to 50 as default,
+    unless the current alpha value is less than 100, in which case the function
+    will switch to 100.
+
+    If an alpha value between 0 and 99 is provided, the function will switch
+    to the input value."
+    (interactive (list (read-number "Enter alpha value (0-99): " 50)))
     (setq alpha-value (or alpha-value 50))
     (let ((current-alpha (or (frame-parameter nil 'alpha) 100)))
       (cond ((eq current-alpha 100)
              (modify-frame-parameters nil `((alpha . ,alpha-value))))
             ((< current-alpha 100)
-             (modify-frame-parameters nil '((alpha . 100)))))))
+             (modify-frame-parameters nil '((alpha . 100))))
+            (t
+             (modify-frame-parameters nil `((alpha . ,alpha-value)))))))
 
   (face-spec-set 'window-divider
                  '((((background light))
