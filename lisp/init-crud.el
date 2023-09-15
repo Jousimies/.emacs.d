@@ -60,7 +60,7 @@
          (org-mode . hungry-delete-mode)))
 
 (use-package ace-pinyin
-  :hook (after-init . ace-pinyin-global-mode))
+  :hook (meow-normal-mode . ace-pinyin-global-mode))
 
 (use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)

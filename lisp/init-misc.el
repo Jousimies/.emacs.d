@@ -4,6 +4,14 @@
 
 ;;; Code:
 
+(use-package epkg
+  :bind ("C-c s p" . epkg-describe-package)
+  :init
+  (add-to-list 'display-buffer-alist '("^\\*Help\\*"
+                                       (display-buffer-same-window)
+                                       (side . right)
+                                       (window-width . 0.5))))
+
 (use-package advance-words-count
   :bind ("M-=" . advance-words-count))
 

@@ -40,7 +40,6 @@
 ;; (setq eww-retrieve-command '("readable"))
 
 (use-package engine-mode
-  :hook (after-init . engine-mode)
   :bind (("C-c s s" . engine/search-google)
          ("C-c s m" . engine/search-moviedouban)
          ("C-c s b" . engine/search-bookdouban)
@@ -48,25 +47,18 @@
          ("C-c s z" . engine/search-zhihu))
   :config
   (defengine google "https://google.com/search?q=%s"
-             :keybinding "g"
              :docstring "Search Google.")
   (defengine wikipedia "https://en.wikipedia.org/wiki/Special:Search?search=%s"
-             :keybinding "w"
              :docstring "Search Wikipedia.")
   (defengine github "https://github.com/search?ref=simplesearch&q=%s"
-             :keybinding "h"
              :docstring "Search GitHub.")
   (defengine youtube "http://www.youtube.com/results?aq=f&oq=&search_query=%s"
-             :keybinding "y"
              :docstring "Search YouTube.")
   (defengine moviedouban "https://search.douban.com/movie/subject_search?search_text=%s"
-             :keybinding "m"
              :docstring "Search Moive DouBan.")
   (defengine bookdouban "https://search.douban.com/book/subject_search?search_text=%s"
-             :keybinding "b"
              :docstring "Search Book DouBan.")
   (defengine zhihu "https://www.zhihu.com/search?type=content&q=%s"
-             :keybinding "z"
              :docstring "Search Zhihu."))
 
 (use-package grab-mac-link

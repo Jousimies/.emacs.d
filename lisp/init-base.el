@@ -5,20 +5,19 @@
 ;;; Code:
 
 (setq initial-major-mode 'fundamental-mode)
+;; (setq inhibit-default-init t)
+(setq inhibit-startup-screen t)
+;; (setq inhibit-splash-screen t)
 
-(setq url-proxy-services
-      '(("http" . "127.0.0.1:8118")
-        ("https" . "127.0.0.1:8118")
-        ("socks" . "127.0.0.1:8118")
-        ("no_proxy" . "0.0.0.0")))
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
 
-(use-package epkg
-  :bind ("C-c s p" . epkg-describe-package)
-  :init
-  (add-to-list 'display-buffer-alist '("^\\*Help\\*"
-                                       (display-buffer-same-window)
-                                       (side . right)
-                                       (window-width . 0.5))))
+(use-package server
+  :hook (after-init . (lambda ()
+                        (unless (server-running-p)
+                          (server-start)))))
 
 (with-eval-after-load 'org
   (add-to-list 'org-options-keywords "AUTO_TANGLE:")
@@ -36,15 +35,6 @@
             (org-babel-tangle)))))
 
   (add-hook 'after-save-hook 'my/auto-tangle))
-
-(use-package gcmh
-  :hook ((after-init . gcmh-mode)
-         (focus-out . garbage-collect))
-  :config
-  (setq gc-cons-percentage 0.1)
-  (setq gcmh-idle-delay 'auto)
-  (setq gcmh-auto-idle-delay-factor 10)
-  (setq gcmh-high-cons-threshold #x1000000))
 
 ;; Variables defined in C source code
 (setq ring-bell-function 'ignore)
@@ -157,19 +147,23 @@
     (setq nov-save-place-file (var "nov-save-place.el"))
     (setq epkg-repository (var "epkgs"))))
 
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
+(use-package gcmh
+  :hook ((after-init . gcmh-mode)
+         (focus-out . garbage-collect))
+  :config
+  (setq gc-cons-percentage 0.1)
+  (setq gcmh-idle-delay 'auto)
+  (setq gcmh-auto-idle-delay-factor 10)
+  (setq gcmh-high-cons-threshold #x1000000))
 
-(use-package server
-  :hook (after-init . (lambda ()
-                        (unless (server-running-p)
-                          (server-start)))))
-
-;; (setq inhibit-default-init t)
-(setq inhibit-startup-screen t)
-;; (setq inhibit-splash-screen t)
+(use-package url-vars
+  :defer t
+  :config
+  (setq url-proxy-services
+        '(("http" . "127.0.0.1:8118")
+          ("https" . "127.0.0.1:8118")
+          ("socks" . "127.0.0.1:8118")
+          ("no_proxy" . "0.0.0.0"))))
 
 (use-package simple
   :bind ("C-c b s" . scratch-buffer)

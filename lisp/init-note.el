@@ -11,7 +11,7 @@
          ("C-c n k" . denote-keywords-add)
          ("C-c n K" . denote-keywords-remove))
   :hook ((dired-mode . denote-dired-mode-in-directories)
-         (after-init . (lambda ()
+         (org-mode . (lambda ()
                          (require 'denote))))
   :config
   (setq denote-directory (expand-file-name "denote" my-galaxy))
