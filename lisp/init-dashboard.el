@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package dashboard
+  :load-path "packages/emacs-dashboard/"
   :demand t
   :hook (dashboard-mode . (lambda ()
                             (setq-local mode-line-format nil)))

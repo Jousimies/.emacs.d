@@ -385,3 +385,6 @@
 [submodule "packages/Bard.el"]
 	path = packages/Bard.el
 	url = https://github.com/AllTheLife/Bard.el.git
+[submodule "packages/emacs-dashboard"]
+	path = packages/emacs-dashboard
+	url = https://github.com/emacs-dashboard/emacs-dashboard.git
