@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package beancount
+  :load-path "packages/beancount-mode/"
   :mode (".bean" . beancount-mode)
   :hook ((beancount-mode . (lambda ()
                              (setq-local electric-indent-chars nil)))
@@ -46,9 +47,6 @@
               (activate-input-method "rime")))))
 
   (add-hook 'evil-insert-state-entry-hook #'my/beancount-activate-input-method))
-
-(use-package tablist
-  :commands tablist-minor-mode)
 
 (provide 'init-finance)
 ;;; init-finance.el ends here.

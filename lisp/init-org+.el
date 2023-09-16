@@ -5,9 +5,11 @@
 ;;; Code:
 
 (use-package olivetti
+  :load-path "packages/olivetti/"
   :bind ("C-c t o" . olivetti-mode))
 
 (use-package org-appear
+  :load-path "packages/org-appear/"
   :config
   (setq org-appear-autolinks t)
   (setq org-appear-trigger 'manual)
@@ -23,6 +25,7 @@
          (org-mode . org-appear-mode)))
 
 (use-package math-preview
+  :load-path "packages/math-preview/"
   :commands math-preview-all math-preview-clear-all
   :hook (org-mode . auto/math-preview-all)
   :config
@@ -42,6 +45,7 @@
               (math-preview-all)))))))
 
 (use-package org-download
+  :load-path "packages/org-download/"
   :bind (("C-c d c" . org-download-clipboard)
          ("C-c d y" . org-download-yank)
          ("C-c d s" . org-download-screenshot)
@@ -77,9 +81,11 @@
   (advice-add 'org-download-screenshot :after 'my/auto-change-file-paths))
 
 (use-package org-imgtog
+  :load-path "packages/org-imgtog/"
   :hook (org-mode . org-imgtog-mode))
 
 (use-package plantuml
+  :load-path "packages/plantuml-emacs/"
   :commands plantuml-org-to-mindmap-open plantuml-org-to-wbs-open
   :config
   (setq plantuml-jar-path

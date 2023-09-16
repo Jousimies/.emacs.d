@@ -4,6 +4,8 @@
 
 ;;; Code:
 
+(add-to-list 'load-path "~/.emacs.d/packages/parsebib/")
+
 (use-package oc
   :after org
   :custom
@@ -22,6 +24,7 @@
         bibtex-autokey-titleword-length 5))
 
 (use-package zotra
+  :load-path "packages/zotra/"
   :bind (("C-c r a" . zotra-add-entry-from-url)
          ("C-c r A" . zotra-add-entry-from-search))
   :config
@@ -29,6 +32,7 @@
   (setq zotra-default-bibliography (expand-file-name "bibtexs/References.bib" my-galaxy)))
 
 (use-package ebib
+  :load-path "packages/ebib/"
   :bind ("<f2>" . ebib)
   :custom
   (ebib-preload-bib-files my/reference-lists)
@@ -43,6 +47,7 @@
   (ebib-file-associations '(("ps" . "gv"))))
 
 (use-package citar
+  :load-path "packages/citar/"
   :bind (("C-c r o" . citar-open-files)
          ("C-c r O" . citar-open)
          ("C-c r n" . citar-create-note))

@@ -22,11 +22,13 @@
 (use-package icomplete
   :hook ((focus-in . icomplete-vertical-mode)
          (icomplete-minibuffer-setup . (lambda ()
+                                         (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
                                          (require 'orderless)
                                          (setq-local completion-styles
                                                      '(orderless flex))))))
 
 (use-package embark
+  :load-path "packages/embark/"
   :bind (([remap describe-bindings] . embark-bindings)
          ("C-;" . embark-act)
          ("M-." . embark-dwim)
@@ -48,6 +50,7 @@
                  (width . 0.3))))
 
 (use-package corfu
+  :load-path "packages/corfu/"
   :hook (after-init . global-corfu-mode)
   :config
   (setq corfu-cycle t)
@@ -69,15 +72,18 @@
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package corfu-echo
+  :load-path "packages/corfu/extensions/"
   :hook (corfu-mode . corfu-echo-mode))
 
 (use-package corfu-popupinfo
+  :load-path "packages/corfu/extensions/"
   :hook (corfu-mode . corfu-popupinfo-mode))
 
 ;; (use-package corfu-prescient
 ;;   :hook (corfu-mode . corfu-prescient-mode))
 
 (use-package kind-icon
+  :load-path "packages/kind-icon/"
   :commands kind-icon-margin-formatter
   :config
   (setq kind-icon-use-icons nil)
@@ -122,6 +128,7 @@
           (t ,(nerd-icons-codicon "nf-cod-code") :face font-lock-warning-face))))
 
 (use-package cape
+  :load-path "packages/cape/"
   :bind (("C-c p p" . completion-at-point) ;; capf
          ("C-c p t" . complete-tag)        ;; etags
          ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion

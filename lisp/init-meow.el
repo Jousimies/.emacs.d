@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package meow-core
+  :load-path "packages/meow/"
   :hook (after-init . meow-global-mode))
 
 (use-package meow-var

@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package vterm-toggle
+  :load-path ("packages/vterm-toggle/" "packages/emacs-libvterm")
   :bind (("<f5>" . vterm-toggle)
          ("C-<f5>" . vterm-toggle-cd))
   :init

@@ -19,9 +19,11 @@
                                          (window-width . 70))))
 
 (use-package osx-dictionary
+  :load-path "packages/osx-dictionary.el/"
   :commands osx-dictionary-search-pointer)
 
 (use-package sdcv
+  :load-path "packages/sdcv/"
   :commands sdcv-search-pointer sdcv-search-pointer+ sdcv-search-input
   :config
   (face-spec-set 'sdcv-tooltip-face
@@ -66,14 +68,17 @@
 (global-set-key (kbd "C-c l i") 'sdcv-search-input)
 
 (use-package powerthesaurus
+  :load-path ("packages/emacs-powerthesaurus/" "packages/jeison")
   :bind ("C-c l p" . powerthesaurus-lookup-dwim))
 
 (use-package popweb-dict
+  :load-path ("packages/popweb/" "packages/popweb/extension/dict")
   :bind ("C-c l s" . popweb-dict-say-word)
   :config
   (setq popweb-config-location (expand-file-name "cache/popweb" user-emacs-directory)))
 
 (use-package emacs-azure-tts
+  :load-path "packages/emacs-azure-tts/"
   :commands emacs-azure-tts
   :preface
   (defun play-sound-internal (sound)
@@ -97,6 +102,7 @@
 (global-set-key (kbd "C-c l S") 'emacs-azure-tts-sentence)
 
 (use-package go-translate
+  :load-path "packages/go-translate/"
   :bind (("C-c l l" . my/gts-do-translate))
   :config
   (add-to-list 'display-buffer-alist '("^\\*Go-Translate\\*"
@@ -126,6 +132,7 @@
       (gts-do-translate))))
 
 (use-package dictionary-overlay
+  :load-path "packages/dictionary-overlay/"
   :bind (("C-c l r" . dictionary-overlay-toggle)
          ("C-c l R" . dictionary-overlay-render-buffer))
   :config
@@ -136,12 +143,14 @@
   (dictionary-overlay-start))
 
 (use-package jinx
+  :load-path "packages/jinx/"
   :hook (text-mode . jinx-mode)
   :bind ("s-4" . jinx-correct)
   :config
   (add-to-list 'jinx-exclude-regexps '(t "\\cc")))
 
 (use-package writegood-mode
+  :load-path "packages/writegood-mode/"
   :bind ("C-c l w" . writegood-mode)
   :config
   (setq writegood-weasel-words

@@ -69,6 +69,7 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
   (message "init completed in %.2fms"
            (sanityinc/time-subtract-millis after-init-time before-init-time)))
 
+(add-to-list 'load-path "~/.emacs.d/packages/benchmark-init-el/")
 (require 'benchmark-init-loaddefs)
 (benchmark-init/activate)
 

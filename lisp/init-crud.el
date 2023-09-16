@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package undo-fu-session
+  :load-path "packages/undo-fu-session/"
   :hook (after-init . undo-fu-session-global-mode)
   :config
   (defun my/undo-fu-session--make-file-name (filename)
@@ -16,6 +17,7 @@
   (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name))
 
 (use-package vundo
+  :load-path "packages/vundo/"
   :bind ("s-z" . vundo)
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols))
@@ -53,6 +55,7 @@
   :hook (text-mode . global-auto-revert-mode))
 
 (use-package hungry-delete
+  :load-path "packages/hungry-delete/"
   :custom
   (hungry-delete-chars-to-skip " \t\n\r\f\v")
   :hook ((text-mode . hungry-delete-mode)
@@ -60,6 +63,7 @@
          (org-mode . hungry-delete-mode)))
 
 (use-package ace-pinyin
+  :load-path ("packages/ace-pinyin/" "packages/avy/" "packages/pinyinlib.el")
   :hook (meow-normal-mode . ace-pinyin-global-mode))
 
 (use-package hippie-exp
@@ -81,6 +85,7 @@
   :hook (text-mode . delete-selection-mode))
 
 (use-package tempel
+  :load-path "packages/tempel/"
   :bind (("M-+" . tempel-complete)
          ("M-*" . tempel-insert))
   :config
@@ -88,6 +93,7 @@
                       ,(expand-file-name "config/tempel" my-galaxy))))
 
 (use-package rime
+  :load-path "packages/emacs-rime/"
   :commands rime--should-inline-ascii-p
   :hook ((input-method-activate . (lambda ()
                                     (rime-activate nil)))
@@ -140,7 +146,16 @@
                                  rime-predicate-after-alphabet-char-p)))
 
 (use-package rime-regexp
+  :load-path "packages/rime-regexp.el/"
   :hook (minibuffer-mode . rime-regexp-mode))
+
+(use-package yasnippet
+  :load-path "packages/yasnippet/"
+  :hook (after-init . yas-global-mode))
+
+(use-package yasnippet-snippets
+  :load-path "packages/yasnippet-snippets/"
+  :after yasnippet)
 
 (provide 'init-crud)
 ;;; init-crud.el ends here.

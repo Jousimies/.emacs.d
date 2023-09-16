@@ -12,7 +12,8 @@
   (setq lazy-count-suffix-format "   (%s/%s)"))
 
 (use-package rg
-  ;; :bind ("C-c s g" . rg)
+  :load-path ("packages/rg.el/" "packages/Emacs-wgrep")
+  :bind ("C-c s". rg-menu)
   :config
   ;; https://github.com/dajva/rg.el/issues/142#issuecomment-1452525225
   (add-to-list 'rg-finish-functions (lambda (buffer _) (pop-to-buffer buffer)))
@@ -27,10 +28,13 @@
   (setq help-window-keep-selected t))
 
 (use-package helpful
+  :load-path "packages/helpful/"
   :bind (([remap describe-function] . helpful-callable)
          ([remap describe-variable] . helpful-variable)
          ([remap describe-key] . helpful-key)))
 
+(add-to-list 'load-path "~/.emacs.d/packages/elisp-refs/")
+(add-to-list 'load-path "~/.emacs.d/packages/elisp-demos/")
 (autoload #'elisp-demos-advice-helpful-update "elisp-demos" nil t)
 (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
 
@@ -59,6 +63,7 @@
                               "http://www.youtube.com/results?aq=f&oq=&search_query=" ""])))
 
 (use-package grab-mac-link
+  :load-path "packages/grab-mac-link.el/"
   :commands grab-mac-link-dwim grab-mac-link-safari-1)
 
 ;;;###autoload
@@ -68,9 +73,11 @@
 (global-set-key (kbd "C-<f10>") 'my/link-grab)
 
 (use-package simple-httpd
+  :load-path "packages/simple-httpd/"
   :bind ("M-g h" . httpd-serve-directory))
 
 (use-package bard
+  :load-path "packages/Bard.el/"
   :bind ("C-c a b" . bard-chat)
   :config
   (setq bard-http-proxy "http://127.0.0.1:8118"))

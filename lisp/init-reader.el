@@ -5,11 +5,10 @@
 ;;; Code:
 
 (use-package pdf-tools
-  :load-path "~/.emacs.d/packages/pdf-tools/"
+  :load-path ("packages/pdf-tools/lisp" "packages/tablist")
   :commands pdf-tools-install
   :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
   :magic ("%PDF" . pdf-view-mode)
-  :hook (dirvish-setup . pdf-tools-install)
   :config
   (pdf-tools-install t nil t nil))
 
@@ -73,10 +72,12 @@
     (define-key pdf-view-mode-map [remap pdf-misc-print-document] #'mrb/pdf-misc-print-pages)))
 
 (use-package saveplace-pdf-view
-  :hook (pdf-tools-enabled . (lambda ()
-                               (require 'saveplace-pdf-view))))
+  :load-path "packages/saveplace-pdf-view/"
+  :hook (pdf-view-mode . (lambda ()
+                           (require 'saveplace-pdf-view))))
 
 (use-package nov
+  :load-path "packages/nov.el/"
   :mode (".epub" . nov-mode)
   :init
   (add-to-list 'display-buffer-alist '("\\.epub\\'"

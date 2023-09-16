@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package tex
+  :load-path "packages/auctex/"
   :mode ("\\.tex\\'" . LaTeX-mode)
   :hook (LaTeX-mode . turn-on-reftex)
   :init
@@ -36,6 +37,7 @@
               ("C-c h" . TeX-doc)))
 
 (use-package auctex-latexmk
+  :load-path "packages/auctex-latexmk/"
   :hook (LaTeX-mode . auctex-latexmk-setup))
 
 (use-package reftex
@@ -45,6 +47,7 @@
   (setq reftex-toc-split-windows-fraction 0.25))
 
 (use-package cdlatex
+  :load-path "packages/cdlatex/"
   :hook ((LaTeX-mode . turn-on-cdlatex)
          (org-mode . org-cdlatex-mode)))
 

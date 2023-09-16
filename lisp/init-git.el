@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package magit
+  :load-path ("packages/magit/lisp" "packages/with-editor/lisp")
   :bind ("C-x g" . magit)
   :config
   (setq magit-git-executable "/usr/bin/git")
@@ -17,9 +18,11 @@
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote))
 
 (use-package git-timemachine
+  :load-path "packages/git-timemachine/"
   :bind ("M-g t" . git-timemachine))
 
 (use-package browse-at-remote
+  :load-path "packages/browse-at-remote/"
   :bind ("M-g b" . browse-at-remote))
 
 (provide 'init-git)

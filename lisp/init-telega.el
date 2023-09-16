@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package telega
+  :load-path ("packages/telega.el/" "packages/rainbow-identifiers" "packages/visual-fill-column")
   :bind ("C-c a t" . telega)
   :config
   (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))

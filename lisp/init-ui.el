@@ -13,17 +13,21 @@
 (set-fontset-font t 'unicode (font-spec :family "Hack Nerd Font Mono") nil 'prepend)
 
 (use-package nerd-icons
+  :load-path "packages/nerd-icons.el/"
   :commands nerd-icons-codicon nerd-icons-icon-for-file
   :config
   (setq nerd-icons-font-family "Hack Nerd Font Mono"))
 
 (use-package nerd-icons-completion
+  :load-path "~/.emacs.d/packages/nerd-icons-completion/"
   :hook (minibuffer-setup . nerd-icons-completion-mode))
 
 (use-package nerd-icons-dired
+  :load-path "packages/emacs-nerd-icons-dired"
   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package nerd-icons-ibuffer
+  :load-path "~/.emacs.d/packages/nerd-icons-ibuffer/"
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 (use-package tab-bar
@@ -35,6 +39,7 @@
   (setq tab-bar-show nil))
 
 (use-package tabspaces
+  :load-path "packages/tabspaces"
   :bind ("C-c b b" . tabspaces-switch-to-buffer)
   :hook (tab-bar . tabspaces-mode)
   :config
@@ -75,6 +80,7 @@
   (setq show-paren-context-when-offscreen 'overlay))
 
 (use-package rainbow-mode
+  :load-path "packages/rainbow-mode/"
   :hook (prog-mode . rainbow-mode))
 
 (use-package pulse
@@ -97,6 +103,7 @@
           (advice-add cmd :after #'my-pulse-momentary)))
 
 (use-package form-feed
+  :load-path "packages/form-feed/"
   :hook (org-mode . form-feed-mode))
 
 (use-package frame
@@ -232,6 +239,7 @@ of the box `(w h)' inside the box `(cw ch)'."
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
 
 (use-package ace-window
+  :load-path "packages/ace-window"
   :bind ("M-o" . ace-window))
 
 (provide 'init-ui)

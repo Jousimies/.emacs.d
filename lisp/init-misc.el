@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package advance-words-count
+  :load-path "packages/advance-words-count.el/"
   :bind ("M-=" . advance-words-count))
 
 (defun eps-to-png-marked ()

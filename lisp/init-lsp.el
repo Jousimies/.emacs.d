@@ -21,6 +21,7 @@
 
 ;; lsp-bridge-toggle-sdcv-helper use pinyin to search english words,
 ;; Disable corfu-mode to turn off cape-dabbrev temporarily.
+(add-to-list 'load-path "~/.emacs.d/packages/lsp-bridge/")
 (autoload 'lsp-bridge-toggle-sdcv-helper "lsp-bridge" "" t)
 (defun my/toggle-corfu ()
   "Deactivate input method when sdcv helper enabled."

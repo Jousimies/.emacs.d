@@ -149,6 +149,7 @@
     (setq epkg-repository (var "epkgs"))))
 
 (use-package gcmh
+  :load-path "packages/gcmh"
   :hook ((after-init . gcmh-mode)
          (focus-out . garbage-collect))
   :config
@@ -288,6 +289,7 @@
   :hook (ibuffer-mode . ibuffer-auto-mode))
 
 (use-package gc-buffers
+  :load-path "packages/emacs-gc-buffers"
   :hook (after-init . gc-buffers-mode))
 
 (provide 'init-base)

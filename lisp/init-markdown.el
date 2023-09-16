@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package markdown-mode
+  :load-path "packages/markdown-mode/"
   :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
          ("README\\.md\\'" . gfm-mode))
   :init (setq markdown-command "multimarkdown")

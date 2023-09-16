@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package denote
+  :load-path "packages/denote/"
   :bind (("C-c n s" . denote-signature)
          ("C-c n i" . denote-link)
          ("C-c n r" . denote-rename-file-using-front-matter)

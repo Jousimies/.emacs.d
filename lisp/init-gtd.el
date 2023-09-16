@@ -13,6 +13,7 @@
   (setq org-agenda-align-tags-to-column -120))
 
 (use-package org-gtd
+    :load-path ("packages/org-gtd.el/" "packages/org-agenda-property" "packages/org-edna")
   :init
   (setq org-gtd-update-ack "3.0.0")
   :custom
