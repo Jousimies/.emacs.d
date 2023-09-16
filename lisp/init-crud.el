@@ -78,8 +78,13 @@
                                            try-complete-lisp-symbol-partially
                                            try-complete-lisp-symbol)))
 
-(add-hook 'prog-mode-hook 'electric-pair-mode)
-(add-hook 'org-mode-hook 'electric-pair-mode)
+(add-hook 'prog-mode-hook 'electric-pair-local-mode)
+(add-hook 'org-mode-hook 'electric-pair-local-mode)
+(add-hook 'org-mode-hook
+          (lambda ()
+            (setq-local electric-pair-inhibit-predicate
+                        `(lambda (c)
+                           (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
 
 (use-package delsel
   :hook (text-mode . delete-selection-mode))
@@ -151,7 +156,7 @@
 
 (use-package yasnippet
   :load-path "packages/yasnippet/"
-  :hook (after-init . yas-global-mode))
+  :hook (org-mode . yas-global-mode))
 
 (use-package yasnippet-snippets
   :load-path "packages/yasnippet-snippets/"
