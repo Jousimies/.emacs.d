@@ -7,13 +7,14 @@
 (use-package denote
   :load-path "packages/denote/"
   :bind (("C-c n s" . denote-signature)
+         ("C-c n S" . denote-subdirectory)
          ("C-c n i" . denote-link)
          ("C-c n r" . denote-rename-file-using-front-matter)
          ("C-c n k" . denote-keywords-add)
          ("C-c n K" . denote-keywords-remove))
   :hook ((dired-mode . denote-dired-mode-in-directories)
          (org-mode . (lambda ()
-                         (require 'denote))))
+                       (require 'denote))))
   :config
   (setq denote-directory (expand-file-name "denote" my-galaxy))
   (setq denote-dired-directories (list denote-directory
@@ -25,6 +26,18 @@
 
 (use-package denote-org-dblock
   :commands denote-org-dblock-insert-backlinks denote-org-dblock-insert-links)
+
+;;;###autoload
+(defun my/denote-signature-from-filename ()
+  "Denotes the signature from the filename and kills it."
+  (interactive)
+  (let* ((mode (buffer-local-value 'major-mode (current-buffer)))
+         (file (if (eq mode 'org-mode) (buffer-file-name) (dired-get-filename)))
+         (signature (denote-retrieve-filename-signature file)))
+    (if signature
+        (kill-new signature))))
+
+(advice-add 'denote-signature :before #'my/denote-signature-from-filename)
 
 (defvar prot-dired--limit-hist '()
   "Minibuffer history for `prot-dired-limit-regexp'.")
@@ -86,51 +99,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
         (my/auto-change-file-paths)))))
 
 (global-set-key (kbd "M-<f10>") 'my/org-capture-safari-literature)
-
-(cl-defun my/denote-subdirectory (subdirectory)
-  (denote
-   (denote-title-prompt)
-   (denote-keywords-prompt)
-   'org
-   (expand-file-name subdirectory (denote-directory))))
-
-;;;###autoload
-(defun my/denote-term ()
-  (interactive)
-  (my/denote-subdirectory "term"))
-
-;;;###autoload
-(defun my/denote-book ()
-  (interactive)
-  (my/denote-subdirectory "books"))
-
-;;;###autoload
-(defun my/denote-outline ()
-  (interactive)
-  (my/denote-subdirectory "outline"))
-
-;;;###autoload
-(defun my/denote-reference-heading ()
-  (interactive)
-  (goto-char (point-max))
-  (insert "\n* References\n"))
-
-;;;###autoload
-(defun my/denote-signature-from-filename ()
-  (interactive)
-  (let* ((mode (buffer-local-value 'major-mode (current-buffer)))
-         (file (if (eq mode 'org-mode) (buffer-file-name) (dired-get-filename)))
-         (signature (denote-retrieve-filename-signature file)))
-    (if signature
-        (kill-new signature))))
-
-(advice-add 'denote-signature :before #'my/denote-signature-from-filename)
-
-(defun my/denote-signature-or-subdirectory (arg)
-  (interactive "P")
-  (if arg
-      (one-key-menu-new)
-    (denote-signature)))
 
 (defun my/denote-signature-buffer ()
     (interactive)
