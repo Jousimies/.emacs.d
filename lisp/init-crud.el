@@ -156,7 +156,7 @@
 
 (use-package yasnippet
   :load-path "packages/yasnippet/"
-  :hook (org-mode . yas-global-mode))
+  :hook (minibuffer-mode . yas-global-mode))
 
 (use-package yasnippet-snippets
   :load-path "packages/yasnippet-snippets/"
