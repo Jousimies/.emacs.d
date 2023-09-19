@@ -96,7 +96,9 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
         (org-insert-link nil file-new-path title)
         (org-set-property "URL" url)
         (org-set-tags "Reference")
-        (my/auto-change-file-paths)))))
+        (beginning-of-line)
+        (while (re-search-forward (expand-file-name "~") nil t 1)
+            (replace-match "~" t nil))))))
 
 (global-set-key (kbd "M-<f10>") 'my/org-capture-safari-literature)
 
