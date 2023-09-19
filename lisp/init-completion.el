@@ -27,6 +27,27 @@
                                          (setq-local completion-styles
                                                      '(orderless flex))))))
 
+(use-package consult
+  :load-path "packages/consult/"
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :bind (([remap apropos] . consult-apropos)
+         ([remap bookmark-jump] . consult-bookmark)
+         ([remap goto-line] . consult-line)
+         ([remap locate] . consult-locate)
+         ([remap load-theme] . consult-theme)
+         ([remap man] . consult-man)
+         ([remap recentf-open-files] . consult-recent-file)
+         ([remap switch-to-buffer] . consult-buffer)
+         ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
+         ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
+         ([remap yank-pop] . consult-yank-pop)
+         ("C-c f a" . consult-find)
+         :map minibuffer-mode-map
+         ("C-h" . consult-history)))
+
+(use-package consult-imenu
+  :bind (([remap imenu] . consult-imenu)))
+
 (use-package embark
   :load-path "packages/embark/"
   :bind (([remap describe-bindings] . embark-bindings)

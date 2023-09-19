@@ -394,3 +394,6 @@
 [submodule "packages/queue"]
 	path = packages/queue
 	url = https://github.com/emacs-straight/queue.git
+[submodule "packages/consult"]
+	path = packages/consult
+	url = https://github.com/minad/consult.git
