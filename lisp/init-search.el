@@ -58,6 +58,10 @@
                                     "search.douban.com"
                                     "https://search.douban.com/movie/subject_search?search_text=" ""]))
   (add-to-list 'webjump-sites
+               '("Scholar" . [simple-query
+                              "scholar.google.com"
+                              "https://scholar.google.com/scholar?hl=zh-CN&as_sdt=0%2C33&q=" ""]))
+  (add-to-list 'webjump-sites
                '("Youtube" . [simple-query
                               "www.youtube.com"
                               "http://www.youtube.com/results?aq=f&oq=&search_query=" ""])))
