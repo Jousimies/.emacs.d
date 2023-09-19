@@ -8,6 +8,10 @@
   :bind ("C-<f12>" . org-agenda)
   :hook (org-agenda-finalize . #'org-agenda-find-same-or-today-or-agenda)
   :config
+  (setq org-agenda-skip-scheduled-if-done t)
+  (setq org-agenda-skip-deadline-if-done t)
+  (setq org-agenda-todo-ignore-scheduled 'future)
+  (setq org-agenda-todo-ignore-deadlines 'near)
   (setq org-agenda-dim-blocked-tasks t)
   (setq org-agenda-compact-blocks t)
   (setq org-agenda-align-tags-to-column -120))

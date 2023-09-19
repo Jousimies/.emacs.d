@@ -40,6 +40,8 @@
   (org-enforce-todo-checkbox-dependencies t)
   (org-tags-sort-function 'org-string-collate-greaterp)
   :config
+  (setq org-deadline-warning-days 7)
+
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
   (setq org-todo-repeat-to-state t)
