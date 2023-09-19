@@ -178,6 +178,7 @@
   (setq-default indent-tabs-mode nil)
   :config
   ;; (setq read-extended-command-predicate #'command-completion-default-include-point)
+  (setq completion-auto-select 'second-tab)
   (setq mark-ring-max 128)
   (setq kill-do-not-save-duplicates t)
   (setq kill-ring-max (* kill-ring-max 2))
