@@ -71,14 +71,43 @@
         (org-download-rename-last-file)
       (org-download-rename-at-point)))
 
-  (defun my/auto-change-file-paths (&optional basename)
+  ;; (defun my/auto-change-file-paths (&optional basename)
+  ;;   (interactive)
+  ;;   (save-excursion
+  ;;     (previous-line)
+  ;;     (while (re-search-forward (expand-file-name "~") nil t)
+  ;;       (replace-match "~" t nil))))
+  ;; (advice-add 'org-download-clipboard :after 'my/auto-change-file-paths)
+  ;; (advice-add 'org-download-screenshot :after 'my/auto-change-file-paths)
+
+  (advice-add 'org-download-clipboard :after 'my/org-download-adjust)
+  ;; (advice-add 'org-download-screenshot :after 'my/org-download-adjust)
+
+  (defun my/org-download-adjust (&optional basename)
+    "Adjust the last downloaded file.
+
+  This function renames the last downloaded file, replaces all occurrences of the old file name with the new file name in the Org mode buffer, and updates the CAPTION and NAME headers in the Org mode buffer. "
     (interactive)
-    (save-excursion
-      (previous-line)
-      (while (re-search-forward (expand-file-name "~") nil t)
-        (replace-match "~" t nil))))
-  (advice-add 'org-download-clipboard :after 'my/auto-change-file-paths)
-  (advice-add 'org-download-screenshot :after 'my/auto-change-file-paths))
+    (let* ((dir-path (org-download--dir))
+           (newname (read-string "Rename last file to: " (file-name-base org-download-path-last-file)))
+           (ext (file-name-extension org-download-path-last-file))
+           (newpath (concat dir-path "/" newname "." ext)))
+      (when org-download-path-last-file
+        (rename-file org-download-path-last-file newpath 1)
+        (org-download-replace-all
+         (file-name-nondirectory org-download-path-last-file)
+         (concat newname "." ext))
+        (setq org-download-path-last-file newpath))
+      (save-excursion
+        (previous-line 7)
+        (while (re-search-forward "^\\#\\+NAME: fig:" nil t 1)
+          (move-end-of-line 1)
+          (insert newname))
+        (while (re-search-forward "^\\#\\+CAPTION:" nil t 1)
+          (move-end-of-line 1)
+          (insert newname))
+        (while (re-search-forward (expand-file-name "~") nil t 1)
+          (replace-match "~" t nil))))))
 
 (use-package org-imgtog
   :load-path "packages/org-imgtog/"
