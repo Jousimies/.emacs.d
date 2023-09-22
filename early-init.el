@@ -25,6 +25,8 @@
 
 (fset 'display-startup-echo-area-message 'ignore)
 
+(add-to-list 'load-path "~/.emacs.d/packages/modus-themes/")
+(require 'modus-themes)
 (defun my/apply-theme (appearance)
   "Load theme, taking current system APPEARANCE into consideration."
   (mapc #'disable-theme custom-enabled-themes)
