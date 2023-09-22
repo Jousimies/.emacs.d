@@ -77,7 +77,7 @@
                            (require 'saveplace-pdf-view))))
 
 (use-package nov
-  :load-path "packages/nov.el/"
+  :load-path ("packages/nov.el/" "packages/esxml/")
   :mode (".epub" . nov-mode)
   :init
   (add-to-list 'display-buffer-alist '("\\.epub\\'"
