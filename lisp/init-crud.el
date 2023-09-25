@@ -99,22 +99,13 @@
 
 (use-package rime
   :load-path "packages/emacs-rime/"
-  :commands rime--should-inline-ascii-p
+  :demand t
   :hook ((input-method-activate . (lambda ()
-                                    (rime-activate nil)))
-         (meow-insert-enter . (lambda ()
-                                (if (and (not (rime--should-inline-ascii-p))
-                                         (eq major-mode 'org-mode)
-                                         (not (org-at-clock-log-p))
-                                         (not (org-at-table-p))
-                                         (not (org-at-timestamp-p))
-                                         (not (and (bolp) (org-on-heading-p))))
-                                    (progn
-                                      (activate-input-method "rime")
-                                      (im-change-cursor-color)))))
-         (meow-insert-exit . (lambda ()
-                               (deactivate-input-method)
-                               (set-cursor-color (foreground-color-at-point)))))
+                                    (setq cursor-type 'bar)
+                                    (im-change-cursor-color)))
+         (input-method-deactivate . (lambda ()
+                                      (setq cursor-type 'box)
+                                      (set-cursor-color (foreground-color-at-point)))))
   :bind (:map rime-mode-map
               ("M-j" . rime-force-enable))
 
@@ -138,7 +129,6 @@
     (set-cursor-color (if (im--chinese-p)
                           im-cursor-color
                         (foreground-color-at-point))))
-
   (setq default-input-method "rime")
   (setq rime-user-data-dir "~/Library/Rime/")
   (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
