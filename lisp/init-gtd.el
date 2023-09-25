@@ -101,5 +101,28 @@
 
   (setq diary-file (expand-file-name "logs/diary.org" my-galaxy)))
 
+(use-package alert
+  :load-path "packages/alert/"
+  :commands alert
+  :config
+  (setq alert-default-style 'osx-notifier))
+
+(defun my/alert-osx-notifier-notify (info)
+  (do-applescript (format "display notification %S with title %S"
+                          (plist-get info :message)
+                          (plist-get info :title)))
+  (alert-message-notify info))
+(advice-add 'alert-osx-notifier-notify :override #'my/alert-osx-notifier-notify)
+
+(use-package org-alert
+  :load-path "packages/org-alert/"
+  :hook (org-mode . org-alert-enable)
+  :config
+  (setq org-alert-interval 300)
+  (setq org-alert-notify-cutoff 10)
+  (setq org-alert-notify-after-event-cutoff 10)
+  (setq org-alert-notification-title "Org Agenda Reminder!")
+  (org-alert-enable))
+
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.
