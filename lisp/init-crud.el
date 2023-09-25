@@ -162,5 +162,9 @@
   :load-path "packages/yasnippet-snippets/"
   :after yasnippet)
 
+(use-package expand-region
+  :load-path "packages/expand-region.el/"
+  :bind ("C-=" . er/expand-region))
+
 (provide 'init-crud)
 ;;; init-crud.el ends here.
