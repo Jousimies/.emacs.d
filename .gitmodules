@@ -397,3 +397,6 @@
 [submodule "packages/consult"]
 	path = packages/consult
 	url = https://github.com/minad/consult.git
+[submodule "packages/ef-themes"]
+	path = packages/ef-themes
+	url = https://git.sr.ht/~protesilaos/ef-themes

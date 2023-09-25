@@ -26,13 +26,15 @@
 (fset 'display-startup-echo-area-message 'ignore)
 
 (add-to-list 'load-path "~/.emacs.d/packages/modus-themes/")
+(add-to-list 'load-path "~/.emacs.d/packages/ef-themes/")
 (require 'modus-themes)
+(require 'ef-themes)
 (defun my/apply-theme (appearance)
   "Load theme, taking current system APPEARANCE into consideration."
   (mapc #'disable-theme custom-enabled-themes)
   (pcase appearance
     ('light (load-theme 'modus-operandi t))
-    ('dark (load-theme 'modus-vivendi t))))
+    ('dark (load-theme 'ef-maris-dark t))))
 
 (add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
 
