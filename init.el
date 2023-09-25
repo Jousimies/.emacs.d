@@ -48,7 +48,7 @@
 
 (require 'init-base)
 (require 'init-ui)
-(require 'init-meow)
+;; (require 'init-meow)
 (require 'init-crud)
 (require 'init-completion)
 (require 'init-dired)
