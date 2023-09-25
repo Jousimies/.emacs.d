@@ -47,7 +47,9 @@
   (setq org-todo-repeat-to-state t)
   (setq org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)")))
-
+  (add-hook 'org-after-todo-state-change-hook (lambda ()
+                                                (if (org-clocking-p)
+                                                    (org-clock-out))))
   (setq org-todo-keyword-faces
         '(("TODO" . (:inherit (bold org-todo)))
           ("NEXT" . (:inherit (success org-todo)))
