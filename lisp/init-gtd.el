@@ -48,12 +48,12 @@
                            ,(expand-file-name "org-gtd-tasks.org_archive" org-gtd-directory)))
 
   (org-edna-mode)
-  :bind (("<f12>" . org-gtd-engage)
-         ("C-c t i" . org-gtd-process-inbox)
-         ("C-c t c" . org-gtd-clarify-item)
-         ("C-c t C" . org-gtd-clarify-agenda-item)
-         ("C-c t r" . org-gtd-review-area-of-focus)
-         ("C-c t s" . org-gtd-review-stuck-projects)
+  :bind (("<f12> <f12>" . org-gtd-engage)
+         ("<f12> i" . org-gtd-process-inbox)
+         ("<f12> c" . org-gtd-clarify-item)
+         ("<f12> C" . org-gtd-clarify-agenda-item)
+         ("<f12> r" . org-gtd-review-area-of-focus)
+         ("<f12> s" . org-gtd-review-stuck-projects)
          (:map org-gtd-clarify-map
                ("C-c C-c" . org-gtd-organize))))
 

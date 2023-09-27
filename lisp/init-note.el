@@ -8,7 +8,8 @@
   :load-path "packages/denote/"
   :bind (("C-c n s" . denote-signature)
          ("C-c n S" . denote-subdirectory)
-         ("C-c n i" . denote-link)
+         ("C-c n l" . denote-link)
+         ("C-c n L" . denote-link-insert-links-matching-regexp)
          ("C-c n r" . denote-rename-file-using-front-matter)
          ("C-c n k" . denote-keywords-add)
          ("C-c n K" . denote-keywords-remove))

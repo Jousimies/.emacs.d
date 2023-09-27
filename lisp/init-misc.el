@@ -46,6 +46,7 @@ This function requires ImageMagick's convert utility to be installed and availab
           (let ((content (buffer-substring-no-properties content-begin content-end)))
             (delete-region link-begin link-end)
             (insert content)))))))
+(global-set-key (kbd "C-c m r") 'jf/org-link-remove-link)
 
 (defun yt-set-time (time)
   "Set TIME in the YouTube link at point.)
@@ -99,7 +100,7 @@ This function requires ImageMagick's convert utility to be installed and availab
   (interactive)
   (shell-command "shortcuts run \"OCR Selected Area\"")
   (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
-(global-set-key (kbd "C-c o c") 'my/ocr)
+(global-set-key (kbd "C-c m o") 'my/ocr)
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.

@@ -48,9 +48,9 @@
 
 (use-package citar
   :load-path "packages/citar/"
-  :bind (("C-c r o" . citar-open-files)
-         ("C-c r O" . citar-open)
-         ("C-c r n" . citar-create-note))
+  :bind (("C-c n o" . citar-open-files)
+         ("C-c n O" . citar-open)
+         ("C-c n n" . citar-create-note))
   :config
   (add-hook 'minibuffer-setup-hook
       (lambda () (setq truncate-lines t)))
