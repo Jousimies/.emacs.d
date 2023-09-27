@@ -65,10 +65,10 @@
                  (side . right)
                  (width . 0.3)))
   (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+               '("\\*Embark Collect"
                  (display-buffer-in-side-window)
-                 (side . right)
-                 (width . 0.3))))
+                 (side . bottom)
+                 (height . 0.4))))
 
 (use-package corfu
   :load-path "packages/corfu/"
