@@ -34,17 +34,15 @@
   :hook (after-init . tab-bar-mode)
   :bind ("C-c b t" . tab-switch)
   :config
+  (setq tab-bar-format '(tab-bar-format-history
+                         tab-bar-format-tabs
+                         tab-bar-separator
+                         tab-bar-format-align-right
+                         tab-bar-format-global))
   (setq tab-bar-close-button-show nil)
+  (setq tab-bar-separator "|")
   (setq tab-bar-tab-hints nil)
-  (setq tab-bar-show nil))
-
-(use-package tabspaces
-  :load-path "packages/tabspaces"
-  :bind ("C-c b b" . tabspaces-switch-to-buffer)
-  :hook (tab-bar . tabspaces-mode)
-  :config
-  (setq tabspaces-include-buffers '())
-  (setq tabspaces-use-filtered-buffers-as-default t))
+  (setq tab-bar-show t))
 
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
