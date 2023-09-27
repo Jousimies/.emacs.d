@@ -209,12 +209,27 @@
         '(org-attach-id-ts-folder-format
           org-attach-id-uuid-folder-format)))
 
-;;;###autoload
+;; (defun my/org-attach-visit-headline-from-dired ()
+;;     "Go to the headline corresponding to this org-attach directory."
+;;     (interactive)
+;;     (let* ((id-parts (last (split-string default-directory "/" t) 2))
+;;            (id (apply #'concat id-parts)))
+;;       (let ((m (org-id-find id 'marker)))
+;;         (unless m (user-error "Cannot find entry with ID \"%s\"" id))
+;;         (pop-to-buffer (marker-buffer m))
+;;         (goto-char m)
+;;         (move-marker m nil)
+;;         (org-fold-show-context))))
+
 (defun my/org-attach-visit-headline-from-dired ()
     "Go to the headline corresponding to this org-attach directory."
     (interactive)
-    (let* ((id-parts (last (split-string default-directory "/" t) 2))
-           (id (apply #'concat id-parts)))
+    (require 'org-attach)
+    (let* ((path (replace-regexp-in-string (regexp-quote org-attach-directory) "" (expand-file-name (dired-filename-at-point))))
+           (id-parts (split-string path "/"))
+           (id1 (nth 1 id-parts))
+           (id2 (nth 2 id-parts))
+           (id (concat id1 id2)))
       (let ((m (org-id-find id 'marker)))
         (unless m (user-error "Cannot find entry with ID \"%s\"" id))
         (pop-to-buffer (marker-buffer m))
