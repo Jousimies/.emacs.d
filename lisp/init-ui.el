@@ -40,7 +40,7 @@
                          tab-bar-format-align-right
                          tab-bar-format-global))
   (setq tab-bar-close-button-show nil)
-  (setq tab-bar-separator "|")
+  (setq tab-bar-separator "​​")
   (setq tab-bar-tab-hints nil)
   (setq tab-bar-show t))
 
