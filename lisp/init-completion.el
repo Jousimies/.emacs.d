@@ -6,7 +6,11 @@
 
 (setq completion-category-overrides '((file (styles basic partial-completion))))
 (setq read-file-name-completion-ignore-case t)
-
+(add-hook 'minibuffer-mode-hook (lambda ()
+                                  (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
+                                  (require 'orderless)
+                                  (setq-local completion-styles
+                                              '(orderless flex))))
 (setq-local completion-in-region-function
             (lambda (&rest args)
               (apply (if vertico-mode
@@ -19,13 +23,19 @@
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
 (setq set-message-functions '(inhibit-message))
 
-(use-package icomplete
-  :hook ((focus-in . icomplete-vertical-mode)
-         (icomplete-minibuffer-setup . (lambda ()
-                                         (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
-                                         (require 'orderless)
-                                         (setq-local completion-styles
-                                                     '(orderless flex))))))
+(use-package vertico
+  :load-path "packages/vertico"
+  :hook (after-init . vertico-mode)
+  :config
+  (setq vertico-count 10)
+  (setq vertico-resize nil)
+  (setq vertico-cycle t))
+
+(use-package vertico-directory
+  :bind (:map vertico-map
+              ("C-h" . vertico-directory-up)))
+;; (use-package vertico-indexed
+;;   :hook (vertico-mode . vertico-indexed-mode))
 
 (use-package consult
   :load-path "packages/consult/"
