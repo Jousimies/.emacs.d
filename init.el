@@ -44,6 +44,8 @@
   (setq use-package-verbose t)
   (require 'init-benchmark))
 
+(toggle-frame-fullscreen)
+
 (require 'init-dashboard)
 
 (require 'init-base)
