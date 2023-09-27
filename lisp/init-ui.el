@@ -222,6 +222,12 @@ of the box `(w h)' inside the box `(cw ch)'."
                                        (tab-name . "Porg") (tab-group . "Prog")
                                        (select . t))))
 
+(add-to-list 'display-buffer-alist
+             '("\\*\\(scratch\\|Messages\\)\\*"
+               (display-buffer-in-tab)
+               (tab-name . "Misc")
+               (tab-group . "Misc")))
+
 (defun my/scroll-other-windown-down ()
   "Scroll other window down."
   (interactive)

@@ -10,6 +10,11 @@
   :hook (dashboard-mode . (lambda ()
                             (setq-local mode-line-format nil)))
   :bind ("C-c b d" . dashboard-open)
+  :init
+  (add-to-list 'display-buffer-alist '("\\*dashboard\\*"
+                                       (display-buffer-in-tab)
+                                       (tab-name . "Misc")
+                                       (tab-group . "Misc")))
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-icon-type 'nerd-icons)
