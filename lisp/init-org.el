@@ -264,6 +264,17 @@
            (mytmplink (format "- [ ] [[id:%s][%s]]" mytmpid mytmphead)))
       (kill-new mytmplink)
       (message "Copied %s to killring (clipboard)" mytmplink))))
+
+(defun update-org-ids-in-directory (directory)
+  "Update Org IDs in all Org files in DIRECTORY."
+  (interactive "DEnter directory: ")
+  (when (file-directory-p directory)
+    (let ((org-files (directory-files-recursively directory "\\.org\\'")))
+      (org-id-update-id-locations org-files t)
+      (message "Updated Org IDs in %d files." (length org-files))))
+  (unless (file-directory-p directory)
+    (message "Not a valid directory: %s" directory)))
+
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "<f8>") 'my/copy-idlink))
 
