@@ -207,7 +207,7 @@ of the box `(w h)' inside the box `(cw ch)'."
                                 "*esh command on file*")))
 
 (use-package window
-  :defer t
+  :bind ("<f8>" . quit-window)
   :config
   (setq switch-to-buffer-in-dedicated-window 'pop)
   (setq switch-to-buffer-obey-display-actions t)
