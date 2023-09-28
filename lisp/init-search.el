@@ -22,13 +22,17 @@
   (setq rg-show-columns t))
 
 (use-package help
-  :defer t
+  :init
+  (add-to-list 'display-buffer-alist '("^\\*Help\\*"
+                                       (display-buffer-reuse-window display-buffer-same-window)
+                                       (side . right)
+                                       (window-width . 0.5)))
   :config
-  (setq help-window-select 'always)
+  (setq help-window-select 'other)
   (setq help-window-keep-selected t))
 
 (use-package helpful
-  :load-path "packages/helpful/"
+  :load-path "packages/helpful/" "packages/elisp-refs/"
   :bind (([remap describe-function] . helpful-callable)
          ([remap describe-variable] . helpful-variable)
          ([remap describe-key] . helpful-key)))
