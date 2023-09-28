@@ -49,7 +49,7 @@
 
   (org-edna-mode)
   :bind (("<f12>" . org-gtd-engage)
-         ("C-<f12>" . org-gtd-process-inbox)
+         ("s-<f12>" . org-gtd-process-inbox)
          ("M-<f12> c" . org-gtd-clarify-item)
          ("M-<f12> C" . org-gtd-clarify-agenda-item)
          ("M-<f12> r" . org-gtd-review-area-of-focus)
