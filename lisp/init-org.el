@@ -10,7 +10,7 @@
                                        (display-buffer-in-tab)
                                        (tab-name . "Edit") (tab-group . "Edit")
                                        (select . t)))
-  (add-to-list 'display-buffer-alist '("\\*Org Note\\*"
+  (add-to-list 'display-buffer-alist '("\\*\\(Org Note\\|Org Select\\)\\*"
                                        (display-buffer-in-side-window)
                                        (side . bottom)
                                        (slot . 0)
@@ -170,6 +170,36 @@
            (file+olp+datetree (lambda () (concat my-galaxy "/logs/reflection.org")))
            (file "~/.emacs.d/template/tpl-daily-reflection")
            :time-prompt t :tree-type week)
+          ;; ("j" "Journal"
+          ;;  entry (file (lambda ()
+          ;;                (car (denote-journal-extras--entry-today))))
+          ;;  "* %?\n%U\n")
+          ("j" "Journal")
+          ("jc" "Create: What did I create"
+           entry (file+headline (lambda ()
+                                  (car (denote-journal-extras--entry-today)))
+                                "Create: What did I create")
+           "* %?\n%U\n")
+          ("jl" "Learn: What content did I consume"
+           entry (file+headline (lambda ()
+                                  (car (denote-journal-extras--entry-today)))
+                                "Consume: What content did I consume")
+           "* %?\n%U\n")
+          ("jt" "Think: What did I contemplate today"
+           entry (file+headline (lambda ()
+                                  (car (denote-journal-extras--entry-today)))
+                                "Contemplate: What did I contemplate today?")
+           "* %?\n%U\n")
+          ("jg" "GTD: What did I do today"
+           entry (file+headline (lambda ()
+                                  (car (denote-journal-extras--entry-today)))
+                                "GTD: What did I do today")
+           "* %?\n%U\n")
+          ("jr" "Relationship: Who did I connect with"
+         entry (file+headline (lambda ()
+                                (car (denote-journal-extras--entry-today)))
+                              "Relationship: Who did I connect with?")
+         "* %?\n%U\n")
           ;; ("a" "Anki Deck")
           ;; ("ae" "Deck: English"
           ;;  entry (file (lambda ()
