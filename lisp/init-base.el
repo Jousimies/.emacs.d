@@ -205,11 +205,14 @@
       (unless (file-exists-p target-dir)
         (make-directory target-dir t))))
   (add-to-list 'find-file-not-found-functions #'my/auto-create-missing-dirs)
+
   (defun auto-save-delete-trailing-whitespace-except-current-line ()
     (interactive)
-    (when (not (string-prefix-p "inbox" (buffer-name (buffer-base-buffer))))
-      (let ((begin (line-beginning-position))
-            (end (point)))
+    (let ((begin (line-beginning-position))
+          (end (point))
+          (buffername (buffer-name (buffer-base-buffer))))
+      (when (not (or (string-prefix-p "inbox" buffer-name)
+                     (string-match-p "^[0-9]" buffer-name)))
         (save-excursion
           (when (< (point-min) begin)
             (save-restriction
