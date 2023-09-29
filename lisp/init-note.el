@@ -119,6 +119,43 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-,") 'my/denote-signature-buffer))
 
+(use-package denote-journal-extras
+  :load-path "~/.emacs.d/packages/denote/"
+  :bind ("C-c f j" . denote-journal-extras-new-or-existing-entry)
+  :commands denote-journal-extras--entry-today)
+
+(use-package denote-menu
+  :load-path "packages/denote-menu/"
+  :bind ("C-c f m" . denote-menu-list-notes)
+  :config
+  (define-key denote-menu-mode-map (kbd "c") #'denote-menu-clear-filters)
+  (define-key denote-menu-mode-map (kbd "/ r") #'denote-menu-filter)
+  (define-key denote-menu-mode-map (kbd "/ k") #'denote-menu-filter-by-keyword)
+  (define-key denote-menu-mode-map (kbd "/ o") #'denote-menu-filter-out-keyword)
+    (define-key denote-menu-mode-map (kbd "/ s") #'my/denote-menu-filter-by-signature)
+  (define-key denote-menu-mode-map (kbd "e") #'denote-menu-export-to-dired)
+  (setq-local tabulated-list-sort-key "Signature")
+  (defun my/denote-menu-filter-by-signature ()
+    (interactive)
+    (setq denote-menu-current-regex "==\\([0-9][a-z]\\)*")
+    (denote-menu-update-entries)
+    (tabulated-list-sort 1)))
+
+(use-package consult-notes
+  :load-path "packages/consult-notes/"
+  :bind ("C-c f n" . consult-notes)
+  :config
+  (setq consult-notes-file-dir-sources
+        `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
+          ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
+          ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
+          ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
+          ("Outline"  ?o ,(expand-file-name "denote/outline" my-galaxy))
+          ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
+          ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
+          ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))
+          ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy)))))
+
 (defun my/new-article (article)
   (interactive "sTitle: ")
   (let ((filename (format "%s" article))
@@ -137,20 +174,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
     (tempel-insert 'meeting)))
 
 (global-set-key (kbd "C-c n m") 'my/new-meeting)
-
-(use-package consult-notes
-  :load-path "packages/consult-notes/"
-  :bind ("C-c f n" . consult-notes)
-  :config
-  (setq consult-notes-file-dir-sources
-        `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
-          ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
-          ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
-          ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
-          ("Outline"  ?o ,(expand-file-name "denote/outline" my-galaxy))
-          ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
-          ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
-          ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy)))))
 
 ;; https://200ok.ch/posts/2022-12-07_streamline_your_org_mode_workflow_with_automatic_clock_table_recalculation.html
 ;; Need add #+AUTOCALC_CLOCK_TABLES to org file.
