@@ -40,6 +40,20 @@
 
 (advice-add 'denote-signature :before #'my/denote-signature-from-filename)
 
+(with-eval-after-load 'org-capture
+  (require 'denote)
+  (setq denote-org-capture-specifiers "%l\n%i\n%?")
+  (add-to-list 'org-capture-templates
+               '("n" "New denote note" plain
+                 (file denote-last-path)
+                 (function
+                  (lambda ()
+                    (denote-org-capture-with-prompts :title :keywords :subdirectory)))
+                 :no-save t
+                 :immediate-finish nil
+                 :kill-buffer t
+                 :jump-to-captured t)))
+
 (defvar prot-dired--limit-hist '()
   "Minibuffer history for `prot-dired-limit-regexp'.")
 

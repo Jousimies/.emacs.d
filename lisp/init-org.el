@@ -154,26 +154,14 @@
         '(("i" "GTD Inbox"
            entry (file (lambda () (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org")))
            "* %?\n%U\n" :time-prompt t :tree-type week)
-          ;; ("I" "NC Inbox"
-          ;;  plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/inbox.org")))
-          ;;  "**** %?\n%U\n" :time-prompt t :tree-type week)
-          ("w" "Work log"
-           plain
+          ("w" "Work log" plain
            (file+olp+datetree (lambda () (concat my-galaxy "/logs/worklog.org")))
            (file "~/.emacs.d/template/tpl-worklog")
            :time-prompt t :tree-type week)
-          ;; ("p" "Daily Plan"
-          ;;  plain (file+olp+datetree (lambda () (concat my-galaxy "/inbox/plan.org")))
-          ;;  "%?\n%U\n" :time-prompt t :tree-type week)
-          ("r" "Reflection"
-           plain
+          ("r" "Reflection" plain
            (file+olp+datetree (lambda () (concat my-galaxy "/logs/reflection.org")))
            (file "~/.emacs.d/template/tpl-daily-reflection")
            :time-prompt t :tree-type week)
-          ;; ("j" "Journal"
-          ;;  entry (file (lambda ()
-          ;;                (car (denote-journal-extras--entry-today))))
-          ;;  "* %?\n%U\n")
           ("j" "Journal")
           ("jc" "Create: What did I create"
            entry (file+headline (lambda ()
@@ -196,10 +184,10 @@
                                 "GTD: What did I do today")
            "* %?\n%U\n")
           ("jr" "Relationship: Who did I connect with"
-         entry (file+headline (lambda ()
-                                (car (denote-journal-extras--entry-today)))
-                              "Relationship: Who did I connect with?")
-         "* %?\n%U\n")
+           entry (file+headline (lambda ()
+                                  (car (denote-journal-extras--entry-today)))
+                                "Relationship: Who did I connect with?")
+           "* %?\n%U\n")
           ;; ("a" "Anki Deck")
           ;; ("ae" "Deck: English"
           ;;  entry (file (lambda ()
