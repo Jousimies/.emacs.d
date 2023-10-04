@@ -352,9 +352,6 @@
 [submodule "packages/rainbow-identifiers"]
 	path = packages/rainbow-identifiers
 	url = https://github.com/Fanael/rainbow-identifiers.git
-[submodule "packages/meow"]
-	path = packages/meow
-	url = https://github.com/meow-edit/meow.git
 [submodule "packages/ace-window"]
 	path = packages/ace-window
 	url = https://github.com/abo-abo/ace-window.git
