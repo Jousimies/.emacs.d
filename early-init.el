@@ -21,8 +21,6 @@
 (push '(width . 100) default-frame-alist)
 (push '(fullscreen . maximized) initial-frame-alist)
 
-(setq ns-use-native-fullscreen nil)
-
 (setq byte-compile-warnings nil)
 
 (fset 'display-startup-echo-area-message 'ignore)
