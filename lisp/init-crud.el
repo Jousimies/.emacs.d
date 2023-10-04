@@ -82,6 +82,7 @@
 (add-hook 'org-mode-hook 'electric-pair-local-mode)
 (add-hook 'org-mode-hook
           (lambda ()
+            (require 'elec-pair)
             (setq-local electric-pair-inhibit-predicate
                         `(lambda (c)
                            (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
