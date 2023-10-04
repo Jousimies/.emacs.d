@@ -46,6 +46,7 @@
          ([remap locate] . consult-locate)
          ([remap load-theme] . consult-theme)
          ([remap man] . consult-man)
+         ([remap org-goto] . consult-outline)
          ([remap recentf-open-files] . consult-recent-file)
          ([remap switch-to-buffer] . consult-buffer)
          ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
