@@ -62,6 +62,8 @@
 (setq minibuffer-prompt-properties
       '(read-only t cursor-intangible t face minibuffer-prompt))
 (setq max-mini-window-height 10)
+(setq redisplay-skip-fontification-on-input t)
+(setq-default cursor-in-non-selected-windows nil)
 
 ;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
 (defvar mobile-document "~/Library/Mobile Documents/"
