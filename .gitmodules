@@ -409,3 +409,12 @@
 [submodule "packages/consult-notes"]
 	path = packages/consult-notes
 	url = https://github.com/mclear-tools/consult-notes.git
+[submodule "packages/hammy.el"]
+	path = packages/hammy.el
+	url = https://github.com/alphapapa/hammy.el.git
+[submodule "packages/svg-lib"]
+	path = packages/svg-lib
+	url = https://github.com/rougier/svg-lib.git
+[submodule "packages/ts.el"]
+	path = packages/ts.el
+	url = https://github.com/alphapapa/ts.el.git
