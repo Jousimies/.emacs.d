@@ -54,6 +54,10 @@
                  :kill-buffer t
                  :jump-to-captured t)))
 
+(use-package denote-rename-buffer
+  :load-path "packages/denote/"
+  :hook (org-mode . denote-rename-buffer-mode))
+
 (defvar prot-dired--limit-hist '()
   "Minibuffer history for `prot-dired-limit-regexp'.")
 
