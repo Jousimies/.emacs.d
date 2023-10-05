@@ -21,13 +21,7 @@
   (setq dired-auto-revert-buffer #'dired-buffer-stale-p)
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'top)
-
-  (setq dired-auto-revert-buffer t)
-  (add-to-list 'display-buffer-alist '((or (derived-mode . dired-mode)
-                                           (derived-mode . dirvish-mode))
-                                       (display-buffer-in-tab)
-                                       (tab-name . "Dired")
-                                       (tab-group . "Dired"))))
+  (setq dired-auto-revert-buffer t))
 
 (defun z/dired-insert-date-folder ()
   "Create new directory with current date"

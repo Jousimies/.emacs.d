@@ -14,10 +14,6 @@
 
 (use-package pdf-view
   :hook ((pdf-tools-enabled . pdf-view-themed-minor-mode))
-  :init
-  (add-to-list 'display-buffer-alist '("\\.pdf\\'"
-                                         (display-buffer-in-tab)
-                                         (tab-name . "PDF") (tab-group . "PDF")))
   :config
   (setq pdf-view-display-size 'fit-width)
   (setq pdf-view-use-unicode-ligther nil)
@@ -79,10 +75,6 @@
 (use-package nov
   :load-path ("packages/nov.el/" "packages/esxml/")
   :mode (".epub" . nov-mode)
-  :init
-  (add-to-list 'display-buffer-alist '("\\.epub\\'"
-                                           (display-buffer-in-tab)
-                                           (tab-name . "PDF") (tab-group . "PDF")))
   :config
   (setq nov-unzip-program (executable-find "bsdtar")
         nov-unzip-args '("-xC" directory "-f" filename)))

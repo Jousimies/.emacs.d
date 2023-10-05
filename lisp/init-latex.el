@@ -11,10 +11,6 @@
   :init
   (load "auctex.el" nil t t)
   (load "preview-latex.el" nil t t)
-  (add-to-list 'display-buffer-alist '((derived-mode . LaTeX-mode)
-                                       (display-buffer-in-tab)
-                                       (tab-name . "Edit") (tab-group . "Edit")
-                                       (select . t)))
   :config
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)

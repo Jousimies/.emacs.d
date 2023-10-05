@@ -6,10 +6,6 @@
 
 (use-package org
   :init
-  (add-to-list 'display-buffer-alist '((derived-mode . org-mode)
-                                       (display-buffer-in-tab)
-                                       (tab-name . "Edit") (tab-group . "Edit")
-                                       (select . t)))
   (add-to-list 'display-buffer-alist '("\\*\\(Org Note\\|Org Select\\)\\*"
                                        (display-buffer-in-side-window)
                                        (side . bottom)
