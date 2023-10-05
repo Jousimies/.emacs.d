@@ -105,7 +105,6 @@
   :hook (org-mode . form-feed-mode))
 
 (use-package frame
-  :bind ("C-c t a" . set-alpha-background)
   :hook (after-init . (lambda ()
                         (blink-cursor-mode -1)))
   :config
