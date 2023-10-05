@@ -107,13 +107,6 @@
   :config
   (setq alert-default-style 'osx-notifier))
 
-(defun my/alert-osx-notifier-notify (info)
-  (do-applescript (format "display notification %S with title %S"
-                          (plist-get info :message)
-                          (plist-get info :title)))
-  (alert-message-notify info))
-(advice-add 'alert-osx-notifier-notify :override #'my/alert-osx-notifier-notify)
-
 (use-package org-alert
   :load-path "packages/org-alert/"
   :hook (org-mode . org-alert-enable)
