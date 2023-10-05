@@ -41,7 +41,7 @@
   :load-path "packages/consult/"
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :bind (([remap apropos] . consult-apropos)
-         ([remap bookmark-jump] . consult-bookmark)
+         ;; ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-line)
          ([remap locate] . consult-locate)
          ([remap load-theme] . consult-theme)
