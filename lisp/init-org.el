@@ -5,12 +5,6 @@
 ;;; Code:
 
 (use-package org
-  :init
-  (add-to-list 'display-buffer-alist '("\\*\\(Org Note\\|Org Select\\)\\*"
-                                       (display-buffer-in-side-window)
-                                       (side . bottom)
-                                       (slot . 0)
-                                       (window-width . 0.5)))
   :bind (:map org-mode-map
               ("C-c l" . org-store-link))
   :custom

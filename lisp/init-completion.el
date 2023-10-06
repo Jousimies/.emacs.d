@@ -68,18 +68,7 @@
          (:map minibuffer-local-map
                ("C-;" . embark-act)
                ("C-c C-;" . embark-export)
-               ("C-c C-l" . embark-collect)))
-  :config
-  (add-to-list 'display-buffer-alist
-               '("\\*Embark Actions\\*"
-                 (display-buffer-in-new-tab)
-                 (side . right)
-                 (width . 0.3)))
-  (add-to-list 'display-buffer-alist
-               '("\\*Embark Collect"
-                 (display-buffer-in-side-window)
-                 (side . bottom)
-                 (height . 0.4))))
+               ("C-c C-l" . embark-collect))))
 
 (use-package corfu
   :load-path "packages/corfu/"

@@ -15,6 +15,10 @@
   :load-path ("packages/rg.el/" "packages/Emacs-wgrep")
   :bind ("C-c s". rg-menu)
   :config
+  (add-to-list 'display-buffer-alist '("^\\*rg\\*"
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 0.5)))
   ;; https://github.com/dajva/rg.el/issues/142#issuecomment-1452525225
   (add-to-list 'rg-finish-functions (lambda (buffer _) (pop-to-buffer buffer)))
   (rg-enable-default-bindings)
@@ -22,11 +26,6 @@
   (setq rg-show-columns t))
 
 (use-package help
-  :init
-  (add-to-list 'display-buffer-alist '("^\\*Help\\*"
-                                       (display-buffer-reuse-window display-buffer-same-window)
-                                       (side . right)
-                                       (window-width . 0.5)))
   :config
   (setq help-window-select 'other)
   (setq help-window-keep-selected t))
@@ -35,7 +34,14 @@
   :load-path "packages/helpful/" "packages/elisp-refs/"
   :bind (([remap describe-function] . helpful-callable)
          ([remap describe-variable] . helpful-variable)
-         ([remap describe-key] . helpful-key)))
+         ([remap describe-key] . helpful-key))
+  :config
+  (add-to-list 'display-buffer-alist '("\\*helpful"
+                                         (display-buffer-in-side-window)
+                                         (side . right)
+                                         (window-width . 0.5)
+                                         (window-parameters
+                                          (mode-line-format . none)))))
 
 (add-to-list 'load-path "~/.emacs.d/packages/elisp-refs/")
 (add-to-list 'load-path "~/.emacs.d/packages/elisp-demos/")

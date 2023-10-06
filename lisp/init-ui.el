@@ -207,25 +207,14 @@ of the box `(w h)' inside the box `(cw ch)'."
 
 (use-package window
   :bind ("<f8>" . quit-window)
-  :config
-  (setq switch-to-buffer-in-dedicated-window 'pop)
-  (setq switch-to-buffer-obey-display-actions t)
+  :init
   (add-to-list 'display-buffer-alist '("\\*Outline"
                                        (display-buffer-in-side-window)
                                        (side . right)
-                                       (window-width . 0.5)
-                                       (window-parameters
-                                        (mode-line-format . none))))
-  (add-to-list 'display-buffer-alist '((derived-mode . prog-mode)
-                                       (display-buffer-in-tab)
-                                       (tab-name . "Porg") (tab-group . "Prog")
-                                       (select . t))))
-
-(add-to-list 'display-buffer-alist
-             '("\\*\\(scratch\\|Messages\\)\\*"
-               (display-buffer-in-tab)
-               (tab-name . "Misc")
-               (tab-group . "Misc")))
+                                       (window-width . 0.5)))
+  :config
+  (setq switch-to-buffer-in-dedicated-window 'pop)
+  (setq switch-to-buffer-obey-display-actions t))
 
 (defun my/scroll-other-windown-down ()
   "Scroll other window down."

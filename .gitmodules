@@ -418,3 +418,6 @@
 [submodule "packages/ts.el"]
 	path = packages/ts.el
 	url = https://github.com/alphapapa/ts.el.git
+[submodule "packages/popper"]
+	path = packages/popper
+	url = https://github.com/karthink/popper.git
