@@ -294,7 +294,7 @@ of the box `(w h)' inside the box `(cw ch)'."
           "^\\*elfeed-entry\\*$"
           "^\\*macro expansion\\**"
 
-          "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"))
+          "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Org Note\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"))
   :config
   ;; Enable indicator in minibuffer
   (use-package popper-echo
