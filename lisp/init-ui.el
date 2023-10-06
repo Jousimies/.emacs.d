@@ -296,16 +296,10 @@ of the box `(w h)' inside the box `(cw ch)'."
 
           "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"))
   :config
-  ;; mode-line indicator
-  ;; (with-eval-after-load 'popper
-  ;;   (setq popper-mode-line
-  ;;         '(:eval `(:propertize " POP |"
-  ;;                               face ,(if (+mode-line-window-active-p)
-  ;;                                         (+mode-line-get-window-name-face)
-  ;;                                       '+mode-line-meta-inactive-face)))))
-
   ;; Enable indicator in minibuffer
-  ;; (popper-echo-mode 1)
+  (use-package popper-echo
+    :config
+    (popper-echo-mode 1))  
 
   ;; HACK: close popper with `C-g'
   (defun +popper-close-window-hack (&rest _)
@@ -316,8 +310,7 @@ of the box `(w h)' inside the box `(cw ch)'."
       (let ((window (caar popper-open-popup-alist)))
         (when (window-live-p window)
           (delete-window window)))))
-  (advice-add #'keyboard-quit :before #'+popper-close-window-hack)
-  )
+  (advice-add #'keyboard-quit :before #'+popper-close-window-hack))
 
 (provide 'init-ui)
 ;;; init-ui.el ends here.
