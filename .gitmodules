@@ -418,6 +418,6 @@
 [submodule "packages/popper"]
 	path = packages/popper
 	url = https://github.com/karthink/popper.git
-[submodule "packages/workgroups2"]
-	path = packages/workgroups2
-	url = https://github.com/pashinin/workgroups2.git
+[submodule "packages/perspective-el"]
+	path = packages/perspective-el
+	url = https://github.com/nex3/perspective-el.git

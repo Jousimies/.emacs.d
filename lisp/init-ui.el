@@ -234,11 +234,13 @@ of the box `(w h)' inside the box `(cw ch)'."
   :load-path "packages/ace-window"
   :bind ("M-o" . ace-window))
 
-(use-package workgroups2
-  :load-path "packages/workgroups2/src"
-  :hook (after-init . workgroups-mode)
-  :init
-  (setq wg-prefix-key "C-c p"))
+(use-package perspective
+  :load-path "packages/perspective-el/"
+  :bind
+  ("C-x C-b" . persp-list-buffers)
+  :custom
+  (persp-mode-prefix-key (kbd "C-c p"))
+  :hook (after-init . persp-mode))
 
 (use-package popper
   :load-path "packages/popper/"
