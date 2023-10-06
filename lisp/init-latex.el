@@ -39,6 +39,7 @@
 (use-package reftex
   :commands turn-on-reftex
   :config
+  (setq reftex-toc-follow-mode t)
   (setq reftex-toc-split-windows-horizontally t)
   (setq reftex-toc-split-windows-fraction 0.25))
 
