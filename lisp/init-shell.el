@@ -4,10 +4,12 @@
 
 ;;; Code:
 
-(use-package vterm-toggle
-  :load-path ("packages/vterm-toggle/" "packages/emacs-libvterm")
-  :bind (("<f5>" . vterm-toggle)
-         ("C-<f5>" . vterm-toggle-cd)))
+(use-package vterm
+  :load-path "packages/emacs-libvterm/"
+  :bind ("<f5>" . vterm)
+  :config
+  (setq vterm-kill-buffer-on-exit t)
+  (setq vterm-max-scrollback 5000))
 
 (provide 'init-shell)
 ;;; init-shell.el ends here.

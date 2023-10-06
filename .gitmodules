@@ -364,9 +364,6 @@
 [submodule "packages/writegood-mode"]
 	path = packages/writegood-mode
 	url = https://github.com/bnbeckwith/writegood-mode.git
-[submodule "packages/vterm-toggle"]
-	path = packages/vterm-toggle
-	url = https://github.com/jixiuf/vterm-toggle.git
 [submodule "packages/ace-pinyin"]
 	path = packages/ace-pinyin
 	url = https://github.com/cute-jumper/ace-pinyin.git
