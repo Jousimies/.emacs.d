@@ -244,6 +244,7 @@ of the box `(w h)' inside the box `(cw ch)'."
   (with-eval-after-load 'tab-bar
 
     (defun tab-bar-format-persp ()
+      (setq global-mode-string (delete '(:eval (persp-mode-line)) global-mode-string))
       `((global menu-item ,(format-mode-line (persp-mode-line)) ignore)))
 
     (setq tab-bar-format '(tab-bar-format-persp
