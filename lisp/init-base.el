@@ -148,7 +148,9 @@
     (setq tabspaces-session-file (var "tabspaces-session.eld"))
     (setq undo-fu-session-directory (var "undo-fu-session/"))
     (setq nov-save-place-file (var "nov-save-place.el"))
-    (setq epkg-repository (var "epkgs"))))
+    (setq epkg-repository (var "epkgs"))
+    (setq persp-state-default-file (var "persp.el"))
+    (setq wg-session-file (var ".emacs_workgroups"))))
 
 (use-package gcmh
   :load-path "packages/gcmh"
