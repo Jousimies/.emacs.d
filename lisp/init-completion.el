@@ -23,6 +23,17 @@
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
 (setq set-message-functions '(inhibit-message))
 
+(use-package crm
+  :config
+  (defun crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator))
+
 (use-package vertico
   :load-path "packages/vertico"
   :hook (after-init . vertico-mode)
