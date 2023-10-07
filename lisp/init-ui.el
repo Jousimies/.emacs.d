@@ -236,11 +236,22 @@ of the box `(w h)' inside the box `(cw ch)'."
 
 (use-package perspective
   :load-path "packages/perspective-el/"
-  :bind
-  ("C-x C-b" . persp-list-buffers)
+  :bind ("C-x C-b" . persp-list-buffers)
   :custom
   (persp-mode-prefix-key (kbd "C-c z"))
-  :hook (after-init . persp-mode))
+  :hook (after-init . persp-mode)
+  :config
+  (with-eval-after-load 'tab-bar
+
+    (defun tab-bar-format-persp ()
+      `((global menu-item ,(format-mode-line (persp-mode-line)) ignore)))
+
+    (setq tab-bar-format '(tab-bar-format-persp
+                           tab-bar-format-history
+                           tab-bar-format-tabs
+                           tab-bar-separator
+                           tab-bar-format-align-right
+                           tab-bar-format-global))))
 
 (use-package popper
   :load-path "packages/popper/"
