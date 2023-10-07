@@ -6,7 +6,7 @@
 
 (use-package olivetti
   :load-path "packages/olivetti/"
-  :bind ("C-c z" . olivetti-mode))
+  :bind ("s-M-z" . olivetti-mode))
 
 (use-package org-appear
   :load-path "packages/org-appear/"

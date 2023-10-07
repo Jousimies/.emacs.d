@@ -239,7 +239,7 @@ of the box `(w h)' inside the box `(cw ch)'."
   :bind
   ("C-x C-b" . persp-list-buffers)
   :custom
-  (persp-mode-prefix-key (kbd "C-c p"))
+  (persp-mode-prefix-key (kbd "C-c z"))
   :hook (after-init . persp-mode))
 
 (use-package popper
