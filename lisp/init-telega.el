@@ -15,9 +15,13 @@
         (list
          '(:server "127.0.0.1" :port 1080 :enable t
                    :type (:@type "proxyTypeSocks5"))))
+  (add-to-list 'display-buffer-alist '((or (derived-mode . telega-image-mode)
+                                           (derived-mode . telega-webpage-mode))
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 0.4)))
 
-  (add-to-list 'display-buffer-alist '((or (derived-mode . telega-chat-mode)
-                                           (derived-mode . telega-root-mode))
+  (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
                                        (display-buffer-in-side-window)
                                        (side . right)
                                        (window-width . 0.4)
