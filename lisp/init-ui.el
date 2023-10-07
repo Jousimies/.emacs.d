@@ -296,6 +296,7 @@ of the box `(w h)' inside the box `(cw ch)'."
           "^\\*elfeed-entry\\*$"
           "^\\*macro expansion\\**"
 
+          "\\*TeX Help\\*"
           "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Org Note\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"))
   :config
   ;; Enable indicator in minibuffer
