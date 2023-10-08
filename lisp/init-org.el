@@ -144,13 +144,18 @@
         '(("i" "GTD Inbox"
            entry (file (lambda () (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org")))
            "* %?\n%U\n" :time-prompt t :tree-type week)
-          ("w" "Work log" plain
+          ("l" "Logs")
+          ("lw" "Work log" plain
            (file+olp+datetree (lambda () (concat my-galaxy "/logs/worklog.org")))
            (file "~/.emacs.d/template/tpl-worklog")
            :time-prompt t :tree-type week)
-          ("r" "Reflection" plain
+          ("lr" "Reflection" plain
            (file+olp+datetree (lambda () (concat my-galaxy "/logs/reflection.org")))
            (file "~/.emacs.d/template/tpl-daily-reflection")
+           :time-prompt t :tree-type week)
+          ("lc" "Consume" plain
+           (file+olp+datetree (lambda () (concat my-galaxy "/logs/tir.org")))
+           "**** %?\n%U\n"
            :time-prompt t :tree-type week)
           ("j" "Journal")
           ("jc" "Create: What did I create"
@@ -191,15 +196,43 @@
           ;;  entry (file (lambda ()
           ;;                (concat my-galaxy "/scripts/snippets.org")))
           ;;  "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
-          ("m" "Movie"
-           entry (file+headline (lambda () (concat my-galaxy "/logs/watchlist.org")) "Watching Lists")
+          ("w" "Watch")
+          ("wt" "TV drama"
+           entry (file+headline (lambda ()
+                                  (concat my-galaxy "/logs/watchlist_"
+                                          (format-time-string "%Y") ".org"))
+                                "Drama")
            "* %?
-  :PROPERTIES:
-  :GENRE: %^{Film genre|Action|Adventure|Comedy|Drama|Fantasy|Horror|Musicals|Mystery|Romance|Science fiction|Sports|Thriller}
-  :COUNTRY:
-  :SCORE:
-  :PLOT: %^{PLOT}
-  :END:"))))
+    :PROPERTIES:
+    :GENRE: %^{类型|剧情|犯罪|}
+    :COUNTRY:
+    :SCORE:
+    :PLOT: %^{PLOT}
+    :END:")
+          ("ws" "视频"
+           entry (file+headline (lambda ()
+                                  (concat my-galaxy "/logs/watchlist_"
+                                          (format-time-string "%Y") ".org"))
+                                "视频")
+           "* %?")
+          ("wc" "cartoon"
+           entry (file+headline (lambda ()
+                                  (concat my-galaxy "/logs/watchlist_"
+                                          (format-time-string "%Y") ".org"))
+                                "Cartoon")
+           "* %?")
+          ("wm" "Movie"
+           entry (file+headline (lambda ()
+                                  (concat my-galaxy "/logs/watchlist_"
+                                          (format-time-string "%Y") ".org"))
+                                "Movie")
+           "* %?
+:PROPERTIES:
+:GENRE: %^{Film genre|Action|Adventure|Comedy|Drama|Fantasy|Horror|Musicals|Mystery|Romance|Science fiction|Sports|Thriller}
+:COUNTRY:
+:SCORE:
+:PLOT: %^{PLOT}
+:END:"))))
 
 (use-package org-attach
   :commands org-attach
