@@ -8,22 +8,6 @@
   :load-path "packages/olivetti/"
   :bind ("s-M-z" . olivetti-mode))
 
-(use-package org-appear
-  :load-path "packages/org-appear/"
-  :config
-  (setq org-appear-autolinks t)
-  (setq org-appear-trigger 'manual)
-  :hook ((org-mode . (lambda ()
-                       (add-hook 'meow-insert-enter-hook
-                                 #'org-appear-manual-start
-                                 nil
-                                 t)
-                       (add-hook 'meow-insert-exit-hook
-                                 #'org-appear-manual-stop
-                                 nil
-                                 t)))
-         (org-mode . org-appear-mode)))
-
 (use-package math-preview
   :load-path "packages/math-preview/"
   :commands math-preview-all math-preview-clear-all
