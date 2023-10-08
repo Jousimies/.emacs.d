@@ -301,9 +301,6 @@
 [submodule "packages/mpv.el"]
 	path = packages/mpv.el
 	url = https://github.com/kljohann/mpv.el.git
-[submodule "packages/simple-httpd"]
-	path = packages/simple-httpd
-	url = https://github.com/briandowns/simple-httpd.git
 [submodule "packages/org-imgtog"]
 	path = packages/org-imgtog
 	url = https://github.com/gaoDean/org-imgtog.git

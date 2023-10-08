@@ -87,7 +87,7 @@
 (global-set-key (kbd "C-<f10>") 'my/link-grab)
 
 (use-package simple-httpd
-  :load-path "packages/simple-httpd/"
+  :load-path "packages/emacs-web-server"
   :bind ("M-g h" . httpd-serve-directory))
 
 (use-package bard
