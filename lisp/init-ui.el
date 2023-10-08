@@ -242,10 +242,8 @@ of the box `(w h)' inside the box `(cw ch)'."
   :hook ((after-init . persp-mode)
          (kill-emacs . persp-state-save))
   :config
-  (add-function :after
-                after-focus-change-function
-                (lambda ()
-                  (persp-state-load persp-state-default-file)))
+  (run-with-idle-timer 1 nil (lambda ()
+                               (persp-state-load persp-state-default-file)))
   (with-eval-after-load 'tab-bar
 
     (defun tab-bar-format-persp ()
