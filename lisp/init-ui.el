@@ -239,8 +239,13 @@ of the box `(w h)' inside the box `(cw ch)'."
   :bind ("C-x C-b" . persp-list-buffers)
   :custom
   (persp-mode-prefix-key (kbd "C-c z"))
-  :hook (after-init . persp-mode)
+  :hook ((after-init . persp-mode)
+         (kill-emacs . persp-state-save))
   :config
+  (add-function :after
+                after-focus-change-function
+                (lambda ()
+                  (persp-state-load persp-state-default-file)))
   (with-eval-after-load 'tab-bar
 
     (defun tab-bar-format-persp ()
