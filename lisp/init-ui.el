@@ -319,6 +319,13 @@ of the box `(w h)' inside the box `(cw ch)'."
     :config
     (popper-echo-mode 1))  
 
+  (defun my/popper--fit-window-height (win)
+    "Determine the height of popup window WIN by fitting it to the buffer's content."
+    (fit-window-to-buffer
+     win
+     (floor (frame-height) 2)
+     (floor (frame-height) 3)))
+  (setq popper-window-height #'my/popper--fit-window-height)
   ;; HACK: close popper with `C-g'
   (defun +popper-close-window-hack (&rest _)
     "Close popper window via `C-g'."
