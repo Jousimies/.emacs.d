@@ -14,13 +14,13 @@
   (setq org-agenda-todo-ignore-deadlines 'near)
   (setq org-agenda-dim-blocked-tasks t)
   (setq org-agenda-compact-blocks t)
+  (setq org-agenda-window-setup 'other-tab)
   (setq org-agenda-align-tags-to-column 'auto)
   (setq org-agenda-custom-commands
-        '(("r" "Reading Lists"
-           ((tags-todo "+Reading|TODO"
-                       (
-                        (org-agenda-prefix-format " %i")
-                        (org-agenda-overriding-header "Reading Lists"))))))))
+        '(("b" "Book Shelf"
+           ((tags "+BookShelf"
+                  ((org-agenda-prefix-format " %i")
+                   (org-agenda-overriding-header "Reading Lists"))))))))
 
 (use-package org-gtd
     :load-path ("packages/org-gtd.el/" "packages/org-agenda-property" "packages/org-edna")
