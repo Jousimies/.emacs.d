@@ -291,10 +291,27 @@
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer)
   :config
+  (setq ibuffer-show-empty-filter-groups nil)
   (setq ibuffer-default-sorting-mode 'major-mode))
 
 (use-package ibuf-ext
   :hook (ibuffer-mode . ibuffer-auto-mode))
+
+(use-package ibuffer-project
+  :load-path "packages/emacs-ibuffer-project/"
+  :hook (ibuffer-mode . (lambda ()
+                          (setq ibuffer-filter-groups
+                                (ibuffer-project-generate-filter-groups))))
+  :config
+  (setq ibuffer-formats
+      '((mark modified read-only " "
+              (name 18 18 :left :elide)
+              " "
+              (size 9 -1 :right)
+              " "
+              (mode 16 16 :left :elide)
+              " "
+              project-relative-file))))
 
 (use-package time
   :hook (after-init . display-time-mode))
