@@ -126,6 +126,8 @@
     (unless (or (bolp) (looking-back " "))
       (insert " "))
     (insert symbol)))
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "s-b") 'my/add-symbol-to-region))
 
 ;; https://www.reddit.com/r/emacs/comments/yjobc2/comment/iur16c7/
 (defun nf/parse-headline (x)
