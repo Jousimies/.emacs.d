@@ -102,7 +102,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   "Create an `literature' denote entry from Safari page."
   (interactive)
   (let* ((url (car (grab-mac-link-safari-1)))
-         (title (cadr (grab-mac-link-safari-1)))
+         (title (cadr (split-string (cadr (grab-mac-link-safari-1)) "— ")))
          (keywords (denote-keywords-prompt))
          (ID (format-time-string "%Y%m%dT%H%M%S"))
          (new-title (concat ID "--" title))
