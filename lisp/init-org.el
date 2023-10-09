@@ -6,7 +6,7 @@
 
 (use-package org
   :bind (:map org-mode-map
-              ("C-c l" . org-store-link))
+              ("M-s-s" . org-store-link))
   :custom
   (org-ellipsis " ⇲")
   (org-modules '())
