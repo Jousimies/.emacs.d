@@ -236,7 +236,6 @@ of the box `(w h)' inside the box `(cw ch)'."
 
 (use-package perspective
   :load-path "packages/perspective-el/"
-  :bind ("C-x C-b" . persp-list-buffers)
   :custom
   (persp-mode-prefix-key (kbd "C-c z"))
   :hook ((after-init . persp-mode)
@@ -293,6 +292,7 @@ of the box `(w h)' inside the box `(cw ch)'."
           "^\\*Process List\\*" process-menu-mode
           list-environment-mode cargo-process-mode
 
+          "^\\*Ibuffer\\*" ibuffer-mode
           "^\\*eshell.*\\*.*$" eshell-mode
           "^\\*shell.*\\*.*$"  shell-mode
           "^\\*terminal.*\\*.*$" term-mode
