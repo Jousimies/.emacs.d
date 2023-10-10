@@ -12,7 +12,9 @@
          ("C-c n L" . denote-link-insert-links-matching-regexp)
          ("C-c n r" . denote-rename-file-using-front-matter)
          ("C-c n k" . denote-keywords-add)
-         ("C-c n K" . denote-keywords-remove))
+         ("C-c n K" . denote-keywords-remove)
+         (:map dired-mode-map
+               ("r" . denote-dired-rename-marked-files)))
   :hook ((dired-mode . denote-dired-mode-in-directories)
          (org-mode . (lambda ()
                        (require 'denote))))
@@ -96,7 +98,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   (dired-do-kill-lines))
 
 (with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-;") 'prot-dired-limit-regexp))
+  (define-key dired-mode-map (kbd "/ r") 'prot-dired-limit-regexp))
 
 (defun my/org-capture-safari-literature ()
   "Create an `literature' denote entry from Safari page."
@@ -129,22 +131,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (global-set-key (kbd "M-<f10>") 'my/org-capture-safari-literature)
 
-(defun my/denote-signature-buffer ()
-    (interactive)
-    (switch-to-buffer "*denote-signatures*")
-    (read-only-mode -1)
-    (erase-buffer)
-    (insert
-     (shell-command-to-string
-      "ls -l | awk /==/ | sed  's/--/=@/3' | sort -t '=' -Vk 3,3 | sed 's/=@/--/' "))
-    (dired-clear-alist)
-    (dired-virtual denote-directory)
-    (denote-dired-mode)
-    (auto-revert-mode -1))
-
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-,") 'my/denote-signature-buffer))
-
 (use-package denote-journal-extras
   :load-path "~/.emacs.d/packages/denote/"
   :bind ("C-c f j" . denote-journal-extras-new-or-existing-entry)
@@ -158,8 +144,9 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   (define-key denote-menu-mode-map (kbd "/ r") #'denote-menu-filter)
   (define-key denote-menu-mode-map (kbd "/ k") #'denote-menu-filter-by-keyword)
   (define-key denote-menu-mode-map (kbd "/ o") #'denote-menu-filter-out-keyword)
-    (define-key denote-menu-mode-map (kbd "/ s") #'my/denote-menu-filter-by-signature)
+  (define-key denote-menu-mode-map (kbd "/ s") #'my/denote-menu-filter-by-signature)
   (define-key denote-menu-mode-map (kbd "e") #'denote-menu-export-to-dired)
+  (setq denote-menu-show-file-signature t)
   (setq-local tabulated-list-sort-key "Signature")
   (defun my/denote-menu-filter-by-signature ()
     (interactive)
