@@ -101,12 +101,7 @@
 (use-package rime
   :load-path "packages/emacs-rime/"
   :demand t
-  :hook ((input-method-activate . (lambda ()
-                                    (setq cursor-type 'bar)
-                                    (im-change-cursor-color)))
-         (input-method-deactivate . (lambda ()
-                                      (setq cursor-type 'box)
-                                      (set-cursor-color (foreground-color-at-point)))))
+  :hook (post-command . im-change-cursor-color)
   :bind (:map rime-mode-map
               ("M-j" . rime-force-enable))
 
