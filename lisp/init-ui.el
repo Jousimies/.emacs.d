@@ -8,9 +8,9 @@
 (when (display-graphic-p)
   (dolist (charset '(kana han cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font)
-                      charset (font-spec :family "Source Han Serif SC" :height 140)) t 'prepend))
+                      charset (font-spec :family "Source Han Serif SC" :height 160)) t 'prepend))
 
-(set-fontset-font t 'unicode (font-spec :family "Hack Nerd Font Mono") nil 'prepend)
+(set-fontset-font t 'unicode (font-spec :family "Hack Nerd Font Mono" :size 16) nil 'prepend)
 
 (use-package nerd-icons
   :load-path "packages/nerd-icons.el/"
@@ -43,6 +43,23 @@
   (setq tab-bar-separator "​​")
   (setq tab-bar-tab-hints nil)
   (setq tab-bar-show t))
+
+(defface lucius/nerd-icons-purple
+  '((((background dark)) :foreground "#AA759F")
+    (((background light)) :foreground "#8940AE"))
+  "Face for purple icons."
+  :group 'nerd-icons-faces)
+
+(defun tab-bar-format-menu-bar ()
+  "Produce the Menu button for the tab bar that shows the menu bar."
+  `((menu-bar menu-item (propertize "  " 'face 'lucius/nerd-icons-purple)
+              tab-bar-menu-bar :help "Menu Bar")))
+
+(defun my/tab-bar-tab-name-format-comfortable (tab i)
+  (propertize (concat " " (tab-bar-tab-name-format-default tab i) " ")
+              'face (funcall tab-bar-tab-face-function tab)))
+
+(setq tab-bar-tab-name-format-function #'my/tab-bar-tab-name-format-comfortable)
 
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
@@ -246,13 +263,11 @@ of the box `(w h)' inside the box `(cw ch)'."
     (defun tab-bar-format-persp ()
       (setq global-mode-string (delete '(:eval (persp-mode-line)) global-mode-string))
       `((global menu-item ,(format-mode-line (persp-mode-line)) ignore)))
+    (add-to-list 'tab-bar-format 'tab-bar-format-persp)))
 
-    (setq tab-bar-format '(tab-bar-format-persp
-                           tab-bar-format-history
-                           tab-bar-format-tabs
-                           tab-bar-separator
-                           tab-bar-format-align-right
-                           tab-bar-format-global))))
+(with-eval-after-load 'tab-bar
+  (with-eval-after-load 'perspective
+    (add-to-list 'tab-bar-format 'tab-bar-format-menu-bar)))
 
 (use-package popper
   :load-path "packages/popper/"
