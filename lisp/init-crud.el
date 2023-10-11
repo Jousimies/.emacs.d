@@ -152,5 +152,23 @@
   :load-path "packages/expand-region.el/"
   :bind ("C-=" . er/expand-region))
 
+(use-package selected
+  :load-path "packages/selected.el/"
+  :commands selected-minor-mode
+  :hook (post-select-region . selected-minor-mode)
+  :bind (:map selected-keymap
+              ("q" . selected-off)
+              ("u" . upcase-region)
+              ("d" . downcase-region)
+              ("c" . kill-ring-save)
+              ("x" . kill-region)
+              ("w" . count-words-region)
+              ("m" . apply-macro-to-region-lines))
+  :config
+  (with-eval-after-load 'expand-region
+    (define-key selected-keymap (kbd "=") #'er/expand-region))
+  (with-eval-after-load 'go-translate
+    (define-key selected-keymap (kbd "t") #'my/gts-do-translate)))
+
 (provide 'init-crud)
 ;;; init-crud.el ends here.

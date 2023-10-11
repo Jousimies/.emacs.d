@@ -430,3 +430,6 @@
 [submodule "packages/llm"]
 	path = packages/llm
 	url = https://github.com/ahyatt/llm.git
+[submodule "packages/selected.el"]
+	path = packages/selected.el
+	url = https://github.com/Kungsgeten/selected.el.git
