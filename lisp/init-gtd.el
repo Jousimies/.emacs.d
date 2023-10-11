@@ -58,7 +58,7 @@
                ("C-c C-c" . org-gtd-organize))))
 
 (use-package calendar
-  :bind ("C-c a c" . calendar)
+  :bind ("C-c C" . calendar)
   :config
   (setq calendar-view-diary-initially-flag t)
   (setq calendar-mark-diary-entries-flag t)

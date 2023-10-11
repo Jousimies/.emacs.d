@@ -73,9 +73,7 @@
 
 (use-package popweb-dict
   :load-path ("packages/popweb/" "packages/popweb/extension/dict")
-  :bind ("C-c l s" . popweb-dict-say-word)
-  :config
-  (setq popweb-config-location (expand-file-name "cache/popweb" user-emacs-directory)))
+  :bind ("C-c l s" . popweb-dict-say-word))
 
 (use-package emacs-azure-tts
   :load-path "packages/emacs-azure-tts/"

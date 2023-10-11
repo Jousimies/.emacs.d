@@ -6,7 +6,9 @@
 
 (use-package telega
   :load-path ("packages/telega.el/" "packages/rainbow-identifiers" "packages/visual-fill-column")
-  :bind ("C-c T" . telega)
+  :bind (("C-c T" . telega)
+         (:map telega-chat-mode-map
+               ("C-g" . quit-window)))
   :config
   (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))
   (setq telega-chat-fill-column 78)

@@ -223,7 +223,6 @@ of the box `(w h)' inside the box `(cw ch)'."
                                 "*esh command on file*")))
 
 (use-package window
-  :bind ("<f8>" . quit-window)
   :init
   (add-to-list 'display-buffer-alist '("\\*Outline"
                                        (display-buffer-in-side-window)
@@ -285,7 +284,6 @@ of the box `(w h)' inside the box `(cw ch)'."
           "\\*Async Shell Command\\*"
           "\\*Apropos\\*"
           "\\*Backtrace\\*"
-          "\\*Calendar\\*"
           "\\*Embark Actions\\*"
           "\\*Finder\\*"
           "\\*Kill Ring\\*"

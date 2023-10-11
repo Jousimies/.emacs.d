@@ -150,6 +150,7 @@
     (setq nov-save-place-file (var "nov-save-place.el"))
     (setq epkg-repository (var "epkgs"))
     (setq persp-state-default-file (var "persp.el"))
+    (setq popweb-config-location (var "popweb"))
     (setq wg-session-file (var ".emacs_workgroups"))))
 
 (use-package gcmh
@@ -244,7 +245,7 @@
   (setq message-sendmail-extra-arguments '("-a" "outlook")))
 
 (use-package calc
-  :bind ("C-c a C" . calc)
+  :bind ("C-c m c" . calc)
   :hook ((calc-trail-mode . (lambda ()
                               (setq-local mode-line-format nil)))
          (calc-mode . (lambda ()
