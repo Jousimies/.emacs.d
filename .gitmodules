@@ -421,3 +421,12 @@
 [submodule "packages/emacs-ibuffer-project"]
 	path = packages/emacs-ibuffer-project
 	url = https://github.com/muffinmad/emacs-ibuffer-project.git
+[submodule "packages/ekg"]
+	path = packages/ekg
+	url = https://github.com/ahyatt/ekg.git
+[submodule "packages/triples"]
+	path = packages/triples
+	url = https://github.com/ahyatt/triples.git
+[submodule "packages/llm"]
+	path = packages/llm
+	url = https://github.com/ahyatt/llm.git

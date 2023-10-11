@@ -289,7 +289,7 @@ of the box `(w h)' inside the box `(cw ch)'."
 
           "^\\*Process List\\*" process-menu-mode
           list-environment-mode cargo-process-mode
-
+          "^\\*EKG Capture"
           "^\\*Ibuffer\\*" ibuffer-mode
           "^\\*eshell.*\\*.*$" eshell-mode
           "^\\*shell.*\\*.*$"  shell-mode

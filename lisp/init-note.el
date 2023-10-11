@@ -4,6 +4,24 @@
 
 ;;; Code:
 
+(use-package ekg
+  :load-path "packages/ekg/" "packages/triples/" "packages/llm"
+  :commands (ekg-show-notes-in-trash
+             ekg-show-notes-for-today
+             ekg-show-notes-with-tag
+             ekg-show-notes-with-all-tags
+             ekg-show-notes-with-any-tags
+             ekg-show-rename-tag
+             ekg-browse-url)
+  :bind (("s-<f10>" . ekg-capture)
+         ("s-M-<f10>" . ekg-capture-url)
+         ("C-c n t" . ekg-show-notes-for-today)
+         (:map ekg-notes-mode-map
+               ("q" . quit-window)))
+  :config
+  (setq triples-default-database-filename
+        (expand-file-name "database/triples.db" my-galaxy)))
+
 (use-package denote
   :load-path "packages/denote/"
   :bind (("C-c n s" . denote-signature)
