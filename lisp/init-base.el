@@ -216,8 +216,8 @@
     (let ((begin (line-beginning-position))
           (end (point))
           (buffername (buffer-name (buffer-base-buffer))))
-      (when (not (or (string-prefix-p "inbox" buffer-name)
-                     (string-match-p "^[0-9]" buffer-name)))
+      (when (not (or (string-prefix-p "inbox" buffername)
+                     (string-match-p "^[0-9]" buffername)))
         (save-excursion
           (when (< (point-min) begin)
             (save-restriction
