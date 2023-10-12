@@ -38,12 +38,18 @@
                        (require 'denote))))
   :config
   (setq denote-directory (expand-file-name "denote" my-galaxy))
-  (setq denote-dired-directories (list denote-directory
-                                       (thread-last denote-directory (expand-file-name "books"))
-                                       (thread-last denote-directory (expand-file-name "outline"))
-                                       (thread-last denote-directory (expand-file-name "literature"))
-                                       (thread-last denote-directory (expand-file-name "term"))
-                                       (thread-last denote-directory (expand-file-name "references")))))
+  (setq denote-file-name-letter-casing
+        '((title . downcase)
+          (signature . verbatim)
+          (keywords . verbatim)
+          (t . downcase)))
+  (setq denote-dired-directories
+        (list denote-directory
+              (thread-last denote-directory (expand-file-name "books"))
+              (thread-last denote-directory (expand-file-name "outline"))
+              (thread-last denote-directory (expand-file-name "literature"))
+              (thread-last denote-directory (expand-file-name "term"))
+              (thread-last denote-directory (expand-file-name "references")))))
 
 (use-package denote-org-dblock
   :commands denote-org-dblock-insert-backlinks denote-org-dblock-insert-links)
