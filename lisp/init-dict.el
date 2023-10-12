@@ -102,6 +102,7 @@
 (use-package go-translate
   :load-path "packages/go-translate/"
   :bind (("C-c l l" . my/gts-do-translate))
+  :commands gts-translate gts-do-translate
   :config
   (add-to-list 'display-buffer-alist '("^\\*Go-Translate\\*"
                                            (display-buffer-in-side-window)
@@ -115,19 +116,19 @@
                                           ;; (gts-google-rpc-engine)
                                           (gts-google-engine :parser (gts-google-summary-parser))
                                           )
-                                :render (gts-buffer-render)))
-
-  (defun my/gts-do-translate (arg)
-    "Prompt for input and perform translation, displaying output in split window.
+                                :render (gts-buffer-render))))
+;;;###autoload
+(defun my/gts-do-translate (arg)
+  "Prompt for input and perform translation, displaying output in split window.
  With prefix argument, instead save translation to kill-ring."
-    (interactive "P")
-    (if arg
-        (gts-translate (gts-translator
-                        :picker (gts-noprompt-picker)
-                        :engines (gts-google-engine
-                                  :parser (gts-google-summary-parser))
-                        :render (gts-kill-ring-render)))
-      (gts-do-translate))))
+  (interactive "P")
+  (if arg
+      (gts-translate (gts-translator
+                      :picker (gts-noprompt-picker)
+                      :engines (gts-google-engine
+                                :parser (gts-google-summary-parser))
+                      :render (gts-kill-ring-render)))
+    (gts-do-translate)))
 
 (use-package dictionary-overlay
   :load-path "packages/dictionary-overlay/"

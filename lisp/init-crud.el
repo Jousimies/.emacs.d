@@ -166,12 +166,7 @@
               ("t" . my/gts-do-translate)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
-              (";" . comment-dwim))
-  :config
-  (with-eval-after-load 'expand-region
-    (define-key selected-keymap (kbd "=") #'er/expand-region))
-  (with-eval-after-load 'go-translate
-    (define-key selected-keymap (kbd "t") #'my/gts-do-translate)))
+              (";" . comment-dwim)))
 
 (provide 'init-crud)
 ;;; init-crud.el ends here.
