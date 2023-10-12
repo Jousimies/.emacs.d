@@ -154,7 +154,6 @@
 
 (use-package selected
   :load-path "packages/selected.el/"
-  :commands selected-minor-mode
   :hook (post-select-region . selected-minor-mode)
   :bind (:map selected-keymap
               ("q" . selected-off)
@@ -163,7 +162,11 @@
               ("c" . kill-ring-save)
               ("x" . kill-region)
               ("w" . count-words-region)
-              ("m" . apply-macro-to-region-lines))
+              ("s" . my/search)
+              ("t" . my/gts-do-translate)
+              ("m" . apply-macro-to-region-lines)
+              ("\\" . indent-region)
+              (";" . comment-dwim))
   :config
   (with-eval-after-load 'expand-region
     (define-key selected-keymap (kbd "=") #'er/expand-region))

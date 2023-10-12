@@ -48,33 +48,30 @@
 (autoload #'elisp-demos-advice-helpful-update "elisp-demos" nil t)
 (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
 
-(use-package webjump
-  :bind ("C-c w" . webjump)
-  :config
-  (add-to-list 'webjump-sites
-               '("ZhiHu" . [simple-query
-                            "www.zhihu.com"
-                            "www.zhihu.com/search?type=content&q=" ""]))
-  (add-to-list 'webjump-sites
-               '("Github" . [simple-query
-                             "github.com"
-                             "github.com/search?q=" ""]))
-  (add-to-list 'webjump-sites
-               '("Douban Books" . [simple-query
-                                   "search.douban.com"
-                                   "https://search.douban.com/book/subject_search?search_text=" ""]))
-  (add-to-list 'webjump-sites
-               '("Douban Movies" . [simple-query
-                                    "search.douban.com"
-                                    "https://search.douban.com/movie/subject_search?search_text=" ""]))
-  (add-to-list 'webjump-sites
-               '("Scholar" . [simple-query
-                              "scholar.google.com"
-                              "https://scholar.google.com/scholar?hl=zh-CN&as_sdt=0%2C33&q=" ""]))
-  (add-to-list 'webjump-sites
-               '("Youtube" . [simple-query
-                              "www.youtube.com"
-                              "http://www.youtube.com/results?aq=f&oq=&search_query=" ""])))
+(setq my/browser-engines
+      '((DoubanMovie . "https://search.douban.com/movie/subject_search?search_text=")
+        (DoubanBook . "https://search.douban.com/book/subject_search?search_text=")
+        (Zhihu . "https://www.zhihu.com/search?type=content&q=")
+        (Google . "https://www.google.com/search?q=")
+        (Scholar . "https://scholar.google.com/scholar?hl=zh-CN&as_sdt=0%2C33&q=")
+        (Github . "github.com/search?q=")
+        (Youtube . "http://www.youtube.com/results?aq=f&oq=&search_query=")))
+
+;;;###autoload
+(defun my/search ()
+  "Search using the specified engine for the text in the currently selected region or user input."
+  (interactive)
+  (let* ((selected-engine (completing-read "Choose a search engine: " (mapcar 'car my/browser-engines) nil t))
+         (selected-url (cdr (assoc (intern selected-engine) my/browser-engines))))
+    (let* ((region (if (region-active-p)
+                       (buffer-substring-no-properties (region-beginning) (region-end))
+                     (read-string "Enter search terms: ")))
+           (encoded-region (url-encode-url region))
+           (search-url (concat selected-url encoded-region)))
+      (browse-url search-url)))
+  (when (region-active-p)
+    (deactivate-mark)))
+(global-set-key (kbd "C-c w") #'my/search)
 
 (use-package grab-mac-link
   :load-path "packages/grab-mac-link.el/"
