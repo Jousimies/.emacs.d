@@ -433,3 +433,12 @@
 [submodule "packages/selected.el"]
 	path = packages/selected.el
 	url = https://github.com/Kungsgeten/selected.el.git
+[submodule "packages/elfeed"]
+	path = packages/elfeed
+	url = https://github.com/skeeto/elfeed.git
+[submodule "packages/elfeed-org"]
+	path = packages/elfeed-org
+	url = https://github.com/remyhonig/elfeed-org.git
+[submodule "packages/elfeed-summary"]
+	path = packages/elfeed-summary
+	url = https://github.com/SqrtMinusOne/elfeed-summary.git

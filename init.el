@@ -67,6 +67,7 @@
 (require 'init-telega)
 (require 'init-markdown)
 (require 'init-mail)
+(require 'init-elfeed)
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (when (file-exists-p custom-file)
