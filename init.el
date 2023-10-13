@@ -66,6 +66,7 @@
 (require 'init-finance)
 (require 'init-telega)
 (require 'init-markdown)
+(require 'init-mail)
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (when (file-exists-p custom-file)
