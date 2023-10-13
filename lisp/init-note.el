@@ -126,6 +126,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (defun my/literature-entry (url title keywords file-path file-new-path)
   "Save a literature entry and add it to the 'literature' denote database."
+  (split-window-right)
   (rename-file file-path file-new-path)
   (denote title
           keywords
@@ -168,7 +169,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
          (file-new-path (concat my/web_archive new-title ".html")))
     (if (not (file-exists-p file-path))
         (when (my/save-xwidget-to-webarchive)
-          (my/save-literature-entry url title keywords file-path file-new-path))
+          (my/literature-entry url title keywords file-path file-new-path))
       (my/literature-entry url title keywords file-path file-new-path))))
 
 (defun my/literature-save (arg)
