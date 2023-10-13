@@ -131,7 +131,7 @@
     (gts-do-translate)))
 
 (use-package dictionary-overlay
-  :load-path "packages/dictionary-overlay/"
+  :load-path "packages/dictionary-overlay/" "packages/websocket-bridge/" "packages/emacs-websocket/"
   :bind (("C-c l r" . dictionary-overlay-toggle)
          ("C-c l R" . dictionary-overlay-render-buffer))
   :config
