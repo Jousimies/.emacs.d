@@ -324,5 +324,23 @@
   :load-path "packages/emacs-gc-buffers"
   :hook (after-init . gc-buffers-mode))
 
+(use-package xwidget
+  :commands xwidget-webkit-browse-url
+  :init
+  (add-to-list 'display-buffer-alist '("^\\*xwidget"
+                                       (display-buffer-in-tab)))
+  :config
+  (setq xwidget-webkit-download-dir my/web_archive)
+  (setq browse-url-browser-function 'xwidget-webkit-browse-url))
+
+;;;###autoload
+(defun my/save-xwidget-to-webarchive ()
+    (interactive)
+    (let ((session (xwidget-webkit-current-session)))
+      (xwidget-webkit-save-as-file
+       (xwidget-webkit-uri session)
+       'html
+       (concat (xwidget-webkit-title session) ".html"))))
+
 (provide 'init-base)
 ;;; init-base.el ends here.

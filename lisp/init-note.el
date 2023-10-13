@@ -124,7 +124,25 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "/ r") 'prot-dired-limit-regexp))
 
-(defun my/org-capture-safari-literature ()
+(defun my/literature-entry (url title keywords file-path file-new-path)
+  "Save a literature entry and add it to the 'literature' denote database."
+  (rename-file file-path file-new-path)
+  (denote title
+          keywords
+          'org
+          (expand-file-name "literature" (denote-directory))
+          nil)
+  (save-excursion
+    (goto-char (point-max))
+    (insert "* ")
+    (org-insert-link nil file-new-path title)
+    (org-set-property "URL" url)
+    (org-set-tags "Reference")
+    (beginning-of-line)
+    (while (re-search-forward (expand-file-name "~") nil t 1)
+      (replace-match "~" t nil))))
+
+(defun my/literature-save-from-safari ()
   "Create an `literature' denote entry from Safari page."
   (interactive)
   (let* ((url (car (grab-mac-link-safari-1)))
@@ -136,24 +154,31 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
          (file-new-path (concat my/web_archive new-title ".html")))
     (if (not (file-exists-p file-path))
         (message "Please save webpage first!!!")
-      ;; (x-popup-dialog (selected-frame) '("Please save web page first!!!" ("OK" . :yes))
-      (rename-file file-path file-new-path)
-      (denote title
-              keywords
-              'org
-              (expand-file-name "literature" (denote-directory))
-              nil)
-      (save-excursion
-        (goto-char (point-max))
-        (insert "* ")
-        (org-insert-link nil file-new-path title)
-        (org-set-property "URL" url)
-        (org-set-tags "Reference")
-        (beginning-of-line)
-        (while (re-search-forward (expand-file-name "~") nil t 1)
-            (replace-match "~" t nil))))))
+      (my/literature-entry url title keywords file-path file-new-path))))
 
-(global-set-key (kbd "M-<f10>") 'my/org-capture-safari-literature)
+(defun my/literature-save-from-xwidget ()
+  "Create a `literature' denote entry from xwidget."
+  (interactive)
+  (let* ((url (xwidget-webkit-uri (xwidget-webkit-current-session)))
+         (title (xwidget-webkit-title (xwidget-webkit-current-session)))
+         (keywords (denote-keywords-prompt))
+         (ID (format-time-string "%Y%m%dT%H%M%S"))
+         (new-title (concat ID "--" title))
+         (file-path (concat my/web_archive title ".html"))
+         (file-new-path (concat my/web_archive new-title ".html")))
+    (if (not (file-exists-p file-path))
+        (when (my/save-xwidget-to-webarchive)
+          (my/save-literature-entry url title keywords file-path file-new-path))
+      (my/literature-entry url title keywords file-path file-new-path))))
+
+(defun my/literature-save (arg)
+  "Save a literature entry from either Safari or xwidget-webkit."
+  (interactive "P")
+  (if arg
+      (my/literature-save-from-safari)
+    (my/literature-save-from-xwidget)))
+
+(global-set-key (kbd "M-<f10>") 'my/literature-save)
 
 (use-package denote-journal-extras
   :load-path "~/.emacs.d/packages/denote/"
