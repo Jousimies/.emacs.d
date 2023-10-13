@@ -38,6 +38,7 @@
 
 (use-package elfeed-summary
   :load-path "packages/elfeed-summary/"
+  :bind ("C-c E" . elfeed-summary)
   :config
   (setq elfeed-summary-other-window t)
   (setq elfeed-summary-settings

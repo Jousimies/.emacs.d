@@ -328,7 +328,7 @@ of the box `(w h)' inside the box `(cw ch)'."
   ;; Enable indicator in minibuffer
   (use-package popper-echo
     :config
-    (popper-echo-mode 1))  
+    (popper-echo-mode 1))
 
   (defun my/popper--fit-window-height (win)
     "Determine the height of popup window WIN by fitting it to the buffer's content."

@@ -15,7 +15,7 @@
 
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
-  :commands mu4e
+  :bind ("C-c M" . mu4e)
   :config
   (setq mu4e-confirm-quit nil)
   (add-to-list 'display-buffer-alist '((derived-mode . mu4e-main-mode)

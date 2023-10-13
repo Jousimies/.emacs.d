@@ -166,7 +166,8 @@
               ("t" . my/gts-do-translate)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
-              (";" . comment-dwim)))
+              (";" . comment-dwim)
+              ("+" . my/add-symbol-to-region)))
 
 (provide 'init-crud)
 ;;; init-crud.el ends here.
