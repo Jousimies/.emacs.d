@@ -250,6 +250,11 @@ of the box `(w h)' inside the box `(cw ch)'."
   :load-path "packages/ace-window"
   :bind ("M-o" . ace-window))
 
+(use-package windmove
+  :hook (after-init . windmove-mode)
+  :bind (("C-c <up>" . windmove-up)
+         ("C-c <down>" . windmove-down)))
+
 (use-package perspective
   :load-path "packages/perspective-el/"
   :custom
