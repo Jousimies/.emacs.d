@@ -332,10 +332,15 @@
 
 (use-package xwidget
   :commands xwidget-webkit-browse-url
+  :bind (:map xwidget-webkit-mode-map
+              ("o" . my/xwidget-open-with-default-browse))
   :init
   (add-to-list 'display-buffer-alist '("^\\*xwidget"
                                        (display-buffer-in-tab)))
   :config
+  (defun my/xwidget-open-with-default-browse ()
+    (interactive)
+    (browse-url-default-browser (xwidget-webkit-uri (xwidget-webkit-current-session))))
   (setq xwidget-webkit-download-dir my/web_archive)
   (setq browse-url-browser-function 'xwidget-webkit-browse-url))
 
