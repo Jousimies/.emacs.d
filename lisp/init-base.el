@@ -231,6 +231,12 @@
 (use-package ffap
   :bind ("C-c f f" . find-file-at-point))
 
+(defun my/open-with-default-browse ()
+  (interactive)
+  (browse-url-default-browser (ffap-url-at-point)))
+
+(global-set-key (kbd "s-<return>") 'my/open-with-default-browse)
+
 (use-package message
   :bind ("C-c b m" . switch-to-message)
   :config
