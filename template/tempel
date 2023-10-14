@@ -105,8 +105,7 @@ org-mode
 (blog
  "#+DESCRIPTION: " p n>
  "#+DATE: " n>
- "#+AUTHOR: Jousimies" n>
- "#+AUTO_EXPORT: t" n)
+ "#+AUTHOR: Jousimies" n)
 
 (hugo
  "#+DESCRIPTION: " p n>
