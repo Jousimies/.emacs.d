@@ -587,7 +587,31 @@
            :publishing-directory  ,my/publish-directory
            :publishing-function org-publish-attachment)
 
-          ("personal-website" :components ("site" "posts" "static")))))
+          ("personal-website" :components ("site" "posts" "static"))))
+
+  (defun my/ox-publish-move-images (origin publish)
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "\\[\\[file:\\(.*?\\)\\]\\]" nil t)
+        (let* ((image-path (match-string 1))
+               (picture-name (car (last (split-string image-path "/"))))
+               (new-path (concat my/publish-directory "static/" picture-name)))
+          (copy-file image-path new-path t)))))
+
+  (defun my/ox-publish-replace-src-path (origin publish)
+    "Replace image paths in the HTML file."
+    (interactive)
+    (message "%s%s" origin publish)
+    (with-temp-buffer
+        (insert-file-contents publish)
+        (goto-char (point-min))
+        (while (re-search-forward "file:///Users/jousimies/Nextcloud/L.Personal.Galaxy/pictures/" nil t)
+          (replace-match "../static/"))
+        (write-region (point-min) (point-max) publish)))
+
+  (add-hook 'org-publish-after-publishing-hook 'my/ox-publish-move-images)
+  (add-hook 'org-publish-after-publishing-hook 'my/ox-publish-replace-src-path))
 
 (provide 'init-org)
 ;;; init-org.el ends here.
