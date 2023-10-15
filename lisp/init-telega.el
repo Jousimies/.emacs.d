@@ -6,9 +6,23 @@
 
 (use-package telega
   :load-path ("packages/telega.el/" "packages/rainbow-identifiers" "packages/visual-fill-column")
+  :init
+  (add-to-list 'display-buffer-alist '((or (derived-mode . telega-image-mode)
+                                           (derived-mode . telega-webpage-mode)
+                                           (derived-mode . image-mode))
+                                       (display-buffer-in-tab)))
+  (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 0.5)
+                                       (window-parameters
+                                        (mode-line-format . none)
+                                        (select . t))))
   :bind (("C-c T" . telega)
          (:map telega-chat-mode-map
                ("C-g" . quit-window)))
+  :hook ((telega-connection-state-hook . +tab-bar-telega-icon-update)
+         (telega-kill-hook . +tab-bar-telega-icon-update))
   :config
   (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))
   (setq telega-chat-fill-column 78)
@@ -18,18 +32,36 @@
         (list
          '(:server "127.0.0.1" :port 1080 :enable t
                    :type (:@type "proxyTypeSocks5"))))
-  (add-to-list 'display-buffer-alist '((or (derived-mode . telega-image-mode)
-                                           (derived-mode . telega-webpage-mode)
-                                           (derived-mode . image-mode))
-                                       (display-buffer-in-tab)))
+  (defvar +tab-bar-telega-indicator-cache nil)
 
-  (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (window-width . 0.5)
-                                       (window-parameters
-                                        (mode-line-format . none)
-                                        (select . t)))))
+  (defun +tab-bar-telega-icon-update (&rest rest)
+    (setq +tab-bar-telega-indicator-cache
+          (when (and (fboundp 'telega-server-live-p)
+                     (telega-server-live-p)
+                     (buffer-live-p telega-server--buffer))
+            (let* ((me-user (telega-user-me 'locally))
+                   (online-p (and me-user (telega-user-online-p me-user)))
+                   (unread-count (and (boundp 'telega--unread-chat-count)
+                                      (plist-get telega--unread-chat-count :unread_unmuted_count))))
+              (propertize (concat " "
+                                  (if online-p "▶" "▷")
+                                  (when (and unread-count (not (zerop unread-count)))
+                                    (concat " " (number-to-string unread-count)))
+                                  " ")
+                          'face `(:inherit ,(if online-p 'success 'warning) :inverse-video t))))))
+
+  (defun +tab-bar-telega-icon ()
+    (or +tab-bar-telega-indicator-cache
+        (+tab-bar-telega-icon-update)))
+  (add-to-list 'tab-bar-format '+tab-bar-telega-icon)
+  (setq tab-bar-format '(tab-bar-format-menu-bar
+                         tab-bar-format-persp
+                         +tab-bar-telega-icon
+                         tab-bar-format-tabs
+                         tab-bar-separator
+                         tab-bar-format-align-right
+                         tab-bar-format-global))
+  (advice-add 'telega--on-updateUnreadChatCount :after #'+tab-bar-telega-icon-update))
 
 (provide 'init-telega)
 ;;; init-telega.el ends here.
