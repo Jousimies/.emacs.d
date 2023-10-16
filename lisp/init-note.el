@@ -90,7 +90,7 @@
   (defun my/denote-rename-buffer-with-prefix (&optional buffer)
     (when-let* ((file-and-type (denote-rename-buffer--common-check (or buffer (current-buffer))))
                 (title (denote--retrieve-title-or-filename (car file-and-type) (cdr file-and-type))))
-      (rename-buffer (concat "[D] " title) :unique))))
+      (rename-buffer (concat " " title) :unique))))
 
 (defvar prot-dired--limit-hist '()
   "Minibuffer history for `prot-dired-limit-regexp'.")

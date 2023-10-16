@@ -16,8 +16,7 @@
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
   :bind ("C-c M" . mu4e)
-  :config
-  (setq mu4e-confirm-quit nil)
+  :init
   (add-to-list 'display-buffer-alist '((derived-mode . mu4e-main-mode)
                                        (display-buffer-in-side-window)
                                        (side . right)
@@ -25,13 +24,12 @@
                                        (select . t)
                                        (window-parameters
                                         (mode-line-format . none))))
-  (add-to-list 'display-buffer-alist '((or (derived-mode . mu4e-view-mode)
-                                           (derived-mode . mu4e-headers-mode))
-                                       (display-buffer-in-tab)
-                                       (tab-name . "Mail") (tab-group . "Mail")
-                                       (select . t))))
-;; (run-with-idle-timer 4 nil (lambda ()
-;;                              (mu4e 'background)))
+  (add-to-list 'display-buffer-alist '((derived-mode . mu4e-headers-mode)
+                                       (display-buffer-in-new-tab)))
+  :config
+  (setq mu4e-confirm-quit nil))
+(run-with-idle-timer 4 nil (lambda ()
+                             (mu4e 'background)))
 
 (use-package mu4e-vars
   :after mu4e
@@ -107,7 +105,8 @@
 (use-package mu4e-modeline
   :after mu4e
   :config
-  (mu4e-modeline-mode 1))
+  (mu4e-modeline-mode 1)
+  (add-to-list 'tab-bar-format (lambda () (mu4e--modeline-string)) t))
 
 (use-package mu4e-context
   :after mu4e

@@ -106,7 +106,8 @@
               ("M-j" . rime-force-enable))
 
   :preface
-  (setq rime-title " ")
+  ;; (setq rime-title " ")
+  (setq rime-title "ZH ")
   :config
   (defvar im-cursor-color "red"
     "The color for input method.")

@@ -37,22 +37,15 @@
   (setq tab-bar-format '(tab-bar-format-history
                          tab-bar-format-tabs
                          tab-bar-separator
-                         tab-bar-format-align-right
-                         tab-bar-format-global))
+                         tab-bar-format-align-right))
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-separator "​​")
   (setq tab-bar-tab-hints nil)
   (setq tab-bar-show t))
 
-(defface lucius/nerd-icons-purple
-  '((((background dark)) :foreground "#AA759F")
-    (((background light)) :foreground "#8940AE"))
-  "Face for purple icons."
-  :group 'nerd-icons-faces)
-
 (defun tab-bar-format-menu-bar ()
   "Produce the Menu button for the tab bar that shows the menu bar."
-  `((menu-bar menu-item (propertize "  " 'face 'lucius/nerd-icons-purple)
+  `((menu-bar menu-item (propertize "  " 'face nil)
               tab-bar-menu-bar :help "Menu Bar")))
 
 (defun my/tab-bar-tab-name-format-comfortable (tab i)
@@ -60,6 +53,213 @@
               'face (funcall tab-bar-tab-face-function tab)))
 
 (setq tab-bar-tab-name-format-function #'my/tab-bar-tab-name-format-comfortable)
+
+;; https://github.com/protesilaos/dotfiles/blob/master/emacs/.emacs.d/prot-lisp/prot-modeline.el
+(defcustom prot-modeline-string-truncate-length 9
+  "String length after which truncation should be done in small windows."
+  :type 'natnum)
+
+(defun prot-modeline--string-truncate-p (str)
+  "Return non-nil if STR should be truncated."
+  (and (< (window-total-width) split-width-threshold)
+       (> (length str) prot-modeline-string-truncate-length)
+       (not (one-window-p :no-minibuffer))))
+
+(defun prot-modeline-string-truncate (str)
+  "Return truncated STR, if appropriate, else return STR.
+  Truncation is done up to `prot-modeline-string-truncate-length'."
+  (if (prot-modeline--string-truncate-p str)
+      (concat (substring str 0 prot-modeline-string-truncate-length) "...")
+    str))
+
+(defun my/modeline--major-mode ()
+  (if (listp mode-name)
+      (upcase (car mode-name))
+    (upcase mode-name)))
+
+(defvar-local my/modeline-major-mode
+    '(:eval (when (mode-line-window-selected-p)
+              (propertize (my/modeline--major-mode) 'face `(:inherit font-lock-variable-name-face)))))
+
+(defun my/modeline--buffer-name ()
+  (when-let ((name (buffer-name)))
+    (prot-modeline-string-truncate name)))
+
+(defun my/modeline-buffer-name ()
+  (let ((name (my/modeline--buffer-name)))
+    (if buffer-read-only
+        (format " %s" name)
+      name)))
+
+(defvar-local my/modeline-buffer-readonly
+    '(:eval (when (and (mode-line-window-selected-p) buffer-read-only)
+              (propertize " "
+                          'face nil))))
+
+(defvar-local my/modeline-buffer-modified
+    '(:eval (when (mode-line-window-selected-p)
+              (propertize (if (buffer-modified-p)
+                              " *"
+                            "  ")
+                          'face `(:inherit error)))))
+
+(defvar-local my/modeline-input-method
+    '(:eval (when (mode-line-window-selected-p)
+              (propertize
+               (if current-input-method-title
+                   " ZH "
+                 " EN ")
+               'face `(:inherit ,(if current-input-method-title 'font-lock-string-face nil) :inverse-video t)))))
+
+(defvar-local my/modeline-kbd-macro
+    '(:eval
+      (when (and (mode-line-window-selected-p) defining-kbd-macro)
+        (propertize " KMacro " 'face `(:inherit font-lock-constant-face :inverse-video t)))))
+
+(defvar-local my/modeline-region-indicator
+    '(:eval (when (and (mode-line-window-selected-p) (use-region-p))
+              (propertize
+               (concat "| L" (number-to-string (count-lines (region-beginning) (region-end)))
+                       " W" (number-to-string (count-words (region-beginning) (region-end)))
+                       " C" (number-to-string (abs (- (mark t) (point)))) " ")))))
+
+(defun my/modeline--image-info ()
+  (when (eq major-mode 'image-mode)
+    (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
+
+(defvar-local my/modeline-image-info
+    '(:eval (when (and (mode-line-window-selected-p) (eq major-mode 'image-mode))
+              (propertize (car (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))) 'face font-lock-string-face))))
+
+
+;; https://github.com/protesilaos/dotfiles/blob/master/emacs/.emacs.d/prot-lisp/prot-modeline.el
+(defun my/modeline--right-align-rest ()
+  (format-mode-line
+   `(""
+     ,@(cdr (memq 'my/modeline-align-right mode-line-format)))))
+
+(defun my/modeline--right-align-width ()
+  (string-pixel-width (my/modeline--right-align-rest)))
+
+(defun my/modeline--box-p ()
+  "Return non-nil if the `mode-line' has a box attribute."
+  (and (face-attribute 'mode-line :box)
+       (null (eq (face-attribute 'mode-line :box) 'unspecified))))
+
+(defun my/modeline--magic-number ()
+  (let ((height (face-attribute 'mode-line :height nil 'default))
+        (m-width (string-pixel-width (propertize "m" 'face 'mode-line))))
+    (round height (* m-width (* height m-width 0.001)))))
+
+(defvar-local my/modeline-align-right
+    '(:eval
+      (propertize
+       " "
+       'display
+       (let ((box-p (my/modeline--box-p))
+             (magic-number (my/modeline--magic-number)))
+         `(space
+           :align-to
+           (- right
+              right-fringe
+              right-margin
+              ,(ceiling
+                (my/modeline--right-align-width)
+                (string-pixel-width (propertize "m" 'face 'mode-line)))
+              ,(when box-p
+                 (* magic-number 0.6))))))))
+
+(defvar-local my/modeline-date
+    '(:eval (when (mode-line-window-selected-p)
+              (propertize (format-time-string " %Y-%m-%d %a ") 'face `(:inherit success)))))
+
+(defvar org-timer-countdown-timer nil)
+(defun my/modeline--timer ()
+  (when org-timer-countdown-timer
+        (concat " " (org-timer-value-string))))
+
+(defvar-local my/modeline-timer
+    '(:eval (when (and (mode-line-window-selected-p) org-timer-countdown-timer)
+              (propertize (my/modeline--timer) 'face `(:inherit error :inverse-video t)))))
+
+(defvar-local my/modeline-time
+    '(:eval (when (mode-line-window-selected-p)
+              (propertize (format-time-string " %H:%MPM ") 'face `(:inherit success :inverse-video t)))))
+
+(defun my/modeline--sys-coding-category ()
+  (let ((sys (coding-system-plist buffer-file-coding-system)))
+    (if (memq (plist-get sys :category)
+              '(coding-category-undecided coding-category-utf-8))
+        " UTF-8 "
+      (upcase (symbol-name (plist-get sys :name))))))
+
+(defun my/modeline--sys-coding-eol ()
+  (let ((eol (coding-system-eol-type buffer-file-coding-system)))
+    (pcase (coding-system-eol-type buffer-file-coding-system)
+      (0 "LF")
+      (1 "CRLF")
+      (2 "CR")
+      (_ ""))))
+
+(defvar-local my/modeline-sys
+    '(:eval (when (mode-line-window-selected-p)
+              (propertize (concat (my/modeline--sys-coding-category) (my/modeline--sys-coding-eol)) 'face nil))))
+
+(defvar-local my/modeline-battery
+    '(:eval (when (mode-line-window-selected-p)
+              battery-mode-line-string)))
+
+(defvar-local my/modeline-position
+    '(:eval (when (mode-line-window-selected-p)
+              (propertize (format " %%l:%%c/%d " (line-number-at-pos (point-max))) 'face nil))))
+
+(defvar-local my/modeline-clock-info
+    '(:eval (when (and (mode-line-window-selected-p) (org-clocking-p))
+              (propertize (format " [%s](%s)"
+                                  (org-duration-from-minutes
+                                   (floor (org-time-convert-to-integer
+                                           (org-time-since org-clock-start-time))
+                                          60))
+                                  org-clock-heading)
+                          'face `(:inherit font-lock-builtin-face)))))
+(dolist (construct '(my/modeline-major-mode
+                     my/modeline-buffer-indentification
+                     my/modeline-input-method
+                     my/modeline-kbd-macro
+                     my/modeline-region-indicator
+                     my/modeline-align-right
+                     my/modeline-buffer-readonly
+                     my/modeline-buffer-modified
+                     my/modeline-date
+                     my/modeline-time
+                     my/modeline-timer
+                     my/modeline-sys
+                     my/modeline-battery
+                     my/modeline-position
+                     my/modeline-image-info
+                     my/modeline-clock-info))
+  (put construct 'risky-local-variable t))
+
+(setq-default mode-line-format
+              '("%e"
+                my/modeline-input-method
+                my/modeline-buffer-readonly
+                my/modeline-buffer-modified
+                " "
+                my/modeline-major-mode
+                my/modeline-position
+                my/modeline-image-info
+                my/modeline-kbd-macro
+                my/modeline-region-indicator
+                "       "
+                my/modeline-align-right
+                my/modeline-sys
+                my/modeline-timer
+                my/modeline-clock-info
+                my/modeline-date
+                my/modeline-time
+                ;; my/modeline-battery
+                ))
 
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
