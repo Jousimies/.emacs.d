@@ -160,7 +160,7 @@
               ("q" . selected-off)
               ("u" . upcase-region)
               ("d" . downcase-region)
-              ("c" . kill-ring-save)
+              ("c" . copy-region-as-kill)
               ("x" . kill-region)
               ("w" . count-words-region)
               ("s" . my/search)
