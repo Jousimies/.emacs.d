@@ -14,10 +14,7 @@
   (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
                                        (display-buffer-in-side-window)
                                        (side . right)
-                                       (window-width . 0.5)
-                                       (window-parameters
-                                        (mode-line-format . none)
-                                        (select . t))))
+                                       (window-width . 0.5)))
   :bind (("C-c T" . telega)
          (:map telega-chat-mode-map
                ("C-g" . quit-window)))
@@ -52,14 +49,9 @@
   (defun +tab-bar-telega-icon ()
     (or +tab-bar-telega-indicator-cache
         (+tab-bar-telega-icon-update)))
+
   (add-to-list 'tab-bar-format '+tab-bar-telega-icon t)
-  ;; (setq tab-bar-format '(tab-bar-format-menu-bar
-  ;;                        tab-bar-format-persp
-  ;;                        tab-bar-format-tabs
-  ;;                        tab-bar-separator
-  ;;                        tab-bar-format-align-right
-  ;;                        +tab-bar-telega-icon
-  ;;                        ))
+
   (advice-add 'telega--on-updateUnreadChatCount :after #'+tab-bar-telega-icon-update)
   (add-hook 'telega-connection-state-hook #'+tab-bar-telega-icon-update)
   (add-hook 'telega-kill-hook #'+tab-bar-telega-icon-update))

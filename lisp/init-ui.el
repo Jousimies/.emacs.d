@@ -91,6 +91,20 @@
         (format " %s" name)
       name)))
 
+(defun my/modeline--file-name ()
+  (when-let ((name (buffer-file-name)))
+    (prot-modeline-string-truncate (file-name-nondirectory name))))
+
+(defun my/modeline-file-name ()
+  (let ((name (my/modeline--file-name)))
+    (if name
+        (format "%s" name)
+      (my/modeline-buffer-name))))
+
+(defvar-local my/modeline-file-name
+    '(:eval (when (mode-line-window-selected-p)
+              (propertize (my/modeline-file-name) 'face 'bold))))
+
 (defvar-local my/modeline-buffer-readonly
     '(:eval (when (and (mode-line-window-selected-p) buffer-read-only)
               (propertize " "
@@ -98,10 +112,7 @@
 
 (defvar-local my/modeline-buffer-modified
     '(:eval (when (mode-line-window-selected-p)
-              (propertize (if (buffer-modified-p)
-                              " *"
-                            "  ")
-                          'face `(:inherit error)))))
+              (propertize " * " 'face `(:inherit ,(if (buffer-modified-p) 'error nil))))))
 
 (defvar-local my/modeline-input-method
     '(:eval (when (mode-line-window-selected-p)
@@ -124,13 +135,12 @@
                        " C" (number-to-string (abs (- (mark t) (point)))) " ")))))
 
 (defun my/modeline--image-info ()
-  (when (eq major-mode 'image-mode)
-    (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
+    (car (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
 
 (defvar-local my/modeline-image-info
-    '(:eval (when (and (mode-line-window-selected-p) (eq major-mode 'image-mode))
-              (propertize (car (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))) 'face font-lock-string-face))))
-
+    '(:eval (when (and (mode-line-window-selected-p) (or (eq major-mode 'image-mode)
+                                                         (eq major-mode 'telega-image-mode)))
+              (propertize (my/modeline--image-info) 'face font-lock-string-face))))
 
 ;; https://github.com/protesilaos/dotfiles/blob/master/emacs/.emacs.d/prot-lisp/prot-modeline.el
 (defun my/modeline--right-align-rest ()
@@ -205,12 +215,12 @@
     '(:eval (when (mode-line-window-selected-p)
               (propertize (concat (my/modeline--sys-coding-category) (my/modeline--sys-coding-eol)) 'face nil))))
 
-(defvar-local my/modeline-battery
-    '(:eval (when (mode-line-window-selected-p)
-              battery-mode-line-string)))
+(defun my/modeline--pdf-page ()
+  (format " %d/%d " (eval '(pdf-view-current-page)) (pdf-cache-number-of-pages)))
 
 (defvar-local my/modeline-position
-    '(:eval (when (mode-line-window-selected-p)
+    '(:eval (if (and (mode-line-window-selected-p) (derived-mode-p 'pdf-view-mode))
+                (propertize (my/modeline--pdf-page) 'face font-lock-string-face)
               (propertize (format " %%l:%%c/%d " (line-number-at-pos (point-max))) 'face nil))))
 
 (defvar-local my/modeline-clock-info
@@ -222,12 +232,44 @@
                                           60))
                                   org-clock-heading)
                           'face `(:inherit font-lock-builtin-face)))))
+
+(defun my/modeline--battery-data ()
+  (and battery-status-function
+                            (functionp battery-status-function)
+                            (funcall battery-status-function)))
+
+(defun my/modeline--battery-status ()
+  (cdr (assoc ?L (my/modeline--battery-data))))
+
+(defun my/modeline--battery-percentage ()
+  (car (read-from-string (or (cdr (assq ?p (my/modeline--battery-data))) "ERR"))))
+
+(defun my/modeline--battery ()
+  (let* ((charging? (string-equal "AC" (my/modeline--battery-status)))
+         (percentage (my/modeline--battery-percentage)))
+    (if charging?
+        (format "󱐋%d%s" percentage "%%")
+      (cond ((>= percentage 80) (format "󰁹%d%s" percentage "%%"))
+            ((>= percentage 70) (format "󰂀%d%s" percentage "%%"))
+            ((>= percentage 60) (format "󰁿%d%s" percentage "%%"))
+            ((>= percentage 50) (format "󰁾%d%s" percentage "%%"))
+            ((>= percentage 40) (format "󰁽%d%s" percentage "%%"))
+            ((>= percentage 30) (format "󰁼%d%s" percentage "%%"))
+            ((>= percentage 20) (format "󰁻%d%s" percentage "%%"))
+            ((< percentage 20) (format "󰂎%d%s" percentage "%%"))))))
+
+(defvar-local my/modeline-battery
+    '(:eval (when (mode-line-window-selected-p)
+              (propertize (my/modeline--battery) 'face `(:inherit ,(if (< (my/modeline--battery-percentage) 20)
+                                                                     'error nil))))))
+
 (dolist (construct '(my/modeline-major-mode
                      my/modeline-buffer-indentification
                      my/modeline-input-method
                      my/modeline-kbd-macro
                      my/modeline-region-indicator
                      my/modeline-align-right
+                     my/modeline-file-name
                      my/modeline-buffer-readonly
                      my/modeline-buffer-modified
                      my/modeline-date
@@ -245,21 +287,21 @@
                 my/modeline-input-method
                 my/modeline-buffer-readonly
                 my/modeline-buffer-modified
-                " "
-                my/modeline-major-mode
+                my/modeline-file-name
                 my/modeline-position
                 my/modeline-image-info
                 my/modeline-kbd-macro
                 my/modeline-region-indicator
                 "       "
                 my/modeline-align-right
+                my/modeline-major-mode
                 my/modeline-sys
                 my/modeline-timer
                 my/modeline-clock-info
                 my/modeline-date
                 my/modeline-time
                 " "
-                battery-mode-line-string))
+                my/modeline-battery))
 
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
