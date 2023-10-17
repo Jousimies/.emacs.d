@@ -106,9 +106,12 @@
               ("M-j" . rime-force-enable))
 
   :preface
-  ;; (setq rime-title " ")
   (setq rime-title "ZH ")
   :config
+  (add-hook 'input-method-activate-hook (lambda ()
+                                          (setq cursor-type 'bar)))
+  (add-hook 'input-method-deactivate-hook (lambda ()
+                                            (setq cursor-type 'box)))
   (defvar im-cursor-color "red"
     "The color for input method.")
 
@@ -160,7 +163,7 @@
               ("q" . selected-off)
               ("u" . upcase-region)
               ("d" . downcase-region)
-              ("c" . copy-region-as-kill)
+              ("c" . my/copy-region)
               ("x" . kill-region)
               ("w" . count-words-region)
               ("s" . my/search)
@@ -168,7 +171,13 @@
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
               (";" . comment-dwim)
-              ("+" . my/add-symbol-to-region)))
+              ("+" . my/add-symbol-to-region))
+  :config
+  (defun my/copy-region ()
+    (interactive)
+    (if (eq major-mode 'xwidget-webkit-mode)
+        (xwidget-webkit-copy-selection-as-kill)
+      (copy-region-as-kill (region-beginning) (region-end)))))
 
 (provide 'init-crud)
 ;;; init-crud.el ends here.

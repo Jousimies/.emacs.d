@@ -4,13 +4,17 @@
 
 ;;; Code:
 
-(set-face-attribute 'default nil :font "Iosevka Term" :height 160)
+(set-face-attribute 'default nil :font "Iosevka Term" :height 140)
+
+;; Source Han Serif SC -> TsangerJinKai02
 (when (display-graphic-p)
   (dolist (charset '(kana han cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font)
-                      charset (font-spec :family "Source Han Serif SC" :height 160)) t 'prepend))
+                      charset (font-spec :family "TsangerJinKai02" :height 140)) t 'prepend))
 
-(set-fontset-font t 'unicode (font-spec :family "Hack Nerd Font Mono" :size 16) nil 'prepend)
+(set-fontset-font t 'unicode (font-spec :family "Apple Color Emoj" :size 11.5) nil 'prepend)
+
+(set-fontset-font t 'unicode (font-spec :family "Hack Nerd Font Mono" :size 14) nil 'prepend)
 
 (use-package nerd-icons
   :load-path "packages/nerd-icons.el/"
@@ -73,9 +77,7 @@
     str))
 
 (defun my/modeline--major-mode ()
-  (if (listp mode-name)
-      (upcase (car mode-name))
-    (upcase mode-name)))
+  (capitalize (string-replace "-mode" "" (symbol-name major-mode))))
 
 (defvar-local my/modeline-major-mode
     '(:eval (when (mode-line-window-selected-p)
@@ -104,7 +106,7 @@
               (propertize (my/modeline-file-name) 'face 'bold))))
 
 (defvar-local my/modeline-buffer-readonly
-    '(:eval (when (and (mode-line-window-selected-p) buffer-read-only)
+    '(:eval (when buffer-read-only
               (propertize " "
                           'face nil))))
 
@@ -113,12 +115,11 @@
               (propertize " * " 'face `(:inherit ,(if (buffer-modified-p) 'error nil))))))
 
 (defvar-local my/modeline-input-method
-    '(:eval (when (mode-line-window-selected-p)
-              (propertize
+    '(:eval (propertize
                (if current-input-method-title
                    " ZH "
                  " EN ")
-               'face `(:inherit ,(if current-input-method-title 'font-lock-string-face nil) :inverse-video t)))))
+               'face `(:inherit ,(if current-input-method-title 'font-lock-string-face nil) :inverse-video t))))
 
 (defvar-local my/modeline-kbd-macro
     '(:eval
@@ -164,18 +165,14 @@
       (propertize
        " "
        'display
-       (let ((box-p (my/modeline--box-p))
-             (magic-number (my/modeline--magic-number)))
-         `(space
+       `(space
            :align-to
            (- right
               right-fringe
               right-margin
               ,(ceiling
                 (my/modeline--right-align-width)
-                (string-pixel-width (propertize "m" 'face 'mode-line)))
-              ,(when box-p
-                 (* magic-number 0.6))))))))
+                (string-pixel-width (propertize "m" 'face 'mode-line))))))))
 
 (defvar-local my/modeline-date
     '(:eval (when (mode-line-window-selected-p)

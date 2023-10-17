@@ -442,3 +442,12 @@
 [submodule "packages/elfeed-summary"]
 	path = packages/elfeed-summary
 	url = https://github.com/SqrtMinusOne/elfeed-summary.git
+[submodule "packages/org-side-tree"]
+	path = packages/org-side-tree
+	url = https://github.com/localauthor/org-side-tree.git
+[submodule "packages/imenu-list"]
+	path = packages/imenu-list
+	url = https://github.com/bmag/imenu-list.git
+[submodule "packages/marginalia"]
+	path = packages/marginalia
+	url = https://github.com/minad/marginalia.git

@@ -31,8 +31,8 @@
   "Load theme, taking current system APPEARANCE into consideration."
   (mapc #'disable-theme custom-enabled-themes)
   (pcase appearance
-    ('light (load-theme 'ef-spring t))
-    ('dark (load-theme 'ef-maris-dark t))))
+    ('light (load-theme 'ef-light t))
+    ('dark (load-theme 'ef-dark t))))
 
 (add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
 

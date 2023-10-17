@@ -70,6 +70,10 @@
 (use-package consult-imenu
   :bind (([remap imenu] . consult-imenu)))
 
+(use-package marginalia
+  :load-path "packages/marginalia/"
+  :hook ((minibuffer-setup . marginalia-mode)))
+
 (use-package embark
   :load-path "packages/embark/"
   :bind (([remap describe-bindings] . embark-bindings)

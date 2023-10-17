@@ -333,7 +333,6 @@
 (setq browse-url-browser-function 'xwidget-webkit-browse-url)
 (use-package xwidget
   :demand t
-  :commands xwidget-webkit-browse-url
   :bind (:map xwidget-webkit-mode-map
               ("o" . my/xwidget-open-with-default-browse))
   :init

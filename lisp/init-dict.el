@@ -24,16 +24,28 @@
 
 (use-package sdcv
   :load-path "packages/sdcv/"
-  :commands sdcv-search-pointer sdcv-search-pointer+ sdcv-search-input
+  :bind (("s-3" . my/search-dictionary)
+         ("C-c l i" . sdcv-search-input))
+  :hook (after-init . my/sdcv-tooltip-face-toggle)
   :config
-  (face-spec-set 'sdcv-tooltip-face
-                 '((((background light))
-                    :foreground "#000000" :background "#ffffff")
-                   (t
-                    :foreground "#ffffff" :background "#000000"))
-                 'face-override-spec)
-
-  (setq sdcv-tooltip-border-width 2)
+  (defun my/search-dictionary (arg)
+    (interactive "P")
+    (if arg
+        (sdcv-search-pointer)
+      (sdcv-search-pointer+)))
+  (defun my/sdcv-tooltip-face-toggle ()
+    (interactive)
+    (let* ((theme-name (symbol-name (car custom-enabled-themes)))
+           (palette-var (intern (concat theme-name "-palette")))
+           (fg-value (cadr (assoc 'fg-main (eval palette-var))))
+           (bg-value (cadr (assoc 'bg-main (eval palette-var))))
+           (face-spec `((((background light))
+                         :foreground ,fg-value :background ,bg-value)
+                        (t
+                         :foreground ,fg-value :background ,bg-value))))
+      (face-spec-set 'sdcv-tooltip-face face-spec 'face-override-spec)))
+  (advice-add 'sdcv-search-pointer+ :before #'my/sdcv-tooltip-face-toggle)
+  (setq sdcv-tooltip-border-width 1)
   (setq sdcv-dictionary-data-dir (expand-file-name "sdcv-dict" user-emacs-directory))
   (setq sdcv-program "/opt/homebrew/bin/sdcv")
   (setq sdcv-dictionary-simple-list    ;星际译王屏幕取词词典, 简单, 快速
@@ -58,14 +70,6 @@
           "新世纪汉英科技大词典"
           "21世纪双语科技词典"
           "quick_eng-zh_CN")))
-
-(defun my/search-dictionary (arg)
-  (interactive "P")
-  (if arg
-      (sdcv-search-pointer)
-    (sdcv-search-pointer+)))
-(global-set-key (kbd "M-#") 'my/search-dictionary)
-(global-set-key (kbd "C-c l i") 'sdcv-search-input)
 
 (use-package powerthesaurus
   :load-path ("packages/emacs-powerthesaurus/" "packages/jeison")

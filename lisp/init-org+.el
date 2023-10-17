@@ -6,7 +6,40 @@
 
 (use-package olivetti
   :load-path "packages/olivetti/"
-  :bind ("s-M-z" . olivetti-mode))
+  :bind ("s-M-z" . olivetti-mode)
+  :hook ((olivetti-mode-on . (lambda ()
+                               (toggle-olivetti-mode t)))
+         (olivetti-mode-off . (lambda ()
+                                (toggle-olivetti-mode nil))))
+  :config
+  (defun toggle-olivetti-mode (enable &optional custom-modeline-format)
+    "Toggle Olivetti mode and adjust the modeline format."
+    (if enable
+        (progn
+          (setq my/modeline-format-cache (if custom-modeline-format custom-modeline-format mode-line-format))
+          (setq-default mode-line-format nil)
+          (tab-bar-mode -1))
+      (progn
+        (tab-bar-mode 1)
+        (setq-default mode-line-format my/modeline-format-cache)
+        (setq my/modeline-format-cache nil)))))
+
+(use-package imenu-list
+  :load-path "packages/imenu-list/"
+  :hook ((olivetti-mode-on . (lambda ()
+                               (imenu-list-minor-mode 1)))
+         (olivetti-mode-off . (lambda ()
+                               (imenu-list-minor-mode -1))))
+  :config
+  (set-face-attribute 'imenu-list-entry-face-0 nil
+                      :foreground (face-foreground 'ef-themes-heading-1)
+                      :inherit 'bold)
+  (set-face-attribute 'imenu-list-entry-face-1 nil
+                      :foreground (face-foreground 'ef-themes-heading-2)
+                      :inherit 'bold)
+
+  (setq imenu-list-position 'left)
+  (setq-default imenu-list-mode-line-format nil))
 
 (use-package math-preview
   :load-path "packages/math-preview/"

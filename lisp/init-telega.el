@@ -14,15 +14,27 @@
   (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
                                        (display-buffer-in-side-window)
                                        (side . right)
-                                       (window-width . 0.5)))
+                                       (window-width . 0.4)))
   :bind (("C-c T" . telega)
          (:map telega-chat-mode-map
-               ("C-g" . quit-window)))
+               ("C-g" . my/telega-chat-quit-window)))
   :config
+  (defun my/telega-deactive-input-method ()
+    (when (and (boundp 'this-command) this-command current-input-method)
+      (if (or (string= (symbol-name this-command) "next-line")
+              (string= (symbol-name this-command) "previous-line"))
+          (deactivate-input-method))))
+  (add-hook 'telega-chat-mode-hook (lambda ()
+                                     (add-hook 'pre-command-hook #'my/telega-deactive-input-method)))
+  (defun my/telega-chat-quit-window ()
+    (interactive)
+    (if (region-active-p)
+        (deactivate-mark)
+      (quit-window)))
   (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))
-  (setq telega-chat-fill-column 78)
+  (setq telega-chat-fill-column 70)
+  (setq telega-translate-to-language-by-default "zh")
   (setq telega-completing-read-function completing-read-function)
-  (setq telega-server-libs-prefix "/opt/homebrew/opt/tdlib/")
   (setq telega-proxies
         (list
          '(:server "127.0.0.1" :port 1080 :enable t
@@ -37,7 +49,7 @@
             (let* ((me-user (telega-user-me 'locally))
                    (online-p (and me-user (telega-user-online-p me-user)))
                    ;; reactions
-                   (reactions-chats (telega-filter-chats telega--ordered-chats '(unread-reactions)))
+                   (reactions-chats (telega-filter-chats telega--ordered-chats '(and is-known unread-reactions)))
                    (reactions-count (apply '+ (mapcar (telega--tl-prop :unread_reaction_count) reactions-chats)))
                    ;; mentioned
                    (mentioned-chats (telega-filter-chats telega--ordered-chats '(mention)))
