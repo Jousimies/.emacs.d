@@ -84,13 +84,7 @@
   :load-path "packages/denote/"
   :hook (org-mode . denote-rename-buffer-mode)
   :custom
-  (denote-rename-buffer-function 'my/denote-rename-buffer-with-prefix)
-  :preface
-  ;; https://systemcrafters.net/live-streams/october-6-2023/
-  (defun my/denote-rename-buffer-with-prefix (&optional buffer)
-    (when-let* ((file-and-type (denote-rename-buffer--common-check (or buffer (current-buffer))))
-                (title (denote--retrieve-title-or-filename (car file-and-type) (cdr file-and-type))))
-      (rename-buffer (concat " " title) :unique))))
+  (denote-rename-buffer-format " %t"))
 
 (defvar prot-dired--limit-hist '()
   "Minibuffer history for `prot-dired-limit-regexp'.")
