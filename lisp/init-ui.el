@@ -87,9 +87,7 @@
 
 (defun my/modeline-buffer-name ()
   (let ((name (my/modeline--buffer-name)))
-    (if buffer-read-only
-        (format " %s" name)
-      name)))
+    (format "%s" name)))
 
 (defun my/modeline--file-name ()
   (when-let ((name (buffer-file-name)))
