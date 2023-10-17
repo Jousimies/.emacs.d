@@ -299,7 +299,7 @@
                 my/modeline-date
                 my/modeline-time
                 " "
-                my/modeline-battery))
+                battery-mode-line-string))
 
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])

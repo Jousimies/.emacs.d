@@ -330,7 +330,9 @@
   :load-path "packages/emacs-gc-buffers"
   :hook (after-init . gc-buffers-mode))
 
+(setq browse-url-browser-function 'xwidget-webkit-browse-url)
 (use-package xwidget
+  :demand t
   :commands xwidget-webkit-browse-url
   :bind (:map xwidget-webkit-mode-map
               ("o" . my/xwidget-open-with-default-browse))
@@ -341,8 +343,7 @@
   (defun my/xwidget-open-with-default-browse ()
     (interactive)
     (browse-url-default-browser (xwidget-webkit-uri (xwidget-webkit-current-session))))
-  (setq xwidget-webkit-download-dir my/web_archive)
-  (setq browse-url-browser-function 'xwidget-webkit-browse-url))
+  (setq xwidget-webkit-download-dir my/web_archive))
 
 ;;;###autoload
 (defun my/save-xwidget-to-webarchive ()
