@@ -27,24 +27,36 @@
         (list
          '(:server "127.0.0.1" :port 1080 :enable t
                    :type (:@type "proxyTypeSocks5"))))
+  ;; https://github.com/roife/.emacs.d/blob/d53e35de36a0ff25cb538baf6afcbdc9e39858af/core/init-tabbar.el
   (defvar +tab-bar-telega-indicator-cache nil)
   (defun +tab-bar-telega-icon-update (&rest rest)
-      (setq +tab-bar-telega-indicator-cache
-            (when (and (fboundp 'telega-server-live-p)
-                       (telega-server-live-p)
-                       (buffer-live-p telega-server--buffer))
-              (let* ((me-user (telega-user-me 'locally))
-                     (online-p (and me-user (telega-user-online-p me-user)))
-                     (mentioned-chats (telega-filter-chats telega--ordered-chats '(mention)))
-                     (mentioned-count (apply '+ (mapcar (telega--tl-prop :unread_mention_count) mentioned-chats)))
-                     (unread-count (or (plist-get telega--unread-chat-count :unread_unmuted_count) 0))
-                     (tot-count (+ mentioned-count unread-count)))
-                (propertize (concat " "
-                                    (if online-p "" "")
-                                    (when (and tot-count (not (zerop tot-count)))
-                                      (concat " " (number-to-string (+ unread-count mentioned-count))))
-                                    " ")
-                            'face `(:inherit ,(if online-p 'success 'warning)))))))
+    (setq +tab-bar-telega-indicator-cache
+          (when (and (fboundp 'telega-server-live-p)
+                     (telega-server-live-p)
+                     (buffer-live-p telega-server--buffer))
+            (let* ((me-user (telega-user-me 'locally))
+                   (online-p (and me-user (telega-user-online-p me-user)))
+                   ;; reactions
+                   (reactions-chats (telega-filter-chats telega--ordered-chats '(unread-reactions)))
+                   (reactions-count (apply '+ (mapcar (telega--tl-prop :unread_reaction_count) reactions-chats)))
+                   ;; mentioned
+                   (mentioned-chats (telega-filter-chats telega--ordered-chats '(mention)))
+                   (mentioned-count (apply '+ (mapcar (telega--tl-prop :unread_mention_count) mentioned-chats)))
+                   ;; unread
+                   (unmuted-count (or (plist-get telega--unread-chat-count :unread_unmuted_count) 0))
+                   (mentioned-unmuted-chats (telega-filter-chats telega--ordered-chats '(and (mention) (unmuted))))
+                   (true-unmuted-count (- unmuted-count (length mentioned-unmuted-chats)))
+                   ;; tot
+                   ;; (tot-count (+ true-unmuted-count mentioned-count reactions-count))
+                   )
+              (propertize (concat "  "
+                                  (when (and true-unmuted-count (not (zerop true-unmuted-count)))
+                                    (concat "●" (number-to-string true-unmuted-count) " "))
+                                  (when (and mentioned-count (not (zerop mentioned-count)))
+                                    (concat "@" (number-to-string mentioned-count) " "))
+                                  (when (and reactions-count (not (zerop reactions-count)))
+                                    (concat "❤" (number-to-string reactions-count) " ")))
+                          'face `(:inherit ,(if online-p 'success 'warning) :inverse-video t))))))
 
   (defun +tab-bar-telega-icon ()
     (or +tab-bar-telega-indicator-cache
@@ -53,6 +65,9 @@
   (add-to-list 'tab-bar-format '+tab-bar-telega-icon t)
 
   (advice-add 'telega--on-updateUnreadChatCount :after #'+tab-bar-telega-icon-update)
+  (advice-add 'telega--on-updateChatUnreadMentionCount :after #'+tab-bar-telega-icon-update)
+  (advice-add 'telega--on-updateChatUnreadReactionCount :after #'+tab-bar-telega-icon-update)
+
   (add-hook 'telega-connection-state-hook #'+tab-bar-telega-icon-update)
   (add-hook 'telega-kill-hook #'+tab-bar-telega-icon-update))
 
