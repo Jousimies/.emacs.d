@@ -7,14 +7,23 @@
 (use-package olivetti
   :load-path "packages/olivetti/"
   :bind ("s-M-z" . olivetti-mode)
-  :hook ((olivetti-mode-on . (lambda ()
-                               (toggle-olivetti-mode t)))
-         (olivetti-mode-off . (lambda ()
-                                (toggle-olivetti-mode nil))))
+  :hook ((olivetti-mode-on . my/modeline-tabbar-status)
+         (olivetti-mode-off . my/modeline-tabbar-status))
   :config
+  (defvar my/modeline-tabbar-format-cache nil)
+  (defun my/modeline-tabbar-status ()
+    (if my/modeline-tabbar-format-cache
+        (progn
+          (setq my/modeline-format-cache mode-line-format)
+          (setq-default mode-line-format nil)
+          (tab-bar-mode -1))
+      (progn
+        (tab-bar-mode 1)
+        (setq-default mode-line-format my/modeline-format-cache)
+        (setq my/modeline-format-cache nil))))
   (defun toggle-olivetti-mode (enable &optional custom-modeline-format)
     "Toggle Olivetti mode and adjust the modeline format."
-    (if enable
+    (if (and enable (not my/modeline-format-cache))
         (progn
           (setq my/modeline-format-cache (if custom-modeline-format custom-modeline-format mode-line-format))
           (setq-default mode-line-format nil)
@@ -66,7 +75,8 @@
   :bind (("C-c d c" . org-download-clipboard)
          ("C-c d y" . org-download-yank)
          ("C-c d s" . org-download-screenshot)
-         ("C-c d r" . org-download-rename-at-point))
+         ("C-c d r" . org-download-rename-at-point)
+         ("s-v" . my/yank))
   :init
   (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
   (setq org-download-heading-lvl nil)
@@ -87,18 +97,6 @@
     (if arg
         (org-download-rename-last-file)
       (org-download-rename-at-point)))
-
-  ;; (defun my/auto-change-file-paths (&optional basename)
-  ;;   (interactive)
-  ;;   (save-excursion
-  ;;     (previous-line)
-  ;;     (while (re-search-forward (expand-file-name "~") nil t)
-  ;;       (replace-match "~" t nil))))
-  ;; (advice-add 'org-download-clipboard :after 'my/auto-change-file-paths)
-  ;; (advice-add 'org-download-screenshot :after 'my/auto-change-file-paths)
-
-  (advice-add 'org-download-clipboard :after 'my/org-download-adjust)
-  ;; (advice-add 'org-download-screenshot :after 'my/org-download-adjust)
 
   (defun my/org-download-adjust (&optional basename)
     "Adjust the last downloaded file.
@@ -124,7 +122,19 @@
           (move-end-of-line 1)
           (insert newname))
         (while (re-search-forward (expand-file-name "~") nil t 1)
-          (replace-match "~" t nil))))))
+          (replace-match "~" t nil)))))
+
+  (advice-add 'org-download-clipboard :after 'my/org-download-adjust)
+
+  (defun my/clipboard-has-image-p ()
+    (let ((clipboard-contents (shell-command-to-string "pbpaste")))
+      (string-match-p "\\(\\.jpeg\\|\\.jpg\\|\\.png\\)$" clipboard-contents)))
+
+  (defun my/yank ()
+    (interactive)
+    (if (my/clipboard-has-image-p)
+        (org-download-clipboard)
+      (yank))))
 
 (use-package org-imgtog
   :load-path "packages/org-imgtog/"

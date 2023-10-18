@@ -57,7 +57,7 @@
          ([remap locate] . consult-locate)
          ([remap load-theme] . consult-theme)
          ([remap man] . consult-man)
-         ([remap org-goto] . consult-outline)
+         ;; ([remap org-goto] . consult-imenu)
          ([remap recentf-open-files] . consult-recent-file)
          ([remap switch-to-buffer] . consult-buffer)
          ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
@@ -68,7 +68,7 @@
          ("C-h" . consult-history)))
 
 (use-package consult-imenu
-  :bind (([remap imenu] . consult-imenu)))
+  :bind ([remap imenu] . consult-imenu))
 
 (use-package marginalia
   :load-path "packages/marginalia/"

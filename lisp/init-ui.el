@@ -37,6 +37,7 @@
 (use-package tab-bar
   :hook (after-init . tab-bar-mode)
   :bind ("C-c b t" . tab-switch)
+  :hook (after-make-frame-functions . toggle-frame-tab-bar)
   :config
   (setq tab-bar-format '(tab-bar-format-history
                          tab-bar-format-tabs
@@ -44,8 +45,7 @@
                          tab-bar-format-align-right))
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-separator "​​")
-  (setq tab-bar-tab-hints nil)
-  (setq tab-bar-show t))
+  (setq tab-bar-tab-hints nil))
 
 (defun tab-bar-format-menu-bar ()
   "Produce the Menu button for the tab bar that shows the menu bar."
@@ -66,8 +66,7 @@
 (defun prot-modeline--string-truncate-p (str)
   "Return non-nil if STR should be truncated."
   (and (< (window-total-width) split-width-threshold)
-       (> (length str) prot-modeline-string-truncate-length)
-       (not (one-window-p :no-minibuffer))))
+       (> (length str) prot-modeline-string-truncate-length)))
 
 (defun prot-modeline-string-truncate (str)
   "Return truncated STR, if appropriate, else return STR.
