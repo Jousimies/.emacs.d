@@ -81,7 +81,7 @@
 (defun my/link-grab ()
   (interactive)
   (grab-mac-link-dwim 'safari))
-(global-set-key (kbd "C-<f10>") 'my/link-grab)
+(global-set-key (kbd "s-l g") 'my/link-grab)
 
 (use-package simple-httpd
   :load-path "packages/emacs-web-server"

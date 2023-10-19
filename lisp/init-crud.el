@@ -64,7 +64,7 @@
 
 (use-package ace-pinyin
   :load-path ("packages/ace-pinyin/" "packages/avy/" "packages/pinyinlib.el")
-  :hook (meow-normal-mode . ace-pinyin-global-mode))
+  :bind ([remap goto-char] . ace-pinyin-jump-char-2))
 
 (use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)

@@ -15,7 +15,7 @@
 
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
-  :bind ("C-c M" . mu4e)
+  :bind ("s-M" . mu4e)
   :init
   (add-to-list 'display-buffer-alist '((derived-mode . mu4e-main-mode)
                                        (display-buffer-in-side-window)

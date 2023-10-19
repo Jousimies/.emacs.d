@@ -47,7 +47,8 @@
                          tab-bar-format-align-right))
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-separator "​​")
-  (setq tab-bar-tab-hints nil))
+  (setq tab-bar-select-tab-modifiers '(super))
+  (setq tab-bar-tab-hints t))
 
 (defun tab-bar-format-menu-bar ()
   "Produce the Menu button for the tab bar that shows the menu bar."
@@ -437,14 +438,6 @@ of the box `(w h)' inside the box `(cw ch)'."
 
 (add-to-list 'after-make-frame-functions #'ct/frame-center 0)
 
-(defun my/make-or-delete-frame ()
-  (interactive)
-  (if (= (frame-width) 100) ;; 80 is the default frame width.
-      (delete-frame)
-    (make-frame)))
-
-(global-set-key (kbd "s-n") 'my/make-or-delete-frame)
-
 (use-package winner
   :hook (after-init . winner-mode)
   :config
@@ -495,7 +488,7 @@ of the box `(w h)' inside the box `(cw ch)'."
 
 (use-package perspective
   :load-path "packages/perspective-el/"
-  :bind (("M-s-t" . persp-switch)
+  :bind (("M-s-n" . persp-switch)
          ("M-s-w" . persp-kill))
   :custom
   (persp-mode-prefix-key (kbd "C-c z"))

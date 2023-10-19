@@ -15,7 +15,7 @@
                                        (display-buffer-in-side-window)
                                        (side . right)
                                        (window-width . 0.4)))
-  :bind (("C-c T" . telega)
+  :bind (("s-T" . telega)
          (:map telega-chat-mode-map
                ("C-g" . my/telega-chat-quit-window)))
   :config

@@ -24,7 +24,7 @@
 
 (use-package sdcv
   :load-path "packages/sdcv/"
-  :bind (("s-3" . my/search-dictionary)
+  :bind (("s-#" . my/search-dictionary)
          ("C-c l i" . sdcv-search-input))
   :hook (after-init . my/sdcv-tooltip-face-toggle)
   :config
@@ -148,7 +148,7 @@
 (use-package jinx
   :load-path "packages/jinx/"
   :hook (text-mode . jinx-mode)
-  :bind ("s-4" . jinx-correct)
+  :bind ("s-;" . jinx-correct)
   :config
   (add-to-list 'jinx-exclude-regexps '(t "\\cc")))
 

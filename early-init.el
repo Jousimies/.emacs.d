@@ -36,4 +36,7 @@
 
 (add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
 
+(global-unset-key (kbd "s-l"))
+(global-unset-key (kbd "s-n"))
+
 ;;; early-init.el ends here

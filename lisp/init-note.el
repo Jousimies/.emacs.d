@@ -13,8 +13,8 @@
              ekg-show-notes-with-any-tags
              ekg-show-rename-tag
              ekg-browse-url)
-  :bind (("s-<f10>" . ekg-capture)
-         ("s-M-<f10>" . ekg-capture-url)
+  :bind (("C-<f10>" . ekg-capture)
+         ("M-<f10>" . ekg-capture-url)
          ("C-c n t" . ekg-show-notes-for-today)
          (:map ekg-notes-mode-map
                ("q" . quit-window)))
@@ -24,10 +24,10 @@
 
 (use-package denote
   :load-path "packages/denote/"
-  :bind (("C-c n s" . denote-signature)
-         ("C-c n S" . denote-subdirectory)
-         ("C-c n l" . denote-link)
-         ("C-c n L" . denote-link-insert-links-matching-regexp)
+  :bind (("s-n s" . denote-signature)
+         ("s-n S" . denote-subdirectory)
+         ("s-l l" . denote-link)
+         ("s-l L" . denote-link-insert-links-matching-regexp)
          ("C-c n r" . denote-rename-file-using-front-matter)
          ("C-c n k" . denote-keywords-add)
          ("C-c n K" . denote-keywords-remove)
@@ -161,19 +161,20 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
          (new-title (concat ID "--" title))
          (file-path (concat my/web_archive title ".html"))
          (file-new-path (concat my/web_archive new-title ".html")))
-    (if (not (file-exists-p file-path))
-        (when (my/save-xwidget-to-webarchive)
-          (my/literature-entry url title keywords file-path file-new-path))
-      (my/literature-entry url title keywords file-path file-new-path))))
+    (when xwidget?
+      (if (not (file-exists-p file-path))
+          (when (my/save-xwidget-to-webarchive)
+            (my/literature-entry url title keywords file-path file-new-path))
+        (my/literature-entry url title keywords file-path file-new-path)))))
 
-(defun my/literature-save (arg)
+(defun my/literature-save ()
   "Save a literature entry from either Safari or xwidget-webkit."
-  (interactive "P")
-  (if arg
-      (my/literature-save-from-safari)
-    (my/literature-save-from-xwidget)))
+  (interactive)
+  (if (string-prefix-p "xwidget" (buffer-name))
+      (my/literature-save-from-xwidget)
+    (my/literature-save-from-safari)))
 
-(global-set-key (kbd "M-<f10>") 'my/literature-save)
+(global-set-key (kbd "s-s") 'my/literature-save)
 
 (use-package denote-journal-extras
   :load-path "~/.emacs.d/packages/denote/"
@@ -200,7 +201,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (use-package consult-notes
   :load-path "packages/consult-notes/"
-  :bind ("C-c f n" . consult-notes)
+  :bind ("s-f" . consult-notes)
   :config
   (setq consult-notes-file-dir-sources
         `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
