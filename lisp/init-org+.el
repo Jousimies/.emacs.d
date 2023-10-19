@@ -134,7 +134,8 @@
     (interactive)
     (if (my/clipboard-has-image-p)
         (org-download-clipboard)
-      (yank))))
+      (cond ((eq major-mode 'vterm-mode) (term-paste))
+            (t (yank))))))
 
 (use-package org-imgtog
   :load-path "packages/org-imgtog/"
