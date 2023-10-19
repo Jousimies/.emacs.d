@@ -36,7 +36,9 @@
 
 (use-package tab-bar
   :hook (after-init . tab-bar-mode)
-  :bind ("C-c b t" . tab-switch)
+  :bind (("C-c b t" . tab-switch)
+         ("s-t" . tab-new)
+         ("s-w" . tab-close))
   :hook (after-make-frame-functions . toggle-frame-tab-bar)
   :config
   (setq tab-bar-format '(tab-bar-format-history
@@ -493,6 +495,8 @@ of the box `(w h)' inside the box `(cw ch)'."
 
 (use-package perspective
   :load-path "packages/perspective-el/"
+  :bind (("M-s-t" . persp-switch)
+         ("M-s-w" . persp-kill))
   :custom
   (persp-mode-prefix-key (kbd "C-c z"))
   :hook ((after-init . persp-mode)
