@@ -28,9 +28,9 @@
          ("s-n S" . denote-subdirectory)
          ("s-l l" . denote-link)
          ("s-l L" . denote-link-insert-links-matching-regexp)
-         ("C-c n r" . denote-rename-file-using-front-matter)
-         ("C-c n k" . denote-keywords-add)
-         ("C-c n K" . denote-keywords-remove)
+         ("s-n r" . denote-rename-file-using-front-matter)
+         ("s-n k" . denote-keywords-add)
+         ("s-n K" . denote-keywords-remove)
          (:map dired-mode-map
                ("r" . denote-dired-rename-marked-files)))
   :hook ((dired-mode . denote-dired-mode-in-directories)
@@ -201,7 +201,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (use-package consult-notes
   :load-path "packages/consult-notes/"
-  :bind ("s-f" . consult-notes)
+  :bind ("s-n" . consult-notes)
   :config
   (setq consult-notes-file-dir-sources
         `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
