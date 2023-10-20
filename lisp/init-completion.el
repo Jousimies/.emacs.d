@@ -65,7 +65,9 @@
          ([remap yank-pop] . consult-yank-pop)
          ("C-c f a" . consult-find)
          :map minibuffer-mode-map
-         ("C-h" . consult-history)))
+         ("C-h" . consult-history))
+  :config
+  (setq consult-preview-key nil))
 
 (use-package consult-imenu
   :bind ([remap imenu] . consult-imenu))
