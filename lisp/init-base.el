@@ -37,7 +37,10 @@
   (add-hook 'after-save-hook 'my/auto-tangle))
 
 ;; Variables defined in C source code
-(setq ring-bell-function 'ignore)
+;; (setq ring-bell-function 'ignore)
+(setq ring-bell-function (lambda ()
+                           (invert-face 'mode-line)
+                           (run-with-timer 0.05 nil 'invert-face 'mode-line)))
 (setq tab-width 4)
 (setq use-file-dialog nil)
 (setq use-dialog-box nil)
@@ -304,22 +307,6 @@
 (use-package ibuf-ext
   :hook (ibuffer-mode . ibuffer-auto-mode))
 
-(use-package ibuffer-project
-  :load-path "packages/emacs-ibuffer-project/"
-  :hook (ibuffer-mode . (lambda ()
-                          (setq ibuffer-filter-groups
-                                (ibuffer-project-generate-filter-groups))))
-  :config
-  (setq ibuffer-formats
-      '((mark modified read-only " "
-              (name 18 18 :left :elide)
-              " "
-              (size 9 -1 :right)
-              " "
-              (mode 16 16 :left :elide)
-              " "
-              project-relative-file))))
-
 (use-package time
   :hook (after-init . display-time-mode))
 
@@ -332,7 +319,6 @@
 
 (setq browse-url-browser-function 'xwidget-webkit-browse-url)
 (use-package xwidget
-  :demand t
   :bind (:map xwidget-webkit-mode-map
               ("o" . my/xwidget-open-with-default-browse))
   :init

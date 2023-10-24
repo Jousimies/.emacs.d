@@ -102,5 +102,14 @@ This function requires ImageMagick's convert utility to be installed and availab
   (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
 (global-set-key (kbd "C-c m o") 'my/ocr)
 
+(use-package mpv
+  :commands mpv-start
+  :load-path "packages/mpv.el/")
+
+;;;###autoload
+(defun my/mpv-play-at-point ()
+  (interactive)
+  (mpv-start (dired-get-filename)))
+
 (provide 'init-misc)
 ;;; init-misc.el ends here.

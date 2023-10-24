@@ -13,7 +13,9 @@
   (pdf-tools-install t nil t nil))
 
 (use-package pdf-view
-  :hook ((pdf-tools-enabled . pdf-view-themed-minor-mode))
+  :hook ((pdf-tools-enabled . pdf-view-themed-minor-mode)
+         (pdf-view-mode . (lambda ()
+                           (require 'saveplace-pdf-view))))
   :config
   (setq pdf-view-display-size 'fit-width)
   (setq pdf-view-use-unicode-ligther nil)
@@ -69,8 +71,7 @@
 
 (use-package saveplace-pdf-view
   :load-path "packages/saveplace-pdf-view/"
-  :hook (pdf-view-mode . (lambda ()
-                           (require 'saveplace-pdf-view))))
+  :defer t)
 
 (use-package nov
   :load-path ("packages/nov.el/" "packages/esxml/")

@@ -41,6 +41,7 @@
          ("s-w" . tab-close))
   :hook (after-make-frame-functions . toggle-frame-tab-bar)
   :config
+  (setq tab-bar-new-tab-choice 'scratch-buffer)
   (setq tab-bar-format '(tab-bar-format-history
                          tab-bar-format-tabs
                          tab-bar-separator
@@ -177,7 +178,7 @@
                 (string-pixel-width (propertize "m" 'face 'mode-line))))))))
 
 (defvar-local my/modeline-date
-    '(:eval (when (mode-line-window-selected-p)
+    '(:eval (when (and (mode-line-window-selected-p) (> (window-width) 90))
               (propertize (format-time-string " %Y-%m-%d %a ") 'face `(:inherit success)))))
 
 (defvar org-timer-countdown-timer nil)
@@ -294,7 +295,8 @@
                 my/modeline-major-mode
                 my/modeline-sys
                 my/modeline-timer
-                my/modeline-clock-info
+                (:eval (with-eval-after-load 'org-clock
+                         my/modeline-clock-info))
                 my/modeline-date
                 my/modeline-time
                 " "
@@ -362,35 +364,11 @@
 
 (use-package frame
   :hook (after-init . (lambda ()
-                        (blink-cursor-mode -1)))
-  :config
-  (defun set-alpha-background (&optional alpha-value)
-    "Set the alpha background of the current frame based on ALPHA-VALUE.
-
-    If no alpha value is provided, the function will switch to 50 as default,
-    unless the current alpha value is less than 100, in which case the function
-    will switch to 100.
-
-    If an alpha value between 0 and 99 is provided, the function will switch
-    to the input value."
-    (interactive (list (read-number "Enter alpha value (0-99): " 50)))
-    (setq alpha-value (or alpha-value 50))
-    (let ((current-alpha (or (frame-parameter nil 'alpha) 100)))
-      (cond ((eq current-alpha 100)
-             (modify-frame-parameters nil `((alpha . ,alpha-value))))
-            ((< current-alpha 100)
-             (modify-frame-parameters nil '((alpha . 100))))
-            (t
-             (modify-frame-parameters nil `((alpha . ,alpha-value)))))))
-
-  (face-spec-set 'window-divider
-                 '((((background light))
-                    :foreground "#000000")
-                   (t
-                    :foreground "#FFFFFF"))
-                 'face-override-spec)
-  (setq window-divider-default-bottom-width 1)
-  (setq window-divider-default-places 'bottom-only))
+                        (blink-cursor-mode -1)
+                        (add-to-list 'after-make-frame-functions #'ct/frame-center 0)))
+  :custom
+  (window-divider-default-bottom-width 1)
+  (window-divider-default-places 'bottom-only))
 
 (defun ct/frame-center (&optional frame)
   "Center a frame on the screen."
@@ -436,8 +414,6 @@ of the box `(w h)' inside the box `(cw ch)'."
            ;; so this list can be applied as parameters to `set-frame-position`:
            `(,frame ,@center))))
 
-(add-to-list 'after-make-frame-functions #'ct/frame-center 0)
-
 (use-package winner
   :hook (after-init . winner-mode)
   :config
@@ -459,9 +435,9 @@ of the box `(w h)' inside the box `(cw ch)'."
                                        (display-buffer-in-side-window)
                                        (side . right)
                                        (window-width . 0.5)))
-  :config
-  (setq switch-to-buffer-in-dedicated-window 'pop)
-  (setq switch-to-buffer-obey-display-actions t))
+  :custom
+  (switch-to-buffer-in-dedicated-window 'pop)
+  (switch-to-buffer-obey-display-actions t))
 
 (defun my/scroll-other-windown-down ()
   "Scroll other window down."
@@ -564,10 +540,6 @@ of the box `(w h)' inside the box `(cw ch)'."
           "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Org Note\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"))
   :config
   ;; Enable indicator in minibuffer
-  (use-package popper-echo
-    :config
-    (popper-echo-mode 1))
-
   (defun my/popper--fit-window-height (win)
     "Determine the height of popup window WIN by fitting it to the buffer's content."
     (fit-window-to-buffer
@@ -585,6 +557,9 @@ of the box `(w h)' inside the box `(cw ch)'."
         (when (window-live-p window)
           (delete-window window)))))
   (advice-add #'keyboard-quit :before #'+popper-close-window-hack))
+
+(use-package popper-echo
+  :hook (popper-mode . popper-echo-mode))
 
 (provide 'init-ui)
 ;;; init-ui.el ends here.

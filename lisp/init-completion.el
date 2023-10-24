@@ -23,16 +23,15 @@
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
 (setq set-message-functions '(inhibit-message))
 
-(use-package crm
-  :config
-  (defun crm-indicator (args)
+(defun crm-indicator (args)
     (cons (format "[CRM%s] %s"
                   (replace-regexp-in-string
                    "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
                    crm-separator)
                   (car args))
           (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator))
+
+(advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
 (use-package vertico
   :load-path "packages/vertico"
@@ -198,13 +197,13 @@
 
 (use-package which-key
   :load-path "packages/emacs-which-key/"
+  :hook (after-init . which-key-mode)
   :config
   (setq which-key-popup-type 'minibuffer)
   (setq which-key-sort-order #'which-key-prefix-then-key-order)
   ;; (setq which-key-show-early-on-C-h t)
   (setq which-key-idle-delay 0)
-  (setq which-key-idle-secondary-delay 0.05)
-  (which-key-mode))
+  (setq which-key-idle-secondary-delay 0.05))
 
 (provide 'init-completion)
 ;;; init-git.el ends here.

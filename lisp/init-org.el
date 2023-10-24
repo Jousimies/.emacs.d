@@ -128,11 +128,6 @@
   (advice-add 'org-babel-execute-src-block :before 'my/org-babel-execute-src-block)
   (setq org-confirm-babel-evaluate nil))
 
-(use-package ob-python
-  :after ob-core
-  :config
-  (setq org-babel-python-command "/usr/bin/python3"))
-
 (use-package org-capture
   :bind (("<f10>" . org-capture)
          (:map org-capture-mode-map

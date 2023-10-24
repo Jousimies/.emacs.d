@@ -58,8 +58,67 @@
           (group (:title . "Youtube")
                  (:elements (query . video)))))
 
-  (advice-add 'elfeed-summary :after 'elfeed-summary-update)
+  ;; (advice-add 'elfeed-summary :after 'elfeed-summary-update)
   (advice-add 'elfeed-summary :before 'elfeed-org))
+
+(defcustom z/elfeed-update-interval (* 178 60)
+  "As name suggested, in MINs."
+  :type 'integer
+  :group 'elfeed)
+
+(defcustom z/elfeed-update-minimal-interval (* 178 60)
+  "As name suggested."
+  :type 'integer
+  :group 'elfeed)
+
+(defcustom z/elfeed-update-only-when-idle (* 5 60)
+  "As name suggested."
+  :type 'integer
+  :group 'elfeed)
+
+;;;###autoload
+(defun z/elfeed-update-with-elfeed-unjam ()
+  "As name suggested."
+  (interactive)
+  (if (> (- (float-time) (elfeed-db-last-update)) ; time since last update
+         z/elfeed-update-minimal-interval)
+      (progn
+        (elfeed-update)
+        (run-with-timer (* 5 60) nil #'elfeed-unjam))
+    (progn
+      (cancel-function-timers 'z/elfeed-update-dwim)
+      (run-with-timer nil z/elfeed-update-interval
+                      #'z/elfeed-update-dwim))))
+
+;;;###autoload
+(defun z/elfeed-update-dwim ()
+  "Automatically update entry score."
+  (interactive)
+  (cancel-function-timers 'elfeed-unjam)
+  (cancel-function-timers 'z/elfeed-update-with-elfeed-unjam)
+  ;; --
+  (run-with-idle-timer z/elfeed-update-only-when-idle nil
+                       #'z/elfeed-update-with-elfeed-unjam))
+
+;; ;;;###autoload
+;; (defun z/elfeed-score-update ()
+;;   "Automatically update entry score."
+;;   (interactive)
+;;   (cancel-function-timers #'z/elfeed-update-dwim)
+;;   ;; --
+;;   (elfeed-score-enable)
+;;   (elfeed-score-scoring-score-search)
+;;   ;; --
+;;   (let* ((time-lapsed (- (float-time) (elfeed-db-last-update)))
+;;          (time-left (- z/elfeed-update-interval time-lapsed)))
+;;     (if (< time-left 0)
+;;         (progn (elfeed-update)
+;;                (run-with-timer nil z/elfeed-update-interval
+;;                                #'z/elfeed-update-dwim))
+;;       (run-with-timer time-left z/elfeed-update-interval
+;;                       #'z/elfeed-update-dwim))))
+
+(advice-add 'elfeed-summary :after #'z/elfeed-update-dwim)
 
 (provide 'init-elfeed)
 ;;; init-elfeed.el ends here.

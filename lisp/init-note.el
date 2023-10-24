@@ -201,7 +201,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (use-package consult-notes
   :load-path "packages/consult-notes/"
-  :bind ("s-n" . consult-notes)
+  :bind ("s-N" . consult-notes)
   :config
   (setq consult-notes-file-dir-sources
         `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
