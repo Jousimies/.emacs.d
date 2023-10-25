@@ -91,6 +91,13 @@
               (propertize
                (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you") 'face 'italic))
 
+(defun my/packages-installed (load-path)
+  (let ((my/packages 0))
+    (dolist (path load-path)
+      (when (not (string-prefix-p "/Applications/" path))
+        (setq my/packages (1+ my/packages))))
+    my/packages))
+
 (add-hook 'window-setup-hook
           (lambda ()
             (garbage-collect)
@@ -103,6 +110,8 @@
                                  (float-time (time-subtract after-init-time before-init-time))
                                  (float-time (time-subtract curtime before-init-time))
                                  gcs-done)
+                         "\n"
+                         (format ";; Total Packages Required: %d" (my/packages-installed load-path))
                          "\n\n"))
                 90))))
 
