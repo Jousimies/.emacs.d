@@ -49,6 +49,7 @@
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-separator "​​")
   (setq tab-bar-select-tab-modifiers '(super))
+  (setq tab-bar-show 1)
   (setq tab-bar-tab-hints t))
 
 (defun tab-bar-format-menu-bar ()
