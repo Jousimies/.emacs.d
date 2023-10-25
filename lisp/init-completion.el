@@ -197,13 +197,13 @@
 
 (use-package which-key
   :load-path "packages/emacs-which-key/"
-  :hook (after-init . which-key-mode)
   :config
   (setq which-key-popup-type 'minibuffer)
   (setq which-key-sort-order #'which-key-prefix-then-key-order)
   ;; (setq which-key-show-early-on-C-h t)
   (setq which-key-idle-delay 0)
-  (setq which-key-idle-secondary-delay 0.05))
+  (setq which-key-idle-secondary-delay 0.05)
+  (which-key-mode))
 
 (provide 'init-completion)
 ;;; init-git.el ends here.
