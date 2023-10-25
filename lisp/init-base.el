@@ -170,9 +170,9 @@
   :defer t
   :config
   (setq url-proxy-services
-        '(("http" . "127.0.0.1:8118")
-          ("https" . "127.0.0.1:8118")
-          ("socks" . "127.0.0.1:8118")
+        '(("http" . "127.0.0.1:7891")
+          ("https" . "127.0.0.1:7891")
+          ("socks" . "127.0.0.1:7891")
           ("no_proxy" . "0.0.0.0"))))
 
 (use-package simple

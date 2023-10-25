@@ -37,7 +37,7 @@
   (setq telega-completing-read-function completing-read-function)
   (setq telega-proxies
         (list
-         '(:server "127.0.0.1" :port 1080 :enable t
+         '(:server "127.0.0.1" :port 7891 :enable t
                    :type (:@type "proxyTypeSocks5"))))
   ;; https://github.com/roife/.emacs.d/blob/d53e35de36a0ff25cb538baf6afcbdc9e39858af/core/init-tabbar.el
   (defvar +tab-bar-telega-indicator-cache nil)
