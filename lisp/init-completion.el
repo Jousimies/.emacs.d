@@ -43,8 +43,9 @@
 
 (use-package vertico-directory
   :load-path "packages/vertico/extensions/"
-  :bind (:map vertico-map
-              ("DEL" . vertico-directory-up)))
+  :bind (:map minibuffer-mode-map
+         ("C-h" . vertico-directory-up)))
+
 (use-package vertico-indexed
   :hook (vertico-mode . vertico-indexed-mode))
 
@@ -52,12 +53,11 @@
   :load-path "packages/consult/"
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :bind (([remap apropos] . consult-apropos)
-         ;; ([remap bookmark-jump] . consult-bookmark)
+         ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-line)
          ([remap locate] . consult-locate)
          ([remap load-theme] . consult-theme)
          ([remap man] . consult-man)
-         ;; ([remap org-goto] . consult-imenu)
          ([remap recentf-open-files] . consult-recent-file)
          ([remap switch-to-buffer] . consult-buffer)
          ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
@@ -65,9 +65,10 @@
          ([remap yank-pop] . consult-yank-pop)
          ("C-c f a" . consult-find)
          :map minibuffer-mode-map
-         ("C-h" . consult-history))
+         ("C-r" . consult-history))
   :config
-  (setq consult-preview-key nil))
+  (setq consult-preview-key nil)
+  (setq completion-in-region-function #'consult-completion-in-region))
 
 (use-package consult-imenu
   :bind ([remap imenu] . consult-imenu))
