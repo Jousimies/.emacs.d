@@ -279,6 +279,7 @@
 (use-package org-habit
   :after org
   :config
+  (setq org-habit-graph-column 100)
   (add-to-list 'org-modules 'org-habit t))
 
 (use-package org-id
