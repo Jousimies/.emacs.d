@@ -176,6 +176,96 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (global-set-key (kbd "s-s") 'my/literature-save)
 
+(defconst ANNOTATION-DB '("~/Library/Containers/com.apple.iBooksX/Data/Documents/AEAnnotation/AEAnnotation_v10312011_1727_local.sqlite"))
+(defconst BOOK-DB '("~/Library/Containers/com.apple.iBooksX/Data/Documents/BKLibrary/BKLibrary-1-091020131601.sqlite"))
+
+(defconst APPLE-EPOCH-START (float-time (encode-time 0 0 0 1 1 2001)))
+
+(defconst SELECT-ALL-ANNOTATIONS-QUERY
+  "SELECT ZANNOTATIONASSETID AS assetId,
+          ZANNOTATIONSELECTEDTEXT AS quote,
+          ZANNOTATIONNOTE AS comment,
+          ZFUTUREPROOFING5 AS chapter,
+          ZANNOTATIONSTYLE AS colorCode,
+          ZANNOTATIONMODIFICATIONDATE AS modifiedAt,
+          ZANNOTATIONCREATIONDATE AS createdAt
+   FROM ZAEANNOTATION
+   WHERE ZANNOTATIONDELETED = 0
+     AND ZANNOTATIONSELECTEDTEXT IS NOT NULL
+     AND ZANNOTATIONSELECTEDTEXT <> ''
+   ORDER BY ZANNOTATIONASSETID, ZPLLOCATIONRANGESTART;")
+
+(defconst SELECT-ALL-BOOKS-QUERY
+  "SELECT ZASSETID AS id, ZTITLE AS title, ZAUTHOR AS author
+   FROM ZBKLIBRARYASSET")
+
+(defun convert-apple-time (apple-time)
+  (float-time (encode-time 0 0 0 1 1 2001)))
+
+(defun fn/create-db (filename)
+  (sqlite-open filename))
+
+(defun fn/get-books-from-db (filename)
+  (let ((db (fn/create-db filename)))
+    (sqlite-execute db SELECT-ALL-BOOKS-QUERY)))
+
+(defun fn/get-books ()
+  (let ((books (mapcar 'fn/get-books-from-db BOOK-DB)))
+    (apply 'append books)))
+
+(defun fn/get-annotations-from-db (filename)
+  (let ((db (fn/create-db filename)))
+    (sqlite-execute db SELECT-ALL-ANNOTATIONS-QUERY)))
+
+(defun fn/get-annotations ()
+  (let ((annotations (mapcar 'fn/get-annotations-from-db ANNOTATION-DB)))
+    (apply 'append annotations)))
+
+(defun write-book-headings (books org-file)
+  (with-temp-buffer
+    (insert-file-contents org-file)
+    (goto-char (point-max))
+    (dolist (book books)
+      (insert (format "* %s\n" (cadr book))))
+    (write-file org-file)))
+
+(defun fn/get-annotations-for-book (book-id)
+  (cl-remove-if-not (lambda (annotation)
+                      (string= (car annotation) book-id))
+                    (fn/get-annotations)))
+
+(defun fn/get-annotations-count (book-id)
+  "Get the number of annotations for a book with BOOK-ID."
+  (length (fn/get-annotations-for-book book-id)))
+
+(defun fn/write-annotations-to-file (annotations note-path)
+  "Write ANNOTATIONS to the specified NOTE-PATH."
+  (with-temp-buffer
+    (dolist (annot annotations)
+      (insert (format "- %s\n" (cadr annot))))
+    (append-to-file (point-min) (point-max) note-path)))
+
+(defun fn/choose-book-and-save-to-file (note-path)
+  "Choose a book and save its annotations to NOTE-PATH."
+  (interactive "FOrg file to store annotations: ")
+  (let* ((books (fn/get-books))
+         (book-alist (mapcar (lambda (book)
+                              (let* ((book-id (car book))
+                                     (book-title (cadr book))
+                                     (annot-count (fn/get-annotations-count book-id)))
+                                (cons (format "[%d] %s" annot-count book-title) book-id)))
+                            books))
+         (selected-book-id (completing-read "Choose a book: " book-alist))
+         (selected-book (cdr (assoc selected-book-id book-alist)))
+         (annotations (fn/get-annotations-for-book selected-book))
+         (annot-num (length annotations)))
+    (when (not (string= selected-book-id ""))
+      (if annotations
+          (progn
+            (fn/write-annotations-to-file annotations note-path)
+            (message "%d annotations for %s written to %s" annot-num selected-book note-path))
+        (message "No annotations in this book: %s." selected-book)))))
+
 (use-package denote-journal-extras
   :load-path "~/.emacs.d/packages/denote/"
   :bind ("C-c f j" . denote-journal-extras-new-or-existing-entry)
