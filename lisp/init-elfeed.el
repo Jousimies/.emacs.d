@@ -58,7 +58,7 @@
           (group (:title . "Youtube")
                  (:elements (query . video)))))
 
-  ;; (advice-add 'elfeed-summary :after 'elfeed-summary-update)
+  (advice-add 'elfeed-summary :after 'elfeed-summary-update)
   (advice-add 'elfeed-summary :before 'elfeed-org))
 
 (defcustom z/elfeed-update-interval (* 178 60)
