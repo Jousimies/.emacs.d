@@ -44,7 +44,7 @@
 (use-package vertico-directory
   :load-path "packages/vertico/extensions/"
   :bind (:map minibuffer-mode-map
-         ("C-h" . vertico-directory-up)))
+         ("DEL" . vertico-directory-up)))
 
 (use-package vertico-indexed
   :hook (vertico-mode . vertico-indexed-mode))

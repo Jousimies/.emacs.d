@@ -5,7 +5,8 @@
 ;;; Code:
 
 (use-package isearch
-  :defer t
+  :bind (:map isearch-mode-map
+              ("\C-h" . isearch-delete-char))
   :config
   (setq isearch-lazy-count t)
   (setq lazy-count-prefix-format nil)

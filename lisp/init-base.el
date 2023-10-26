@@ -176,7 +176,10 @@
           ("no_proxy" . "0.0.0.0"))))
 
 (use-package simple
-  :bind ("C-c b s" . scratch-buffer)
+  :bind (("C-c b s" . scratch-buffer)
+         ("C-h" . delete-backward-char)
+         ("M-h" . backward-kill-word)
+         ("<f1>" . help-command))
   :hook ((prog-mode . column-number-mode)
          (text-mode . size-indication-mode)
          (text-mode . turn-on-visual-line-mode)
