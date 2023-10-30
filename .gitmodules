@@ -454,3 +454,12 @@
 [submodule "packages/company-mode"]
 	path = packages/company-mode
 	url = https://github.com/company-mode/company-mode.git
+[submodule "packages/pdfannots"]
+	path = packages/pdfannots
+	url = https://github.com/0xabu/pdfannots.git
+[submodule "packages/symbol-overlay"]
+	path = packages/symbol-overlay
+	url = https://github.com/wolray/symbol-overlay.git
+[submodule "packages/ibooks-annot.el"]
+	path = packages/ibooks-annot.el
+	url = https://github.com/Jousimies/ibooks-annot.el.git

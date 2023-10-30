@@ -17,8 +17,7 @@
     (interactive "P")
     (unless (bolp) (newline))
     (insert (beancount--shift-current-date days) " * \"\" \"\"")
-    (evil-backward-char 3)
-    (evil-insert 0))
+    (backward-char 4))
 
   (advice-add 'beancount-insert-date :override 'my/beancount-insert-transaction)
 
@@ -37,16 +36,7 @@
 
   (add-hook 'before-save-hook (lambda ()
                                 (if (eq major-mode 'beancount-mode)
-                                    (my/beancount-align-transaction))))
-
-  ;; If cursor in "", activate input method rime.
-  (defun my/beancount-activate-input-method ()
-    (when (eq major-mode 'beancount-mode)
-      (if (not (bounds-of-thing-at-point 'whitespace))
-          (if (bounds-of-thing-at-point 'string)
-              (activate-input-method "rime")))))
-
-  (add-hook 'evil-insert-state-entry-hook #'my/beancount-activate-input-method))
+                                    (my/beancount-align-transaction)))))
 
 (provide 'init-finance)
 ;;; init-finance.el ends here.

@@ -181,3 +181,24 @@
 
 (provide 'init-crud)
 ;;; init-crud.el ends here.
+
+;; (dolist (hook '(prog-mode-hook html-mode-hook yaml-mode-hook conf-mode-hook))
+;;   (add-hook hook 'symbol-overlay-mode))
+
+(use-package symbol-overlay
+  :load-path "packages/symbol-overlay/"
+  :hook ((prog-mode . symbol-overlay-mode)
+         (html-mode . symbol-overlay-mode))
+  :bind (:map symbol-overlay-mode-map
+              ("M-i" . symbol-overlay-put)
+              ("M-I" . symbol-overlay-remove-all)
+              ("M-n" . symbol-overlay-jump-next)
+              ("M-p" . symbol-overlay-jump-prev)
+              ("M-%" . symbol-overlay-query-replace)))
+
+;; (with-eval-after-load 'symbol-overlay
+;;   (define-key symbol-overlay-mode-map (kbd "M-i") 'symbol-overlay-put)
+;;   (define-key symbol-overlay-mode-map (kbd "M-I") 'symbol-overlay-remove-all)
+;;   (define-key symbol-overlay-mode-map (kbd "M-n") 'symbol-overlay-jump-next)
+;;   (define-key symbol-overlay-mode-map (kbd "M-p") 'symbol-overlay-jump-prev)
+;;   (define-key symbol-overlay-mode-map (kbd "s-r") 'symbol-overlay-rename))

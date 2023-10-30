@@ -101,12 +101,20 @@
        :strike-through "#ef8b50" :foreground "#a8a8a8"))
     "My strike-through emphasis for Org.")
 
+  (defface my-org-verbatim
+    '((((class color) (min-colors 88) (background light))
+       :background "green")
+      (((class color) (min-colors 88) (background dark))
+       :foreground "green"))
+    "My verbatim for Org.")
+
+
   (setq org-emphasis-alist
         '(("*" my-org-emphasis-bold)
           ("/" my-org-emphasis-italic)
           ("_" my-org-emphasis-underline)
           ("=" org-verbatim verbatim)
-          ("~" org-code verbatim)
+          ("~" my-org-verbatim verbatim)
           ("+" my-org-emphasis-strike-through))))
 
 (use-package ob-core

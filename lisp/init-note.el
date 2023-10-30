@@ -24,13 +24,13 @@
 
 (use-package denote
   :load-path "packages/denote/"
-  :bind (("s-n s" . denote-signature)
-         ("s-n S" . denote-subdirectory)
+  :bind (("C-c n s" . denote-signature)
+         ("C-c n S" . denote-subdirectory)
          ("s-l l" . denote-link)
          ("s-l L" . denote-link-insert-links-matching-regexp)
-         ("s-n r" . denote-rename-file-using-front-matter)
-         ("s-n k" . denote-keywords-add)
-         ("s-n K" . denote-keywords-remove)
+         ("C-c n r" . denote-rename-file-using-front-matter)
+         ("C-c n k" . denote-keywords-add)
+         ("C-c n K" . denote-keywords-remove)
          (:map dired-mode-map
                ("r" . denote-dired-rename-marked-files)))
   :hook ((dired-mode . denote-dired-mode-in-directories)
@@ -176,150 +176,12 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (global-set-key (kbd "s-s") 'my/literature-save)
 
-(defun ibooks-db/get-matching-file (directory sub-dir pattern)
-  "Get a list of database file names in DIRECTORY matching the given PATTERN."
-  (let ((file-names '()))
-    (dolist (file (directory-files (expand-file-name sub-dir directory) nil pattern))
-      (push (concat directory sub-dir file) file-names))
-    file-names))
-
-(defvar IBOOKS-DATA "~/Library/Containers/com.apple.iBooksX/Data/Documents/")
-(defvar AEAnnotation-DB (ibooks-db/get-matching-file IBOOKS-DATA "AEAnnotation/" "AEAnnotation.*\\.sqlite$"))
-(defvar BKLibrary-DB (ibooks-db/get-matching-file IBOOKS-DATA "BKLibrary/" "BKLibrary.*\\.sqlite$"))
-
-(defconst ibooks-db/ANNOTATIONS-QUERY
-  "SELECT ZANNOTATIONASSETID AS assetId,
-          ZANNOTATIONSELECTEDTEXT AS quote,
-          ZANNOTATIONNOTE AS comment,
-          ZFUTUREPROOFING5 AS chapter,
-          ZANNOTATIONSTYLE AS colorCode,
-          ZANNOTATIONMODIFICATIONDATE AS modifiedAt,
-          ZANNOTATIONCREATIONDATE AS createdAt
-   FROM ZAEANNOTATION
-   WHERE ZANNOTATIONDELETED = 0
-     AND ZANNOTATIONSELECTEDTEXT IS NOT NULL
-     AND ZANNOTATIONSELECTEDTEXT <> ''
-   ORDER BY ZANNOTATIONASSETID, ZPLLOCATIONRANGESTART;")
-
-(defconst ibooks-db/BOOKS-QUERY
-  "SELECT ZASSETID AS id, ZTITLE AS title, ZAUTHOR AS author
-   FROM ZBKLIBRARYASSET")
-
-(defvar *ibooks-db* (make-hash-table :test 'equal))
-
-(defun ibooks-db/open (filename)
-  (or (gethash filename *ibooks-db*)
-      (let ((db (sqlite-open filename)))
-        (setf (gethash filename *ibooks-db*) db)
-        db)))
-
-(defun ibooks-db/book-from-db (filename)
-  (let ((db (ibooks-db/open filename)))
-    (sqlite-execute db ibooks-db/BOOKS-QUERY)))
-
-(defun ibooks-db/books ()
-  (mapcan 'ibooks-db/book-from-db BKLibrary-DB))
-
-(defun ibooks-db/annotations-from-db (filename)
-  (let ((db (ibooks-db/open filename)))
-    (sqlite-execute db ibooks-db/ANNOTATIONS-QUERY)))
-
-(defun ibooks-db/annotations ()
-  (mapcan 'ibooks-db/annotations-from-db AEAnnotation-DB))
-
-(defun ibooks-annot/annotations-for-book (book-id)
-  (cl-remove-if-not (lambda (annotation)
-                      (string= (car annotation) book-id))
-                    (ibooks-db/annotations)))
-
-(defun ibooks-annot/annotations-count (book-id)
-  "Get the number of annotations for a book with BOOK-ID."
-  (length (ibooks-annot/annotations-for-book book-id)))
-
-(defun ibooks-annot/annotations-color (color)
-  "Get the Org mode text format for the given COLOR."
-  (cond
-    ((= color 1) "*")
-    ((= color 2) "=")
-    ((= color 3) "/")
-    ((= color 4) "*")
-    (t "")))
-
-(defun ibooks-annot/book-note-exist-p (title)
-  "Check if a book note with TITLE exists in the denote directory."
-  (let ((note nil))
-    (require 'denote nil t)
-    (dolist (file (denote-directory-files))
-      (if (string= title (denote-retrieve-title-value file 'org))
-          (setq note file)))
-    note))
-
-(defvar ibooks-annot/book-note-hook nil)
-
-(defvar *ibooks-annot/book-alist* nil)
-
-(defun ibooks-annot/choose-book ()
-  "Choose a book and return its ID."
-  (let* ((books (ibooks-db/books))
-         (book-alist (mapcar (lambda (book)
-                               (let* ((book-id (car book))
-                                      (book-title (cadr book)))
-                                 (cons book-title book-id)))
-                             books))
-         (selected-book-title (completing-read "Choose a book: " book-alist)))
-    (setq *ibooks-annot/book-alist* book-alist)
-    (cdr (assoc selected-book-title book-alist))))
-
-(defvar ibooks-annot/book-note-annotations-heading "* Annotations Extracted\n")
-
-(defun ibooks-annot/remove-heading-in-note (heading note-path)
-  "Remove existing annotations section from NOTE-PATH."
-  (with-current-buffer (find-file-noselect note-path)
-    (goto-char (point-min))
-    (while (re-search-forward heading nil t)
-      (org-mark-subtree)
-      (delete-region (region-beginning) (region-end))
-      (save-buffer))))
-
-;; copy from denote
-(defun my/denote-region (title)
-  (declare (interactive-only t))
-  (interactive)
-  (if-let (((region-active-p))
-           (text (buffer-substring-no-properties (region-beginning) (region-end))))
-      (progn
-        (denote title (denote-keywords-prompt) nil (expand-file-name "denote/books" my-galaxy))
-        (push-mark (point))
-        (insert text)
-        (run-hook-with-args 'denote-region-after-new-note-functions (mark) (point)))
-    (call-interactively 'denote)))
-
-(defun ibooks-annot/write-annotations-to-file (book-id)
-  "Write ANNOTATIONS to a temporary buffer and return the buffer."
-  (let* ((selected-book-title (car (rassoc book-id *ibooks-annot/book-alist*)))
-         (annotations (ibooks-annot/annotations-for-book book-id))
-         (book-note-path (ibooks-annot/book-note-exist-p selected-book-title))
-         (heading ibooks-annot/book-note-annotations-heading))
-    (with-temp-buffer
-      (insert heading)
-      (dolist (annot annotations)
-        (let ((symbol (ibooks-annot/annotations-color (nth 4 annot)))
-              (text (cadr annot)))
-          (insert (format "%s%s%s\n" symbol text symbol))))
-      (if book-note-path
-          (progn
-            (ibooks-annot/remove-heading-in-note heading book-note-path)
-            (append-to-file (point-min) (point-max) book-note-path))
-        (progn
-          (mark-whole-buffer)
-          (my/denote-region selected-book-title))))))
-
-(defun ibooks-annot/choose-book-and-save-to-file ()
-  "Choose a book and save its annotations to NOTE-PATH."
-  (interactive)
-  (let ((book-id (ibooks-annot/choose-book)))
-    (when book-id
-      (ibooks-annot/write-annotations-to-file book-id))))
+(use-package ibooks-annot
+  :load-path "packages/ibooks-annot.el/"
+  :bind ("C-c n e" . ibooks-annot/extract-highlights-to-note)
+  :config
+  (setq pdfannots-script "~/.emacs.d/packages/pdfannots/pdfannots.py -f json")
+  (setq ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
 
 (use-package denote-journal-extras
   :load-path "~/.emacs.d/packages/denote/"
@@ -346,7 +208,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (use-package consult-notes
   :load-path "packages/consult-notes/"
-  :bind ("s-N" . consult-notes)
+  :bind ("s-n" . consult-notes)
   :config
   (setq consult-notes-file-dir-sources
         `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
