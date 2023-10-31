@@ -83,24 +83,5 @@
   (add-hook 'telega-connection-state-hook #'+tab-bar-telega-icon-update)
   (add-hook 'telega-kill-hook #'+tab-bar-telega-icon-update))
 
-(add-to-list 'load-path "~/.emacs.d/packages/company-mode/")
-
-(defun lucius/telega-completion-setup ()
-  (make-variable-buffer-local 'completion-at-point-functions)
-  (require 'cape)
-  (require 'company)
-  (setq completion-at-point-functions
-        (append (mapcar #'cape-company-to-capf
-                        (append (list telega-company-backends
-                                      #'telega-company-username
-                                      #'telega-company-hashtag
-                                      #'telega-company-markdown-precode)
-                                (when (telega-chat-bot-p telega-chatbuf--chat)
-                                  #'(telega-company-botcmd))))
-                completion-at-point-functions))
-  (corfu-mode 1))
-
-(add-hook 'telega-chat-mode-hook #'lucius/telega-completion-setup)
-
 (provide 'init-telega)
 ;;; init-telega.el ends here.
