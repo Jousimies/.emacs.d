@@ -561,5 +561,9 @@ of the box `(w h)' inside the box `(cw ch)'."
 (use-package popper-echo
   :hook (popper-mode . popper-echo-mode))
 
+(use-package surround
+  :load-path "packages/surround/"
+  :bind-keymap ("M-'" . surround-keymap))
+
 (provide 'init-ui)
 ;;; init-ui.el ends here.

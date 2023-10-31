@@ -463,3 +463,6 @@
 [submodule "packages/ibooks-annot.el"]
 	path = packages/ibooks-annot.el
 	url = https://github.com/Jousimies/ibooks-annot.el.git
+[submodule "packages/surround"]
+	path = packages/surround
+	url = https://github.com/mkleehammer/surround.git
