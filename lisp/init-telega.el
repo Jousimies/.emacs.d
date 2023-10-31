@@ -91,7 +91,7 @@
   (require 'company)
   (setq completion-at-point-functions
         (append (mapcar #'cape-company-to-capf
-                        (append (list telega-emoji-company-backend
+                        (append (list telega-company-backends
                                       #'telega-company-username
                                       #'telega-company-hashtag
                                       #'telega-company-markdown-precode)

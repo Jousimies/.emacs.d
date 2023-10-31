@@ -178,7 +178,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (use-package ibooks-annot
   :load-path "packages/ibooks-annot.el/"
-  :bind ("C-c n e" . ibooks-annot/extract-highlights-to-note)
+  :bind ("C-c n e" . ibooks-annot/extract-annotations-to-note)
   :config
   (setq pdfannots-script "~/.emacs.d/packages/pdfannots/pdfannots.py -f json")
   (setq ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
