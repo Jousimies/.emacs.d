@@ -20,10 +20,10 @@
                ("C-g" . my/telega-chat-quit-window)))
   :config
   (defun my/telega-deactive-input-method ()
-    (when (and (boundp 'this-command) this-command current-input-method)
+    (when (and (boundp 'this-command) this-command cur-sys-input-method)
       (if (or (string= (symbol-name this-command) "next-line")
               (string= (symbol-name this-command) "previous-line"))
-          (deactivate-input-method))))
+          (switch-to-abc-input-method))))
   (add-hook 'telega-chat-mode-hook (lambda ()
                                      (add-hook 'pre-command-hook #'my/telega-deactive-input-method)))
   (defun my/telega-chat-quit-window ()
