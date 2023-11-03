@@ -6,7 +6,8 @@
 
 (use-package isearch
   :bind (:map isearch-mode-map
-              ("\C-h" . isearch-delete-char))
+              ("\C-h" . isearch-delete-char)
+              ("C-\\" . toggle-sys-input-method))
   :config
   (setq isearch-lazy-count t)
   (setq lazy-count-prefix-format nil)

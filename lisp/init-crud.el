@@ -98,6 +98,30 @@
   (setq tempel-path `("~/.emacs.d/template/tempel"
                       ,(expand-file-name "config/tempel" my-galaxy))))
 
+(defvar cur-sys-input-method nil)
+
+(defun switch-to-abc-input-method ()
+  "Switch to the ABC input method."
+  (interactive)
+  (setq cur-sys-input-method nil)
+  (shell-command-to-string "im-select com.apple.keylayout.ABC")
+  (force-mode-line-update))
+
+(defun switch-to-squirrel-input-method ()
+  "Switch to the Squirrel input method (Hans)."
+  (interactive)
+  (setq cur-sys-input-method t)
+  (shell-command-to-string "im-select im.rime.inputmethod.Squirrel.Hans")
+  (force-mode-line-update))
+
+(defun toggle-sys-input-method ()
+  (interactive)
+  (if cur-sys-input-method
+      (switch-to-abc-input-method)
+    (switch-to-squirrel-input-method)))
+
+(global-set-key (kbd "C-\\") 'toggle-sys-input-method)
+
 (use-package rime
   :load-path "packages/emacs-rime/"
   :demand t
@@ -166,6 +190,7 @@
               ("c" . my/copy-region)
               ("x" . kill-region)
               ("w" . count-words-region)
+              ("i" . surround-insert)
               ("s" . my/search)
               ("t" . my/gts-do-translate)
               ("m" . apply-macro-to-region-lines)
