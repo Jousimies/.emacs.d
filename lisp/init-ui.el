@@ -122,11 +122,12 @@
               (propertize " * " 'face `(:inherit ,(if (buffer-modified-p) 'error nil))))))
 
 (defvar-local my/modeline-input-method
-    '(:eval (propertize
+    '(:eval (when (mode-line-window-selected-p)
+              (propertize
                (if cur-sys-input-method
                    " ZH "
                  " EN ")
-               'face `(:inherit ,(if cur-sys-input-method 'font-lock-string-face nil) :inverse-video t))))
+               'face `(:inherit ,(if cur-sys-input-method 'font-lock-string-face nil) :inverse-video t)))))
 
 (defvar-local my/modeline-kbd-macro
     '(:eval

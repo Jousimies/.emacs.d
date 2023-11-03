@@ -105,6 +105,8 @@
   (interactive)
   (setq cur-sys-input-method nil)
   (shell-command-to-string "im-select com.apple.keylayout.ABC")
+  (setq cursor-type 'box)
+  (set-cursor-color (foreground-color-at-point))
   (force-mode-line-update))
 
 (defun switch-to-squirrel-input-method ()
@@ -112,6 +114,8 @@
   (interactive)
   (setq cur-sys-input-method t)
   (shell-command-to-string "im-select im.rime.inputmethod.Squirrel.Hans")
+  (setq cursor-type 'bar)
+  (set-cursor-color 'red)
   (force-mode-line-update))
 
 (defun toggle-sys-input-method ()
@@ -120,53 +124,14 @@
       (switch-to-abc-input-method)
     (switch-to-squirrel-input-method)))
 
+(add-hook 'after-init-hook 'switch-to-abc-input-method)
+(add-hook 'find-file-hook 'switch-to-abc-input-method)
+(add-hook 'isearch-mode-end-hook 'switch-to-abc-input-method)
+(add-hook 'quit-window-hook (lambda ()
+                              (when cur-sys-input-method
+                                (switch-to-abc-input-method))))
+
 (global-set-key (kbd "C-\\") 'toggle-sys-input-method)
-
-(use-package rime
-  :load-path "packages/emacs-rime/"
-  :demand t
-  :hook (post-command . im-change-cursor-color)
-  :bind (:map rime-mode-map
-              ("M-j" . rime-force-enable))
-
-  :preface
-  (setq rime-title "ZH ")
-  :config
-  (add-hook 'input-method-activate-hook (lambda ()
-                                          (setq cursor-type 'bar)))
-  (add-hook 'input-method-deactivate-hook (lambda ()
-                                            (setq cursor-type 'box)))
-  (defvar im-cursor-color "red"
-    "The color for input method.")
-
-  (defun im--chinese-p ()
-    "Check if the current input state is Chinese."
-    (if (featurep 'rime)
-        (and (rime--should-enable-p)
-             (not (rime--should-inline-ascii-p))
-             current-input-method)
-      current-input-method))
-
-  (defun im-change-cursor-color ()
-    "Set cursor color depending on input method."
-    (interactive)
-    (set-cursor-color (if (im--chinese-p)
-                          im-cursor-color
-                        (foreground-color-at-point))))
-  (setq default-input-method "rime")
-  (setq rime-user-data-dir "~/Library/Rime/")
-  (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
-  (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
-  (setq rime-disable-predicates '(rime-predicate-prog-in-code-p
-                                  rime-predicate-org-in-src-block-p
-                                  rime-predicate-org-latex-mode-p
-                                  rime-predicate-tex-math-or-command-p))
-  (setq rime-inline-predicates '(rime-predicate-space-after-cc-p
-                                 rime-predicate-after-alphabet-char-p)))
-
-(use-package rime-regexp
-  :load-path "packages/rime-regexp.el/"
-  :hook (minibuffer-mode . rime-regexp-mode))
 
 (use-package yasnippet
   :load-path "packages/yasnippet/"
