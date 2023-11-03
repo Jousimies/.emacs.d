@@ -4,6 +4,10 @@
 
 ;;; Code:
 
+(setq ns-use-native-fullscreen nil)
+(setq ns-use-fullscreen-animation nil)
+(toggle-frame-fullscreen)
+
 (set-face-attribute 'default nil :font "Iosevka Term" :height 140)
 
 ;; Source Han Serif SC -> TsangerJinKai02
