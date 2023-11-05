@@ -8,6 +8,12 @@
 (setq ns-use-fullscreen-animation nil)
 (toggle-frame-fullscreen)
 
+(defun toggle-appearance ()
+  (interactive)
+  (shell-command-to-string "osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"))
+
+(global-set-key (kbd "C-c t a") 'toggle-appearance)
+
 (set-face-attribute 'default nil :font "Iosevka Term" :height 140)
 
 ;; Source Han Serif SC -> TsangerJinKai02
