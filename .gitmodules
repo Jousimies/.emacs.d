@@ -466,3 +466,6 @@
 [submodule "packages/surround"]
 	path = packages/surround
 	url = https://github.com/mkleehammer/surround.git
+[submodule "packages/explain-pause-mode"]
+	path = packages/explain-pause-mode
+	url = https://github.com/lastquestion/explain-pause-mode.git
