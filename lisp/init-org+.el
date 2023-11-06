@@ -156,25 +156,6 @@
     (shell-command (format "pandoc %s -o %s --reference-doc=%s" (buffer-file-name) docx-file template-file))
     (message "Convert finish: %s" docx-file)))
 
-;;;###autoload
-(defun my/add-symbol-to-region (beg end symbol)
-  "Add a SYMBOL to the BEG and END of region."
-  (interactive "r\nsEnter symbol(+_~=*/): ")
-  (if (eq major-mode 'org-mode)
-      (save-excursion
-        (goto-char end)
-        (insert symbol)
-        (unless (looking-at " ")
-          (insert " "))
-        (goto-char beg)
-        (unless (or (bolp) (looking-back " "))
-          (insert " "))
-        (insert symbol))
-    (message "Add symbol to region only work in Org-mode!!!")))
-
-(with-eval-after-load 'org
-  (define-key org-mode-map (kbd "s-b") 'my/add-symbol-to-region))
-
 ;; https://www.reddit.com/r/emacs/comments/yjobc2/comment/iur16c7/
 (defun nf/parse-headline (x)
   (plist-get (cadr x) :raw-value))
