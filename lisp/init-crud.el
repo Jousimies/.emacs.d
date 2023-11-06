@@ -100,6 +100,7 @@
 
 (defvar cur-sys-input-method nil)
 
+;;;###autoload
 (defun switch-to-abc-input-method ()
   "Switch to the ABC input method."
   (interactive)
@@ -109,6 +110,7 @@
   (set-cursor-color (foreground-color-at-point))
   (force-mode-line-update))
 
+;;;###autoload
 (defun switch-to-squirrel-input-method ()
   "Switch to the Squirrel input method (Hans)."
   (interactive)
@@ -118,15 +120,17 @@
   (set-cursor-color 'red)
   (force-mode-line-update))
 
+;;;###autoload
 (defun toggle-sys-input-method ()
   (interactive)
   (if cur-sys-input-method
       (switch-to-abc-input-method)
     (switch-to-squirrel-input-method)))
 
-(add-hook 'after-init-hook 'switch-to-abc-input-method)
+(add-hook 'minibuffer-mode-hook 'switch-to-abc-input-method)
 (add-hook 'find-file-hook 'switch-to-abc-input-method)
 (add-hook 'isearch-mode-end-hook 'switch-to-abc-input-method)
+(add-hook 'after-focus-change-function 'switch-to-abc-input-method)
 (add-hook 'quit-window-hook (lambda ()
                               (when cur-sys-input-method
                                 (switch-to-abc-input-method))))

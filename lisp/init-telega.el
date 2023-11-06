@@ -5,7 +5,7 @@
 ;;; Code:
 
 (use-package telega
-  :load-path ("packages/telega.el/" "packages/rainbow-identifiers" "packages/visual-fill-column")
+  :load-path ("packages/telega.el/" "packages/telega.el/contrib/"  "packages/rainbow-identifiers" "packages/visual-fill-column")
   :init
   (add-to-list 'display-buffer-alist '((or (derived-mode . telega-image-mode)
                                            (derived-mode . telega-webpage-mode)
