@@ -130,7 +130,6 @@
 (add-hook 'minibuffer-mode-hook 'switch-to-abc-input-method)
 (add-hook 'find-file-hook 'switch-to-abc-input-method)
 (add-hook 'isearch-mode-end-hook 'switch-to-abc-input-method)
-(add-hook 'after-focus-change-function 'switch-to-abc-input-method)
 (add-hook 'quit-window-hook (lambda ()
                               (when cur-sys-input-method
                                 (switch-to-abc-input-method))))

@@ -3,6 +3,7 @@ etc
 org-roam.db
 build-emacs-macos
 emacs
+td
 cache
 tramp
 emacs.org

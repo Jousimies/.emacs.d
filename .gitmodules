@@ -469,3 +469,9 @@
 [submodule "packages/explain-pause-mode"]
 	path = packages/explain-pause-mode
 	url = https://github.com/lastquestion/explain-pause-mode.git
+[submodule "packages/org-notely"]
+	path = packages/org-notely
+	url = https://github.com/alphapapa/org-notely.git
+[submodule "packages/bufferlo"]
+	path = packages/bufferlo
+	url = https://github.com/florommel/bufferlo.git

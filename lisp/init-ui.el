@@ -473,6 +473,11 @@ of the box `(w h)' inside the box `(cw ch)'."
   :bind (("C-c <up>" . windmove-up)
          ("C-c <down>" . windmove-down)))
 
+(use-package bufferlo
+  :load-path "packages/bufferlo/"
+  :bind (([remap switch-to-buffer] . bufferlo-switch-to-buffer))
+  :hook (after-init . bufferlo-mode))
+
 (use-package perspective
   :load-path "packages/perspective-el/"
   :bind (("M-s-n" . persp-switch)
