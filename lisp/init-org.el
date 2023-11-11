@@ -246,11 +246,16 @@
                  (window-width . 0.5)
                  (window-parameters . ((no-other-window . t)
                                        (no-delete-other-windows . t)))))
+  :hook (org-attach-after-change-hook . org-attach-save-file-list-to-property)
   :config
   (setq org-attach-id-dir (expand-file-name "attach" my-galaxy))
   (setq org-attach-id-to-path-function-list
         '(org-attach-id-ts-folder-format
-          org-attach-id-uuid-folder-format)))
+          org-attach-id-uuid-folder-format))
+  (defun org-attach-save-file-list-to-property (dir)
+    "Save list of attachments to ORG_ATTACH_FILES property."
+    (when-let* ((files (org-attach-file-list dir)))
+      (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))))
 
 ;; (defun my/org-attach-visit-headline-from-dired ()
 ;;     "Go to the headline corresponding to this org-attach directory."
