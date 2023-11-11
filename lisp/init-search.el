@@ -10,8 +10,9 @@
               ("C-\\" . toggle-sys-input-method))
   :config
   (setq isearch-lazy-count t)
-  (setq lazy-count-prefix-format nil)
-  (setq lazy-count-suffix-format "   (%s/%s)"))
+  ;; (setq lazy-count-prefix-format nil)
+  ;; (setq lazy-count-suffix-format "   (%s/%s)")
+  )
 
 (use-package rg
   :load-path ("packages/rg.el/" "packages/Emacs-wgrep")
