@@ -28,6 +28,7 @@
   (setq rg-show-columns t))
 
 (use-package help
+  :defer t
   :config
   (setq help-window-select 'other)
   (setq help-window-keep-selected t))
