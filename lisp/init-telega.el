@@ -68,7 +68,7 @@
                                     (concat "@" (number-to-string mentioned-count) " "))
                                   (when (and reactions-count (not (zerop reactions-count)))
                                     (concat "❤" (number-to-string reactions-count) " ")))
-                          'face `(:inherit ,(if online-p 'success 'warning) :inverse-video t))))))
+                          'face `(:inherit ,(if online-p 'success 'warning)))))))
 
   (defun +tab-bar-telega-icon ()
     (or +tab-bar-telega-indicator-cache
