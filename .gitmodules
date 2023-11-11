@@ -475,3 +475,6 @@
 [submodule "packages/bufferlo"]
 	path = packages/bufferlo
 	url = https://github.com/florommel/bufferlo.git
+[submodule "packages/emacs-smart-input-source"]
+	path = packages/emacs-smart-input-source
+	url = https://github.com/laishulu/emacs-smart-input-source.git
