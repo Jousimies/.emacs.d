@@ -105,7 +105,7 @@
   "Switch to the ABC input method."
   (interactive)
   (setq cur-sys-input-method nil)
-  (shell-command-to-string "im-select com.apple.keylayout.ABC")
+  (call-process "im-select" nil nil nil "com.apple.keylayout.ABC")
   (setq cursor-type 'box)
   (set-cursor-color (foreground-color-at-point))
   (force-mode-line-update))
@@ -115,7 +115,7 @@
   "Switch to the Squirrel input method (Hans)."
   (interactive)
   (setq cur-sys-input-method t)
-  (shell-command-to-string "im-select im.rime.inputmethod.Squirrel.Hans")
+  (call-process "im-select" nil nil nil "im.rime.inputmethod.Squirrel.Hans")
   (setq cursor-type 'bar)
   (set-cursor-color 'red)
   (force-mode-line-update))
