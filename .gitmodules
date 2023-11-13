@@ -478,3 +478,6 @@
 [submodule "packages/emacs-smart-input-source"]
 	path = packages/emacs-smart-input-source
 	url = https://github.com/laishulu/emacs-smart-input-source.git
+[submodule "packages/denote-explore"]
+	path = packages/denote-explore
+	url = https://github.com/pprevos/denote-explore.git
