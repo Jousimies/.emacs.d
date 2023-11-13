@@ -553,6 +553,7 @@ of the box `(w h)' inside the box `(cw ch)'."
           "^\\*macro expansion\\**"
 
           "\\*TeX Help\\*"
+          "^\\*denote-backlinks to "
           "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Org Note\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"))
   :config
   ;; Enable indicator in minibuffer

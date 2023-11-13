@@ -9,6 +9,7 @@
   :bind (("C-c n s" . denote-signature)
          ("C-c n S" . denote-subdirectory)
          ("s-l l" . denote-link)
+         ("C-s-n" . denote-backlinks)
          ("s-l L" . denote-link-insert-links-matching-regexp)
          ("C-c n r" . denote-rename-file-using-front-matter)
          ("C-c n k" . denote-keywords-add)
@@ -17,9 +18,10 @@
                ("r" . denote-dired-rename-marked-files)))
   :hook ((dired-mode . denote-dired-mode-in-directories)
          (org-mode . (lambda ()
-                       (require 'denote))))
+                       (require 'denote)))) ; Load denote after enter org-mode.
   :config
   (setq denote-directory (expand-file-name "denote" my-galaxy))
+  ;; letter casing of file name components
   (setq denote-file-name-letter-casing
         '((title . downcase)
           (signature . verbatim)
@@ -47,20 +49,6 @@
         (kill-new signature))))
 
 (advice-add 'denote-signature :before #'my/denote-signature-from-filename)
-
-(with-eval-after-load 'org-capture
-  (require 'denote)
-  (setq denote-org-capture-specifiers "%l\n%i\n%?")
-  (add-to-list 'org-capture-templates
-               '("n" "New denote note" plain
-                 (file denote-last-path)
-                 (function
-                  (lambda ()
-                    (denote-org-capture-with-prompts :title :keywords :subdirectory)))
-                 :no-save t
-                 :immediate-finish nil
-                 :kill-buffer t
-                 :jump-to-captured t)))
 
 (use-package denote-rename-buffer
   :load-path "packages/denote/"
@@ -99,6 +87,46 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "/ r") 'prot-dired-limit-regexp))
+
+(use-package denote-journal-extras
+  :load-path "~/.emacs.d/packages/denote/"
+  :bind ("C-c f j" . denote-journal-extras-new-or-existing-entry)
+  :commands denote-journal-extras--entry-today)
+
+(use-package consult-notes
+  :load-path "packages/consult-notes/"
+  :bind ("s-n" . consult-notes)
+  :config
+  (setq consult-notes-file-dir-sources
+        `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
+          ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
+          ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
+          ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
+          ("Outline"  ?o ,(expand-file-name "denote/outline" my-galaxy))
+          ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
+          ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
+          ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))
+          ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy))
+          ("Logs"  ?L ,(expand-file-name "logs" my-galaxy))
+          )))
+
+(use-package denote-menu
+  :load-path "packages/denote-menu/"
+  :bind ("C-c f m" . denote-menu-list-notes)
+  :config
+  (define-key denote-menu-mode-map (kbd "c") #'denote-menu-clear-filters)
+  (define-key denote-menu-mode-map (kbd "/ r") #'denote-menu-filter)
+  (define-key denote-menu-mode-map (kbd "/ k") #'denote-menu-filter-by-keyword)
+  (define-key denote-menu-mode-map (kbd "/ o") #'denote-menu-filter-out-keyword)
+  (define-key denote-menu-mode-map (kbd "/ s") #'my/denote-menu-filter-by-signature)
+  (define-key denote-menu-mode-map (kbd "e") #'denote-menu-export-to-dired)
+  (setq denote-menu-show-file-signature t)
+  (setq-local tabulated-list-sort-key "Signature")
+  (defun my/denote-menu-filter-by-signature ()
+    (interactive)
+    (setq denote-menu-current-regex "==\\([0-9][a-z]\\)*")
+    (denote-menu-update-entries)
+    (tabulated-list-sort 1)))
 
 (defun my/literature-entry (url title keywords file-path file-new-path)
   "Save a literature entry and add it to the 'literature' denote database."
@@ -164,46 +192,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   :config
   (setq pdfannots-script "~/.emacs.d/packages/pdfannots/pdfannots.py -f json")
   (setq ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
-
-(use-package denote-journal-extras
-  :load-path "~/.emacs.d/packages/denote/"
-  :bind ("C-c f j" . denote-journal-extras-new-or-existing-entry)
-  :commands denote-journal-extras--entry-today)
-
-(use-package denote-menu
-  :load-path "packages/denote-menu/"
-  :bind ("C-c f m" . denote-menu-list-notes)
-  :config
-  (define-key denote-menu-mode-map (kbd "c") #'denote-menu-clear-filters)
-  (define-key denote-menu-mode-map (kbd "/ r") #'denote-menu-filter)
-  (define-key denote-menu-mode-map (kbd "/ k") #'denote-menu-filter-by-keyword)
-  (define-key denote-menu-mode-map (kbd "/ o") #'denote-menu-filter-out-keyword)
-  (define-key denote-menu-mode-map (kbd "/ s") #'my/denote-menu-filter-by-signature)
-  (define-key denote-menu-mode-map (kbd "e") #'denote-menu-export-to-dired)
-  (setq denote-menu-show-file-signature t)
-  (setq-local tabulated-list-sort-key "Signature")
-  (defun my/denote-menu-filter-by-signature ()
-    (interactive)
-    (setq denote-menu-current-regex "==\\([0-9][a-z]\\)*")
-    (denote-menu-update-entries)
-    (tabulated-list-sort 1)))
-
-(use-package consult-notes
-  :load-path "packages/consult-notes/"
-  :bind ("s-n" . consult-notes)
-  :config
-  (setq consult-notes-file-dir-sources
-        `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
-          ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
-          ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
-          ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
-          ("Outline"  ?o ,(expand-file-name "denote/outline" my-galaxy))
-          ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
-          ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
-          ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))
-          ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy))
-          ("Logs"  ?L ,(expand-file-name "logs" my-galaxy))
-          )))
 
 (defun my/new-article (article)
   (interactive "sTitle: ")
