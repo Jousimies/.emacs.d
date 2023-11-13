@@ -111,9 +111,5 @@ This function requires ImageMagick's convert utility to be installed and availab
   (interactive)
   (mpv-start (dired-get-filename)))
 
-(use-package explain-pause-mode
-  :load-path "packages/explain-pause-mode/"
-  :hook (after-init . explain-pause-mode))
-
 (provide 'init-misc)
 ;;; init-misc.el ends here.
