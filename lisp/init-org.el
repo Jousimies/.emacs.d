@@ -237,17 +237,9 @@
 :END:"))))
 
 (use-package org-attach
-  :commands org-attach
-  :init
-  (add-to-list 'display-buffer-alist
-               '("\\*Org Attach\\*"
-                 (display-buffer-in-side-window)
-                 (side . right)
-                 (window-width . 0.5)
-                 (window-parameters . ((no-other-window . t)
-                                       (no-delete-other-windows . t)))))
-  :hook (org-attach-after-change-hook . org-attach-save-file-list-to-property)
+  :hook (org-attach-after-change . org-attach-save-file-list-to-property)
   :config
+  (setq org-attach-expert t)
   (setq org-attach-id-dir (expand-file-name "attach" my-galaxy))
   (setq org-attach-id-to-path-function-list
         '(org-attach-id-ts-folder-format
