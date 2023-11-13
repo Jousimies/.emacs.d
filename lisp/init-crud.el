@@ -136,6 +136,14 @@
 
 (global-set-key (kbd "C-\\") 'toggle-sys-input-method)
 
+(use-package rime-regexp
+  :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"
+  :hook (minibuffer-mode . rime-regexp-mode)
+  :config
+  (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
+  (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
+  (setq rime-user-data-dir "~/Library/Rime/"))
+
 (use-package yasnippet
   :load-path "packages/yasnippet/"
   :hook (minibuffer-mode . yas-global-mode))
