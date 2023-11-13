@@ -293,22 +293,5 @@ it can be passed in POS."
     (append reading-list
             (file-expand-wildcards (expand-file-name "denote/books/*.org" my-galaxy)))))
 
-(with-eval-after-load 'org
-  (add-to-list 'org-options-keywords "AUTO_EXPORT:"))
-
-(defun auto-export-blog ()
-  "Auto export blog."
-  (when (derived-mode-p 'org-mode)
-    (save-excursion
-      (goto-char 0)
-      (if (string-equal (car
-                         (cdr
-                          (car
-                           (org-collect-keywords '("AUTO_EXPORT")))))
-                        "t")
-          (org-publish-all)))))
-
-(add-hook 'after-save-hook 'auto-export-blog)
-
 (provide 'init-note)
 ;;; init-note.el ends here.
