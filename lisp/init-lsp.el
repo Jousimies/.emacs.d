@@ -5,14 +5,16 @@
 ;;; Code:
 
 (use-package files
-  :defer t
   :config
-  (add-to-list 'major-mode-remap-alist
-               '(python-mode . python-ts-mode)))
+  (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode)))
 
-(with-eval-after-load 'treesit
-  (add-to-list 'treesit-language-source-alist
-               '(python "https://github.com/tree-sitter/tree-sitter-python.git")))
+(use-package treesit
+  :when (treesit-available-p)
+  :config
+  (setq treesit-language-source-alist
+                 '((python "https://github.com/tree-sitter/tree-sitter-python.git")
+                   (yaml "https://github.com/ikatyang/tree-sitter-yaml.git"))))
 
 (use-package eglot
   :after yasnippet
