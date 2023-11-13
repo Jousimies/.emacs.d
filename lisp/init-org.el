@@ -244,6 +244,8 @@
   (setq org-attach-id-to-path-function-list
         '(org-attach-id-ts-folder-format
           org-attach-id-uuid-folder-format))
+
+  (advice-add 'org-attach :before 'switch-to-abc-input-method)
   (defun org-attach-save-file-list-to-property (dir)
     "Save list of attachments to ORG_ATTACH_FILES property."
     (when-let* ((files (org-attach-file-list dir)))
