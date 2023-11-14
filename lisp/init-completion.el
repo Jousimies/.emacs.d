@@ -46,9 +46,6 @@
   :bind (:map minibuffer-mode-map
          ("DEL" . vertico-directory-up)))
 
-(use-package vertico-indexed
-  :hook (vertico-mode . vertico-indexed-mode))
-
 (use-package consult
   :load-path "packages/consult/"
   :hook (completion-list-mode . consult-preview-at-point-mode)
