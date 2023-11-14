@@ -49,117 +49,113 @@
 
   \section{Getting Help in Emacs}
   \begin{keylist}
-    \item[C-h k \meta{key}] \humanreadable{describe function bound to \meta{key}}
-    \item[C-h b] \humanreadable{list key-bindings for focused buffer}
-    \item[C-h m] \humanreadable{describe mode}
-    \item[C-h l] \humanreadable{show the keys you have pressed}
-    \item[C-h f] \humanreadable{describe function}
-    \item[C-h n] \humanreadable{View Emacs news}
+  \item[F1 k \meta{key}] \humanreadable{describe function bound to \meta{key}}
+  \item[F1 b] \humanreadable{list key-bindings for focused buffer}
+  \item[F1 m] \humanreadable{describe mode}
+  \item[F1 l] \humanreadable{show the keys you have pressed}
+  \item[F1 f] \humanreadable{describe function}
+  \item[F1 n] \humanreadable{View Emacs news}
   \end{keylist}
 
   \section{Global keymap}
 
   \subsection{Buffers}
   \begin{keylist}
-    \item[C-x C-b] consult-buffer
-    \item[C-x b] ibuffer
-    \item[C-c b s] switch-to-scratch
-    \item[C-c b m] switch-to-message
-    \item[C-c b b] tab-switch
-    \item[C-c b t] tabspaces-switch-to-buffer
+  \item[C-x C-b] ibuffer
+  \item[C-x b] bufferlo-switch-to-buffer
+  \item[C-c b s] switch-to-scratch
+  \item[C-c b m] switch-to-message
+  \item[s-t] tab-new
+  \item[s-w] tab-close
+  \item[s-1..9] tab-bar-select-tab
   \end{keylist}
 
   \subsection{Files}
   \begin{keylist}
-    \item[C-c f r] recentf-open-files
-    \item[C-c f f] find-file-at-point
-    \item[C-c f d] xah-show-in-desktop
-    \item[C-c f o] embark-open-externally
+  \item[C-c f r] recentf-open-files
+  \item[C-c f f] find-file-at-point
+  \item[C-c f d] xah-show-in-desktop
+  \item[C-c f o] embark-open-externally
   \end{keylist}
 
   \subsection{Denote}
   \begin{keylist}
-    \item[C-c n n] consult-notes
-    \item[C-c n a] my/new-article
-    \item[C-c n b] my/denote-book
-    \item[C-c n s] denote-signature
-    \item[C-c n m] my/new-meeting
-    \item[C-c n o] my/denote-outline
-    \item[C-c n t] my/denote-term
-    \item[C-c n r] denote-rename-file-using-front-matter
-    \item[C-c n i] denote-insert-link
-    \item[C-c n k] denote-keywords-add
-    \item[C-c n K] denote-keywords-remove
+  \item[s-n] consult-notes
+  \item[C-c n a] my/new-article
+  \item[C-c n m] my/new-meeting
+  \item[C-c n s] denote-signature
+  \item[C-c n S] denote-subdirectory
+  \item[C-c n o] citar-open-files
+  \item[C-c n r] denote-rename-file-using-front-matter
+  \item[C-c n k] denote-keywords-add
+  \item[C-c n K] denote-keywords-remove
   \end{keylist}
 
   \subsection{Languages}
   \begin{keylist}
-    \item[M-\#] my/search-dictionary
-    \item[C-u M-\#] \humanreadable{Show dict result in buffer}
-    \item[C-c l l] my/gts-do-translate
-    \item[C-u C-c l l] \humanreadable{Copy translate result to kill ring}
-    \item[C-c l i] sdcv-search-input
-    \item[C-c l p] powerthesaurus-lookup-dwim
-    \item[C-c l r] dictionary-overlay-toggle
-    \item[C-c l R] dictionary-overlay-render-buffer
-    \item[C-c l s] popweb-dict-say-word
-    \item[C-c l S] emacs-azure-tts-sentence
-    \item[C-c l w] writegood-mode
+  \item[M-\#] my/search-dictionary
+  \item[C-u M-\#] \humanreadable{Show dict result in buffer}
+  \item[C-c l i] sdcv-search-input
+  \item[C-c l l] my/gts-do-translate
+  \item[C-u C-c l l] \humanreadable{Copy translate result to kill ring}
+  \item[C-c l p] powerthesaurus-lookup-dwim
+  \item[C-c l r] dictionary-overlay-toggle
+  \item[C-c l R] dictionary-overlay-render-buffer
+  \item[C-c l s] popweb-dict-say-word
+  \item[C-c l S] emacs-azure-tts-sentence
+  \item[C-c l w] writegood-mode
   \end{keylist}
 
   \subsection{Other}
   \begin{keylist}
-    \item[M-o] ace-window
-    \item[M-*] tempel-insert
-    \item[M-+] tempel-complete
-    \item[M-n] my/scroll-other-windown
-    \item[M-p] my/scroll-other-windown-down
+  \item[M-o] ace-window
+  \item[M-*] tempel-insert
+  \item[M-+] tempel-complete
+  \item[M-n] my/scroll-other-windown
+  \item[M-p] my/scroll-other-windown-down
 
-    \item[f2] ebib
+  \item[f2] ebib
 
-    \item[f10] org-capture
+  \item[f10] org-capture
 
-    \item[f12] org-gtd-engage
-    \item[C-f12] org-gtd-process-inbox
-    \item[s-f12] org-gtd-show-stuck-projects
+  \item[f12] org-gtd-engage
+  \item[C-f12] org-agenda
+  \item[s-f12] org-gtd-process-inbox
+  \item[M-f12]
 
-    \item[s-z] vundo
-    \item[s-k] kill-current-buffer
-    \item[s-n] my/make-or-delete-frame
-    \item[s-\~] other-frame
-    \item[s-/] evil-commentary-line
+  \item[s-z] vundo
+  \item[s-k] kill-current-buffer
 
-    \item[M-g d] consult-dir
-    \item[M-g b] browse-at-remote
-    \item[M-g h] httpd-serve-directory
-    \item[C-;] embark-act
-    \item[M-.] embark-dwim
+  \item[M-g b] browse-at-remote
+  \item[M-g h] httpd-serve-directory
+  \item[C-;] embark-act
+  \item[M-.] embark-dwim
   \end{keylist}
 
   \section{Local keymaps}
   \subsection{vertico-map}
   \begin{keylist}
-    \item[C-j] vertico-next
-    \item[C-k] vertico-previous
-    \item[C-u] vertico-directory-up
+  \item[C-j] vertico-next
+  \item[C-k] vertico-previous
+  \item[C-u] vertico-directory-up
   \end{keylist}
   \subsection{minibuffer-local-map}
   \begin{keylist}
-    \item[C-;] embark-act
-    \item[C-c C-;] embark-export
-    \item[C-c C-l] embark-collect
+  \item[C-;] embark-act
+  \item[C-c C-;] embark-export
+  \item[C-c C-l] embark-collect
 
-    \item[C-r] consult-history
+  \item[C-r] consult-history
   \end{keylist}
 
   \subsection{dired-mode-map}
   \begin{keylist}
-    \item[s-.] dired-omit-mode
-    \item[C-'] my/org-attach-visit-headline-from-dired
-    \item[C-;] prot-dired-limit-regexp
-    \end{keylist}
+  \item[s-.] dired-omit-mode
+  \item[C-'] my/org-attach-visit-headline-from-dired
+  \item[C-;] prot-dired-limit-regexp
+  \end{keylist}
 
-  \end{multicols}
+\end{multicols}
 \end{document}
 
 %%% Local Variables:

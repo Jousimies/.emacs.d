@@ -24,7 +24,7 @@
 
 (use-package sdcv
   :load-path "packages/sdcv/"
-  :bind (("s-#" . my/search-dictionary)
+  :bind (("M-#" . my/search-dictionary)
          ("C-c l i" . sdcv-search-input))
   :hook (after-init . my/sdcv-tooltip-face-toggle)
   :config
