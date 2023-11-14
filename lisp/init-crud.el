@@ -129,7 +129,7 @@
 
 (add-hook 'minibuffer-mode-hook 'switch-to-abc-input-method)
 (add-hook 'find-file-hook 'switch-to-abc-input-method)
-(add-hook 'isearch-mode-end-hook 'switch-to-abc-input-method)
+(add-hook 'isearch-mode-hook 'switch-to-abc-input-method)
 (add-hook 'quit-window-hook (lambda ()
                               (when cur-sys-input-method
                                 (switch-to-abc-input-method))))
@@ -146,11 +146,10 @@
 
 (use-package yasnippet
   :load-path "packages/yasnippet/"
-  :hook (minibuffer-mode . yas-global-mode))
-
-(use-package yasnippet-snippets
-  :load-path "packages/yasnippet-snippets/"
-  :after yasnippet)
+  :hook (minibuffer-mode . yas-global-mode)
+  :config
+  (use-package yasnippet-snippets
+    :load-path "packages/yasnippet-snippets/"))
 
 (use-package expand-region
   :load-path "packages/expand-region.el/"
