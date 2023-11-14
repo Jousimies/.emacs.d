@@ -52,8 +52,48 @@
          ("C-c n O" . citar-open)
          ("C-c n n" . citar-create-note))
   :config
+  (setq citar-indicator-files
+    (citar-indicator-create
+     :symbol (nerd-icons-faicon
+              "nf-fa-file_o"
+              :face 'nerd-icons-green
+              :v-adjust -0.1)
+     :function #'citar-has-files
+     :padding "  " ; need this because the default padding is too low for these icons
+     :tag "has:files"))
+  (setq citar-indicator-links
+    (citar-indicator-create
+     :symbol (nerd-icons-faicon
+              "nf-fa-link"
+              :face 'nerd-icons-orange
+              :v-adjust 0.01)
+     :function #'citar-has-links
+     :padding "  "
+     :tag "has:links"))
+  (setq citar-indicator-notes
+    (citar-indicator-create
+     :symbol (nerd-icons-codicon
+              "nf-cod-note"
+              :face 'nerd-icons-blue
+              :v-adjust -0.3)
+     :function #'citar-has-notes
+     :padding "    "
+     :tag "has:notes"))
+  (setq citar-indicator-cited
+    (citar-indicator-create
+     :symbol (nerd-icons-faicon
+              "nf-fa-circle_o"
+              :face 'nerd-icon-green)
+     :function #'citar-is-cited
+     :padding "  "
+     :tag "is:cited"))
+  (setq citar-indicators (list citar-indicator-links
+                                 citar-indicator-files
+                                 citar-indicator-notes
+                                 citar-indicator-cited))
+
   (add-hook 'minibuffer-setup-hook
-      (lambda () (setq truncate-lines t)))
+            (lambda () (setq truncate-lines t)))
   (setq citar-bibliography my/reference-lists)
   (setq citar-notes-paths `(,(expand-file-name "denote/references" my-galaxy)))
   (setq citar-library-file-extensions '("pdf" "jpg" "epub"))

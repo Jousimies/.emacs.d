@@ -28,7 +28,7 @@
 
 (use-package nerd-icons
   :load-path "packages/nerd-icons.el/"
-  :commands nerd-icons-codicon nerd-icons-icon-for-file
+  :commands nerd-icons-codicon nerd-icons-faicon nerd-icons-icon-for-file
   :config
   (setq nerd-icons-font-family "Hack Nerd Font Mono"))
 
