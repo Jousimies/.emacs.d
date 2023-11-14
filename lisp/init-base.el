@@ -154,7 +154,8 @@
     (setq epkg-repository (var "epkgs"))
     (setq persp-state-default-file (var "persp.el"))
     (setq popweb-config-location (var "popweb"))
-    (setq wg-session-file (var ".emacs_workgroups"))))
+    (setq wg-session-file (var ".emacs_workgroups"))
+    (setq emt-lib-path (var "libEMT.dylib"))))
 
 (use-package gcmh
   :load-path "packages/gcmh"

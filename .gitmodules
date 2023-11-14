@@ -481,3 +481,6 @@
 [submodule "packages/denote-explore"]
 	path = packages/denote-explore
 	url = https://github.com/pprevos/denote-explore.git
+[submodule "packages/emt"]
+	path = packages/emt
+	url = https://github.com/roife/emt.git

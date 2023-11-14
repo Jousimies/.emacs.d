@@ -207,5 +207,14 @@
   (setq which-key-idle-delay 0)
   (setq which-key-idle-secondary-delay 0.05))
 
+(use-package emt
+  :load-path "packages/emt"
+  :bind (("M-f" . emt-forward-word)
+         ("M-b" . emt-backward-word)
+         ("M-d" . emt-kill-word)
+         ("M-h" . emt-backward-kill-word))
+  :config
+  (emt-ensure))
+
 (provide 'init-completion)
 ;;; init-git.el ends here.
