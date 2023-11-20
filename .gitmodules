@@ -28,9 +28,6 @@
 [submodule "packages/markdown-mode"]
 	path = packages/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode.git
-[submodule "packages/yaml.el"]
-	path = packages/yaml.el
-	url = https://github.com/zkry/yaml.el.git
 [submodule "packages/ghub"]
 	path = packages/ghub
 	url = https://github.com/magit/ghub.git
@@ -232,9 +229,6 @@
 [submodule "packages/ht.el"]
 	path = packages/ht.el
 	url = https://github.com/Wilfred/ht.el.git
-[submodule "packages/yaml-mode"]
-	path = packages/yaml-mode
-	url = https://github.com/yoshiki/yaml-mode.git
 [submodule "packages/emacs-toml"]
 	path = packages/emacs-toml
 	url = https://github.com/gongo/emacs-toml.git

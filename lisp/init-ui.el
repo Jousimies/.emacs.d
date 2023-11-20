@@ -4,10 +4,6 @@
 
 ;;; Code:
 
-(setq ns-use-native-fullscreen nil)
-(setq ns-use-fullscreen-animation nil)
-(toggle-frame-fullscreen)
-
 (defun toggle-appearance ()
   (interactive)
   (shell-command-to-string "osascript -e 'tell app \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"))
