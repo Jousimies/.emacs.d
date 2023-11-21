@@ -110,7 +110,7 @@
   :after mu4e
   :config
   (mu4e-modeline-mode 1)
-  (add-to-list 'tab-bar-format (lambda () (mu4e--modeline-string)) t))
+  (add-to-list 'my/tab-bar-right-string '((:eval (mu4e--modeline-string)))))
 
 (use-package mu4e-context
   :after mu4e

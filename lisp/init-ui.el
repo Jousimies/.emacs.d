@@ -48,14 +48,27 @@
   :hook (after-make-frame-functions . toggle-frame-tab-bar)
   :config
   (setq tab-bar-new-tab-choice 'scratch-buffer)
-  (setq tab-bar-format '(tab-bar-format-history
-                         tab-bar-format-tabs
-                         tab-bar-separator
-                         tab-bar-format-align-right))
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-separator "​​")
   (setq tab-bar-select-tab-modifiers '(super))
-  (setq tab-bar-tab-hints t))
+  (setq tab-bar-tab-hints t)
+
+  (defvar my/tab-bar-right-string)
+
+  (defun my/tab-bar-time-update (&rest rest)
+    (concat (propertize (format-time-string " %Y-%m-%d %a ") 'face `(:inherit success))
+            (propertize (format-time-string " %H:%MPM ") 'face `(:inherit success :inverse-video t))))
+
+  (setq my/tab-bar-right-string '((:eval (my/tab-bar-time-update))))
+
+  (defun my/tab-bar-format-right ()
+    `((global menu-item ,(format-mode-line my/tab-bar-right-string) ignore)))
+
+  (setq tab-bar-format '(tab-bar-format-history
+                         tab-bar-format-tabs
+                         tab-bar-separator
+                         tab-bar-format-align-right
+                         my/tab-bar-format-right)))
 
 (defun tab-bar-format-menu-bar ()
   "Produce the Menu button for the tab bar that shows the menu bar."
@@ -304,8 +317,6 @@
                 my/modeline-timer
                 (:eval (with-eval-after-load 'org-clock
                          my/modeline-clock-info))
-                my/modeline-date
-                my/modeline-time
                 " "
                 battery-mode-line-string))
 

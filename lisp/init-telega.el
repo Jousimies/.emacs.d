@@ -74,8 +74,7 @@
     (or +tab-bar-telega-indicator-cache
         (+tab-bar-telega-icon-update)))
 
-  (add-to-list 'tab-bar-format '+tab-bar-telega-icon t)
-
+  (add-to-list 'my/tab-bar-right-string '((:eval (+tab-bar-telega-icon))))
   (advice-add 'telega--on-updateUnreadChatCount :after #'+tab-bar-telega-icon-update)
   (advice-add 'telega--on-updateChatUnreadMentionCount :after #'+tab-bar-telega-icon-update)
   (advice-add 'telega--on-updateChatUnreadReactionCount :after #'+tab-bar-telega-icon-update)
