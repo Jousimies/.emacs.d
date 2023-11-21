@@ -39,6 +39,14 @@
   (add-hook 'org-after-todo-state-change-hook (lambda ()
                                                 (if (org-clocking-p)
                                                     (org-clock-out))))
+  (defun my/org-refile-on-todo-done ()
+    "Refile a task to a different file when it is marked as DONE."
+    (let ((org-refile-keep t))
+      (when (string= org-state "DONE")
+        (org-refile nil nil (list nil (car (denote-journal-extras--entry-today))) "Copy"))))
+
+  (add-hook 'org-after-todo-state-change-hook 'my/org-refile-on-todo-done)
+
   (setq org-todo-keyword-faces
         '(("TODO" . (:inherit (bold org-todo)))
           ("NEXT" . (:inherit (success org-todo)))
