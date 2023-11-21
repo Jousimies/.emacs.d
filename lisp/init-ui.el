@@ -10,17 +10,17 @@
 
 (global-set-key (kbd "C-c t a") 'toggle-appearance)
 
-(set-face-attribute 'default nil :font "Iosevka Term" :height 140)
+(set-face-attribute 'default nil :font "Iosevka Term" :weight 'normal :height 140)
 
 ;; Source Han Serif SC -> TsangerJinKai02
-(when (display-graphic-p)
-  (dolist (charset '(kana han cjk-misc bopomofo))
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset (font-spec :family "TsangerJinKai02" :height 140)) t 'prepend))
-
 (set-fontset-font t 'unicode (font-spec :family "Apple Color Emoj" :size 11.5) nil 'prepend)
 
 (set-fontset-font t 'unicode (font-spec :family "Hack Nerd Font Mono" :size 14) nil 'prepend)
+
+(dolist (charset '(kana han cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font)
+                      charset (font-spec :family "TsangerJinKai02" :height 140))
+    t 'prepend)
 
 (use-package nerd-icons
   :load-path "packages/nerd-icons.el/"
