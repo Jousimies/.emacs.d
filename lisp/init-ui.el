@@ -63,7 +63,7 @@
 
   (defun my/tab-bar-format-right ()
     `((global menu-item ,(format-mode-line my/tab-bar-right-string) ignore)))
-
+  (add-to-list 'my/tab-bar-right-string 'battery-mode-line-string t)
   (setq tab-bar-format '(tab-bar-format-history
                          tab-bar-format-tabs
                          tab-bar-separator
@@ -316,9 +316,7 @@
                 my/modeline-sys
                 my/modeline-timer
                 (:eval (with-eval-after-load 'org-clock
-                         my/modeline-clock-info))
-                " "
-                battery-mode-line-string))
+                         my/modeline-clock-info))))
 
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
