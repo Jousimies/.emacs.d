@@ -82,5 +82,11 @@
   (add-hook 'telega-connection-state-hook #'+tab-bar-telega-icon-update)
   (add-hook 'telega-kill-hook #'+tab-bar-telega-icon-update))
 
+(use-package telega-mnz
+  :load-path "~/.emacs.d/packages/telega.el/contrib/"
+  :hook (telega-load . global-telega-mnz-mode)
+  :config
+  (setq telega-mnz-use-language-detection t))
+
 (provide 'init-telega)
 ;;; init-telega.el ends here.

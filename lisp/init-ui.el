@@ -56,8 +56,7 @@
   (defvar my/tab-bar-right-string)
 
   (defun my/tab-bar-time-update (&rest rest)
-    (concat (propertize (format-time-string " %Y-%m-%d %a ") 'face `(:inherit success))
-            (propertize (format-time-string " %H:%MPM ") 'face `(:inherit success :inverse-video t))))
+    (propertize (format-time-string "[%Y-%m-%d %a %H:%M]") 'face `(:inherit bold)))
 
   (setq my/tab-bar-right-string '((:eval (my/tab-bar-time-update))))
 
@@ -323,10 +322,10 @@
 
 (fringe-mode '(1 . 1))
 
-(use-package hl-line
-  :hook ((prog-mode . hl-line-mode)
-         (org-mode . hl-line-mode)
-         (profiler-report-mode . hl-line-mode)))
+(use-package hilit-chg
+  :hook ((prog-mode . highlight-changes-mode)
+         (org-mode . highlight-changes-mode)
+         (text-mode . highlight-changes-mode)))
 
 (use-package display-line-numbers
   :hook (prog-mode . display-line-numbers-mode)

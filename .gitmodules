@@ -478,3 +478,9 @@
 [submodule "packages/emt"]
 	path = packages/emt
 	url = https://github.com/roife/emt.git
+[submodule "packages/fussy"]
+	path = packages/fussy
+	url = https://github.com/jojojames/fussy.git
+[submodule "packages/flx"]
+	path = packages/flx
+	url = https://github.com/lewang/flx.git
