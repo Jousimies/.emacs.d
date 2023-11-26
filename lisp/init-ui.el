@@ -138,10 +138,10 @@
 (defvar-local my/modeline-input-method
     '(:eval (when (mode-line-window-selected-p)
               (propertize
-               (if cur-sys-input-method
+               (if current-input-method
                    " ZH "
                  " EN ")
-               'face `(:inherit ,(if cur-sys-input-method 'font-lock-string-face nil) :inverse-video t)))))
+               'face `(:inherit ,(if current-input-method 'font-lock-string-face nil) :inverse-video t)))))
 
 (defvar-local my/modeline-kbd-macro
     '(:eval
@@ -321,11 +321,6 @@
 (define-fringe-bitmap 'left-curly-arrow  [])
 
 (fringe-mode '(1 . 1))
-
-(use-package hilit-chg
-  :hook ((prog-mode . highlight-changes-mode)
-         (org-mode . highlight-changes-mode)
-         (text-mode . highlight-changes-mode)))
 
 (use-package display-line-numbers
   :hook (prog-mode . display-line-numbers-mode)

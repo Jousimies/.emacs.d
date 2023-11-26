@@ -484,3 +484,6 @@
 [submodule "packages/flx"]
 	path = packages/flx
 	url = https://github.com/lewang/flx.git
+[submodule "packages/EmacsMacOSModule"]
+	path = packages/EmacsMacOSModule
+	url = https://github.com/xenodium/EmacsMacOSModule.git

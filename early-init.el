@@ -35,12 +35,14 @@
 
 (add-to-list 'load-path "~/.emacs.d/packages/ef-themes/")
 (require 'ef-themes)
+;; modus-themes 会导致 modeline 的字符计算不准确，因而右侧会超出屏幕范围。
+;; ef-themes 没有上述问题。
 (defun my/apply-theme (appearance)
   "Load theme, taking current system APPEARANCE into consideration."
   (mapc #'disable-theme custom-enabled-themes)
   (pcase appearance
-    ('light (load-theme 'ef-light t))
-    ('dark (load-theme 'ef-dark t))))
+    ('light (load-theme 'ef-maris-light t))
+    ('dark (load-theme 'ef-maris-dark t))))
 
 (add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
 
