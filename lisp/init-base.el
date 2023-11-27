@@ -303,8 +303,19 @@
   :hook (org-mode . word-wrap-whitespace-mode))
 
 (use-package ibuffer
-  :bind ("C-x C-b" . ibuffer)
+  :bind (("C-x C-b" . ibuffer)
+         :map ibuffer-mode-map
+         ("RET" . +ibuffer-visit-buffer-in-popper))
   :config
+  (defun +ibuffer-visit-buffer-in-popper ()
+    (interactive)
+    (if (window-parameter nil 'window-side)
+        (let ((win (selected-window)))
+          (ibuffer-visit-buffer-other-window)
+          (delete-window win))
+      (ibuffer-visit-buffer)))
+
+  (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper)
   (setq ibuffer-show-empty-filter-groups nil)
   (setq ibuffer-default-sorting-mode 'major-mode))
 
