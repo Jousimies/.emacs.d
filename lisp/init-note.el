@@ -171,16 +171,15 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
          (new-title (concat ID "--" title))
          (file-path (concat my/web_archive title ".html"))
          (file-new-path (concat my/web_archive new-title ".html")))
-    (when xwidget?
-      (if (not (file-exists-p file-path))
-          (when (my/save-xwidget-to-webarchive)
-            (my/literature-entry url title keywords file-path file-new-path))
-        (my/literature-entry url title keywords file-path file-new-path)))))
+    (if (not (file-exists-p file-path))
+        (when (my/save-xwidget-to-webarchive)
+          (my/literature-entry url title keywords file-path file-new-path))
+      (my/literature-entry url title keywords file-path file-new-path))))
 
 (defun my/literature-save ()
   "Save a literature entry from either Safari or xwidget-webkit."
   (interactive)
-  (if (string-prefix-p "xwidget" (buffer-name))
+  (if (string-prefix-p "*xwidget" (buffer-name))
       (my/literature-save-from-xwidget)
     (my/literature-save-from-safari)))
 

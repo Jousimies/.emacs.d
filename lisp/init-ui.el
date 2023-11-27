@@ -365,7 +365,9 @@
   :init (dolist (cmd '(recenter-top-bottom
                        other-window windmove-do-window-select
                        pop-to-mark-command pop-global-mark
-                       pager-page-down pager-page-up))
+                       pager-page-down pager-page-up
+                       ace-window
+                       my/yank))
           (advice-add cmd :after #'my-pulse-momentary)))
 
 (use-package form-feed

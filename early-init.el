@@ -20,6 +20,7 @@
             (setq-default inhibit-redisplay nil
                           inhibit-message nil)
             (redisplay)))
+(setq ns-use-native-fullscreen nil)
 
 ;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
 (push '(menu-bar-lines . 0) default-frame-alist)
