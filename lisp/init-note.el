@@ -16,9 +16,7 @@
          ("C-c n K" . denote-keywords-remove)
          (:map dired-mode-map
                ("r" . denote-dired-rename-marked-files)))
-  :hook ((dired-mode . denote-dired-mode-in-directories)
-         (org-mode . (lambda ()
-                       (require 'denote)))) ; Load denote after enter org-mode.
+  :hook (dired-mode . denote-dired-mode-in-directories)
   :config
   (setq denote-directory (expand-file-name "denote" my-galaxy))
   ;; letter casing of file name components
@@ -52,9 +50,10 @@
 
 (use-package denote-rename-buffer
   :load-path "packages/denote/"
-  :hook (org-mode . denote-rename-buffer-mode)
-  :custom
-  (denote-rename-buffer-format " %t"))
+  :hook ((find-file . denote-rename-buffer-rename-function-or-fallback)
+         (denote-after-new-note . denote-rename-buffer-rename-function-or-fallback))
+  :config
+  (setq denote-rename-buffer-format " %t"))
 
 (defvar prot-dired--limit-hist '()
   "Minibuffer history for `prot-dired-limit-regexp'.")
@@ -64,6 +63,7 @@
          (signature (denote-retrieve-filename-signature file)))
     (concat "==" signature )))
 
+;;;autoloads
 (defun prot-dired-limit-regexp (regexp omit)
   "Limit Dired to keep files matching REGEXP, default search with Signature.
 
@@ -107,8 +107,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
           ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
           ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))
           ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy))
-          ("Logs"  ?L ,(expand-file-name "logs" my-galaxy))
-          )))
+          ("Logs"  ?L ,(expand-file-name "logs" my-galaxy)))))
 
 (use-package denote-menu
   :load-path "packages/denote-menu/"

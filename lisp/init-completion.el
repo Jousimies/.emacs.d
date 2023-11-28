@@ -4,8 +4,25 @@
 
 ;;; Code:
 
+(setq completion-styles '(basic substring initials flex orderless))
+(setq completion-category-defaults '((email (styles substring partial-completion))
+                                     (buffer (styles basic substring))
+                                     (unicode-name (styles basic substring))
+                                     (project-file (styles substring))
+                                     (xref-location (styles substring))
+                                     (info-menu (styles basic substring))
+                                     (symbol-help (styles basic shorthand substring))))
+
 (setq completion-category-overrides '((file (styles basic partial-completion))))
-(setq read-file-name-completion-ignore-case t)
+(setq enable-recursive-minibuffers t)
+
+(setq completions-detailed t)
+(setq completion-show-inline-help nil)
+(setq completions-max-height 6)
+(setq completions-header-format
+      (propertize "%s candidates:\n" 'face 'font-lock-comment-face))
+(setq completions-highlight-face 'completions-highlight)
+
 (add-hook 'minibuffer-mode-hook (lambda ()
                                   (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
                                   (require 'orderless)
@@ -24,10 +41,12 @@
 (setq set-message-functions '(inhibit-message))
 
 (defun crm-indicator (args)
-    (cons (format "[CRM%s] %s"
-                  (replace-regexp-in-string
-                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                   crm-separator)
+    (cons (format "[`completing-read-multiple': %s]  %s"
+                  (propertize
+                   (replace-regexp-in-string
+                    "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                    crm-separator)
+                   'face 'error)
                   (car args))
           (cdr args)))
 
@@ -203,15 +222,6 @@
   ;; (setq which-key-show-early-on-C-h t)
   (setq which-key-idle-delay 0)
   (setq which-key-idle-secondary-delay 0.05))
-
-(use-package emt
-  :load-path "packages/emt"
-  :bind (("M-f" . emt-forward-word)
-         ("M-b" . emt-backward-word)
-         ("M-d" . emt-kill-word)
-         ("M-h" . emt-backward-kill-word))
-  :config
-  (emt-ensure))
 
 (provide 'init-completion)
 ;;; init-git.el ends here.

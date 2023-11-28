@@ -4,17 +4,13 @@
 
 ;;; Code:
 
-(use-package files
-  :config
-  (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode)))
-
 (use-package treesit
   :when (treesit-available-p)
+  :commands treesit-install-language-grammar
   :config
   (setq treesit-language-source-alist
-                 '((python "https://github.com/tree-sitter/tree-sitter-python.git")
-                   (yaml "https://github.com/ikatyang/tree-sitter-yaml.git"))))
+        '((python "https://github.com/tree-sitter/tree-sitter-python.git")
+          (yaml "https://github.com/ikatyang/tree-sitter-yaml.git"))))
 
 (use-package eglot
   :after yasnippet

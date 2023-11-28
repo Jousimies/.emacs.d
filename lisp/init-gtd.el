@@ -59,20 +59,22 @@
 
 (use-package calendar
   :bind ("C-c C" . calendar)
+  :hook (calendar-today-visible . calendar-mark-today)
   :config
   (setq calendar-view-diary-initially-flag t)
   (setq calendar-mark-diary-entries-flag t)
-  (setq calendar-mode-line-format nil)
 
   (setq calendar-date-style 'iso)
   (setq calendar-date-display-form calendar-iso-date-display-form)
-  (add-hook 'calendar-today-visible-hook #'calendar-mark-today)
+  (setq diary-date-forms diary-iso-date-forms))
 
+(use-package solar
+  :defer t
+  :config
   (setq calendar-time-display-form
         '(24-hours ":" minutes
                    (when time-zone
-                     (format "(%s)" time-zone))))
-  (setq diary-date-forms diary-iso-date-forms))
+                     (format "(%s)" time-zone)))))
 
 (use-package appt
   :hook (diary-mode . appt-activate)

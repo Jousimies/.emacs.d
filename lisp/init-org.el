@@ -7,28 +7,28 @@
 (use-package org
   :bind (:map org-mode-map
               ("M-s-s" . org-store-link))
-  :custom
-  (org-ellipsis " ⇲")
-  (org-modules '())
-  (org-imenu-depth 4)
-  (org-return-follows-link t)
-  (org-display-remote-inline-images 'download)
-  (org-log-into-drawer t)
-  (org-fast-tag-selection-single-key 'expert)
-  (org-adapt-indentation nil)
-  (org-fontify-quote-and-verse-blocks t)
-  (org-support-shift-select t)
-  (org-treat-S-cursor-todo-selection-as-state-change nil)
-  (org-hide-leading-stars nil)
-  (org-startup-with-inline-images t)
-  (org-startup-folded 'content)
-  (org-image-actual-width nil)
-  (org-use-speed-commands t)
-  (org-highlight-latex-and-related '(latex script))
-  (org-enforce-todo-dependencies t)
-  (org-enforce-todo-checkbox-dependencies t)
-  (org-tags-sort-function 'org-string-collate-greaterp)
   :config
+  (setq org-ellipsis " ⇲")
+  (setq org-modules '(org-habit))
+  (setq org-imenu-depth 4)
+  (setq org-return-follows-link t)
+  (setq org-display-remote-inline-images 'download)
+  (setq org-log-into-drawer t)
+  (setq org-fast-tag-selection-single-key 'expert)
+  (setq org-adapt-indentation nil)
+  (setq org-fontify-quote-and-verse-blocks t)
+  (setq org-support-shift-select t)
+  (setq org-treat-S-cursor-todo-selection-as-state-change nil)
+  (setq org-hide-leading-stars nil)
+  (setq org-startup-with-inline-images t)
+  (setq org-startup-folded 'content)
+  (setq org-image-actual-width nil)
+  (setq org-use-speed-commands t)
+  (setq org-highlight-latex-and-related '(latex script))
+  (setq org-enforce-todo-dependencies t)
+  (setq org-enforce-todo-checkbox-dependencies t)
+  (setq org-tags-sort-function 'org-string-collate-greaterp)
+
   (setq org-deadline-warning-days 7)
 
   (setq org-preview-latex-default-process 'dvisvgm)
@@ -125,7 +125,7 @@
           ("+" my-org-emphasis-strike-through))))
 
 (use-package ob-core
-  :after org
+  :defer t
   :config
   (defun my/org-babel-execute-src-block (&optional _arg info _params)
     "Load language if needed"
@@ -241,14 +241,11 @@
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-'") #'my/org-attach-visit-headline-from-dired))
 
-(use-package org-habit
-  :after org
-  :config
-  (setq org-habit-graph-column 100)
-  (add-to-list 'org-modules 'org-habit t))
+(with-eval-after-load 'org-habit
+  (setq org-habit-graph-column 100))
 
 (use-package org-id
-  :after org
+  :defer t
   :config
   (setq org-id-method 'ts)
   (setq org-id-link-to-org-use-id 'create-if-interactive))
@@ -281,13 +278,13 @@
   (define-key org-agenda-mode-map (kbd "<f8>") 'my/copy-idlink))
 
 (use-package org-src
-  :after org
+  :defer t
   :config
   (setq org-src-window-setup 'current-window)
   (setq org-src-ask-before-returning-to-edit-buffer nil))
 
 (use-package org-goto
-  :after org
+  :defer t
   :config
   (setq org-goto-interface 'outline-path-completion))
 
@@ -481,7 +478,7 @@
   :hook (org-mode . org-indent-mode))
 
 (use-package ox-html
-  :after ox
+  :defer t
   :config
   (setq org-export-global-macros
         '(("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@")))
@@ -505,7 +502,7 @@
          <script src=\"js/copy.js\"></script> "))
 
 (use-package ox-publish
-  :after ox
+  :defer t
   :config
   ;; https://git.sr.ht/~taingram/taingram.org/tree/master/item/publish.el
   (defun taingram--sitemap-dated-entry-format (entry style project)

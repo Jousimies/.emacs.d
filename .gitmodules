@@ -487,3 +487,6 @@
 [submodule "packages/EmacsMacOSModule"]
 	path = packages/EmacsMacOSModule
 	url = https://github.com/xenodium/EmacsMacOSModule.git
+[submodule "packages/emacs-winum"]
+	path = packages/emacs-winum
+	url = https://github.com/deb0ch/emacs-winum.git

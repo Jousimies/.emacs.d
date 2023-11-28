@@ -45,14 +45,12 @@
   :bind (("C-c b t" . tab-switch)
          ("s-t" . tab-new)
          ("s-w" . tab-close))
-  :hook (after-make-frame-functions . toggle-frame-tab-bar)
   :config
   (setq tab-bar-new-tab-choice 'scratch-buffer)
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-separator "​​")
   (setq tab-bar-select-tab-modifiers '(super))
   (setq tab-bar-tab-hints t)
-
   (defvar my/tab-bar-right-string)
 
   (defun my/tab-bar-time-update (&rest rest)
@@ -101,8 +99,7 @@
   (capitalize (string-replace "-mode" "" (symbol-name major-mode))))
 
 (defvar-local my/modeline-major-mode
-    '(:eval (when (mode-line-window-selected-p)
-              (propertize (my/modeline--major-mode) 'face `(:inherit font-lock-variable-name-face)))))
+    '(:eval (propertize (my/modeline--major-mode) 'face `(:inherit font-lock-variable-name-face))))
 
 (defun my/modeline--buffer-name ()
   (when-let ((name (buffer-name)))
@@ -229,16 +226,16 @@
       (_ ""))))
 
 (defvar-local my/modeline-sys
-    '(:eval (when (mode-line-window-selected-p)
-              (propertize (concat (my/modeline--sys-coding-category) (my/modeline--sys-coding-eol)) 'face nil))))
+    '(:eval (propertize (concat (my/modeline--sys-coding-category) (my/modeline--sys-coding-eol)) 'face nil)))
 
 (defun my/modeline--pdf-page ()
   (format " %d/%d " (eval '(pdf-view-current-page)) (pdf-cache-number-of-pages)))
 
 (defvar-local my/modeline-position
-    '(:eval (if (and (mode-line-window-selected-p) (derived-mode-p 'pdf-view-mode))
+    '(:eval (when (mode-line-window-selected-p)
+              (if (derived-mode-p 'pdf-view-mode)
                 (propertize (my/modeline--pdf-page) 'face font-lock-string-face)
-              (propertize (format " %%l:%%c/%d " (line-number-at-pos (point-max))) 'face nil))))
+              (propertize (format " %%l:%%c/%d " (line-number-at-pos (point-max))) 'face nil)))))
 
 (defvar-local my/modeline-clock-info
     '(:eval (when (and (mode-line-window-selected-p) (org-clocking-p))
@@ -278,7 +275,10 @@
 (defvar-local my/modeline-battery
     '(:eval (when (mode-line-window-selected-p)
               (propertize (my/modeline--battery) 'face `(:inherit ,(if (< (my/modeline--battery-percentage) 20)
-                                                                     'error nil))))))
+                                                                       'error nil))))))
+
+(defvar-local my/winum
+    '(:eval (propertize (format winum-format (winum-get-number-string)) 'face `(:inverse-video t ))))
 
 (dolist (construct '(my/modeline-major-mode
                      my/modeline-buffer-indentification
@@ -296,11 +296,14 @@
                      my/modeline-battery
                      my/modeline-position
                      my/modeline-image-info
-                     my/modeline-clock-info))
+                     my/modeline-clock-info
+                     my/winum))
   (put construct 'risky-local-variable t))
 
 (setq-default mode-line-format
               '("%e"
+                my/winum
+                "​"
                 my/modeline-input-method
                 my/modeline-buffer-readonly
                 my/modeline-buffer-modified
@@ -311,11 +314,11 @@
                 my/modeline-region-indicator
                 "       "
                 my/modeline-align-right
-                my/modeline-major-mode
-                my/modeline-sys
-                my/modeline-timer
                 (:eval (with-eval-after-load 'org-clock
-                         my/modeline-clock-info))))
+                         my/modeline-clock-info))
+                my/modeline-timer
+                my/modeline-major-mode
+                my/modeline-sys))
 
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
@@ -375,12 +378,12 @@
   :hook (org-mode . form-feed-mode))
 
 (use-package frame
-  :hook (after-init . (lambda ()
-                        (blink-cursor-mode -1)
-                        (add-to-list 'after-make-frame-functions #'ct/frame-center 0)))
-  :custom
-  (window-divider-default-bottom-width 1)
-  (window-divider-default-places 'bottom-only))
+  :defer t
+  :config
+  (blink-cursor-mode -1)
+  (add-to-list 'after-make-frame-functions #'ct/frame-center 0)
+  (setq window-divider-default-bottom-width 1)
+  (setq window-divider-default-places 'bottom-only))
 
 (defun ct/frame-center (&optional frame)
   "Center a frame on the screen."
@@ -442,14 +445,15 @@ of the box `(w h)' inside the box `(cw ch)'."
                                 "*esh command on file*")))
 
 (use-package window
+  :defer t
   :init
   (add-to-list 'display-buffer-alist '("\\*Outline"
                                        (display-buffer-in-side-window)
                                        (side . right)
                                        (window-width . 0.5)))
-  :custom
-  (switch-to-buffer-in-dedicated-window 'pop)
-  (switch-to-buffer-obey-display-actions t))
+  :config
+  (setq switch-to-buffer-in-dedicated-window 'pop)
+  (setq switch-to-buffer-obey-display-actions t))
 
 (defun my/scroll-other-windown-down ()
   "Scroll other window down."
@@ -465,9 +469,27 @@ of the box `(w h)' inside the box `(cw ch)'."
 
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
 
-(use-package ace-window
-  :load-path "packages/ace-window"
-  :bind ("M-o" . ace-window))
+(use-package winum
+  :load-path "packages/emacs-winum/"
+  :hook (after-init . winum-mode)
+  :config
+  (setq winum-auto-setup-mode-line nil)
+
+  (defun my/winum-select (num)
+    (lambda (&optional arg) (interactive "P")
+      (if arg
+          (winum-select-window-by-number (- 0 num))
+        (if (equal num (winum-get-number))
+            (winum-select-window-by-number (winum-get-number (get-mru-window t)))
+          (winum-select-window-by-number num)))))
+
+  (setq winum-keymap
+        (let ((map (make-sparse-keymap)))
+          (define-key map (kbd "C-M-0") 'winum-select-window-0-or-10)
+          (dolist (num '(1 2 3 4 5 6 7 8 9) nil)
+            (define-key map (kbd (concat "C-M-" (int-to-string num)))
+                        (my/winum-select num)))
+          map)))
 
 (use-package windmove
   :hook (after-init . windmove-mode)
@@ -501,9 +523,10 @@ of the box `(w h)' inside the box `(cw ch)'."
 
 (use-package popper
   :load-path "packages/popper/"
-  :bind (:map popper-mode-map
-              ("M-<tab>"   . popper-cycle)
-              ("M-`" . popper-toggle-type))
+  :bind (("C-`" . popper-toggle)
+         :map popper-mode-map
+         ("M-<tab>"   . popper-cycle)
+         ("M-`" . popper-toggle-type))
   :hook (emacs-startup . popper-mode)
   :init
   (setq popper-reference-buffers

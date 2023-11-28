@@ -49,7 +49,7 @@
          (org-mode . org-cdlatex-mode)))
 
 (use-package ox-latex
-  :after org
+  :defer t
   :config
   (setq org-latex-src-block-backend 'minted)
   (setq org-latex-minted-options '(("breaklines" "true")

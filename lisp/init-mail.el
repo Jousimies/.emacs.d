@@ -16,63 +16,33 @@
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
   :bind ("s-M" . mu4e)
-  :init
-  (add-to-list 'display-buffer-alist '((derived-mode . mu4e-main-mode)
-                                       (display-buffer-in-new-tab)
-                                       (select . t)))
-  (add-to-list 'display-buffer-alist '((derived-mode . mu4e-headers-mode)
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (window-width . 0.75)
-                                       (select . t)))
-  (add-to-list 'display-buffer-alist '((derived-mode . mu4e-view-mode)
-                                       (display-buffer-in-side-window)
-                                       (side . bottom)
-                                       (window-width . 0.75)
-                                       (select . t)))
+  ;; :init
+  ;; (add-to-list 'display-buffer-alist '((derived-mode . mu4e-main-mode)
+  ;;                                      (display-buffer-in-new-tab)
+  ;;                                      (select . t)))
+  ;; (add-to-list 'display-buffer-alist '((derived-mode . mu4e-headers-mode)
+  ;;                                      (display-buffer-in-side-window)
+  ;;                                      (side . right)
+  ;;                                      (window-width . 0.75)
+  ;;                                      (select . t)))
+  ;; (add-to-list 'display-buffer-alist '((derived-mode . mu4e-view-mode)
+  ;;                                      (display-buffer-in-side-window)
+  ;;                                      (side . bottom)
+  ;;                                      (window-width . 0.75)
+  ;;                                      (select . t)))
   :config
-  (setq mu4e-confirm-quit nil))
-(run-with-idle-timer 4 nil (lambda ()
-                             (mu4e 'background)))
-
-(use-package mu4e-vars
-  :after mu4e
-  :config
-  (setq mu4e-notification-support t))
-
-(use-package mu4e-main
-  :after mu4e
-  :config
-  (setq mu4e-main-hide-personal-addresses nil))
-
-(use-package mu4e-server
-  :after mu4e
-  :config
-  (setq mu4e-mu-binary (executable-find "mu")))
-
-(use-package mu4e-update
-  :after mu4e
-  :config
+  ;; mu4e-main
+  (setq mu4e-main-hide-personal-addresses nil)
+  ;; mu4e-server
+  (setq mu4e-mu-binary (executable-find "mu"))
+  ;; mu4e-update
   (setq mu4e-update-interval (* 15 60))
   (setq mu4e-get-mail-command (concat (executable-find "mbsync") " -a"))
   (setq mu4e-index-update-in-background t)
   (setq mu4e-index-update-error-warning t)
   (setq mu4e-index-update-error-warning nil)
-  (setq mu4e-index-cleanup t))
-
-(use-package mu4e-folders
-  :after mu4e
-  :config
-  (setq mu4e-maildir-shortcuts
-        '(("/outlook/INBOX" . ?o)
-          ("/outlook/Sent Messages" . ?O)
-          ("/[Gmail]/INBOX" . ?g)
-          ("/[Gmail]/Sent Mail" . ?G)))
-  (setq mu4e-attachment-dir "~/Downloads/"))
-
-(use-package mu4e-view
-  :after mu4e
-  :config
+  (setq mu4e-index-cleanup t)
+  ;; mu4e-view
   (defun extra-email-to-pdf (msg &optional args)
     "Pdf temp file MSG to a new name with ARGS ignored."
     (let* ((async-shell-command-display-buffer nil)
@@ -84,7 +54,7 @@
 
   (defun extra-print-email-to-pdf (msg &optional skip-headers)
     "Save current MSG as a pdf if it includes an HTML-part.
-  If SKIP-HEADERS is set, do not show include message headers."
+    If SKIP-HEADERS is set, do not show include message headers."
     (let* ((browse-url-browser-function  'extra-email-to-pdf))
       (mu4e-action-view-in-browser msg skip-headers)))
 
@@ -98,63 +68,29 @@
 
   (defun extra-save-email-html (msg &optional skip-headers)
     "Save current MSG HTML-part.
-  If SKIP-HEADERS is set, do not show include message headers."
+    If SKIP-HEADERS is set, do not show include message headers."
     (let* ((extra-temp-email-dir (expand-file-name "html" mail-source-directory))
            (browse-url-browser-function  'extra-move-temp-email-location))
       (mu4e-action-view-in-browser msg skip-headers)))
 
   (add-to-list 'mu4e-view-actions '("download as html"  . extra-save-email-html))
-  (add-to-list 'mu4e-view-actions '("print to PDF"  . extra-print-email-to-pdf)))
-
-(use-package mu4e-modeline
-  :after mu4e
-  :config
+  (add-to-list 'mu4e-view-actions '("print to PDF"  . extra-print-email-to-pdf))
+  ;; mu4e-vars
+  (setq mu4e-notification-support t)
+  (setq mu4e-confirm-quit nil)
+  ;; mu4e-modeline
   (mu4e-modeline-mode 1)
-  (add-to-list 'my/tab-bar-right-string '((:eval (mu4e--modeline-string)))))
-
-(use-package mu4e-context
-  :after mu4e
-  :config
-  (setq mu4e-contexts
-      `(,(make-mu4e-context
-          :name "Outlook"
-          :enter-func
-          (lambda () (mu4e-message "Enter outlook context"))
-          :leave-func
-          (lambda () (mu4e-message "Leave outlook context"))
-          :match-func
-          (lambda (msg)
-            (when msg
-              (mu4e-message-contact-field-matches msg
-                                                  :to 'mu4e-outlook)))
-          :vars `((user-mail-address . ,mu4e-outlook)
-                  (mu4e-drafts-folder . "/outlook/Drafts")
-                  (mu4e-refile-folder . "/outlook/Archive")
-                  (mu4e-sent-folder . "/outlook/Sent Messages")
-                  (mu4e-trash-folder . "/outlook/Deleted Messages")))
-
-        ,(make-mu4e-context
-          :name "gmail"
-          :enter-func
-          (lambda () (mu4e-message "Enter gmail context"))
-          :leave-func
-          (lambda () (mu4e-message "Leave gmail context"))
-          :match-func
-          (lambda (msg)
-            (when msg
-              (mu4e-message-contact-field-matches msg
-                                                  :to 'mu4e-gmail)))
-          :vars `((user-mail-address . ,mu4e-gmail)
-                  (mu4e-drafts-folder . "/gmail/Drafts")
-                  (mu4e-refile-folder . "/gmail/Archive")
-                  (mu4e-sent-folder . "/gmail/Sent")
-                  (mu4e-trash-folder . "/gmail/Trash")))))
-
-  (setq mu4e-context-policy 'pick-first))
-
-(use-package mu4e-headers
-  :after mu4e
-  :config
+  (add-to-list 'my/tab-bar-right-string '((:eval (mu4e--modeline-string))))
+  ;; mu4e-folders
+  (setq mu4e-maildir-shortcuts
+        '(("/outlook/INBOX" . ?o)
+          ("/outlook/Sent Messages" . ?O)
+          ("/[Gmail]/INBOX" . ?g)
+          ("/[Gmail]/Sent Mail" . ?G)))
+  (setq mu4e-attachment-dir "~/Downloads/")
+  ;; mu4e-helpers
+  (setq mu4e-use-fancy-chars t)
+  ;; mu4e-headers
   (setq mu4e-headers-precise-alignment t)
   (setq mu4e-headers-include-related t)
   (setq mu4e-headers-auto-update t)
@@ -179,11 +115,8 @@
   (setq mu4e-headers-list-mark '("s" . "󰕲 "))
   (setq mu4e-headers-personal-mark '("p" . "󰸐 "))
 
-  (define-key mu4e-headers-mode-map (kbd "C-c l") 'org-store-link))
-
-(use-package mu4e-bookmarks
-  :after mu4e
-  :config
+  (define-key mu4e-headers-mode-map (kbd "C-c l") 'org-store-link)
+  ;; mu4e-bookmarks
   (setq mu4e-modeline-unread-items '("U:" . " "))
   (setq mu4e-modeline-new-items '("N:" . " "))
   (setq mu4e-modeline-all-clear '("C: " . " "))
@@ -195,31 +128,54 @@
                          ;; ("date:1d..now AND list:emacs-orgmode.gnu.org" "Last 1 days (org mode)" ?m)
                          ("maildir:/drafts" "drafts" ?d)
                          ("flag:flagged AND NOT flag:trashed" "flagged" ?f)
-                         ("mime:image/*" "Messages with images" ?p))))
-
-(use-package mu4e-draft
-  :after mu4e
-  :config
+                         ("mime:image/*" "Messages with images" ?p)))
+  ;; mu4e-drafts
   (setq mu4e-compose-format-flowed nil)
   (setq mu4e-compose-signature-auto-include nil)
-  (setq mu4e-compose-dont-reply-to-self t))
+  (setq mu4e-compose-dont-reply-to-self t)
+  ;; mu4e-contacts
+  (setq mu4e-compose-reply-ignore-address '("no-?reply" "duan_n@outlook.com"))
+  ;; mu4e-compose
+  (setq mail-user-agent 'mu4e-user-agent)
+  ;; mu4e-context
+  (setq mu4e-contexts
+        `(,(make-mu4e-context
+            :name "Outlook"
+            :enter-func
+            (lambda () (mu4e-message "Enter outlook context"))
+            :leave-func
+            (lambda () (mu4e-message "Leave outlook context"))
+            :match-func
+            (lambda (msg)
+              (when msg
+                (mu4e-message-contact-field-matches msg
+                                                    :to 'mu4e-outlook)))
+            :vars `((user-mail-address . ,mu4e-outlook)
+                    (mu4e-drafts-folder . "/outlook/Drafts")
+                    (mu4e-refile-folder . "/outlook/Archive")
+                    (mu4e-sent-folder . "/outlook/Sent Messages")
+                    (mu4e-trash-folder . "/outlook/Deleted Messages")))
 
-(use-package mu4e-contacts
-  :after mu4e
-  :config
-  (setq mu4e-compose-reply-ignore-address '("no-?reply" "duan_n@outlook.com")))
+          ,(make-mu4e-context
+            :name "gmail"
+            :enter-func
+            (lambda () (mu4e-message "Enter gmail context"))
+            :leave-func
+            (lambda () (mu4e-message "Leave gmail context"))
+            :match-func
+            (lambda (msg)
+              (when msg
+                (mu4e-message-contact-field-matches msg
+                                                    :to 'mu4e-gmail)))
+            :vars `((user-mail-address . ,mu4e-gmail)
+                    (mu4e-drafts-folder . "/gmail/Drafts")
+                    (mu4e-refile-folder . "/gmail/Archive")
+                    (mu4e-sent-folder . "/gmail/Sent")
+                    (mu4e-trash-folder . "/gmail/Trash")))))
+  (setq mu4e-context-policy 'pick-first))
 
-
-
-(use-package mu4e-compose
-  :after mu4e
-  :config
-  (setq mail-user-agent 'mu4e-user-agent))
-
-(use-package mu4e-helpers
-  :after mu4e
-  :config
-  (setq mu4e-use-fancy-chars t))
+(run-with-idle-timer 4 nil (lambda ()
+                             (mu4e 'background)))
 
 (provide 'init-mail)
 ;;; init-mail.el ends here.

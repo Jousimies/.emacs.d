@@ -51,22 +51,25 @@
 (use-package math-preview
   :load-path "packages/math-preview/"
   :commands math-preview-all math-preview-clear-all
-  :hook (org-mode . auto/math-preview-all)
+  :hook (find-file . (lambda ()
+                       (when (eq major-mode 'org-mode)
+                         (auto/math-preview-all))))
   :config
   (setq math-preview-scale 1.1)
   (setq math-preview-raise 0.2)
   (setq math-preview-margin '(1 . 0))
-  (add-to-list 'org-options-keywords "NO_MATH_PREVIEW:")
+  (add-to-list 'org-options-keywords "NO_MATH_PREVIEW:"))
 
-  (defun auto/math-preview-all ()
-    "Auto update clock table."
-    (interactive)
-    (when (derived-mode-p 'org-mode)
-      (save-excursion
-        (goto-char 0)
-        (unless (string-equal (cadar (org-collect-keywords '("NO_MATH_PREVIEW"))) "t")
-          (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
-              (math-preview-all)))))))
+;;;###autoloads
+(defun auto/math-preview-all ()
+  "Auto update clock table."
+  (interactive)
+  (when (derived-mode-p 'org-mode)
+    (save-excursion
+      (goto-char 0)
+      (unless (string-equal (cadar (org-collect-keywords '("NO_MATH_PREVIEW"))) "t")
+        (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
+          (math-preview-all))))))
 
 (use-package org-download
   :load-path "packages/org-download/"

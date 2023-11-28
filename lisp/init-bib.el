@@ -7,9 +7,9 @@
 (add-to-list 'load-path "~/.emacs.d/packages/parsebib/")
 
 (use-package oc
-  :after org
-  :custom
-  (org-cite-global-bibliography my/reference-lists))
+  :commands org-cite-insert
+  :config
+  (setq org-cite-global-bibliography my/reference-lists))
 
 (use-package bibtex
   :mode ("\\.bib\\'" . bibtex-mode)
@@ -23,28 +23,20 @@
         bibtex-autokey-titlewords-stretch 1
         bibtex-autokey-titleword-length 5))
 
-(use-package zotra
-  :load-path "packages/zotra/"
-  :bind (("C-c r a" . zotra-add-entry-from-url)
-         ("C-c r A" . zotra-add-entry-from-search))
-  :config
-  (setq zotra-cli-command "~/zotra-cli/bin/index.js")
-  (setq zotra-default-bibliography (expand-file-name "bibtexs/References.bib" my-galaxy)))
-
 (use-package ebib
   :load-path "packages/ebib/"
   :bind ("<f2>" . ebib)
-  :custom
-  (ebib-preload-bib-files my/reference-lists)
-  (ebib-keywords (concat my-galaxy "/bibtexs/keywords.txt"))
-  (ebib-notes-directory (concat my-galaxy "/references"))
-  (ebib-filters-default-file (concat my-galaxy "/bibtexs/ebib-filters"))
-  (ebib-reading-list-file (concat my-galaxy "/bibtexs/reading_list.org"))
-  (ebib-keywords-field-keep-sorted t)
-  (ebib-keywords-file-save-on-exit 'always)
-  (ebib-index-columns
+  :config
+  (setq ebib-preload-bib-files my/reference-lists)
+  (setq ebib-keywords (concat my-galaxy "/bibtexs/keywords.txt"))
+  (setq ebib-notes-directory (concat my-galaxy "/references"))
+  (setq ebib-filters-default-file (concat my-galaxy "/bibtexs/ebib-filters"))
+  (setq ebib-reading-list-file (concat my-galaxy "/bibtexs/reading_list.org"))
+  (setq ebib-keywords-field-keep-sorted t)
+  (setq ebib-keywords-file-save-on-exit 'always)
+  (setq ebib-index-columns
         '(("Entry Key" 30 t) ("Note" 1 nil) ("Year" 6 t) ("Title" 50 t)))
-  (ebib-file-associations '(("ps" . "gv"))))
+  (setq ebib-file-associations '(("ps" . "gv"))))
 
 (use-package citar
   :load-path "packages/citar/"
@@ -106,7 +98,7 @@
   (setq citar-at-point-function 'embark-act))
 
 (use-package citar-latex
-  :after citar)
+  :defer t)
 
 (use-package citar-capf
   :hook ((LaTeX-mode . citar-capf-setup)

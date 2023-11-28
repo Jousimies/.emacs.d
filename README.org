@@ -1,5 +1,5 @@
 #+TITLE: Jousimies's Personal Emacs Configuration
-#+DATE: [2023-09-05 Tue 10:53]
+#+DATE: [2023-11-28 Tue 12:16]
 
 * Interface Show
 #+ATTR_ORG: :width 800px
@@ -81,6 +81,10 @@ If I have seen further, it is by standing on the shoulders of giants. ---- Sir I
 - [[https://www.youtube.com/watch?v=RQK_DaaX34Q&list=PLEoMzSkcN8oPQtn7FQEF3D7sroZbXuPZ7][Introduction to Emacs Lisp - Learning Emacs Lisp #1 - YouTube]]
 
 * Differences
+
+** ~setq~ vs ~customize-set-variable~
+从[[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=21695][该邮件列表]]中可以总结出：在 init 文件中使用 setq 进行变量的设置是完全可以的，没有必要使用 customize-set-variable。当然使用 customize-set-variable 设置变量也可以。
+
 ** ~setq~ and ~setq-default~
 + [[https://stackoverflow.com/questions/18172728/the-difference-between-setq-and-setq-default-in-emacs-lisp][elisp - The difference between setq and setq-default in Emacs Lisp - Stack Overflow]]
 

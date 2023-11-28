@@ -100,32 +100,10 @@
                       ,(expand-file-name "config/tempel" my-galaxy))))
 
 (use-package rime
-  :demand t
   :load-path "packages/emacs-rime/"
   :bind (:map rime-mode-map
               ("M-j" . rime-force-enable))
   :config
-  (add-hook 'input-method-activate-hook (lambda ()
-                                          (setq cursor-type 'bar)))
-  (add-hook 'input-method-deactivate-hook (lambda ()
-                                            (setq cursor-type 'box)))
-  (defvar im-cursor-color "red"
-    "The color for input method.")
-
-  (defun im--chinese-p ()
-    "Check if the current input state is Chinese."
-    (if (featurep 'rime)
-        (and (rime--should-enable-p)
-             (not (rime--should-inline-ascii-p))
-             current-input-method)
-      current-input-method))
-
-  (defun im-change-cursor-color ()
-    "Set cursor color depending on input method."
-    (interactive)
-    (set-cursor-color (if (im--chinese-p)
-                          im-cursor-color
-                        (foreground-color-at-point))))
   (setq default-input-method "rime")
   (setq rime-user-data-dir "~/Library/Rime/")
   (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
@@ -141,6 +119,7 @@
   :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"
   :hook (minibuffer-mode . rime-regexp-mode)
   :config
+  (require 'rime)
   (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
   (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
   (setq rime-user-data-dir "~/Library/Rime/"))
@@ -154,7 +133,10 @@
 
 (use-package expand-region
   :load-path "packages/expand-region.el/"
-  :bind ("C-=" . er/expand-region))
+  :bind ("C-=" . er/expand-region)
+  :config
+  (add-to-list 'expand-region-exclude-text-mode-expansions 'org-mode)
+  (add-to-list 'expand-region-exclude-text-mode-expansions 'LaTeX-mode))
 
 (use-package selected
   :load-path "packages/selected.el/"

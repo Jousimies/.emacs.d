@@ -9,6 +9,9 @@
 (setq inhibit-startup-screen t)
 ;; (setq inhibit-splash-screen t)
 
+(use-package loaddefs
+  :hook (minibuffer-mode . minibuffer-electric-default-mode))
+
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -67,6 +70,7 @@
 (setq max-mini-window-height 10)
 (setq redisplay-skip-fontification-on-input t)
 (setq-default cursor-in-non-selected-windows nil)
+(setq echo-keystrokes 0.25)
 
 ;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
 (defvar mobile-document "~/Library/Mobile Documents/"
@@ -176,6 +180,11 @@
           ("socks" . "127.0.0.1:7890")
           ("no_proxy" . "0.0.0.0"))))
 
+(add-hook 'input-method-activate-hook (lambda ()
+                                        (setq cursor-type 'bar)))
+(add-hook 'input-method-deactivate-hook (lambda ()
+                                          (setq cursor-type 'box)))
+
 (use-package simple
   :bind (("C-c b s" . scratch-buffer)
          ("C-h" . delete-backward-char)
@@ -200,6 +209,9 @@
   :hook ((after-init . auto-save-visited-mode)
          (before-save . auto-save-delete-trailing-whitespace-except-current-line))
   :config
+  (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
+
   (setq trash-directory "~/.Trash")
   (setq auto-save-default nil)
   (setq auto-save-visited-interval 1)
