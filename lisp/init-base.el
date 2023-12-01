@@ -92,6 +92,8 @@
 (defvar my/reference-lists `(,(concat my-galaxy "/bibtexs/References.bib")
                              ,(concat my-galaxy "/bibtexs/Books.bib")))
 
+(defvar cache-directory (expand-file-name ".cache" user-emacs-directory))
+
 (defvar no-littering-etc-directory
   (expand-file-name (convert-standard-filename "etc/") user-emacs-directory)
   "The directory where packages place their configuration files.
@@ -344,7 +346,7 @@
   :load-path "packages/emacs-gc-buffers"
   :hook (after-init . gc-buffers-mode))
 
-(setq browse-url-browser-function 'xwidget-webkit-browse-url)
+;; (setq browse-url-browser-function 'xwidget-webkit-browse-url)
 (use-package xwidget
   :bind (:map xwidget-webkit-mode-map
               ("o" . my/xwidget-open-with-default-browse))

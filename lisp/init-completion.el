@@ -4,38 +4,37 @@
 
 ;;; Code:
 
-(setq completion-styles '(basic substring initials flex orderless))
-(setq completion-category-defaults '((email (styles substring partial-completion))
-                                     (buffer (styles basic substring))
-                                     (unicode-name (styles basic substring))
-                                     (project-file (styles substring))
-                                     (xref-location (styles substring))
-                                     (info-menu (styles basic substring))
-                                     (symbol-help (styles basic shorthand substring))))
-
-(setq completion-category-overrides '((file (styles basic partial-completion))))
 (setq enable-recursive-minibuffers t)
+(add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
+(add-hook 'minibuffer-mode-hook #'cursor-intangible-mode)
 
-(setq completions-detailed t)
-(setq completion-show-inline-help nil)
-(setq completions-max-height 6)
-(setq completions-header-format
-      (propertize "%s candidates:\n" 'face 'font-lock-comment-face))
-(setq completions-highlight-face 'completions-highlight)
+(setopt completions-detailed t
+        completions-format 'one-column
+        completion-auto-select t
+        completion-ignore-case t
+        minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
+        read-buffer-completion-ignore-case t
+        completion-show-inline-help nil
+        completions-max-height 50
+        completion-show-help nil
+        completion-auto-wrap nil
+        completions-header-format (propertize "%s candidates:\n" 'face 'font-lock-comment-face)
+        completions-highlight-face 'completions-highlight)
+(keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
+(setq tab-always-indent 'complete)
 
 (add-hook 'minibuffer-mode-hook (lambda ()
                                   (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
                                   (require 'orderless)
                                   (setq-local completion-styles
                                               '(orderless flex))))
-(setq-local completion-in-region-function
-            (lambda (&rest args)
-              (apply (if vertico-mode
-                         #'consult-completion-in-region
-                       #'completion--in-region)
-                     args)))
+;; (setq-local completion-in-region-function
+;;             (lambda (&rest args)
+;;               (apply (if vertico-mode
+;;                          #'consult-completion-in-region
+;;                        #'completion--in-region)
+;;                      args)))
 
-(setq tab-always-indent 'complete)
 ;; https://emacs-china.org/t/macos-save-silently-t/24086
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
 (setq set-message-functions '(inhibit-message))
@@ -51,19 +50,6 @@
           (cdr args)))
 
 (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-(use-package vertico
-  :load-path "packages/vertico"
-  :hook (after-init . vertico-mode)
-  :config
-  (setq vertico-count 10)
-  (setq vertico-resize nil)
-  (setq vertico-cycle t))
-
-(use-package vertico-directory
-  :load-path "packages/vertico/extensions/"
-  :bind (:map minibuffer-mode-map
-         ("DEL" . vertico-directory-up)))
 
 (use-package consult
   :load-path "packages/consult/"
@@ -83,9 +69,8 @@
          :map minibuffer-mode-map
          ("C-r" . consult-history))
   :config
-  (setq consult-preview-key nil)
-  (setq completion-in-region-function #'consult-completion-in-region))
-
+  (setq consult-preview-key nil))
+;; (setq completion-in-region-function #'consult-completion-in-region)
 (use-package consult-imenu
   :bind ([remap imenu] . consult-imenu))
 

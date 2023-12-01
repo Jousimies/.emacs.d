@@ -17,8 +17,6 @@
   (setq use-package-verbose t)
   (require 'init-benchmark))
 
-(require 'init-dashboard)
-
 (require 'init-base)
 (require 'init-ui)
 ;; (require 'init-meow)
