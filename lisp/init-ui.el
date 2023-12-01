@@ -135,10 +135,10 @@
 (defvar-local my/modeline-input-method
     '(:eval (when (mode-line-window-selected-p)
               (propertize
-               (if current-input-method
+               (if current-system-input-method
                    " ZH "
                  " EN ")
-               'face `(:inherit ,(if current-input-method 'font-lock-string-face nil) :inverse-video t)))))
+               'face `(:inherit ,(if current-system-input-method 'font-lock-string-face nil) :inverse-video t)))))
 
 (defvar-local my/modeline-kbd-macro
     '(:eval

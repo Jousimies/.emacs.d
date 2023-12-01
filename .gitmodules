@@ -490,3 +490,12 @@
 [submodule "packages/emacs-winum"]
 	path = packages/emacs-winum
 	url = https://github.com/deb0ch/emacs-winum.git
+[submodule "packages/setup"]
+	path = packages/setup
+	url = https://git.sr.ht/~pkal/setup
+[submodule "packages/on.el"]
+	path = packages/on.el
+	url = https://github.com/ajgrf/on.el.git
+[submodule "packages/macim.el"]
+	path = packages/macim.el
+	url = https://github.com/Jousimies/macim.el.git

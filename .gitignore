@@ -17,3 +17,4 @@ custom.el
 mind-wave
 request
 tree-sitter
+.cache

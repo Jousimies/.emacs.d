@@ -99,30 +99,34 @@
   (setq tempel-path `("~/.emacs.d/template/tempel"
                       ,(expand-file-name "config/tempel" my-galaxy))))
 
-(use-package rime
-  :load-path "packages/emacs-rime/"
-  :bind (:map rime-mode-map
-              ("M-j" . rime-force-enable))
+(use-package macim
+  :load-path "~/.emacs.d/packages/macim.el/"
+  :bind (("C-\\" . macim-switch)
+         :map isearch-mode-map
+         ("C-\\" . macim-switch))
+  :hook ((after-init . macim-select-ascii)
+         (after-init . macim-mode)
+         (isearch-mode . macim-select-ascii)
+         (minibuffer-mode . macim-select-ascii))
   :config
-  (setq default-input-method "rime")
-  (setq rime-user-data-dir "~/Library/Rime/")
-  (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
-  (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
-  (setq rime-disable-predicates '(rime-predicate-prog-in-code-p
-                                  rime-predicate-org-in-src-block-p
-                                  rime-predicate-org-latex-mode-p
-                                  rime-predicate-tex-math-or-command-p))
-  (setq rime-inline-predicates '(rime-predicate-space-after-cc-p
-                                 rime-predicate-after-alphabet-char-p)))
+  (setq macim-other "im.rime.inputmethod.Squirrel.Hans")
+  (defun macim-switch ()
+    (interactive)
+    (if current-system-input-method
+        (progn
+          (macim-select-ascii)
+          (force-mode-line-update))
+      (progn
+        (macim-select-other)
+        (force-mode-line-update)))))
 
-(use-package rime-regexp
-  :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"
-  :hook (minibuffer-mode . rime-regexp-mode)
-  :config
-  (require 'rime)
-  (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
-  (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
-  (setq rime-user-data-dir "~/Library/Rime/"))
+(use-package emt
+  :load-path "packages/emt"
+  :bind (("M-f" . emt-forward-word)
+         ("M-b" . emt-backward-word)
+         ("M-d" . emt-kill-word)
+         ("M-h" . emt-backward-kill-word))
+  :hook (after-init . emt-ensure))
 
 (use-package yasnippet
   :load-path "packages/yasnippet/"

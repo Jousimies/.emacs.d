@@ -111,14 +111,5 @@ This function requires ImageMagick's convert utility to be installed and availab
   (interactive)
   (mpv-start (dired-get-filename)))
 
-(use-package emt
-  :load-path "packages/emt"
-  :bind (("M-f" . emt-forward-word)
-         ("M-b" . emt-backward-word)
-         ("M-d" . emt-kill-word)
-         ("M-h" . emt-backward-kill-word))
-  :config
-  (emt-ensure))
-
 (provide 'init-misc)
 ;;; init-misc.el ends here.
