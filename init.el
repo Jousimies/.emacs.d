@@ -4,22 +4,6 @@
 
 ;;; Code:
 
-;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
-(setq auto-mode-case-fold nil)
-
-(unless (or (daemonp) noninteractive init-file-debug)
-  ;; Suppress file handlers operations at startup
-  ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
-  (let ((old-value file-name-handler-alist))
-    (setq file-name-handler-alist nil)
-    (set-default-toplevel-value 'file-name-handler-alist file-name-handler-alist)
-    (add-hook 'emacs-startup-hook
-              (lambda ()
-                "Recover file name handlers."
-                (setq file-name-handler-alist
-                      (delete-dups (append file-name-handler-alist old-value))))
-              101)))
-
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (add-to-list 'load-path "~/.emacs.d/packages/compat/")
 (add-to-list 'load-path "~/.emacs.d/packages/dash.el/")
@@ -28,21 +12,12 @@
 (add-to-list 'load-path "~/.emacs.d/packages/posframe/")
 (add-to-list 'load-path "~/.emacs.d/packages/emacs-async/")
 
-;; https://www.emacswiki.org/emacs/ExecPath
-(defun set-exec-path-from-shell-PATH ()
-  "This is particularly useful under Mac OS X and macOS."
-  (interactive)
-  (let ((path-from-shell (replace-regexp-in-string
-                          "[ \t\n]*$" "" (shell-command-to-string
-                                          "$SHELL --login -c 'echo $PATH'"))))
-    (setenv "PATH" path-from-shell)
-    (setq exec-path (split-string path-from-shell path-separator))))
-(set-exec-path-from-shell-PATH)
-
 (when init-file-debug
   (setq use-package-compute-statistics t)
   (setq use-package-verbose t)
   (require 'init-benchmark))
+
+(require 'init-dashboard)
 
 (require 'init-base)
 (require 'init-ui)
