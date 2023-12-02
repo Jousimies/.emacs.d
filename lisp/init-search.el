@@ -1,18 +1,28 @@
-;; init-search.el --- Search. -*- lexical-binding: t; no-byte-compile: t -*-
+;;; init-search.el --- Search                        -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2023  Duan Ning
+
+;; Author: Duan Ning <jousimies@DNs-Air.local>
+;; Keywords:
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
-;;; Code:
+;;
 
-(use-package isearch
-  :bind (:map isearch-mode-map
-              ("\C-h" . isearch-delete-char)
-              ("C-\\" . toggle-sys-input-method))
-  :config
-  (setq isearch-lazy-count t)
-  ;; (setq lazy-count-prefix-format nil)
-  ;; (setq lazy-count-suffix-format "   (%s/%s)")
-  )
+;;; Code:
 
 (use-package rg
   :load-path ("packages/rg.el/" "packages/Emacs-wgrep")
@@ -27,12 +37,6 @@
   (rg-enable-default-bindings)
   (setq rg-group-result t)
   (setq rg-show-columns t))
-
-(use-package help
-  :defer t
-  :config
-  (setq help-window-select 'other)
-  (setq help-window-keep-selected t))
 
 (use-package helpful
   :load-path "packages/helpful/" "packages/elisp-refs/"
@@ -91,11 +95,6 @@
   :load-path "packages/emacs-web-server"
   :bind ("M-g h" . httpd-serve-directory))
 
-(use-package bard
-  :load-path "packages/Bard.el/"
-  :bind ("C-c a b" . bard-chat)
-  :config
-  (setq bard-http-proxy "http://127.0.0.1:8118"))
 
 (provide 'init-search)
-;;; init-search.el ends here.
+;;; init-search.el ends here

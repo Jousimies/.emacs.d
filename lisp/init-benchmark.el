@@ -73,5 +73,6 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
 (require 'benchmark-init-loaddefs)
 (benchmark-init/activate)
 
+(global-set-key (kbd "<f7>") #'benchmark-init/show-durations-tree)
 (provide 'init-benchmark)
 ;;; init-beanchmark.el ends here.

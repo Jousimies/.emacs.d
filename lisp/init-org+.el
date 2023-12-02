@@ -11,28 +11,9 @@
                                (imenu-list-minor-mode 1)))
          (olivetti-mode-off . (lambda ()
                                 (imenu-list-minor-mode -1)))))
-;; (defvar my/modeline-tabbar-format-cache nil)
-;; (defun my/modeline-tabbar-status ()
-;;   (if my/modeline-tabbar-format-cache
-;;       (progn
-;;         (setq my/modeline-format-cache mode-line-format)
-;;         (setq-default mode-line-format nil)
-;;         (tab-bar-mode -1))
-;;     (progn
-;;       (tab-bar-mode 1)
-;;       (setq-default mode-line-format my/modeline-format-cache)
-;;       (setq my/modeline-format-cache nil))))
-;; (defun toggle-olivetti-mode (enable &optional custom-modeline-format)
-;;   "Toggle Olivetti mode and adjust the modeline format."
-;;   (if (and enable (not my/modeline-format-cache))
-;;       (progn
-;;         (setq my/modeline-format-cache (if custom-modeline-format custom-modeline-format mode-line-format))
-;;         (setq-default mode-line-format nil)
-;;         (tab-bar-mode -1))
-;;     (progn
-;;       (tab-bar-mode 1)
-;;       (setq-default mode-line-format my/modeline-format-cache)
-;;       (setq my/modeline-format-cache nil))))
+(use-package form-feed
+  :load-path "packages/form-feed/"
+  :hook (org-mode . form-feed-mode))
 
 (use-package imenu-list
   :load-path "packages/imenu-list/"

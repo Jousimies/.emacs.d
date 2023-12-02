@@ -5,25 +5,38 @@
 ;;; Code:
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
-(add-to-list 'load-path "~/.emacs.d/packages/compat/")
-(add-to-list 'load-path "~/.emacs.d/packages/dash.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/f.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/s.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/posframe/")
-(add-to-list 'load-path "~/.emacs.d/packages/emacs-async/")
 
 (when init-file-debug
   (setq use-package-compute-statistics t)
   (setq use-package-verbose t)
   (require 'init-benchmark))
 
-(require 'init-base)
-(require 'init-ui)
-;; (require 'init-meow)
-(require 'init-crud)
+;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
+(defvar mobile-document "~/Library/Mobile Documents/"
+  "This folder contains documents in icloud.")
+
+(defvar my-cloud "~/Nextcloud"
+  "This folder is My cloud.")
+
+;; L.Personal.Galaxy location may change, but folders in this directory never change.
+(defvar my-galaxy (expand-file-name "L.Personal.Galaxy" my-cloud)
+  "This folder stores all the plain text files of my life.")
+
+(defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
+  "The source folder of my blog.")
+
+(defvar my/web_archive (expand-file-name "web_archive/" my-galaxy)
+  "The folder save web pages.")
+
+(require 'init-dashboard)
+(require 'init-core)
+(require 'init-builtin)
+(require 'init-layout)
+(require 'init-edit)
 (require 'init-completion)
-(require 'init-dired)
 (require 'init-search)
+(require 'init-dired)
+
 (require 'init-dict)
 (require 'init-lsp)
 (require 'init-git)
@@ -39,7 +52,7 @@
 (require 'init-finance)
 (require 'init-telega)
 (require 'init-markdown)
-(require 'init-mail)
+;; (require 'init-mail)
 ;; (require 'init-elfeed)
 
 (setq custom-file (locate-user-emacs-file "custom.el"))

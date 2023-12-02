@@ -1,27 +1,42 @@
-;; init-dired.el --- File manager. -*- lexical-binding: t; no-byte-compile: t -*-
+;;; init-dired.el --- Dired                          -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2023  Duan Ning
+
+;; Author: Duan Ning <jousimies@DNs-Air.local>
+;; Keywords:
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
+;;
+
 ;;; Code:
 
-(use-package dired
-  :commands dired-find-file
-  :bind (("C-x d" . dired)
-         (:map dired-mode-map
-               ("C-c l" . org-store-link)))
-  :hook (dired-mode . dired-hide-details-mode)
-  :config
-  (when (executable-find "gls")
+(when (executable-find "gls")
+    (setopt dired-use-ls-dired nil
+			insert-directory-program "gls"
+			dired-listing-switches
+			"-l --almost-all --human-readable --group-directories-first --no-group"))
 
-    (setq dired-use-ls-dired nil)
-    (setq insert-directory-program "gls")
-    (setq dired-listing-switches
-          "-l --almost-all --human-readable --group-directories-first --no-group"))
-  (setq dired-dwim-target t)
-  (setq dired-auto-revert-buffer #'dired-buffer-stale-p)
-  (setq dired-recursive-copies 'always)
-  (setq dired-recursive-deletes 'top)
-  (setq dired-auto-revert-buffer t))
+(setopt dired-dwim-target t
+		dired-auto-revert-buffer #'dired-buffer-stale-p
+		dired-recursive-copies 'always
+		dired-recursive-deletes 'top
+		dired-auto-revert-buffer t)
+
+(global-set-key (kbd "C-x d") #'dired)
 
 (defun z/dired-insert-date-folder ()
   "Create new directory with current date"
@@ -39,7 +54,6 @@
 (defvar file-extensions-with-default-apps '("xls" "doc" "xlsx" "docx" "eps" "dwg" "psd" "drawio")
   "List of file extensions to open with default applications.")
 
-;;;###autoload
 (defun open-with-default-app ()
   "Open file with system default app in dired."
   (interactive)
@@ -66,17 +80,13 @@
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-<return>") #'dired-preview))
 
-(use-package dired-x
-  :hook (dired-mode . dired-omit-mode)
-  :bind (:map dired-mode-map
-              ("s-." . dired-omit-mode))
-  :config
-  (setq dired-omit-verbose nil)
-  (setq dired-omit-files "^\\.[^.].*"))
-
-(use-package image-dired
-  :bind (:map dired-mode-map
-              ("C-c l" . image-dired)))
+(setopt dired-omit-verbose nil
+		dired-omit-files "^\\.[^.].*")
+(add-hook 'dired-mode-hook #'dired-omit-mode)
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "s-.") #'dired-omit-mode)
+  (define-key dired-mode-map (kbd "C-c i") #'image-dired)
+  (define-key dired-mode-map (kbd "C-c l") #'org-store-link))
 
 (defun xah-show-in-desktop ()
   "Show current file in desktop.
@@ -105,5 +115,6 @@ This command can be called when in a file buffer or in `dired'."
 
 (global-set-key (kbd "C-c f d") 'xah-show-in-desktop)
 
+
 (provide 'init-dired)
-;;; init-dired.el ends here.
+;;; init-dired.el ends here

@@ -4,10 +4,9 @@
 
 ;;; Code:
 
-(use-package org-agenda
-  :bind ("C-<f12>" . org-agenda)
-  :hook (org-agenda-finalize . #'org-agenda-find-same-or-today-or-agenda)
-  :config
+(global-set-key (kbd "C-<F12>") #'org-agenda)
+(with-eval-after-load 'org-agenda
+  (add-hook 'org-agenda-finalize-hook #'org-agenda-find-same-or-today-or-agenda)
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-agenda-skip-deadline-if-done t)
   (setq org-agenda-todo-ignore-scheduled 'future)
@@ -16,14 +15,14 @@
   (setq org-agenda-compact-blocks t)
   (setq org-agenda-window-setup 'other-tab)
   (setq org-agenda-align-tags-to-column 'auto)
-  (setq org-agenda-custom-commands
-        '(("b" "Book Shelf"
-           ((tags "+BookShelf"
-                  ((org-agenda-prefix-format " %i")
-                   (org-agenda-overriding-header "Reading Lists"))))))))
+  (add-to-list 'org-agenda-custom-commands
+			   '("b" "Book Shelf"
+				 ((tags "+BookShelf"
+						((org-agenda-prefix-format " %i")
+						 (org-agenda-overriding-header "Reading Lists")))))))
 
 (use-package org-gtd
-    :load-path ("packages/org-gtd.el/" "packages/org-agenda-property" "packages/org-edna")
+  :load-path ("packages/org-gtd.el/" "packages/org-agenda-property" "packages/org-edna")
   :init
   (setq org-gtd-update-ack "3.0.0")
   :custom
@@ -47,7 +46,7 @@
   (setq org-agenda-files `(,(expand-file-name "org-gtd-tasks.org" org-gtd-directory)
                            ,(expand-file-name "org-gtd-tasks.org_archive" org-gtd-directory)))
 
-  (org-edna-mode)
+  (add-hook 'org-mode-hook #'org-edna-mode)
   :bind (("<f12>" . org-gtd-engage)
          ("s-<f12>" . org-gtd-process-inbox)
          ("M-<f12> c" . org-gtd-clarify-item)
@@ -57,24 +56,20 @@
          (:map org-gtd-clarify-map
                ("C-c C-c" . org-gtd-organize))))
 
-(use-package calendar
-  :bind ("C-c C" . calendar)
-  :hook (calendar-today-visible . calendar-mark-today)
-  :config
+(with-eval-after-load 'calendar
   (setq calendar-view-diary-initially-flag t)
   (setq calendar-mark-diary-entries-flag t)
 
   (setq calendar-date-style 'iso)
   (setq calendar-date-display-form calendar-iso-date-display-form)
-  (setq diary-date-forms diary-iso-date-forms))
-
-(use-package solar
-  :defer t
-  :config
+  (setq diary-date-forms diary-iso-date-forms)
   (setq calendar-time-display-form
         '(24-hours ":" minutes
                    (when time-zone
-                     (format "(%s)" time-zone)))))
+                     (format "(%s)" time-zone))))
+  (add-hook 'calendar-today-visible-hook #'calendar-mark-today))
+
+(global-set-key (kbd "C-c C") #'calendar)
 
 (use-package appt
   :hook (diary-mode . appt-activate)

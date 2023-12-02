@@ -1,9 +1,28 @@
-;; init-completion.el --- Minibuffer and completion. -*- lexical-binding: t; no-byte-compile: t -*-
+;;; init-completion.el --- Completion UI             -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2023  Duan Ning
+
+;; Author: Duan Ning <jousimies@DNs-Air.local>
+;; Keywords:
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
-;;; Code:
+;;
 
+;;; Code:
 (setq enable-recursive-minibuffers t)
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 (add-hook 'minibuffer-mode-hook #'cursor-intangible-mode)
@@ -91,7 +110,7 @@
 
 (use-package corfu
   :load-path "packages/corfu/"
-  :hook (after-init . global-corfu-mode)
+  :hook (on-first-buffer . global-corfu-mode)
   :config
   (setq corfu-cycle t)
   (setq corfu-auto t)
@@ -200,7 +219,7 @@
 
 (use-package which-key
   :load-path "packages/emacs-which-key/"
-  :hook (after-init . which-key-mode)
+  :hook (on-first-input . which-key-mode)
   :config
   (setq which-key-popup-type 'minibuffer)
   (setq which-key-sort-order #'which-key-prefix-then-key-order)
@@ -208,5 +227,6 @@
   (setq which-key-idle-delay 0)
   (setq which-key-idle-secondary-delay 0.05))
 
+
 (provide 'init-completion)
-;;; init-git.el ends here.
+;;; init-completion.el ends here

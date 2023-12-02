@@ -6,10 +6,16 @@
 
 (add-to-list 'load-path "~/.emacs.d/packages/parsebib/")
 
-(use-package oc
-  :commands org-cite-insert
-  :config
-  (setq org-cite-global-bibliography my/reference-lists))
+(defvar my/reference-lists `(,(concat my-galaxy "/bibtexs/References.bib")
+                             ,(concat my-galaxy "/bibtexs/Books.bib")))
+
+(with-eval-after-load 'oc
+  (setq org-cite-global-bibliography my/reference-lists)
+  (require 'citar-org)
+  (with-eval-after-load 'citar
+	(setq org-cite-insert-processor 'citar)
+	(setq org-cite-follow-processor 'citar)
+	(setq org-cite-activate-processor 'citar)))
 
 (use-package bibtex
   :mode ("\\.bib\\'" . bibtex-mode)
@@ -104,14 +110,8 @@
   :hook ((LaTeX-mode . citar-capf-setup)
          (org-mode . citar-capf-setup)))
 
-(use-package citar-org
-  :after citar
-  :config
-  (setq org-cite-insert-processor 'citar)
-  (setq org-cite-follow-processor 'citar)
-  (setq org-cite-activate-processor 'citar)
-  (with-eval-after-load 'citar-org
-    (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point)))
+(with-eval-after-load 'citar-org
+    (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point))
 
 (use-package citar-embark
   :after citar

@@ -4,48 +4,48 @@
 
 ;;; Code:
 
-(use-package org
-  :bind (:map org-mode-map
-              ("M-s-s" . org-store-link))
-  :config
-  (setq org-ellipsis " ⇲")
-  (setq org-modules '(org-habit))
-  (setq org-imenu-depth 4)
-  (setq org-return-follows-link t)
-  (setq org-display-remote-inline-images 'download)
-  (setq org-log-into-drawer t)
-  (setq org-fast-tag-selection-single-key 'expert)
-  (setq org-adapt-indentation nil)
-  (setq org-fontify-quote-and-verse-blocks t)
-  (setq org-support-shift-select t)
-  (setq org-treat-S-cursor-todo-selection-as-state-change nil)
-  (setq org-hide-leading-stars nil)
-  (setq org-startup-with-inline-images t)
-  (setq org-startup-folded 'content)
-  (setq org-image-actual-width nil)
-  (setq org-use-speed-commands t)
-  (setq org-highlight-latex-and-related '(latex script))
-  (setq org-enforce-todo-dependencies t)
-  (setq org-enforce-todo-checkbox-dependencies t)
-  (setq org-tags-sort-function 'org-string-collate-greaterp)
+(with-eval-after-load 'org
+  (setopt org-ellipsis " ⇲"
+		  org-modules '(org-habit)
+		  org-imenu-depth 4
+		  org-return-follows-link t
+		  org-display-remote-inline-images 'download
+		  org-log-into-drawer t
+		  org-fast-tag-selection-single-key 'expert
+		  org-adapt-indentation nil
+		  org-fontify-quote-and-verse-blocks t
+		  org-support-shift-select t
+		  org-treat-S-cursor-todo-selection-as-state-change nil
+		  org-hide-leading-stars nil
+		  org-startup-with-inline-images t
+		  org-startup-folded 'content
+		  org-image-actual-width nil
+		  org-use-speed-commands t
+		  org-highlight-latex-and-related '(latex script)
+		  org-enforce-todo-dependencies t
+		  org-enforce-todo-checkbox-dependencies t
+		  org-tags-sort-function 'org-string-collate-greaterp))
 
-  (setq org-deadline-warning-days 7)
+(with-eval-after-load 'org-agenda
+  (setopt org-deadline-warning-days 7))
 
-  (setq org-preview-latex-default-process 'dvisvgm)
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
-  (setq org-todo-repeat-to-state t)
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)")))
-  (add-hook 'org-after-todo-state-change-hook (lambda ()
-                                                (if (org-clocking-p)
-                                                    (org-clock-out))))
+(with-eval-after-load 'denote
   (defun my/org-refile-on-todo-done ()
     "Refile a task to a different file when it is marked as DONE."
     (let ((org-refile-keep t))
       (when (string= org-state "DONE")
         (org-refile nil nil (list nil (car (denote-journal-extras--entry-today))) "Copy"))))
+  (add-hook 'org-after-todo-state-change-hook 'my/org-refile-on-todo-done))
 
-  (add-hook 'org-after-todo-state-change-hook 'my/org-refile-on-todo-done)
+(use-package org
+  :bind (:map org-mode-map
+              ("M-s-s" . org-store-link))
+  :config
+  (setq org-preview-latex-default-process 'dvisvgm)
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
+  (setq org-todo-repeat-to-state t)
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)")))
 
   (setq org-todo-keyword-faces
         '(("TODO" . (:inherit (bold org-todo)))
@@ -210,33 +210,21 @@
     (when-let* ((files (org-attach-file-list dir)))
       (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))))
 
-;; (defun my/org-attach-visit-headline-from-dired ()
-;;     "Go to the headline corresponding to this org-attach directory."
-;;     (interactive)
-;;     (let* ((id-parts (last (split-string default-directory "/" t) 2))
-;;            (id (apply #'concat id-parts)))
-;;       (let ((m (org-id-find id 'marker)))
-;;         (unless m (user-error "Cannot find entry with ID \"%s\"" id))
-;;         (pop-to-buffer (marker-buffer m))
-;;         (goto-char m)
-;;         (move-marker m nil)
-;;         (org-fold-show-context))))
-
 (defun my/org-attach-visit-headline-from-dired ()
-    "Go to the headline corresponding to this org-attach directory."
-    (interactive)
-    (require 'org-attach)
-    (let* ((path (replace-regexp-in-string (regexp-quote org-attach-directory) "" (expand-file-name (dired-filename-at-point))))
-           (id-parts (split-string path "/"))
-           (id1 (nth 1 id-parts))
-           (id2 (nth 2 id-parts))
-           (id (concat id1 id2)))
-      (let ((m (org-id-find id 'marker)))
-        (unless m (user-error "Cannot find entry with ID \"%s\"" id))
-        (pop-to-buffer (marker-buffer m))
-        (goto-char m)
-        (move-marker m nil)
-        (org-fold-show-context))))
+  "Go to the headline corresponding to this org-attach directory."
+  (interactive)
+  (require 'org-attach)
+  (let* ((path (replace-regexp-in-string (regexp-quote org-attach-directory) "" (expand-file-name (dired-filename-at-point))))
+         (id-parts (split-string path "/"))
+         (id1 (nth 1 id-parts))
+         (id2 (nth 2 id-parts))
+         (id (concat id1 id2)))
+    (let ((m (org-id-find id 'marker)))
+      (unless m (user-error "Cannot find entry with ID \"%s\"" id))
+      (pop-to-buffer (marker-buffer m))
+      (goto-char m)
+      (move-marker m nil)
+      (org-fold-show-context))))
 
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-'") #'my/org-attach-visit-headline-from-dired))
@@ -244,11 +232,20 @@
 (with-eval-after-load 'org-habit
   (setq org-habit-graph-column 100))
 
-(use-package org-id
-  :defer t
-  :config
-  (setq org-id-method 'ts)
-  (setq org-id-link-to-org-use-id 'create-if-interactive))
+(with-eval-after-load 'org-id
+  (setopt org-id-method 'ts
+		  org-id-locations-file (expand-file-name ".org-id-locations" cache-directory)
+		  org-id-link-to-org-use-id 'create-if-interactive))
+
+(defun update-org-ids-in-directory (directory)
+  "Update Org IDs in all Org files in DIRECTORY."
+  (interactive "DEnter directory: ")
+  (when (file-directory-p directory)
+    (let ((org-files (directory-files-recursively directory "\\.org\\'")))
+      (org-id-update-id-locations org-files t)
+      (message "Updated Org IDs in %d files." (length org-files))))
+  (unless (file-directory-p directory)
+    (message "Not a valid directory: %s" directory)))
 
 ;;;###autoload
 (defun my/copy-idlink ()
@@ -264,33 +261,17 @@
       (kill-new mytmplink)
       (message "Copied %s to killring (clipboard)" mytmplink))))
 
-(defun update-org-ids-in-directory (directory)
-  "Update Org IDs in all Org files in DIRECTORY."
-  (interactive "DEnter directory: ")
-  (when (file-directory-p directory)
-    (let ((org-files (directory-files-recursively directory "\\.org\\'")))
-      (org-id-update-id-locations org-files t)
-      (message "Updated Org IDs in %d files." (length org-files))))
-  (unless (file-directory-p directory)
-    (message "Not a valid directory: %s" directory)))
-
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "<f8>") 'my/copy-idlink))
 
-(use-package org-src
-  :defer t
-  :config
+(with-eval-after-load 'org-src
   (setq org-src-window-setup 'current-window)
   (setq org-src-ask-before-returning-to-edit-buffer nil))
 
-(use-package org-goto
-  :defer t
-  :config
+(with-eval-after-load 'org-goto
   (setq org-goto-interface 'outline-path-completion))
 
-(use-package org-refile
-  :commands org-refile
-  :config
+(with-eval-after-load 'org-refile
   (setq org-refile-targets '((nil :maxlevel . 9)
                              (org-agenda-files :maxlevel . 9)))
   (setq org-refile-use-outline-path t)
@@ -298,6 +279,12 @@
   (setq org-refile-allow-creating-parent-nodes 'confirm)
   (setq org-refile-use-outline-path 'file)
   (setq org-refile-active-region-within-subtree t))
+
+(with-eval-after-load 'org-clock
+  (setq org-clock-persist-file (expand-file-name "org-clock-save.el" cache-directory))
+  (add-hook 'org-after-todo-state-change-hook (lambda ()
+                                                (if (org-clocking-p)
+                                                    (org-clock-out)))))
 
 (use-package org-clock
   :commands org-clocking-p
@@ -484,7 +471,7 @@
         '(("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@")))
   (setq org-html-preamble t)
   (setq org-html-preamble-format
-      '(("en" "<a href=\"/index.html\" class=\"button\">Home</a>
+		'(("en" "<a href=\"/index.html\" class=\"button\">Home</a>
                <a href=\"/posts/index.html\" class=\"button\">Posts</a>
                <a href=\"/about.html\" class=\"button\">About</a>
                <hr>")))
@@ -562,11 +549,11 @@
     (interactive)
     (message "%s%s" origin publish)
     (with-temp-buffer
-        (insert-file-contents publish)
-        (goto-char (point-min))
-        (while (re-search-forward "file:///Users/jousimies/Nextcloud/L.Personal.Galaxy/pictures/" nil t)
-          (replace-match "../static/"))
-        (write-region (point-min) (point-max) publish)))
+      (insert-file-contents publish)
+      (goto-char (point-min))
+      (while (re-search-forward "file:///Users/jousimies/Nextcloud/L.Personal.Galaxy/pictures/" nil t)
+        (replace-match "../static/"))
+      (write-region (point-min) (point-max) publish)))
 
   (add-hook 'org-publish-after-publishing-hook 'my/ox-publish-move-images)
   (add-hook 'org-publish-after-publishing-hook 'my/ox-publish-replace-src-path))
