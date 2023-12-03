@@ -47,6 +47,18 @@
                                   (require 'orderless)
                                   (setq-local completion-styles
                                               '(orderless flex))))
+(add-hook 'on-first-input-hook #'fido-mode)
+;; (use-package fussy
+;;   :load-path "packages/fussy/" "packages/flx/"
+;;   :config
+;;   (push 'fussy completion-styles)
+;;   (setq
+;;    ;; For example, project-find-file uses 'project-files which uses
+;;    ;; substring completion by default. Set to nil to make sure it's using
+;;    ;; flx.
+;;    completion-category-defaults nil
+;;    completion-category-overrides nil))
+
 ;; (setq-local completion-in-region-function
 ;;             (lambda (&rest args)
 ;;               (apply (if vertico-mode

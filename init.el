@@ -39,6 +39,8 @@
 
 (require 'init-dict)
 (require 'init-lsp)
+(require 'init-prog)
+
 (require 'init-git)
 (require 'init-org)
 (require 'init-org+)
@@ -52,7 +54,7 @@
 (require 'init-finance)
 (require 'init-telega)
 (require 'init-markdown)
-;; (require 'init-mail)
+(require 'init-mail)
 ;; (require 'init-elfeed)
 
 (setq custom-file (locate-user-emacs-file "custom.el"))

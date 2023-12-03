@@ -100,12 +100,12 @@
         cursor-in-non-selected-windows nil)
 
 ;; Proxy
-(with-eval-after-load 'url-vars
-  (setq url-proxy-services
-        '(("http" . "127.0.0.1:7890")
-          ("https" . "127.0.0.1:7890")
-          ("socks" . "127.0.0.1:7890")
-          ("no_proxy" . "0.0.0.0"))))
+;; (with-eval-after-load 'url-vars
+;;   (setq url-proxy-services
+;;         '(("http" . "127.0.0.1:7890")
+;;           ("https" . "127.0.0.1:7890")
+;;           ("socks" . "127.0.0.1:7890")
+;;           ("no_proxy" . "0.0.0.0"))))
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh
