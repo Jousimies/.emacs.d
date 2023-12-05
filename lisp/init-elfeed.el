@@ -129,5 +129,20 @@
   (interactive)
   (mpv-start (dired-get-filename)))
 
+;; @Lucius_Chen
+(defun elfeed/open-link-with-mpv ()
+  "Open the link at point with mpv if it is a video."
+  (interactive)
+  (let ((url (or (elfeed-get-link-at-point)
+                 (elfeed-get-url-at-point))))
+    (if (and url (string-match "\\(?:\\.\\(mp4\\|webm\\|ogg\\|avi\\|mkv\\)\\)?" url))
+        (progn
+          (message "%s" (propertize "Starting mpv, please wait!" 'face 'elfeed-log-info-level-face))
+          (mpv-play-url url))
+      (message "%s" (propertize "Not a video link!" 'face 'elfeed-log-warn-level-face)))))
+
+(with-eval-after-load 'elfeed
+  (define-key elfeed-show-mode-map (kbd "o") #'elfeed/open-link-with-mpv))
+
 (provide 'init-elfeed)
 ;;; init-elfeed.el ends here
