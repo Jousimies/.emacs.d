@@ -113,23 +113,13 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
           ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy))
           ("Logs"  ?L ,(expand-file-name "logs" my-galaxy)))))
 
-(use-package denote-menu
-  :load-path "packages/denote-menu/"
-  :bind ("C-c f m" . denote-menu-list-notes)
+(use-package denote-sort
+  :commands denote-sort-dired
+  :bind ("C-c m s" . my/denote-sort-by-sigature)
   :config
-  (define-key denote-menu-mode-map (kbd "c") #'denote-menu-clear-filters)
-  (define-key denote-menu-mode-map (kbd "/ r") #'denote-menu-filter)
-  (define-key denote-menu-mode-map (kbd "/ k") #'denote-menu-filter-by-keyword)
-  (define-key denote-menu-mode-map (kbd "/ o") #'denote-menu-filter-out-keyword)
-  (define-key denote-menu-mode-map (kbd "/ s") #'my/denote-menu-filter-by-signature)
-  (define-key denote-menu-mode-map (kbd "e") #'denote-menu-export-to-dired)
-  (setq denote-menu-show-file-signature t)
-  (setq-local tabulated-list-sort-key "Signature")
-  (defun my/denote-menu-filter-by-signature ()
-    (interactive)
-    (setq denote-menu-current-regex "==\\([0-9][a-z]\\)*")
-    (denote-menu-update-entries)
-    (tabulated-list-sort 1)))
+  (defun my/denote-sort-by-sigature ()
+	(interactive)
+	(denote-sort-dired (denote-sort--files-matching-regexp-prompt) 'signature nil)))
 
 (defun my/literature-entry (url title keywords file-path file-new-path)
   "Save a literature entry and add it to the 'literature' denote database."
@@ -282,6 +272,13 @@ it can be passed in POS."
   (let (reading-list)
     (append reading-list
             (file-expand-wildcards (expand-file-name "denote/books/*.org" my-galaxy)))))
+
+(defun my/ocr ()
+  "OCR with Macos system."
+  (interactive)
+  (shell-command "shortcuts run \"OCR Selected Area\"")
+  (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
+(global-set-key (kbd "C-c m o") 'my/ocr)
 
 (provide 'init-note)
 ;;; init-note.el ends here.

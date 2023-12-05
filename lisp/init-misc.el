@@ -4,49 +4,6 @@
 
 ;;; Code:
 
-(use-package advance-words-count
-  :load-path "packages/advance-words-count.el/"
-  :bind ("M-=" . advance-words-count))
-
-(defun eps-to-png-marked ()
-  "Convert all marked EPS files in the current Dired buffer to PNG format using ImageMagick's convert utility.
-Each input file is converted to a PNG file with the same basename.
-This function requires ImageMagick's convert utility to be installed and available in the system's PATH."
-  (interactive)
-  (let ((eps-files (dired-get-marked-files)))
-    (when (not eps-files)
-      (error "No marked files in Dired buffer."))
-    (let ((n 0))
-      (message "Converting:\n")
-      (dolist (epsfile eps-files)
-        (let ((pngfile (concat (file-name-sans-extension epsfile) ".png")))
-          (setq n (1+ n))
-          (message "%d: %s to %s." n epsfile pngfile)
-          (start-process "eps-to-png"
-                         "*eps-to-png*"
-                         "convert"
-                         "-colorspace"
-                         "sRGB"
-                         "-density"
-                         "600x600"
-                         epsfile
-                         pngfile)))
-      (message "\n%d files were converted from EPS to PNG format." n))))
-
-(defun jf/org-link-remove-link ()
-  "Remove the link part of an `org-mode' link at point and keep only the description."
-  (interactive)
-  (let ((elem (org-element-context)))
-    (when (eq (car elem) 'link)
-      (let* ((content-begin (org-element-property :contents-begin elem))
-             (content-end  (org-element-property :contents-end elem))
-             (link-begin (org-element-property :begin elem))
-             (link-end (org-element-property :end elem)))
-        (when (and content-begin content-end)
-          (let ((content (buffer-substring-no-properties content-begin content-end)))
-            (delete-region link-begin link-end)
-            (insert content)))))))
-(global-set-key (kbd "C-c m r") 'jf/org-link-remove-link)
 
 (defun yt-set-time (time)
   "Set TIME in the YouTube link at point.)
@@ -94,22 +51,6 @@ This function requires ImageMagick's convert utility to be installed and availab
       (delete-region (car bounds) (cdr bounds))
       (insert new-url))
     (error "Not on a Youtube link")))
-
-(defun my/ocr ()
-"OCR with Macos system."
-  (interactive)
-  (shell-command "shortcuts run \"OCR Selected Area\"")
-  (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
-(global-set-key (kbd "C-c m o") 'my/ocr)
-
-(use-package mpv
-  :commands mpv-start
-  :load-path "packages/mpv.el/")
-
-;;;###autoload
-(defun my/mpv-play-at-point ()
-  (interactive)
-  (mpv-start (dired-get-filename)))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.

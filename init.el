@@ -28,34 +28,36 @@
 (defvar my/web_archive (expand-file-name "web_archive/" my-galaxy)
   "The folder save web pages.")
 
-(require 'init-dashboard)
 (require 'init-core)
+
+(require 'init-dashboard)
+
 (require 'init-builtin)
 (require 'init-layout)
+
 (require 'init-edit)
 (require 'init-completion)
 (require 'init-search)
+
 (require 'init-dired)
 
-(require 'init-dict)
 (require 'init-lsp)
 (require 'init-prog)
-
+(require 'init-shell)
 (require 'init-git)
+
 (require 'init-org)
-(require 'init-org+)
 (require 'init-note)
 (require 'init-bib)
 (require 'init-gtd)
 (require 'init-reader)
-(require 'init-shell)
-(require 'init-misc)
+(require 'init-dict)
 (require 'init-latex)
 (require 'init-finance)
+
 (require 'init-telega)
-(require 'init-markdown)
 (require 'init-mail)
-;; (require 'init-elfeed)
+(require 'init-elfeed)
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (when (file-exists-p custom-file)

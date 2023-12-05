@@ -42,12 +42,16 @@
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 (setq tab-always-indent 'complete)
 
+;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
+(add-hook 'on-first-input-hook #'fido-mode)
+
+;; orderless is better than fussy, I think.
 (add-hook 'minibuffer-mode-hook (lambda ()
                                   (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
                                   (require 'orderless)
                                   (setq-local completion-styles
                                               '(orderless flex))))
-(add-hook 'on-first-input-hook #'fido-mode)
+
 ;; (use-package fussy
 ;;   :load-path "packages/fussy/" "packages/flx/"
 ;;   :config

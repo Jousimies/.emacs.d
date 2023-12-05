@@ -502,3 +502,12 @@
 [submodule "packages/swift-mode"]
 	path = packages/swift-mode
 	url = https://github.com/swift-emacs/swift-mode.git
+[submodule "packages/dired-preview"]
+	path = packages/dired-preview
+	url = https://github.com/protesilaos/dired-preview.git
+[submodule "packages/elfeed-tube"]
+	path = packages/elfeed-tube
+	url = https://github.com/karthink/elfeed-tube.git
+[submodule "packages/emacs-aio"]
+	path = packages/emacs-aio
+	url = https://github.com/skeeto/emacs-aio.git

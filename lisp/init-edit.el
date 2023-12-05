@@ -24,6 +24,36 @@
 
 ;;; Code:
 
+(add-hook 'on-first-file-hook #'global-auto-revert-mode)
+
+(with-eval-after-load 'register
+  (setopt register-preview-delay 0)
+  (set-register ?g (cons 'file (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org/org-gtd-tasks.org" mobile-document)))
+  (set-register ?b (cons 'file (expand-file-name "denote/books/20230301T211439--Book-lists-and-reading-record__reading.org" my-galaxy)))
+  (set-register ?l (cons 'file (concat my-galaxy "/logs/log_" (format-time-string "%Y") ".org")))
+  (set-register ?f (cons 'file (expand-file-name "finance/beans/finance.bean" my-galaxy))))
+
+(global-set-key (kbd "C-c f r") #'recentf-open)
+(add-hook 'on-first-input-hook #'recentf-mode)
+(with-eval-after-load 'recentf
+  (setopt recentf-save-file (expand-file-name "recentf" cache-directory)
+		  recentf-auto-cleanup 300
+		  recentf-max-saved-items 1000
+		  recentf-exclude '(".pdf$")))
+
+(add-hook 'on-first-file-hook #'savehist-mode)
+(with-eval-after-load 'savehist
+  (setopt savehist-file (expand-file-name "history" cache-directory)
+		history-length 1000
+        savehist-additional-variables '(kill-ring
+                                        search-ring
+                                        regexp-search-ring)
+        history-delete-duplicates t))
+
+(add-hook 'on-first-file-hook #'save-place-mode)
+(with-eval-after-load 'saveplace
+  (setopt save-place-file (expand-file-name "places" cache-directory)))
+
 (use-package undo-fu-session
   :load-path "packages/undo-fu-session/"
   :hook (on-first-file . undo-fu-session-global-mode)
@@ -42,42 +72,6 @@
   :bind ("s-z" . vundo)
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols))
-
-(use-package savehist
-  :hook (on-first-file . savehist-mode)
-  :config
-  (setq savehist-file (expand-file-name "history" cache-directory)
-		history-length 1000
-        savehist-additional-variables '(kill-ring
-                                        search-ring
-                                        regexp-search-ring)
-        history-delete-duplicates t))
-
-(use-package saveplace
-  :hook (on-first-file . save-place-mode)
-  :config
-  (setq save-place-file (expand-file-name "places" cache-directory)))
-
-(use-package recentf
-  :hook (on-first-input . recentf-mode)
-  :bind ("C-c f r" . recentf-open)
-  :config
-  (setq recentf-save-file (expand-file-name "recentf" cache-directory))
-  (setq recentf-auto-cleanup 300)
-  (setq recentf-max-saved-items 1000)
-  (setq recentf-exclude '(".pdf$")))
-
-(use-package register
-  :bind ("C-x r j" . jump-to-register)
-  :config
-  (setq register-preview-delay 0)
-  (set-register ?g (cons 'file (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org/org-gtd-tasks.org" mobile-document)))
-  (set-register ?b (cons 'file (expand-file-name "denote/books/20230301T211439--Book-lists-and-reading-record__reading.org" my-galaxy)))
-  (set-register ?l (cons 'file (concat my-galaxy "/logs/log_" (format-time-string "%Y") ".org")))
-  (set-register ?f (cons 'file (expand-file-name "finance/beans/finance.bean" my-galaxy))))
-
-(use-package autorevert
-  :hook (text-mode . global-auto-revert-mode))
 
 (use-package hungry-delete
   :load-path "packages/hungry-delete/"
@@ -131,6 +125,7 @@
   :hook ((emacs-startup . macim-select-ascii)
          (emacs-startup . macim-mode)
          (isearch-mode . macim-select-ascii)
+		 (on-switch-buffer . macim-context-switch)
          (minibuffer-mode . macim-select-ascii))
   :config
   (setq macim-other "im.rime.inputmethod.Squirrel.Hans")
@@ -142,7 +137,13 @@
           (force-mode-line-update))
       (progn
         (macim-select-other)
-        (force-mode-line-update)))))
+        (force-mode-line-update))))
+  (defun +macim-context-ignore-modes ()
+	(when (or (derived-mode-p 'telega-root-mode)
+			  (derived-mode-p 'pdf-view-mode))
+      'ascii))
+
+  (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes))
 
 (use-package emt
   :load-path "packages/emt"
@@ -151,6 +152,13 @@
          ("M-d" . emt-kill-word)
          ("M-h" . emt-backward-kill-word))
   :hook (on-first-input . emt-ensure))
+
+(use-package tempel
+  :bind (("M-+" . tempel-complete)
+         ("M-*" . tempel-insert))
+  :config
+  (setq tempel-path `("~/.emacs.d/template/tempel"
+                      ,(expand-file-name "config/tempel" my-galaxy))))
 
 (use-package yasnippet
   :load-path "packages/yasnippet/"
@@ -207,13 +215,13 @@
 
 ;; pulse
 (defun my-pulse-momentary (&rest _)
-    "Pulse the current line."
-    (pulse-momentary-highlight-one-line (point) 'next-error))
+  "Pulse the current line."
+  (pulse-momentary-highlight-one-line (point) 'next-error))
 
 (defun my-recenter (&rest _)
-    "Recenter and pulse the current line."
-    (recenter)
-    (my-pulse-momentary))
+  "Recenter and pulse the current line."
+  (recenter)
+  (my-pulse-momentary))
 
 (dolist (cmd '(recenter-top-bottom
                other-window windmove-do-window-select
@@ -230,6 +238,19 @@
 (use-package surround
   :load-path "packages/surround/"
   :bind-keymap ("M-'" . surround-keymap))
+
+;; Make region read-only or writable
+(defun make-region-read-only (beg end)
+  (interactive "r")
+  (let ((inhibit-read-only t))
+	(with-silent-modifications
+	  (add-text-properties beg end '(read-only t)))))
+
+(defun make-region-writable (beg end)
+  (interactive "r")
+  (let ((inhibit-read-only t))
+	(with-silent-modifications
+	  (remove-text-properties beg end '(read-only t)))))
 
 (provide 'init-edit)
 ;;; init-edit.el ends here

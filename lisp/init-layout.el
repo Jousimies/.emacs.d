@@ -23,7 +23,14 @@
 ;;
 
 ;;; Code:
-(add-hook 'after-init-hook #'tab-bar-mode)
+
+(defun toggle-tab-bar-mode ()
+  (if (eq major-mode 'dashboard-mode)
+	  (tab-bar-mode -1)
+	(tab-bar-mode 1)))
+(add-hook 'on-switch-buffer-hook #'toggle-tab-bar-mode)
+(add-hook 'find-file-hook #'toggle-tab-bar-mode)
+;; (add-hook 'after-init-hook #'tab-bar-mode)
 (global-set-key (kbd "C-c b t") #'tab-switch)
 (global-set-key (kbd "s-t") #'tab-new)
 (global-set-key (kbd "s-w") #'tab-close)
@@ -315,7 +322,7 @@
   (setq nerd-icons-font-family "Hack Nerd Font Mono"))
 
 (use-package nerd-icons-completion
-  :load-path "~/.emacs.d/packages/nerd-icons-completion/"
+  :load-path "packages/nerd-icons-completion/"
   :hook (minibuffer-setup . nerd-icons-completion-mode))
 
 (use-package nerd-icons-dired
@@ -323,7 +330,7 @@
   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package nerd-icons-ibuffer
-  :load-path "~/.emacs.d/packages/nerd-icons-ibuffer/"
+  :load-path "packages/nerd-icons-ibuffer/"
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 ;; frame
@@ -446,6 +453,21 @@
 
 (use-package popper-echo
   :hook (popper-mode . popper-echo-mode))
+
+(global-set-key (kbd "C-x C-b") #'ibuffer)
+(add-hook 'ibuffer-mode-hook #'ibuffer-auto-mode)
+  ;; https://github.com/roife/.emacs.d/blob/323536f51674ef68cad78f72eef31c8b49795518/core/init-ibuffer.el#L8
+(defun +ibuffer-visit-buffer-in-popper ()
+    (interactive)
+    (if (window-parameter nil 'window-side)
+        (let ((win (selected-window)))
+          (ibuffer-visit-buffer-other-window)
+          (delete-window win))
+      (ibuffer-visit-buffer)))
+
+(with-eval-after-load 'ibuffer
+  (setopt ibuffer-default-sorting-mode 'major-mode)
+  (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper))
 
 (use-package bufferlo
   :load-path "packages/bufferlo/"

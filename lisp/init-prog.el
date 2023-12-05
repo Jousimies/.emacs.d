@@ -24,6 +24,14 @@
 
 ;;; Code:
 
+(use-package markdown-mode
+  :load-path "packages/markdown-mode/"
+  :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
+         ("README\\.md\\'" . gfm-mode))
+  :init (setq markdown-command "multimarkdown")
+  :bind (:map markdown-mode-map
+			  ("C-c C-e" . markdown-do)))
+
 (use-package swift-mode
   :load-path "packages/swift-mode/"
   :mode ("\\.swift\\'" . swift-mode))

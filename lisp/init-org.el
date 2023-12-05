@@ -24,109 +24,39 @@
 		  org-highlight-latex-and-related '(latex script)
 		  org-enforce-todo-dependencies t
 		  org-enforce-todo-checkbox-dependencies t
-		  org-tags-sort-function 'org-string-collate-greaterp))
+		  org-tags-sort-function 'org-string-collate-greaterp)
 
-(with-eval-after-load 'org-agenda
-  (setopt org-deadline-warning-days 7))
+  (setopt org-todo-state-tags-triggers
+          (quote (("CNCL" ("CNCL" . t))
+                  ("WAIT" ("WAIT" . t))
+                  ("SOMEDAY" ("WAIT") ("SOMEDAY" . t))
+                  (done ("WAIT") ("SOMEDAY"))
+                  ("TODO" ("WAIT") ("CNCL") ("SOMEDAY"))
+                  ("NEXT" ("WAIT") ("CNCL") ("SOMEDAY"))
+                  ("DONE" ("WAIT") ("CNCL") ("SOMEDAY")))))
 
-(with-eval-after-load 'denote
-  (defun my/org-refile-on-todo-done ()
-    "Refile a task to a different file when it is marked as DONE."
-    (let ((org-refile-keep t))
-      (when (string= org-state "DONE")
-        (org-refile nil nil (list nil (car (denote-journal-extras--entry-today))) "Copy"))))
-  (add-hook 'org-after-todo-state-change-hook 'my/org-refile-on-todo-done))
-
-(use-package org
-  :bind (:map org-mode-map
-              ("M-s-s" . org-store-link))
-  :config
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
+
   (setq org-todo-repeat-to-state t)
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)")))
+        '((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)"))))
 
+(with-eval-after-load 'org-faces
   (setq org-todo-keyword-faces
         '(("TODO" . (:inherit (bold org-todo)))
           ("NEXT" . (:inherit (success org-todo)))
           ("CNCL" . (:inherit (shadow org-todo)))
           ("DONE" . (:inherit (button org-todo)))
           ("WAIT" . (:inherit (warning org-todo)))))
-
   (setq org-priority-faces
         '((?A . (bold . org-priority))
           (?B . org-priority)
-          (?C . (shadow . org-priority))))
+          (?C . (shadow . org-priority)))))
 
-  (setq org-todo-state-tags-triggers
-        (quote (("CNCL" ("CNCL" . t))
-                ("WAIT" ("WAIT" . t))
-                ("SOMEDAY" ("WAIT") ("SOMEDAY" . t))
-                (done ("WAIT") ("SOMEDAY"))
-                ("TODO" ("WAIT") ("CNCL") ("SOMEDAY"))
-                ("NEXT" ("WAIT") ("CNCL") ("SOMEDAY"))
-                ("DONE" ("WAIT") ("CNCL") ("SOMEDAY")))))
-  ;;   此处的设置来源：https://protesilaos.com/emacs/modus-themes
-  ;; 若升级 modus-themes 到 4.0 的版本，可能需要修改。
-  (defface my-org-emphasis-bold
-    '((default :inherit bold)
-      (((class color) (min-colors 88) (background light))
-       :foreground "#a60000")
-      (((class color) (min-colors 88) (background dark))
-       :foreground "#ff8059"))
-    "My bold emphasis for Org.")
-
-  (defface my-org-emphasis-italic
-    '((default :inherit italic)
-      (((class color) (min-colors 88) (background light))
-       :foreground "#005e00")
-      (((class color) (min-colors 88) (background dark))
-       :foreground "#44bc44"))
-    "My italic emphasis for Org.")
-
-  (defface my-org-emphasis-underline
-    '((default :inherit underline)
-      (((class color) (min-colors 88) (background light))
-       :foreground "#813e00")
-      (((class color) (min-colors 88) (background dark))
-       :foreground "#d0bc00"))
-    "My underline emphasis for Org.")
-
-  (defface my-org-emphasis-strike-through
-    '((default :strike-through t)
-      (((class color) (min-colors 88) (background light))
-       :foreground "#505050")
-      (((class color) (min-colors 88) (background dark))
-       :foreground "#a8a8a8"))
-    "My strike-through emphasis for Org.")
-
-  (defface my-org-emphasis-strike-through
-    '((((class color) (min-colors 88) (background light))
-       :strike-through "#972500" :foreground "#505050")
-      (((class color) (min-colors 88) (background dark))
-       :strike-through "#ef8b50" :foreground "#a8a8a8"))
-    "My strike-through emphasis for Org.")
-
-  (defface my-org-verbatim
-    '((((class color) (min-colors 88) (background light))
-       :background "green")
-      (((class color) (min-colors 88) (background dark))
-       :foreground "green"))
-    "My verbatim for Org.")
-
-
-  (setq org-emphasis-alist
-        '(("*" my-org-emphasis-bold)
-          ("/" my-org-emphasis-italic)
-          ("_" my-org-emphasis-underline)
-          ("=" org-verbatim verbatim)
-          ("~" my-org-verbatim verbatim)
-          ("+" my-org-emphasis-strike-through))))
-
-(use-package ob-core
-  :defer t
-  :config
+;; ob-core
+(with-eval-after-load 'ob-core
+  (setq org-confirm-babel-evaluate nil)
   (defun my/org-babel-execute-src-block (&optional _arg info _params)
     "Load language if needed"
     (let* ((lang (nth 0 info))
@@ -140,16 +70,14 @@
           (file-missing
            (setq-default org-babel-load-languages backup-languages)
            err)))))
-  (advice-add 'org-babel-execute-src-block :before 'my/org-babel-execute-src-block)
-  (setq org-confirm-babel-evaluate nil))
+  (advice-add 'org-babel-execute-src-block :before 'my/org-babel-execute-src-block))
 
-(use-package org-capture
-  :bind (("<f10>" . org-capture)
-         (:map org-capture-mode-map
-               ([remap evil-save-and-close] . org-capture-finalize)
-               ([remap evil-save-modified-and-close] . org-capture-finalize)
-               ([remap evil-quit] . org-capture-kill)))
-  :config
+;; org-capture
+(global-set-key (kbd "<f10>") #'org-capture)
+(with-eval-after-load 'org-capture
+  (define-key org-capture-mode-map [remap evil-save-and-close] #'org-capture-finalize)
+  (define-key org-capture-mode-map [remap evil-save-modified-and-close] #'org-capture-finalize)
+  (define-key org-capture-mode-map [remap evil-quit] #'org-capture-kill)
   (setq org-capture-templates
         '(("i" "GTD Inbox"
            entry (file (lambda () (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org")))
@@ -196,42 +124,23 @@
 :PLOT: %^{PLOT}
 :END:"))))
 
-(use-package org-attach
-  :hook (org-attach-after-change . org-attach-save-file-list-to-property)
-  :config
-  (setq org-attach-expert t)
-  (setq org-attach-id-dir (expand-file-name "attach" my-galaxy))
-  (setq org-attach-id-to-path-function-list
-        '(org-attach-id-ts-folder-format
-          org-attach-id-uuid-folder-format))
-
+;; org-capture
+(with-eval-after-load 'org-attach
+  (setopt org-attach-expert t
+		  org-attach-id-dir (expand-file-name "attach" my-galaxy)
+		  org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format
+												org-attach-id-uuid-folder-format))
   (defun org-attach-save-file-list-to-property (dir)
     "Save list of attachments to ORG_ATTACH_FILES property."
     (when-let* ((files (org-attach-file-list dir)))
-      (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))))
+      (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", "))))
+  (add-hook 'org-attach-after-change-hook #'org-attach-save-file-list-to-property))
 
-(defun my/org-attach-visit-headline-from-dired ()
-  "Go to the headline corresponding to this org-attach directory."
-  (interactive)
-  (require 'org-attach)
-  (let* ((path (replace-regexp-in-string (regexp-quote org-attach-directory) "" (expand-file-name (dired-filename-at-point))))
-         (id-parts (split-string path "/"))
-         (id1 (nth 1 id-parts))
-         (id2 (nth 2 id-parts))
-         (id (concat id1 id2)))
-    (let ((m (org-id-find id 'marker)))
-      (unless m (user-error "Cannot find entry with ID \"%s\"" id))
-      (pop-to-buffer (marker-buffer m))
-      (goto-char m)
-      (move-marker m nil)
-      (org-fold-show-context))))
-
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-'") #'my/org-attach-visit-headline-from-dired))
-
+;; org-habit
 (with-eval-after-load 'org-habit
   (setq org-habit-graph-column 100))
 
+;; org-id
 (with-eval-after-load 'org-id
   (setopt org-id-method 'ts
 		  org-id-locations-file (expand-file-name ".org-id-locations" cache-directory)
@@ -240,6 +149,7 @@
 (defun update-org-ids-in-directory (directory)
   "Update Org IDs in all Org files in DIRECTORY."
   (interactive "DEnter directory: ")
+  (require 'org-id)
   (when (file-directory-p directory)
     (let ((org-files (directory-files-recursively directory "\\.org\\'")))
       (org-id-update-id-locations org-files t)
@@ -247,7 +157,6 @@
   (unless (file-directory-p directory)
     (message "Not a valid directory: %s" directory)))
 
-;;;###autoload
 (defun my/copy-idlink ()
   "Copy idlink to clipboard."
   (interactive)
@@ -264,13 +173,31 @@
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "<f8>") 'my/copy-idlink))
 
+(defun jf/org-link-remove-link ()
+  "Remove the link part of an `org-mode' link at point and keep only the description."
+  (interactive)
+  (let ((elem (org-element-context)))
+    (when (eq (car elem) 'link)
+      (let* ((content-begin (org-element-property :contents-begin elem))
+             (content-end  (org-element-property :contents-end elem))
+             (link-begin (org-element-property :begin elem))
+             (link-end (org-element-property :end elem)))
+        (when (and content-begin content-end)
+          (let ((content (buffer-substring-no-properties content-begin content-end)))
+            (delete-region link-begin link-end)
+            (insert content)))))))
+(global-set-key (kbd "C-c m r") 'jf/org-link-remove-link)
+
+;; org-src
 (with-eval-after-load 'org-src
   (setq org-src-window-setup 'current-window)
   (setq org-src-ask-before-returning-to-edit-buffer nil))
 
+;; org-goto
 (with-eval-after-load 'org-goto
   (setq org-goto-interface 'outline-path-completion))
 
+;; org-refile
 (with-eval-after-load 'org-refile
   (setq org-refile-targets '((nil :maxlevel . 9)
                              (org-agenda-files :maxlevel . 9)))
@@ -280,283 +207,184 @@
   (setq org-refile-use-outline-path 'file)
   (setq org-refile-active-region-within-subtree t))
 
+;; org-clock
 (with-eval-after-load 'org-clock
+  (org-clock-persistence-insinuate)
   (setq org-clock-persist-file (expand-file-name "org-clock-save.el" cache-directory))
+  (setopt org-clock-history-length 23
+		  org-clock-in-resume t
+		  org-clock-into-drawer "LOGCLOCK"
+		  org-clock-out-remove-zero-time-clocks t
+		  org-clock-out-when-done t
+		  org-clock-persist t
+		  org-clock-clocktable-default-properties '(:maxlevel 5 :link t :tags t)
+		  org-clock-persist-query-resume nil
+		  org-clock-report-include-clocking-task t)
   (add-hook 'org-after-todo-state-change-hook (lambda ()
                                                 (if (org-clocking-p)
                                                     (org-clock-out)))))
 
-(use-package org-clock
-  :commands org-clocking-p
-  :bind ("C-c p i" . my/toggle-punch-in-or-out)
-  :hook ((org-clock-in . my/afplay-clock-in)
-         (org-clock-out . my/afplay-clock-out))
+;; org indent mode
+(add-hook 'org-mode-hook #'org-indent-mode)
+
+;; Third party packages related to org-mode
+(use-package imenu-list
+  :load-path "packages/imenu-list/"
+  :commands imenu-list-minor-mode
   :config
-  (defun my/afplay-clock-in ()
-    (async-shell-command "afplay /System/Library/Sounds/Ping.aiff"))
-  (defun my/afplay-clock-out ()
-    (async-shell-command "afplay /System/Library/Sounds/Basso.aiff"))
+  (set-face-attribute 'imenu-list-entry-face-0 nil
+                      :foreground (face-foreground 'ef-themes-heading-1)
+                      :inherit 'bold)
+  (set-face-attribute 'imenu-list-entry-face-1 nil
+                      :foreground (face-foreground 'ef-themes-heading-2)
+                      :inherit 'bold)
 
-  (org-clock-persistence-insinuate)
-  (setq org-clock-history-length 23)
-  (setq org-clock-in-resume t)
-  (setq org-clock-into-drawer "LOGCLOCK")
-  (setq org-clock-out-remove-zero-time-clocks t)
-  (setq org-clock-out-when-done t)
-  (setq org-clock-persist t)
-  (setq org-clock-clocktable-default-properties '(:maxlevel 5 :link t :tags t))
-  (setq org-clock-persist-query-resume nil)
-  (setq org-clock-report-include-clocking-task t)
-  (setq bh/keep-clock-running nil)
+  (setq imenu-list-position 'left)
+  (setq-default imenu-list-mode-line-format nil))
 
-  (defun bh/is-task-p ()
-    "Any task with a todo keyword and no subtask."
-    (save-restriction
-      (widen)
-      (let ((has-subtask)
-            (subtree-end (save-excursion (org-end-of-subtree t)))
-            (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-        (save-excursion
-          (forward-line 1)
-          (while (and (not has-subtask)
-                      (< (point) subtree-end)
-                      (re-search-forward "^\*+ " subtree-end t))
-            (when (member (org-get-todo-state) org-todo-keywords-1)
-              (setq has-subtask t))))
-        (and is-a-task (not has-subtask)))))
-  (defun bh/is-project-p ()
-    "Any task with a todo keyword subtask."
-    (save-restriction
-      (widen)
-      (let ((has-subtask)
-            (subtree-end (save-excursion (org-end-of-subtree t)))
-            (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-        (save-excursion
-          (forward-line 1)
-          (while (and (not has-subtask)
-                      (< (point) subtree-end)
-                      (re-search-forward "^\*+ " subtree-end t))
-            (when (member (org-get-todo-state) org-todo-keywords-1)
-              (setq has-subtask t))))
-        (and is-a-task has-subtask))))
-  (defun bh/find-project-task ()
-    "Move point to the parent (project) task if any."
-    (save-restriction
-      (widen)
-      (let ((parent-task (save-excursion (org-back-to-heading 'invisible-ok) (point))))
-        (while (org-up-heading-safe)
-          (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
-            (setq parent-task (point))))
-        (goto-char parent-task)
-        parent-task)))
-  (defun bh/is-project-subtree-p ()
-    "Any task with a todo keyword that is in a project subtree.
- Callers of this function already widen the buffer view."
-    (let ((task (save-excursion (org-back-to-heading 'invisible-ok)
-                                (point))))
-      (save-excursion
-        (bh/find-project-task)
-        (if (equal (point) task)
-            nil
-          t))))
-  (defun bh/clock-in-to-next (kw) ;; kw should not been deleted.
-    "Switch a task from TODO to NEXT when clocking in.
- Skips capture tasks, projects, and subprojects.
- Switch projects and subprojects from NEXT back to TODO"
-    (when (not (and (boundp 'org-capture-mode) org-capture-mode))
-      (cond
-       ((and (member (org-get-todo-state) (list "TODO"))
-             (bh/is-task-p))
-        "NEXT")
-       ((and (member (org-get-todo-state) (list "NEXT"))
-             (bh/is-project-p))
-        "TODO"))))
-  (defun bh/punch-in (arg)
-    "Start continuous clocking and set the default task to the selected task.
- If `ARG' is nil, set the Organization task
- as the default task."
-    (interactive "p")
-    (setq bh/keep-clock-running t)
-    (if (equal major-mode 'org-agenda-mode)
-        ;;
-        ;; We're in the agenda
-        ;;
-        (let* ((marker (org-get-at-bol 'org-hd-marker))
-               (tags (org-with-point-at marker (org-get-tags))))
-          (if (and (eq arg 4) tags)
-              (org-agenda-clock-in '(16))
-            (bh/clock-in-default-task-as-default)))
-      ;;
-      ;; We are not in the agenda
-      ;;
-      (save-restriction
-        (widen)
-                                        ; Find the tags on the current task
-        (if (and (equal major-mode 'org-mode) (not (org-before-first-heading-p)) (eq arg 4))
-            (org-clock-in '(16))
-          (bh/clock-in-default-task-as-default)))))
-  (defun bh/punch-out ()
-    "Punch out."
-    (interactive)
-    (setq bh/keep-clock-running nil)
-    (when (org-clock-is-active)
-      (org-clock-out))
-    (org-agenda-remove-restriction-lock))
-  (defun bh/clock-in-default-task ()
-    "Clock In default task with specific ID."
+(use-package olivetti
+  :load-path "packages/olivetti/"
+  :bind ("s-M-z" . olivetti-mode)
+  :hook ((olivetti-mode-on . (lambda ()
+                               (imenu-list-minor-mode 1)))
+         (olivetti-mode-off . (lambda ()
+                                (imenu-list-minor-mode -1)))))
+
+(use-package form-feed
+  :load-path "packages/form-feed/"
+  :hook (org-mode . form-feed-mode))
+
+
+(use-package math-preview
+  :load-path "packages/math-preview/"
+  :commands math-preview-all math-preview-clear-all
+  :hook (find-file . (lambda ()
+                       (when (eq major-mode 'org-mode)
+                         (auto/math-preview-all))))
+  :config
+  (setq math-preview-scale 1.1)
+  (setq math-preview-raise 0.2)
+  (setq math-preview-margin '(1 . 0))
+  (add-to-list 'org-options-keywords "NO_MATH_PREVIEW:"))
+
+;;;###autoloads
+(defun auto/math-preview-all ()
+  "Auto update clock table."
+  (interactive)
+  (when (derived-mode-p 'org-mode)
     (save-excursion
-      (org-with-point-at org-clock-default-task
-        (org-clock-in))))
-  (defun bh/clock-in-parent-task ()
-    "Move point to the parent (project) task if any and clock in."
-    (let ((parent-task))
+      (goto-char 0)
+      (unless (string-equal (cadar (org-collect-keywords '("NO_MATH_PREVIEW"))) "t")
+        (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
+          (math-preview-all))))))
+
+(use-package org-download
+  :load-path "packages/org-download/"
+  :bind (("C-c d c" . org-download-clipboard)
+         ("C-c d y" . org-download-yank)
+         ("C-c d s" . org-download-screenshot)
+         ("C-c d r" . org-download-rename-at-point)
+         ("s-v" . my/yank))
+  :init
+  (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
+  (setq org-download-heading-lvl nil)
+  :config
+  (setq org-download-screenshot-method "screencapture -i %s")
+  (setq org-download-abbreviate-filename-function 'expand-file-name)
+  (setq org-download-timestamp "%Y%m%d%H%M%S")
+  (setq org-download-display-inline-images nil)
+  (setq org-download-annotate-function (lambda (_link) ""))
+  (setq org-download-image-attr-list '("#+NAME: fig: "
+                                       "#+CAPTION: "
+                                       "#+ATTR_ORG: :width 500px"
+                                       "#+ATTR_LATEX: :width 10cm :placement [!htpb]"
+                                       "#+ATTR_HTML: :width 600px"))
+
+  (defun my/org-download-rename (arg)
+    (interactive "P")
+    (if arg
+        (org-download-rename-last-file)
+      (org-download-rename-at-point)))
+
+  (defun my/org-download-adjust (&optional basename)
+    "Adjust the last downloaded file.
+
+  This function renames the last downloaded file, replaces all occurrences of the old file name with the new file name in the Org mode buffer, and updates the CAPTION and NAME headers in the Org mode buffer. "
+    (interactive)
+    (let* ((dir-path (org-download--dir))
+           (newname (read-string "Rename last file to: " (file-name-base org-download-path-last-file)))
+           (ext (file-name-extension org-download-path-last-file))
+           (newpath (concat dir-path "/" newname "." ext)))
+      (when org-download-path-last-file
+        (rename-file org-download-path-last-file newpath 1)
+        (org-download-replace-all
+         (file-name-nondirectory org-download-path-last-file)
+         (concat newname "." ext))
+        (setq org-download-path-last-file newpath))
       (save-excursion
-        (save-restriction
-          (widen)
-          (while (and (not parent-task) (org-up-heading-safe))
-            (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
-              (setq parent-task (point))))
-          (if parent-task
-              (org-with-point-at parent-task
-                (org-clock-in))
-            (when bh/keep-clock-running
-              (bh/clock-in-default-task)))))))
-  (defvar bh/default-task-id "20230912T181100.221961")
-  (defun bh/clock-in-default-task-as-default ()
-    "Clock in default task."
+        (previous-line 7)
+        (while (re-search-forward "^\\#\\+NAME: fig:" nil t 1)
+          (move-end-of-line 1)
+          (insert newname))
+        (while (re-search-forward "^\\#\\+CAPTION:" nil t 1)
+          (move-end-of-line 1)
+          (insert newname))
+        (while (re-search-forward (expand-file-name "~") nil t 1)
+          (replace-match "~" t nil)))))
+
+  (advice-add 'org-download-clipboard :after 'my/org-download-adjust)
+
+  (defun my/clipboard-has-image-p ()
+    (let ((clipboard-contents (shell-command-to-string "pbpaste")))
+      (string-match-p "\\(\\.jpeg\\|\\.jpg\\|\\.png\\)$" clipboard-contents)))
+
+  (defun my/yank ()
     (interactive)
-    (org-with-point-at (org-id-find bh/default-task-id 'marker)
-      (org-clock-in '(16))))
-  (defun bh/clock-out-maybe ()
-    "Clock out."
-    (when (and bh/keep-clock-running
-               (not org-clock-clocking-in)
-               (marker-buffer org-clock-default-task)
-               (not org-clock-resolving-clocks-due-to-idleness))
-      (bh/clock-in-parent-task)))
+    (if (my/clipboard-has-image-p)
+        (org-download-clipboard)
+      (cond ((eq major-mode 'vterm-mode) (term-paste))
+            (t (yank))))))
 
-  (add-hook 'org-clock-out-hook 'bh/clock-out-maybe 'append)
+(use-package org-imgtog
+  :load-path "packages/org-imgtog/"
+  :hook (org-mode . org-imgtog-mode))
 
-  (defun bh/clock-in-last-task (arg)
-    "Clock in the interrupted task if there is one.
- Skip the default task and get the next one.
- A prefix `ARG' forces clock in of the default task."
-    (interactive "p")
-    (let ((clock-in-to-task
-           (cond
-            ((eq arg 4) org-clock-default-task)
-            ((and (org-clock-is-active)
-                  (equal org-clock-default-task (cadr org-clock-history)))
-             (caddr org-clock-history))
-            ((org-clock-is-active) (cadr org-clock-history))
-            ((equal org-clock-default-task (car org-clock-history)) (cadr org-clock-history))
-            (t (car org-clock-history)))))
-      (widen)
-      (org-with-point-at clock-in-to-task
-        (org-clock-in nil))))
-  (defun my/toggle-punch-in-or-out ()
-    "Start clock or stop it when there is a clocking."
-    (interactive)
-    (if (org-clocking-p)
-        (bh/punch-out)
-      (bh/punch-in nil))))
-
-(use-package org-indent
-  :hook (org-mode . org-indent-mode))
-
-(use-package ox-html
-  :defer t
+(use-package plantuml
+  :load-path "packages/plantuml-emacs/"
+  :commands plantuml-org-to-mindmap-open plantuml-org-to-wbs-open
   :config
-  (setq org-export-global-macros
-        '(("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@")))
-  (setq org-html-preamble t)
-  (setq org-html-preamble-format
-		'(("en" "<a href=\"/index.html\" class=\"button\">Home</a>
-               <a href=\"/posts/index.html\" class=\"button\">Posts</a>
-               <a href=\"/about.html\" class=\"button\">About</a>
-               <hr>")))
+  (setq plantuml-jar-path
+        (concat (string-trim
+                 (shell-command-to-string "readlink -f $(brew --prefix plantuml)"))
+                "/libexec/plantuml.jar")))
 
-  (setq org-html-postamble t)
+(defun org-export-docx ()
+  "Convert org to docx."
+  (interactive)
+  (let ((docx-file (concat (file-name-sans-extension (buffer-file-name)) ".docx"))
+        (template-file (expand-file-name "template/template.docx" user-emacs-directory)))
+    (shell-command (format "pandoc %s -o %s --reference-doc=%s" (buffer-file-name) docx-file template-file))
+    (message "Convert finish: %s" docx-file)))
 
-  (setq org-html-postamble-format
-        '(("en" "<hr><div class=\"info\"> <span class=\"created\">Created with %c on MacOS</span>
- <span class=\"updated\">Updated: %d</span> </div>")))
+;; https://www.reddit.com/r/emacs/comments/yjobc2/comment/iur16c7/
+(defun nf/parse-headline (x)
+  (plist-get (cadr x) :raw-value))
 
-  (setq org-html-head-include-default-style nil)
+(defun nf/get-headlines ()
+  (org-element-map (org-element-parse-buffer) 'headline #'nf/parse-headline))
 
-  (setq org-html-head
-        "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/style.css\" />
-         <script src=\"js/copy.js\"></script> "))
+(defun nf/link-to-headline ()
+  "Insert an internal link to a headline."
+  (interactive)
+  (let* ((headlines (nf/get-headlines))
+         (choice (completing-read "Headings: " headlines nil t))
+         (desc (read-string "Description: " choice)))
+    (org-insert-link buffer-file-name (concat "*" choice) desc)))
 
-(use-package ox-publish
-  :defer t
-  :config
-  ;; https://git.sr.ht/~taingram/taingram.org/tree/master/item/publish.el
-  (defun taingram--sitemap-dated-entry-format (entry style project)
-    "Sitemap PROJECT ENTRY STYLE format that includes date."
-    (let ((filename (org-publish-find-title entry project)))
-      (if (= (length filename) 0)
-          (format "*%s*" entry)
-        (format "{{{timestamp(%s)}}}   [[file:%s][%s]]"
-                (format-time-string "%Y-%m-%d"
-                                    (org-publish-find-date entry project))
-                entry
-                filename))))
+(use-package advance-words-count
+  :load-path "packages/advance-words-count.el/"
+  :bind ("M-=" . advance-words-count))
 
-  (defvar my/publish-directory "~/Blogs/")
-
-  (setq org-publish-project-alist
-        `(("site"
-           :base-directory ,website-directory
-           :base-extension "org"
-           :recursive nil
-           :publishing-directory ,my/publish-directory
-           :publishing-function org-html-publish-to-html)
-
-          ("posts"
-           :base-directory ,(expand-file-name "posts" website-directory)
-           :base-extension "org"
-           :publishing-directory ,(expand-file-name "posts" my/publish-directory)
-           :publishing-function org-html-publish-to-html
-           :with-author t
-           :auto-sitemap t
-           :sitemap-filename "index.org"
-           :sitemap-title "posts"
-           :sitemap-sort-files anti-chronologically
-           :sitemap-format-entry taingram--sitemap-dated-entry-format)
-
-          ("static"
-           :base-directory ,website-directory
-           :base-extension "css\\|js\\|txt\\|jpg\\|gif\\|png"
-           :recursive t
-           :publishing-directory  ,my/publish-directory
-           :publishing-function org-publish-attachment)
-
-          ("personal-website" :components ("site" "posts" "static"))))
-
-  (defun my/ox-publish-move-images (origin publish)
-    (interactive)
-    (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward "\\[\\[file:\\(.*?\\)\\]\\]" nil t)
-        (let* ((image-path (match-string 1))
-               (picture-name (car (last (split-string image-path "/"))))
-               (new-path (concat my/publish-directory "static/" picture-name)))
-          (copy-file image-path new-path t)))))
-
-  (defun my/ox-publish-replace-src-path (origin publish)
-    "Replace image paths in the HTML file."
-    (interactive)
-    (message "%s%s" origin publish)
-    (with-temp-buffer
-      (insert-file-contents publish)
-      (goto-char (point-min))
-      (while (re-search-forward "file:///Users/jousimies/Nextcloud/L.Personal.Galaxy/pictures/" nil t)
-        (replace-match "../static/"))
-      (write-region (point-min) (point-max) publish)))
-
-  (add-hook 'org-publish-after-publishing-hook 'my/ox-publish-move-images)
-  (add-hook 'org-publish-after-publishing-hook 'my/ox-publish-replace-src-path))
 
 (provide 'init-org)
 ;;; init-org.el ends here.

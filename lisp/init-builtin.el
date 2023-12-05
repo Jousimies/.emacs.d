@@ -53,6 +53,7 @@
 		isearch-lazy-count t
 		help-window-select 'other
 		help-window-keep-selected t
+		multisession-directory (expand-file-name "multisession" cache-directory)
 		auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-" cache-directory))
 
 ;; (setq backup-directory-alist '(("." . "~/.emacs.d/cache/backups")))
@@ -162,7 +163,8 @@
 
 (setopt display-line-numbers-widen t
 		display-line-numbers-type 'relative)
-(add-hook 'on-first-buffer-hook #'display-line-numbers-mode)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(add-hook 'org-mode-hook #'display-line-numbers-mode)
 
 (face-spec-set 'fill-column-indicator
                  '((default :height 0.1))
@@ -173,7 +175,6 @@
 (setopt show-paren-style 'parenthesis
 		show-paren-context-when-offscreen 'overlay)
 (add-hook 'on-first-buffer-hook #'show-paren-mode)
-
 
 (add-hook 'on-first-buffer-hook (lambda ()
 								  (blink-cursor-mode -1)))

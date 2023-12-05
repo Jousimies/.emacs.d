@@ -100,12 +100,17 @@
         cursor-in-non-selected-windows nil)
 
 ;; Proxy
+(add-to-list 'process-environment "https_proxy=http://localhost:7890")
+(add-to-list 'process-environment "http_proxy=http://localhost:7890")
+(add-to-list 'process-environment "no_proxy=localhost,127.0.0.0,127.0.0.1,127.0.1.1,local.home")
+
 ;; (with-eval-after-load 'url-vars
+;;   (setq url-using-proxy "http://127.0.0.1:7890")
 ;;   (setq url-proxy-services
 ;;         '(("http" . "127.0.0.1:7890")
 ;;           ("https" . "127.0.0.1:7890")
 ;;           ("socks" . "127.0.0.1:7890")
-;;           ("no_proxy" . "0.0.0.0"))))
+;;           ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)"))))
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh
