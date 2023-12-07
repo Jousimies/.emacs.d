@@ -26,7 +26,7 @@
 
 (use-package rg
   :load-path ("packages/rg.el/" "packages/Emacs-wgrep")
-  :bind ("C-c s". rg-menu)
+  :bind ("C-c s". rg)
   :config
   (add-to-list 'display-buffer-alist '("^\\*rg\\*"
                                        (display-buffer-in-side-window)
@@ -89,7 +89,7 @@
 (defun my/link-grab ()
   (interactive)
   (grab-mac-link-dwim 'safari))
-(global-set-key (kbd "s-l g") 'my/link-grab)
+(global-set-key (kbd "s-/ g") 'my/link-grab)
 
 (use-package simple-httpd
   :load-path "packages/emacs-web-server"

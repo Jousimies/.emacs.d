@@ -108,6 +108,7 @@
                ("C-c C-c" . org-gtd-organize))))
 
 ;; org pomodoro
+;; TODO add to modeline
 (use-package hammy
   :load-path "packages/hammy.el/" "packages/svg-lib" "packages/ts.el"
   :commands hammy-start

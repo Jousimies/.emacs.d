@@ -6,11 +6,12 @@
 
 (use-package denote
   :load-path "packages/denote/"
+  :commands denote-org-capture-with-prompts
   :bind (("C-c n s" . denote-signature)
          ("C-c n S" . denote-subdirectory)
-         ("s-l l" . denote-link)
-         ("C-s-n" . denote-backlinks)
-         ("s-l L" . denote-link-insert-links-matching-regexp)
+         ("s-/ l" . denote-link)
+         ("s-/ b" . denote-backlinks)
+         ("s-/ L" . denote-link-insert-links-matching-regexp)
          ("C-c n r" . denote-rename-file-using-front-matter)
          ("C-c n k" . denote-keywords-add)
          ("C-c n K" . denote-keywords-remove)
@@ -32,6 +33,18 @@
               (thread-last denote-directory (expand-file-name "literature"))
               (thread-last denote-directory (expand-file-name "term"))
               (thread-last denote-directory (expand-file-name "references")))))
+
+(with-eval-after-load 'org-capture
+  (add-to-list 'org-capture-templates
+               '("N" "Denote subdirectory" plain
+				 (file denote-last-path)
+				 (function
+                  (lambda ()
+					(denote-org-capture-with-prompts :title :keywords :subdirectory)))
+				 :no-save t
+				 :immediate-finish nil
+				 :kill-buffer t
+				 :jump-to-captured t)))
 
 (use-package denote-org-dblock
   :commands denote-org-dblock-insert-backlinks denote-org-dblock-insert-links)
@@ -94,7 +107,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (use-package denote-journal-extras
   :load-path "~/.emacs.d/packages/denote/"
-  :bind ("C-c f j" . denote-journal-extras-new-or-existing-entry)
+  :bind ("C-c n j" . denote-journal-extras-new-or-existing-entry)
   :commands denote-journal-extras--entry-today)
 
 (use-package consult-notes
@@ -115,7 +128,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (use-package denote-sort
   :commands denote-sort-dired
-  :bind ("C-c m s" . my/denote-sort-by-sigature)
+  :bind ("s-/ s" . my/denote-sort-by-sigature)
   :config
   (defun my/denote-sort-by-sigature ()
 	(interactive)

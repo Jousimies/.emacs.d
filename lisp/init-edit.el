@@ -109,14 +109,6 @@
 (use-package delsel
   :hook (text-mode . delete-selection-mode))
 
-(use-package tempel
-  :load-path "packages/tempel/"
-  :bind (("M-+" . tempel-complete)
-         ("M-*" . tempel-insert))
-  :config
-  (setq tempel-path `("~/.emacs.d/template/tempel"
-                      ,(expand-file-name "config/tempel" my-galaxy))))
-
 (use-package macim
   :load-path "~/.emacs.d/packages/macim.el/"
   :bind (("C-\\" . macim-switch)
@@ -138,10 +130,17 @@
       (progn
         (macim-select-other)
         (force-mode-line-update))))
+
+  (defvar my/macim-context-ignore-modes '("telega-root-mode"
+										  "telega-image-mode"
+										  "mu4e-headers-mode"
+										  "mu4e-view-mode"
+										  "elfeed-show-mode"
+										  "elfeed-search-mode"))
   (defun +macim-context-ignore-modes ()
-	(when (or (derived-mode-p 'telega-root-mode)
-			  (derived-mode-p 'pdf-view-mode))
-      'ascii))
+	(let ((mode (symbol-name major-mode)))
+	  (when (member mode my/macim-context-ignore-modes))
+	  'ascii))
 
   (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes))
 
@@ -153,7 +152,16 @@
          ("M-h" . emt-backward-kill-word))
   :hook (on-first-input . emt-ensure))
 
+(use-package macos
+  :load-path "packages/EmacsMacOSModule/"
+  :bind ("C-c f F" . macos-reveal-in-finder)
+  :config
+  (setq macos-module-install-dir (expand-file-name "modules" user-emacs-directory)
+		macos-module-path (expand-file-name "libEmacsMacOSModule.dylib" macos-module-install-dir))
+  (load-file macos-module-path))
+
 (use-package tempel
+  :load-path "packages/tempel/"
   :bind (("M-+" . tempel-complete)
          ("M-*" . tempel-insert))
   :config
@@ -189,8 +197,7 @@
               ("t" . my/gts-do-translate)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
-              (";" . comment-dwim)
-              ("+" . my/add-symbol-to-region))
+              (";" . comment-dwim))
   :config
   (defun my/copy-region ()
     (interactive)

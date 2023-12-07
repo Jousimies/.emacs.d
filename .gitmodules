@@ -508,3 +508,9 @@
 [submodule "packages/emacs-aio"]
 	path = packages/emacs-aio
 	url = https://github.com/skeeto/emacs-aio.git
+[submodule "packages/wombag"]
+	path = packages/wombag
+	url = https://github.com/karthink/wombag.git
+[submodule "packages/wallabag.el"]
+	path = packages/wallabag.el
+	url = https://github.com/chenyanming/wallabag.el.git

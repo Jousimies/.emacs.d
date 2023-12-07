@@ -96,7 +96,6 @@
          ([remap load-theme] . consult-theme)
          ([remap man] . consult-man)
          ([remap recentf-open-files] . consult-recent-file)
-         ;; ([remap switch-to-buffer] . consult-buffer)
          ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
          ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
          ([remap yank-pop] . consult-yank-pop)
@@ -121,7 +120,7 @@
          ("C-c f o" . embark-open-externally)
          (:map minibuffer-local-map
                ("C-;" . embark-act)
-               ("C-c C-;" . embark-export)
+               ("C-c C-e" . embark-export)
                ("C-c C-l" . embark-collect))))
 
 (use-package corfu

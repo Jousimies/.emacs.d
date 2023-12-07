@@ -32,6 +32,31 @@
 (add-to-list 'load-path "~/.emacs.d/packages/posframe/")
 (add-to-list 'load-path "~/.emacs.d/packages/emacs-async/")
 
+;; show startup time at `scratch' buffer.
+(defun my/packages-installed (load-path)
+  (let ((my/packages 0))
+    (dolist (path load-path)
+      (when (not (string-prefix-p "/Applications/" path))
+        (setq my/packages (1+ my/packages))))
+    my/packages))
+
+(add-hook 'window-setup-hook
+          (lambda ()
+            (garbage-collect)
+            (let ((curtime (current-time)))
+              (with-current-buffer "*scratch*"
+                (goto-char (point-max))
+                (insert
+                 (concat "\n"
+                         (format ";; Emacs Startup Times: init:%.03f total:%.03f gc-done:%d"
+                                 (float-time (time-subtract after-init-time before-init-time))
+                                 (float-time (time-subtract curtime before-init-time))
+                                 gcs-done)
+                         "\n"
+                         (format ";; Total Packages Required: %d" (my/packages-installed load-path))
+                         "\n\n"))
+                90))))
+
 ;; on.el
 (add-to-list 'load-path "~/.emacs.d/packages/on.el/")
 (require 'on)
@@ -56,11 +81,22 @@
                       charset (font-spec :family "TsangerJinKai02" :height 140))
     t 'prepend))
 
-;; start server, so can use emaclient to edit file outside emacs
-(require 'server)
-(add-hook 'after-init-hook (lambda ()
-                             (unless (server-running-p)
-                               (server-start))))
+;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
+(defvar mobile-document "~/Library/Mobile Documents/"
+  "This folder contains documents in icloud.")
+
+(defvar my-cloud "~/Nextcloud"
+  "This folder is My cloud.")
+
+;; L.Personal.Galaxy location may change, but folders in this directory never change.
+(defvar my-galaxy (expand-file-name "L.Personal.Galaxy" my-cloud)
+  "This folder stores all the plain text files of my life.")
+
+(defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
+  "The source folder of my blog.")
+
+(defvar my/web_archive (expand-file-name "web_archive/" my-galaxy)
+  "The folder save web pages.")
 
 (defvar cache-directory (expand-file-name ".cache" user-emacs-directory))
 
@@ -96,21 +132,22 @@
         minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
         max-mini-window-height 10
         redisplay-skip-fontification-on-input t
-        echo-keystrokes 0.25
         cursor-in-non-selected-windows nil)
+
+(setq-default initial-scratch-message
+              (propertize
+               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you") 'face 'italic))
 
 ;; Proxy
 (add-to-list 'process-environment "https_proxy=http://localhost:7890")
 (add-to-list 'process-environment "http_proxy=http://localhost:7890")
 (add-to-list 'process-environment "no_proxy=localhost,127.0.0.0,127.0.0.1,127.0.1.1,local.home")
 
-;; (with-eval-after-load 'url-vars
-;;   (setq url-using-proxy "http://127.0.0.1:7890")
-;;   (setq url-proxy-services
-;;         '(("http" . "127.0.0.1:7890")
-;;           ("https" . "127.0.0.1:7890")
-;;           ("socks" . "127.0.0.1:7890")
-;;           ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)"))))
+;; start server, so can use emaclient to edit file outside emacs
+(require 'server)
+(add-hook 'after-init-hook (lambda ()
+                             (unless (server-running-p)
+                               (server-start))))
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh

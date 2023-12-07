@@ -61,98 +61,183 @@
 
   \subsection{Buffers}
   \begin{keylist}
-  \item[C-x C-b] ibuffer
-  \item[C-x b] bufferlo-switch-to-buffer
   \item[C-c b s] switch-to-scratch
   \item[C-c b m] switch-to-message
+
+  \item[C-h] delete-backward-char
+  \item[M-h] backward-kill-word
+
+  \item[C-x C-f] find-file
+  \item[C-c f f] find-file-at-point
+
+  \item[C-x C-b] ibuffer
+  \item[C-x b] bufferlo-switch-to-buffer
+
+  \item[M-p] my/scroll-other-windown-down
+  \item[M-n] my/scroll-other-windown
+
+  \item[C-c b t] tab-switch
   \item[s-t] tab-new
   \item[s-w] tab-close
   \item[s-1..9] tab-bar-select-tab
-  \end{keylist}
 
-  \subsection{Files}
-  \begin{keylist}
-  \item[C-c f r] recentf-open-files
-  \item[C-c f f] find-file-at-point
-  \item[C-c f d] xah-show-in-desktop
-  \item[C-c f o] embark-open-externally
-  \end{keylist}
+  \item[M-s-n] persp-switch
+  \item[M-s-w] persp-kill
+  \item[C-c z] persp-mode-prefix-key
 
-  \subsection{Denote}
-  \begin{keylist}
-  \item[s-n] consult-notes
-  \item[C-c n a] my/new-article
-  \item[C-c n m] my/new-meeting
-  \item[C-c n s] denote-signature
-  \item[C-c n S] denote-subdirectory
-  \item[C-c n o] citar-open-files
-  \item[C-c n r] denote-rename-file-using-front-matter
-  \item[C-c n k] denote-keywords-add
-  \item[C-c n K] denote-keywords-remove
-  \end{keylist}
+  \item[C-`] popper-toggle
 
-  \subsection{Languages}
-  \begin{keylist}
-  \item[M-\#] my/search-dictionary
-  \item[C-u M-\#] \humanreadable{Show dict result in buffer}
-  \item[C-c l i] sdcv-search-input
-  \item[C-c l l] my/gts-do-translate
-  \item[C-u C-c l l] \humanreadable{Copy translate result to kill ring}
-  \item[C-c l p] powerthesaurus-lookup-dwim
-  \item[C-c l r] dictionary-overlay-toggle
-  \item[C-c l R] dictionary-overlay-render-buffer
-  \item[C-c l s] popweb-dict-say-word
-  \item[C-c l S] emacs-azure-tts-sentence
-  \item[C-c l w] writegood-mode
-  \end{keylist}
+  \item[s-z] vundo
 
-  \subsection{Other}
-  \begin{keylist}
-  \item[M-o] ace-window
-  \item[M-*] tempel-insert
   \item[M-+] tempel-complete
-  \item[M-n] my/scroll-other-windown
-  \item[M-p] my/scroll-other-windown-down
+  \item[M-*] tempel-insert
+
+  \item[C-=] er/expand-region
+  \item[C-c C-=] er/contract-region
+
+  \item[M-'] surround-keymap
+
+  \item[C-c f r] recentf-open
+  \item[C-c f a] consult-find
+  \item[C-c f F] macos-reveal-in-finder
+  \item[C-c f o] embark-open-externally
+
+  \item[C-;] embark-act
+  \item[M-.] embark-dwim
+
+  \item[C-c s] rg
+  \item[C-c w] my/search
+
+  \item[C-x d] dired
+  \item[C-c e] my/eww-html-file
+
+  \item[C-x g] magit
+  \item[M-g h] httpd-serve-directory
+  \item[M-g t] git-timemachine
+  \item[M-g b] browse-at-remote
 
   \item[f2] ebib
-
+  \item[f5] eshell
   \item[f10] org-capture
-
+  %\item[f8] my/copy-idlink
   \item[f12] org-gtd-engage
   \item[C-f12] org-agenda
   \item[s-f12] org-gtd-process-inbox
-  \item[M-f12]
+  \item[M-f12 c] org-gtd-clarify-item
+  \item[M-f12 C] org-gtd-clarify-agenda-item
+  \item[M-f12 r] org-gtd-review-area-of-focus
+  \item[M-f12 s] org-gtd-review-stuck-projects
 
-  \item[s-z] vundo
-  \item[s-k] kill-current-buffer
+  \item[f9] hammy-start
+  \item[C-f9] hammy-stop
 
-  \item[M-g b] browse-at-remote
-  \item[M-g h] httpd-serve-directory
-  \item[C-;] embark-act
-  \item[M-.] embark-dwim
+  \item[C-c m r] jf/org-link-remove-link
+
+  \item[M-s-z] olivetti-mode
+
+  \item[s-v] my/yank
+  \item[M-=] advance-words-count
+
+  \item[s-n] consult-notes
+  \item[s-s] my/literature-save
+
+  \item[C-c n s] denote-signature
+  \item[C-c n S] denote-subdirectory
+  \item[C-c n r] denote-rename-file-using-front-matter
+  \item[C-c n k] denote-keywords-add
+  \item[C-c n K] denote-keywords-remove
+  \item[C-c n j] denote-journal-extras-new-or-existing-entry
+  \item[C-c n e] ibooks-annot/extract-annotations-to-note
+  \item[C-c n a] my/new-article
+  \item[C-c n m] my/new-meeting
+
+  \item[s-/ g] my/link-grab
+  \item[s-/ l] denote-link
+  \item[s-/ b] denote-backlinks
+  \item[s-/ L] denote-link-insert-links-matching-regexp
+  \item[s-/ s] my/denote-sort-by-sigature
+
+  \item[C-c m o] my/ocr
+
+  \item[C-c n o] citar-open-files
+  \item[C-c n O] citar-open
+  \item[C-c n n] citar-create-note
+
+
+  \item[M-#] my/search-dictionary
+  \item[C-c l i] sdcv-search-input
+  \item[C-c l p] powerthesaurus-lookup-dwim
+  \item[C-c l s] popweb-dict-say-word
+  \item[C-c l S] emacs-azure-tts-sentence
+  \item[C-c l l] my/gts-do-translate
+  \item[C-c l r] dictionary-overlay-toggle
+  \item[C-c l R] dictionary-overlay-render-buffer
+  \item[s-;] jinx-correct
+  \item[C-c l w] writegood-mode
+
+  \item[C-c C] calendar
+  \item[s-T] telega
+  \item[s-E] elfeed
+
   \end{keylist}
 
   \section{Local keymaps}
-  \subsection{vertico-map}
+  \subsection{elfeed-show-mode-map}
   \begin{keylist}
-  \item[C-j] vertico-next
-  \item[C-k] vertico-previous
-  \item[C-u] vertico-directory-up
+  \item[C-c C-f] elfeed-tube-mpv-follow-mode
+  \item[C-c C-w] elfeed-tube-mpv-where
+  \item[m] elfeed-tube-mpv
   \end{keylist}
-  \subsection{minibuffer-local-map}
+  \subsection{dired-mode-map}
   \begin{keylist}
+  \item[P] dired-preview
+  \item[r] denote-dired-rename-marked-files
+  \item[RET] open-with-default-app
+  \item[C-RET] my/dired-preview
+  \item[s-.] dired-omit-mode
+  \item[C-c i] image-dired
+  \item[s-/ s] org-store-link
+  \item[C-'] my/org-attach-visit-headline-from-dired
+  \item[/ r] prot-dired-limit-regexp
+  \end{keylist}
+  \subsection{minibuffer-mode-map}
+  \begin{keylist}
+  \item[C-r] consult-history
+  \item[M-j] icomplete-fido-exit
+
   \item[C-;] embark-act
   \item[C-c C-;] embark-export
   \item[C-c C-l] embark-collect
-
-  \item[C-r] consult-history
+  \end{keylist}
+  \subsection{popper-mode-map}
+  \begin{keylist}
+  \item[M-<tab>] popper-cycle
+  \item[M-`] popper-toggle-type
   \end{keylist}
 
-  \subsection{dired-mode-map}
+  \subsection{selected-keymap}
   \begin{keylist}
-  \item[s-.] dired-omit-mode
-  \item[C-'] my/org-attach-visit-headline-from-dired
-  \item[C-;] prot-dired-limit-regexp
+  \item[q] selected-off
+  \item[u] upcase-region
+  \item[d] downcase-region
+  \item[c] my/copy-region
+  \item[x] kill-region
+  \item[w] count-words-region
+  \item[i] surround-insert
+  \item[s] my/search
+  \item[t] my/gts-do-translate
+  \item[m] apply-macro-to-region-lines
+  \item[\\] indent-region
+  \item[;] comment-dwim
+  \end{keylist}
+
+  \subsection{symbol-overlay-mode-map}
+  \begin{keylist}
+  \item[M-i] symbol-overlay-put
+  \item[M-I] symbol-overlay-remove-all
+  \item[M-n] symbol-overlay-jump-next
+  \item[M-P] symbol-overlay-jump-prev
+  \item[M-\%] symbol-overlay-query-replace
   \end{keylist}
 
 \end{multicols}

@@ -385,6 +385,5 @@
   :load-path "packages/advance-words-count.el/"
   :bind ("M-=" . advance-words-count))
 
-
 (provide 'init-org)
 ;;; init-org.el ends here.

@@ -54,7 +54,7 @@
 (defvar file-extensions-with-default-apps '("xls" "doc" "xlsx" "docx" "eps" "dwg" "psd" "drawio" "pptx")
   "List of file extensions to open with default applications.")
 
-(defvar video-file-extensions '("mp4" "mov"))
+(defvar video-file-extensions '("mp4" "mov" "webm"))
 
 (defun open-with-default-app ()
   "Open file with system default app in dired."
@@ -93,35 +93,7 @@
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "s-.") #'dired-omit-mode)
   (define-key dired-mode-map (kbd "C-c i") #'image-dired)
-  (define-key dired-mode-map (kbd "C-c l") #'org-store-link))
-
-(defun xah-show-in-desktop ()
-  "Show current file in desktop.
-This command can be called when in a file buffer or in `dired'."
-  (interactive)
-  (let (($path (if (buffer-file-name) (buffer-file-name) default-directory)))
-    (cond
-     ((string-equal system-type "windows-nt")
-      (shell-command
-       (format "PowerShell -Command Start-Process Explorer -FilePath %s"
-               (shell-quote-argument default-directory))))
-     ((string-equal system-type "darwin")
-      (if (eq major-mode 'dired-mode)
-          (let (($files (dired-get-marked-files )))
-            (if (eq (length $files) 0)
-                (shell-command (concat "open " (shell-quote-argument (expand-file-name default-directory ))))
-              (shell-command (concat "open -R " (shell-quote-argument (car (dired-get-marked-files )))))))
-        (shell-command
-         (concat "open -R " (shell-quote-argument $path)))))
-     ((string-equal system-type "gnu/linux")
-      (let ((process-connection-type nil)
-            (openFileProgram (if (file-exists-p "/usr/bin/gvfs-open")
-                                 "/usr/bin/gvfs-open"
-                               "/usr/bin/xdg-open")))
-        (start-process "" nil openFileProgram (shell-quote-argument $path)))))))
-
-(global-set-key (kbd "C-c f d") 'xah-show-in-desktop)
-
+  (define-key dired-mode-map (kbd "s-/ l") #'org-store-link))
 
 (defun my/org-attach-visit-headline-from-dired ()
   "Go to the headline corresponding to this org-attach directory."

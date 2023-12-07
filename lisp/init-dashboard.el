@@ -23,7 +23,7 @@
 (setq dashboard-set-footer nil)
 ;; (setq dashboard-banner-logo-title "EXPLORE THE WORLD, FULFILL YOUR BEING.")
 (setq dashboard-banner-logo-title (format-time-string "%Y-%m-%d"))
-(setq dashboard-items '((agenda . 5)))
+(setq dashboard-items nil)
 (setq dashboard-startup-banner (expand-file-name "src/banner4.txt" user-emacs-directory))
 
 ;; (use-package dashboard
@@ -59,7 +59,7 @@
 ;;   ;;     ))
 ;;   )
 ;; (setq dashboard-set-navigator nil)
-;; (run-with-idle-timer (* 5 60) t 'dashboard-open))
+(run-with-idle-timer (* 5 60) t 'dashboard-open)
 
 (provide 'init-dashboard)
 ;;; init-dashboard.el ends here.

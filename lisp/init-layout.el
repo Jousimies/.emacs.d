@@ -377,7 +377,7 @@
   :load-path "packages/popper/"
   :bind (("C-`" . popper-toggle)
          :map popper-mode-map
-         ("M-<tab>"   . popper-cycle)
+         ("M-<tab>" . popper-cycle)
          ("M-`" . popper-toggle-type))
   :hook (emacs-startup . popper-mode)
   :init
@@ -432,6 +432,7 @@
           "^\\*denote-backlinks to "
           "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Org Note\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"))
   :config
+  (setq popper-mode-line '(:eval (propertize "POP" 'face `(:inverse-video t))))
   ;; Enable indicator in minibuffer
   (defun my/popper--fit-window-height (win)
     "Determine the height of popup window WIN by fitting it to the buffer's content."
