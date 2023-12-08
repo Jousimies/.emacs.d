@@ -32,7 +32,7 @@
 
 (add-hook 'on-first-buffer-hook #'column-number-mode)
 (add-hook 'on-first-file-hook #'size-indication-mode)
-(add-hook 'on-first-buffer-hook #'turn-on-visual-line-mode)
+(add-hook 'org-mode-hook #'visual-line-mode)
 
 (setopt mark-ring-max 128
         kill-do-not-save-duplicates t
@@ -164,7 +164,7 @@
 (setopt display-line-numbers-widen t
 		display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-(add-hook 'org-mode-hook #'display-line-numbers-mode)
+;; (add-hook 'org-mode-hook #'display-line-numbers-mode)
 
 (face-spec-set 'fill-column-indicator
                  '((default :height 0.1))

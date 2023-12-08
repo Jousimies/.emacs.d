@@ -81,6 +81,25 @@
                       charset (font-spec :family "TsangerJinKai02" :height 140))
     t 'prepend))
 
+;; icons
+(use-package nerd-icons
+  :load-path "packages/nerd-icons.el/"
+  :commands nerd-icons-codicon nerd-icons-faicon nerd-icons-icon-for-file
+  :config
+  (setq nerd-icons-font-family "Hack Nerd Font Mono"))
+
+(use-package nerd-icons-completion
+  :load-path "packages/nerd-icons-completion/"
+  :hook (minibuffer-setup . nerd-icons-completion-mode))
+
+(use-package nerd-icons-dired
+  :load-path "packages/emacs-nerd-icons-dired"
+  :hook (dired-mode . nerd-icons-dired-mode))
+
+(use-package nerd-icons-ibuffer
+  :load-path "packages/nerd-icons-ibuffer/"
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+
 ;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
 (defvar mobile-document "~/Library/Mobile Documents/"
   "This folder contains documents in icloud.")

@@ -40,28 +40,33 @@
         completions-header-format (propertize "%s candidates:\n" 'face 'font-lock-comment-face)
         completions-highlight-face 'completions-highlight)
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
-(setq tab-always-indent 'complete)
+;; (setq tab-always-indent 'complete)
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
 (add-hook 'on-first-input-hook #'fido-mode)
 
 ;; orderless is better than fussy, I think.
-(add-hook 'minibuffer-mode-hook (lambda ()
-                                  (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
-                                  (require 'orderless)
-                                  (setq-local completion-styles
-                                              '(orderless flex))))
+;; (add-hook 'minibuffer-mode-hook (lambda ()
+;;                                   (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
+;;                                   (require 'orderless)
+;;                                   (setq-local completion-styles
+;;                                               '(orderless flex))))
 
-;; (use-package fussy
-;;   :load-path "packages/fussy/" "packages/flx/"
-;;   :config
-;;   (push 'fussy completion-styles)
-;;   (setq
-;;    ;; For example, project-find-file uses 'project-files which uses
-;;    ;; substring completion by default. Set to nil to make sure it's using
-;;    ;; flx.
-;;    completion-category-defaults nil
-;;    completion-category-overrides nil))
+(use-package fussy
+  :load-path "packages/fussy/" "packages/flx/"
+  :config
+  (push 'fussy completion-styles)
+  (setq fussy-use-cache t
+		completion-category-defaults nil
+		completion-category-overrides '((file (styles basic partial-completion))
+										(eglot (styles fussy basic)))
+		fussy-filter-fn 'fussy-filter-default)
+  (advice-add 'corfu--capf-wrapper :before 'fussy-wipe-cache)
+  (add-hook 'corfu-mode-hook
+            (lambda ()
+              (setq-local fussy-max-candidate-limit 5000
+                          fussy-default-regex-fn 'fussy-pattern-first-letter
+                          fussy-prefer-prefix nil))))
 
 ;; (setq-local completion-in-region-function
 ;;             (lambda (&rest args)
@@ -236,6 +241,7 @@
   :load-path "packages/emacs-which-key/"
   :hook (on-first-input . which-key-mode)
   :config
+  (define-key help-map "\C-h" 'which-key-C-h-dispatch)
   (setq which-key-popup-type 'minibuffer)
   (setq which-key-sort-order #'which-key-prefix-then-key-order)
   ;; (setq which-key-show-early-on-C-h t)

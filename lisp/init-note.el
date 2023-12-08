@@ -16,13 +16,13 @@
          ("C-c n k" . denote-keywords-add)
          ("C-c n K" . denote-keywords-remove)
          (:map dired-mode-map
-               ("r" . denote-dired-rename-marked-files)))
+               ("r" . denote-dired-rename-marked-files-with-keywords)))
   :hook (dired-mode . denote-dired-mode-in-directories)
   :config
   (setq denote-directory (expand-file-name "denote" my-galaxy))
   ;; letter casing of file name components
   (setq denote-file-name-letter-casing
-        '((title . downcase)
+        '((title . verbatim)
           (signature . verbatim)
           (keywords . verbatim)
           (t . downcase)))
@@ -127,12 +127,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
           ("Logs"  ?L ,(expand-file-name "logs" my-galaxy)))))
 
 (use-package denote-sort
-  :commands denote-sort-dired
-  :bind ("s-/ s" . my/denote-sort-by-sigature)
-  :config
-  (defun my/denote-sort-by-sigature ()
-	(interactive)
-	(denote-sort-dired (denote-sort--files-matching-regexp-prompt) 'signature nil)))
+  :bind ("s-/ s" . denote-sort-dired))
 
 (defun my/literature-entry (url title keywords file-path file-new-path)
   "Save a literature entry and add it to the 'literature' denote database."

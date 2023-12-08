@@ -59,7 +59,7 @@
 ;;   ;;     ))
 ;;   )
 ;; (setq dashboard-set-navigator nil)
-(run-with-idle-timer (* 5 60) t 'dashboard-open)
+;; (run-with-idle-timer (* 5 60) t 'dashboard-open)
 
 (provide 'init-dashboard)
 ;;; init-dashboard.el ends here.

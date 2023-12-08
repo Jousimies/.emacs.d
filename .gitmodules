@@ -514,3 +514,6 @@
 [submodule "packages/wallabag.el"]
 	path = packages/wallabag.el
 	url = https://github.com/chenyanming/wallabag.el.git
+[submodule "packages/macrursors"]
+	path = packages/macrursors
+	url = https://github.com/corytertel/macrursors.git

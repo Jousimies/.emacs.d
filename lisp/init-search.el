@@ -38,24 +38,6 @@
   (setq rg-group-result t)
   (setq rg-show-columns t))
 
-(use-package helpful
-  :load-path "packages/helpful/" "packages/elisp-refs/"
-  :bind (([remap describe-function] . helpful-callable)
-         ([remap describe-variable] . helpful-variable)
-         ([remap describe-key] . helpful-key))
-  :config
-  (add-to-list 'display-buffer-alist '("\\*helpful"
-                                         (display-buffer-in-side-window)
-                                         (side . right)
-                                         (window-width . 0.5)
-                                         (window-parameters
-                                          (mode-line-format . none)))))
-
-(add-to-list 'load-path "~/.emacs.d/packages/elisp-refs/")
-(add-to-list 'load-path "~/.emacs.d/packages/elisp-demos/")
-(autoload #'elisp-demos-advice-helpful-update "elisp-demos" nil t)
-(advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
-
 (setq my/browser-engines
       '((DoubanMovie . "https://search.douban.com/movie/subject_search?search_text=")
         (DoubanBook . "https://search.douban.com/book/subject_search?search_text=")

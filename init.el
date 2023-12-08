@@ -13,10 +13,11 @@
 
 (require 'init-core)
 
-(require 'init-dashboard)
-
 (require 'init-builtin)
-(require 'init-layout)
+
+(require 'init-tab)
+(require 'init-modeline)
+(require 'init-buffer)
 
 (require 'init-edit)
 (require 'init-completion)
@@ -36,6 +37,7 @@
 (require 'init-reader)
 (require 'init-dict)
 (require 'init-latex)
+
 (require 'init-finance)
 
 (require 'init-telega)

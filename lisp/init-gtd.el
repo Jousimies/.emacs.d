@@ -46,15 +46,16 @@
   (setq diary-file (expand-file-name "logs/diary.org" my-galaxy)))
 
 (global-set-key (kbd "C-<F12>") #'org-agenda)
+
 (with-eval-after-load 'org-agenda
   (add-hook 'org-agenda-finalize-hook #'org-agenda-find-same-or-today-or-agenda)
+  (setq org-agenda-window-setup 'other-tab)
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-agenda-skip-deadline-if-done t)
   (setq org-agenda-todo-ignore-scheduled 'future)
   (setq org-agenda-todo-ignore-deadlines 'near)
   (setq org-agenda-dim-blocked-tasks t)
   (setq org-agenda-compact-blocks t)
-  (setq org-agenda-window-setup 'other-tab)
   (setq org-agenda-align-tags-to-column 'auto)
   (setq org-deadline-warning-days 7)
   (add-to-list 'org-agenda-custom-commands
@@ -62,6 +63,9 @@
 				 ((tags "+BookShelf"
 						((org-agenda-prefix-format " %i")
 						 (org-agenda-overriding-header "Reading Lists")))))))
+
+(with-eval-after-load 'org-archive
+  (setq org-archive-location "%s_archive::datetree/"))
 
 ;; Refile done todo to denote daily journal.
 (with-eval-after-load 'denote
