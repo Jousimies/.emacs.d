@@ -166,12 +166,11 @@
   (when (eq major-mode 'org-mode) ; do this only in org-mode buffers
     (let* ((mytmphead (nth 4 (org-heading-components)))
            (mytmpid (funcall 'org-id-get-create))
-           (mytmplink (format "- [ ] [[id:%s][%s]]" mytmpid mytmphead)))
+           (mytmplink (format "[[id:%s][%s]]" mytmpid mytmphead)))
       (kill-new mytmplink)
       (message "Copied %s to killring (clipboard)" mytmplink))))
 
-(with-eval-after-load 'org-agenda
-  (define-key org-agenda-mode-map (kbd "<f8>") 'my/copy-idlink))
+(global-set-key (kbd "s-/ c") #'my/copy-idlink)
 
 (defun jf/org-link-remove-link ()
   "Remove the link part of an `org-mode' link at point and keep only the description."
