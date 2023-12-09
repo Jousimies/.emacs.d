@@ -311,7 +311,8 @@
 
   This function renames the last downloaded file, replaces all occurrences of the old file name with the new file name in the Org mode buffer, and updates the CAPTION and NAME headers in the Org mode buffer. "
     (interactive)
-    (let* ((dir-path (org-download--dir))
+    (let* ((end (point))
+		   (dir-path (org-download--dir))
            (newname (read-string "Rename last file to: " (file-name-base org-download-path-last-file)))
            (ext (file-name-extension org-download-path-last-file))
            (newpath (concat dir-path "/" newname "." ext)))
@@ -322,21 +323,24 @@
          (concat newname "." ext))
         (setq org-download-path-last-file newpath))
       (save-excursion
-        (previous-line 7)
-        (while (re-search-forward "^\\#\\+NAME: fig:" nil t 1)
-          (move-end-of-line 1)
-          (insert newname))
-        (while (re-search-forward "^\\#\\+CAPTION:" nil t 1)
-          (move-end-of-line 1)
-          (insert newname))
-        (while (re-search-forward (expand-file-name "~") nil t 1)
-          (replace-match "~" t nil)))))
+		(save-restriction
+          (previous-line 7)
+		  (narrow-to-region (point) end)
+		  (goto-char (point-min))
+          (while (re-search-forward "^\\#\\+NAME: fig:" nil t 1)
+			(move-end-of-line 1)
+			(insert newname)
+			(next-line)
+			(move-end-of-line 1)
+			(insert newname))
+          (while (re-search-forward (expand-file-name "~") nil t 1)
+			(replace-match "~" t nil))))))
 
   (advice-add 'org-download-clipboard :after 'my/org-download-adjust)
 
   (defun my/clipboard-has-image-p ()
     (let ((clipboard-contents (shell-command-to-string "pbpaste")))
-      (string-match-p "\\(\\.jpeg\\|\\.jpg\\|\\.png\\)$" clipboard-contents)))
+      (string-match-p "\\(\\.jpeg\\|\\.jpg\\|\\.png\\|\\.webp\\)$" clipboard-contents)))
 
   (defun my/yank ()
     (interactive)
