@@ -61,11 +61,6 @@
 
 (advice-add 'denote-signature :before #'my/denote-signature-from-filename)
 
-;; (with-eval-after-load 'denote
-;;   (require 'denote-rename-buffer)
-;;   (setq denote-rename-buffer-format " %t")
-;;   (denote-rename-buffer-mode))
-
 (use-package denote-rename-buffer
   :load-path "packages/denote/"
   :hook (org-mode . denote-rename-buffer-mode)
