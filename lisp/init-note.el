@@ -105,11 +105,6 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "/ r") 'prot-dired-limit-regexp))
 
-(use-package denote-journal-extras
-  :load-path "~/.emacs.d/packages/denote/"
-  :bind ("C-c n j" . denote-journal-extras-new-or-existing-entry)
-  :commands denote-journal-extras--entry-today)
-
 (use-package consult-notes
   :load-path "packages/consult-notes/"
   :bind ("s-n" . consult-notes)
