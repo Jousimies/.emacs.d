@@ -67,15 +67,6 @@
 (with-eval-after-load 'org-archive
   (setq org-archive-location "%s_archive::datetree/"))
 
-;; Refile done todo to denote daily journal.
-(with-eval-after-load 'denote
-  (defun my/org-refile-on-todo-done ()
-    "Refile a task to a different file when it is marked as DONE."
-    (let ((org-refile-keep t))
-      (when (string= org-state "DONE")
-        (org-refile nil nil (list nil (car (denote-journal-extras--entry-today))) "Copy"))))
-  (add-hook 'org-after-todo-state-change-hook 'my/org-refile-on-todo-done))
-
 (use-package org-gtd
   :load-path ("packages/org-gtd.el/" "packages/org-agenda-property" "packages/org-edna")
   :init
