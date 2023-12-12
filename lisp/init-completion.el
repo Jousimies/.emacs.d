@@ -23,11 +23,13 @@
 ;;
 
 ;;; Code:
-(setq enable-recursive-minibuffers t)
+(setopt enable-recursive-minibuffers t)
+
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 (add-hook 'minibuffer-mode-hook #'cursor-intangible-mode)
 
-(setopt completions-detailed t
+(setopt tab-always-indent 'complete
+		completions-detailed t
         completions-format 'one-column
         completion-auto-select t
         completion-ignore-case t
@@ -39,18 +41,11 @@
         completion-auto-wrap nil
         completions-header-format (propertize "%s candidates:\n" 'face 'font-lock-comment-face)
         completions-highlight-face 'completions-highlight)
+
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
-;; (setq tab-always-indent 'complete)
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
-(add-hook 'on-first-input-hook #'fido-mode)
-
-;; orderless is better than fussy, I think.
-;; (add-hook 'minibuffer-mode-hook (lambda ()
-;;                                   (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
-;;                                   (require 'orderless)
-;;                                   (setq-local completion-styles
-;;                                               '(orderless flex))))
+(add-hook 'on-first-input-hook #'icomplete-mode)
 
 (use-package fussy
   :load-path "packages/fussy/" "packages/flx/"
@@ -67,13 +62,6 @@
               (setq-local fussy-max-candidate-limit 5000
                           fussy-default-regex-fn 'fussy-pattern-first-letter
                           fussy-prefer-prefix nil))))
-
-;; (setq-local completion-in-region-function
-;;             (lambda (&rest args)
-;;               (apply (if vertico-mode
-;;                          #'consult-completion-in-region
-;;                        #'completion--in-region)
-;;                      args)))
 
 ;; https://emacs-china.org/t/macos-save-silently-t/24086
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
@@ -109,7 +97,7 @@
          ("C-r" . consult-history))
   :config
   (setq consult-preview-key nil))
-;; (setq completion-in-region-function #'consult-completion-in-region)
+
 (use-package consult-imenu
   :bind ([remap imenu] . consult-imenu))
 
@@ -132,11 +120,11 @@
   :load-path "packages/corfu/"
   :hook (on-first-buffer . global-corfu-mode)
   :config
-  (setq corfu-cycle t)
-  (setq corfu-auto t)
-  (setq corfu-auto-prefix 1)
-  ;; (setq corfu-auto-delay 0.0)
-  (setq corfu-preselect 'valid)
+  (setopt corfu-cycle t
+		  corfu-auto t
+		  corfu-auto-prefix 1
+		  corfu-auto-delay 0.0
+		  corfu-preselect 'valid)
 
   (setq-default corfu-quit-no-match 'separator)
   (defun corfu-enable-in-minibuffer ()
@@ -157,9 +145,6 @@
 (use-package corfu-popupinfo
   :load-path "packages/corfu/extensions/"
   :hook (corfu-mode . corfu-popupinfo-mode))
-
-;; (use-package corfu-prescient
-;;   :hook (corfu-mode . corfu-prescient-mode))
 
 (use-package kind-icon
   :load-path "packages/kind-icon/"
