@@ -73,8 +73,7 @@
 (global-set-key (kbd "C-<f12>") #'org-agenda)
 
 (with-eval-after-load 'org-agenda
-  (add-hook 'org-agenda-finalize-hook #'org-agenda-find-same-or-today-or-agenda)
-  (setq org-agenda-window-setup 'other-tab)
+  (setq org-agenda-window-setup 'reorganize-frame)
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-agenda-skip-deadline-if-done t)
   (setq org-agenda-todo-ignore-scheduled 'future)
@@ -92,10 +91,6 @@
 (with-eval-after-load 'org-archive
   (setq org-archive-location "%s_archive::datetree/"))
 
-;; org-habit
-(with-eval-after-load 'org-habit
-  (setq org-habit-graph-column 100))
-
 (use-package org-gtd
   :load-path ("packages/org-gtd.el/" "packages/org-agenda-property" "packages/org-edna")
   :init
@@ -107,16 +102,15 @@
   (org-agenda-property-list '("DELEGATED_TO"))
   (org-gtd-organize-hooks '(org-gtd-set-area-of-focus org-set-tags-command))
   (org-edna-use-inheritance t)
-  (org-gtd-areas-of-focus '("Family Life"
-                            "Career"
-                            "Health and wellness"
-                            "Community involvement"
-                            "Financial management"
-                            "Travel and exploration"
-                            "Hobbies and Interests"
-                            "Personal development"
-                            "Social and relationships"
-                            "Retirement planning"))
+  (org-gtd-areas-of-focus '(
+							"Basic Life" ;衣食住行方面的基本需求
+							"Personal Development" "Reading" "Skill" "Finances"	;个人成长方面
+							"Hobbies" "Travel" "Amusement" ;Life for amusement and entertainment
+							"Health" "Fitness" "Mental" "Spirituality"			  ;Health
+							"Family" "Spouse" "Kids" "Parents" "Sister" "Relative" ;Family
+							"Job" "Professional" "Social"						  ;Work
+							"Society"
+							))
   (org-gtd-engage-prefix-width 24)
   (org-gtd-clarify-show-horizons 'right)
   :bind (("<f12>" . org-gtd-engage)
