@@ -57,10 +57,6 @@
         '(("i" "GTD Inbox"
            entry (file (lambda () (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org")))
            "* %?\n%U\n" :time-prompt t :tree-type week)
-          ("l" "Today log" plain
-           (file+olp+datetree (lambda () (concat my-galaxy "/logs/log_" (format-time-string "%Y") ".org")))
-           "**** %?\n%U\n"
-           :time-prompt t :tree-type week)
           ("w" "Watch")
           ("wt" "TV drama"
            entry (file+headline (lambda ()
