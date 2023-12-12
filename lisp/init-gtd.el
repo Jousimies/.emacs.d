@@ -3,6 +3,31 @@
 ;;; Commentary:
 
 ;;; Code:
+
+(with-eval-after-load 'org
+  (setopt org-todo-state-tags-triggers
+          (quote (("CNCL" ("CNCL" . t))
+                  ("WAIT" ("WAIT" . t))
+                  (done ("WAIT"))
+                  ("TODO" ("WAIT") ("CNCL"))
+                  ("NEXT" ("WAIT") ("CNCL"))
+                  ("DONE" ("WAIT") ("CNCL")))))
+  (setq org-todo-repeat-to-state t)
+  (setq org-todo-keywords
+        '((sequence "NEXT(n)" "TODO(t)" "|" "WAIT(w@)" "CNCL(c@/!)" "DONE(d)"))))
+
+(with-eval-after-load 'org-faces
+  (setq org-todo-keyword-faces
+        '(("TODO" . (:inherit (bold org-todo)))
+          ("NEXT" . (:inherit (success org-todo)))
+          ("CNCL" . (:inherit (shadow org-todo)))
+          ("DONE" . (:inherit (button org-todo)))
+          ("WAIT" . (:inherit (warning org-todo)))))
+  (setq org-priority-faces
+        '((?A . (bold . org-priority))
+          (?B . org-priority)
+          (?C . (shadow . org-priority)))))
+
 (with-eval-after-load 'calendar
   (setq calendar-view-diary-initially-flag t)
   (setq calendar-mark-diary-entries-flag t)
@@ -45,7 +70,7 @@
 
   (setq diary-file (expand-file-name "logs/diary.org" my-galaxy)))
 
-(global-set-key (kbd "C-<F12>") #'org-agenda)
+(global-set-key (kbd "C-<f12>") #'org-agenda)
 
 (with-eval-after-load 'org-agenda
   (add-hook 'org-agenda-finalize-hook #'org-agenda-find-same-or-today-or-agenda)
@@ -67,10 +92,16 @@
 (with-eval-after-load 'org-archive
   (setq org-archive-location "%s_archive::datetree/"))
 
+;; org-habit
+(with-eval-after-load 'org-habit
+  (setq org-habit-graph-column 100))
+
 (use-package org-gtd
   :load-path ("packages/org-gtd.el/" "packages/org-agenda-property" "packages/org-edna")
   :init
   (setq org-gtd-update-ack "3.0.0")
+  :hook ((org-agenda-mode . org-gtd-mode)
+		 (org-gtd-mode . org-edna-mode))
   :custom
   (org-gtd-directory (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org" mobile-document))
   (org-agenda-property-list '("DELEGATED_TO"))
@@ -88,11 +119,6 @@
                             "Retirement planning"))
   (org-gtd-engage-prefix-width 24)
   (org-gtd-clarify-show-horizons 'right)
-  :config
-  (setq org-agenda-files `(,(expand-file-name "org-gtd-tasks.org" org-gtd-directory)
-                           ,(expand-file-name "org-gtd-tasks.org_archive" org-gtd-directory)))
-
-  (add-hook 'org-mode-hook #'org-edna-mode)
   :bind (("<f12>" . org-gtd-engage)
          ("s-<f12>" . org-gtd-process-inbox)
          ("M-<f12> c" . org-gtd-clarify-item)

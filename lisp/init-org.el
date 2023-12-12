@@ -26,33 +26,8 @@
 		  org-enforce-todo-checkbox-dependencies t
 		  org-tags-sort-function 'org-string-collate-greaterp)
 
-  (setopt org-todo-state-tags-triggers
-          (quote (("CNCL" ("CNCL" . t))
-                  ("WAIT" ("WAIT" . t))
-                  ("SOMEDAY" ("WAIT") ("SOMEDAY" . t))
-                  (done ("WAIT") ("SOMEDAY"))
-                  ("TODO" ("WAIT") ("CNCL") ("SOMEDAY"))
-                  ("NEXT" ("WAIT") ("CNCL") ("SOMEDAY"))
-                  ("DONE" ("WAIT") ("CNCL") ("SOMEDAY")))))
-
   (setq org-preview-latex-default-process 'dvisvgm)
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
-
-  (setq org-todo-repeat-to-state t)
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "INPROGRESS(i)" "|" "WAIT(w@)" "SOMEDAY(s@)" "CNCL(c@/!)" "DONE(d)"))))
-
-(with-eval-after-load 'org-faces
-  (setq org-todo-keyword-faces
-        '(("TODO" . (:inherit (bold org-todo)))
-          ("NEXT" . (:inherit (success org-todo)))
-          ("CNCL" . (:inherit (shadow org-todo)))
-          ("DONE" . (:inherit (button org-todo)))
-          ("WAIT" . (:inherit (warning org-todo)))))
-  (setq org-priority-faces
-        '((?A . (bold . org-priority))
-          (?B . org-priority)
-          (?C . (shadow . org-priority)))))
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2)))
 
 ;; ob-core
 (with-eval-after-load 'ob-core
@@ -135,10 +110,6 @@
     (when-let* ((files (org-attach-file-list dir)))
       (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", "))))
   (add-hook 'org-attach-after-change-hook #'org-attach-save-file-list-to-property))
-
-;; org-habit
-(with-eval-after-load 'org-habit
-  (setq org-habit-graph-column 100))
 
 ;; org-id
 (with-eval-after-load 'org-id
