@@ -152,7 +152,7 @@
           (let ((content (buffer-substring-no-properties content-begin content-end)))
             (delete-region link-begin link-end)
             (insert content)))))))
-(global-set-key (kbd "C-c m r") 'jf/org-link-remove-link)
+(global-set-key (kbd "s-/ r") 'jf/org-link-remove-link)
 
 ;; org-src
 (with-eval-after-load 'org-src
