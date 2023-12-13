@@ -69,16 +69,16 @@
 
 ;; Fonts
 (when (display-graphic-p)
-  (set-face-attribute 'default nil :font "Iosevka Term" :weight 'normal :height 140)
+  (set-face-attribute 'default nil :font "Iosevka Term" :weight 'normal :height 160)
 
   ;; Source Han Serif SC -> TsangerJinKai02
-  (set-fontset-font t 'unicode (font-spec :family "Apple Color Emoj" :size 11.5) nil 'prepend)
+  (set-fontset-font t 'unicode (font-spec :family "Apple Color Emoj" :size 12) nil 'prepend)
 
-  (set-fontset-font t 'unicode (font-spec :family "Hack Nerd Font Mono" :size 14) nil 'prepend)
+  (set-fontset-font t 'unicode (font-spec :family "Hack Nerd Font Mono" :size 16) nil 'prepend)
 
   (dolist (charset '(kana han cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font)
-                      charset (font-spec :family "TsangerJinKai02" :height 140))
+                      charset (font-spec :family "Source Han Serif SC" :height 160))
     t 'prepend))
 
 ;; icons
