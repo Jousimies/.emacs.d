@@ -24,7 +24,8 @@
 		  org-highlight-latex-and-related '(latex script)
 		  org-enforce-todo-dependencies t
 		  org-enforce-todo-checkbox-dependencies t
-		  org-tags-sort-function 'org-string-collate-greaterp)
+		  org-tags-sort-function 'org-string-collate-greaterp
+		  org-columns-default-format "%50ITEM %TODO %3PRIORITY %TAGS")
 
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2)))
