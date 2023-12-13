@@ -122,26 +122,6 @@
          (:map org-gtd-clarify-map
                ("C-c C-c" . org-gtd-organize))))
 
-;; org pomodoro
-;; TODO add to modeline
-(use-package hammy
-  :load-path "packages/hammy.el/" "packages/svg-lib" "packages/ts.el"
-  :commands hammy-start
-  :bind (("<f9>" . hammy-start)
-         ("C-<f9>" . hammy-stop))
-  :hook (hammy-start . hammy-mode)
-  :custom
-  (hammy-mode-always-show-lighter nil)
-  (hammy-mode-lighter-prefix "")
-  (hammy-mode-lighter-pie nil)
-  :config
-  ;; https://github.com/alphapapa/hammy.el/issues/10
-  ;; Use alert instead of notifications-notify, which do not work on MacOS platform.
-  (define-advice notifications-notify
-      (:override (&rest params) using-alert)
-    (alert (plist-get params :body)
-           :title (plist-get params :title))))
-
 (use-package alert
   :load-path "packages/alert/"
   :commands alert

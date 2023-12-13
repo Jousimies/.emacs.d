@@ -185,10 +185,24 @@
 		  org-clock-persist t
 		  org-clock-clocktable-default-properties '(:maxlevel 5 :link t :tags t)
 		  org-clock-persist-query-resume nil
-		  org-clock-report-include-clocking-task t)
+		  org-clock-report-include-clocking-task t
+		  org-clock-sound "/System/Library/Sounds/Ping.aiff")
   (add-hook 'org-after-todo-state-change-hook (lambda ()
                                                 (if (org-clocking-p)
                                                     (org-clock-out)))))
+
+;; org-timer as pomodoro
+(with-eval-after-load 'org-timer
+  (setopt org-timer-default-timer "25"))
+
+(defun my/pomodoro-start ()
+  (interactive)
+  (require 'org-timer)
+  (org-timer-set-timer 25))
+
+(global-set-key (kbd "<f11>") #'my/pomodoro-start)
+(global-set-key (kbd "C-<f11>") #'org-timer-stop)
+(global-set-key (kbd "s-<f11>") #'org-timer-pause-or-continue)
 
 ;; org indent mode
 (add-hook 'org-mode-hook #'org-indent-mode)
