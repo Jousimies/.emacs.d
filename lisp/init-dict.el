@@ -25,7 +25,7 @@
 (use-package sdcv
   :load-path "packages/sdcv/"
   :bind (("M-#" . my/search-dictionary)
-         ("C-c l i" . sdcv-search-input))
+         ("C-c t i" . sdcv-search-input))
   ;; :hook (after-init . my/sdcv-tooltip-face-toggle)
   :config
   (defun my/search-dictionary (arg)
@@ -73,11 +73,11 @@
 
 (use-package powerthesaurus
   :load-path ("packages/emacs-powerthesaurus/" "packages/jeison")
-  :bind ("C-c l p" . powerthesaurus-lookup-dwim))
+  :bind ("C-c t p" . powerthesaurus-lookup-dwim))
 
 (use-package popweb-dict
   :load-path ("packages/popweb/" "packages/popweb/extension/dict")
-  :bind ("C-c l s" . popweb-dict-say-word)
+  :bind ("C-c t s" . popweb-dict-say-word)
   :config
   (setq popweb-config-location (expand-file-name "popweb" cache-directory)))
 
@@ -103,11 +103,11 @@
 (defun emacs-azure-tts-sentence ()
     (interactive)
     (emacs-azure-tts 1))
-(global-set-key (kbd "C-c l S") 'emacs-azure-tts-sentence)
+(global-set-key (kbd "C-c t S") 'emacs-azure-tts-sentence)
 
 (use-package go-translate
   :load-path "packages/go-translate/"
-  :bind (("C-c l l" . my/gts-do-translate))
+  :bind (("C-c t l" . my/gts-do-translate))
   :commands gts-translate gts-do-translate
   :config
   (add-to-list 'display-buffer-alist '("^\\*Go-Translate\\*"
@@ -138,8 +138,10 @@
 
 (use-package dictionary-overlay
   :load-path "packages/dictionary-overlay/" "packages/websocket-bridge/" "packages/emacs-websocket/"
-  :bind (("C-c l r" . dictionary-overlay-toggle)
-         ("C-c l R" . dictionary-overlay-render-buffer))
+  :bind (("C-c t r" . dictionary-overlay-toggle)
+         ("C-c t R" . dictionary-overlay-render-buffer)
+		 ("C-c t k" . dictionary-overlay-mark-word-unknown)
+		 ("C-c t K" . dictionary-overlay-mark-word-known))
   :config
   (setq dictionary-overlay-translators '("local" "darwin" "sdcv" "web"))
   (setq dictionary-overlay-user-data-directory

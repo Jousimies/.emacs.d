@@ -523,3 +523,6 @@
 [submodule "packages/zoom"]
 	path = packages/zoom
 	url = https://github.com/cyrus-and/zoom.git
+[submodule "packages/flx-rs"]
+	path = packages/flx-rs
+	url = https://github.com/jcs-elpa/flx-rs.git

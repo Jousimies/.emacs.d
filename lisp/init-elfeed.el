@@ -86,53 +86,12 @@
               (propertize feed-title 'face 'elfeed-search-feed-face) " "))
     (when tags (insert "(" tags-str ")"))))
 
-;; elfeed auto update
-;; @LaxwXenceX
-(defcustom z/elfeed-update-interval (* 178 60)
-  "As name suggested, in MINs."
-  :type 'integer
-  :group 'elfeed)
-
-(defcustom z/elfeed-update-minimal-interval (* 178 60)
-  "As name suggested."
-  :type 'integer
-  :group 'elfeed)
-
-(defcustom z/elfeed-update-only-when-idle (* 5 60)
-  "As name suggested."
-  :type 'integer
-  :group 'elfeed)
-
-;;;###autoload
-(defun z/elfeed-update-with-elfeed-unjam ()
-  "As name suggested."
-  (interactive)
-  (if (> (- (float-time) (elfeed-db-last-update)) ; time since last update
-         z/elfeed-update-minimal-interval)
-      (progn
-        (elfeed-update)
-        (run-with-timer (* 5 60) nil #'elfeed-unjam))
-    (progn
-      (cancel-function-timers 'z/elfeed-update-dwim)
-      (run-with-timer nil z/elfeed-update-interval
-                      #'z/elfeed-update-dwim))))
-
-;;;###autoload
-(defun z/elfeed-update-dwim ()
-  "Automatically update entry score."
-  (interactive)
-  (cancel-function-timers 'elfeed-unjam)
-  (cancel-function-timers 'z/elfeed-update-with-elfeed-unjam)
-  ;; --
-  (run-with-idle-timer z/elfeed-update-only-when-idle nil
-                       #'z/elfeed-update-with-elfeed-unjam))
-
-(advice-add 'elfeed :after #'z/elfeed-update-dwim)
-
 ;; elfeed
 (use-package elfeed
   :load-path "packages/elfeed/"
-  :bind ("C-c E" . elfeed)
+  :bind (("C-c E" . elfeed)
+		 (:map elfeed-search-mode-map
+			   ("U" . elfeed-update)))
   :config
   (setq elfeed-use-curl nil)
   (setq elfeed-show-entry-switch #'elfeed-display-buffer)

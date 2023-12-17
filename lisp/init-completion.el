@@ -63,6 +63,10 @@
                           fussy-default-regex-fn 'fussy-pattern-first-letter
                           fussy-prefer-prefix nil))))
 
+(use-package flx-rs
+  :load-path "packages/flx-rs/"
+  :hook (minibuffer-mode . flx-rs-load-dyn))
+
 ;; https://emacs-china.org/t/macos-save-silently-t/24086
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
 (setq set-message-functions '(inhibit-message))

@@ -34,13 +34,14 @@
 (require 'init-note)
 (require 'init-bib)
 (require 'init-gtd)
-(require 'init-reader)
-(require 'init-dict)
-(require 'init-latex)
 (require 'init-blog)
+
+(require 'init-dict)
 
 (require 'init-finance)
 
+(require 'init-latex)
+(require 'init-reader)
 (require 'init-telega)
 (require 'init-mail)
 (require 'init-elfeed)
