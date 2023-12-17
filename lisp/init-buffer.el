@@ -164,9 +164,5 @@
 (with-eval-after-load 'ibuffer
   (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper))
 
-(use-package zoom
-  :load-path "packages/zoom/"
-  :hook (window-setup . zoom-mode))
-
 (provide 'init-buffer)
 ;;; init-buffer.el ends here
