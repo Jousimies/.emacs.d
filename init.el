@@ -37,6 +37,7 @@
 (require 'init-reader)
 (require 'init-dict)
 (require 'init-latex)
+(require 'init-blog)
 
 (require 'init-finance)
 
