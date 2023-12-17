@@ -149,7 +149,7 @@
         completion-ignore-case t
         delete-by-moving-to-trash t
         minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
-        max-mini-window-height 10
+        ;; max-mini-window-height 10
         redisplay-skip-fontification-on-input t
         cursor-in-non-selected-windows nil)
 

@@ -517,3 +517,9 @@
 [submodule "packages/macrursors"]
 	path = packages/macrursors
 	url = https://github.com/corytertel/macrursors.git
+[submodule "packages/rainbow-csv"]
+	path = packages/rainbow-csv
+	url = https://github.com/emacs-vs/rainbow-csv.git
+[submodule "packages/zoom"]
+	path = packages/zoom
+	url = https://github.com/cyrus-and/zoom.git

@@ -24,6 +24,7 @@
 
 ;;; Code:
 
+;; markdown
 (use-package markdown-mode
   :load-path "packages/markdown-mode/"
   :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
@@ -32,12 +33,21 @@
   :bind (:map markdown-mode-map
 			  ("C-c C-e" . markdown-do)))
 
+;; swift
 (use-package swift-mode
   :load-path "packages/swift-mode/"
   :mode ("\\.swift\\'" . swift-mode))
 
+;; yaml
 (use-package yaml-ts-mode
   :mode ("\\.yaml\\|\\.yml\\'" . yaml-ts-mode))
+
+;; csv
+(use-package rainbow-csv
+  :load-path "packages/rainbow-csv/"
+  :hook ((csv-mode . rainbow-csv-mode)
+		 (tsv-mode . rainbow-csv-mode)))
+
 
 (provide 'init-prog)
 ;;; init-prog.el ends here

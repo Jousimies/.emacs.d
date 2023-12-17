@@ -19,6 +19,7 @@
                ("r" . denote-dired-rename-marked-files-with-keywords)))
   :hook (dired-mode . denote-dired-mode-in-directories)
   :config
+  (setq denote-rename-no-confirm t)
   (setq denote-directory (expand-file-name "denote" my-galaxy))
   ;; letter casing of file name components
   (setq denote-file-name-letter-casing
