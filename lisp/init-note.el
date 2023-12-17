@@ -181,6 +181,18 @@ Delete the original subtree."
   :load-path "packages/consult-notes/"
   :bind ("s-n" . consult-notes)
   :config
+  (defun my/consult-notes--file-dir-annotate (name dir cand)
+	"Annotate file CAND with its directory DIR, size, and modification time."
+	(let* ((file  (concat (file-name-as-directory dir) cand))
+           (dirs  (abbreviate-file-name dir))
+           (attrs (file-attributes file))
+           (fsize (file-size-human-readable (file-attribute-size attrs)))
+	       (ftime (consult-notes--time (file-attribute-modification-time attrs))))
+      (put-text-property 0 (length name)  'face 'consult-notes-name name)
+      (put-text-property 0 (length fsize) 'face 'consult-notes-size fsize)
+      (put-text-property 0 (length ftime) 'face 'consult-notes-time ftime)
+      (format "%7s %8s  %12s" name fsize ftime)))
+  (setq consult-notes-file-dir-annotate-function 'my/consult-notes--file-dir-annotate)
   (setq consult-notes-file-dir-sources
         `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
           ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
