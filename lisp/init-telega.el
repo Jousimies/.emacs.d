@@ -14,7 +14,9 @@
   (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
                                        (display-buffer-in-side-window)
                                        (side . right)
-                                       (window-width . 0.4)))
+                                       (window-width . 0.4)
+									   (window-parameters
+										(mode-line-format . none))))
   :bind (("s-T" . telega)
          (:map telega-chat-mode-map
                ("C-g" . my/telega-chat-quit-window)))
@@ -32,7 +34,7 @@
       (quit-window)))
   (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))
   ;; (setq telega-avatar-workaround-gaps-for '(return t))
-  (setq telega-chat-fill-column 80)
+  (setq telega-chat-fill-column 78)
   (setq telega-translate-to-language-by-default "zh")
   (setq telega-completing-read-function completing-read-function)
   (setq telega-proxies
