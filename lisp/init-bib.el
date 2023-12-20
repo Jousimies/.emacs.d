@@ -104,7 +104,7 @@
   (setq citar-at-point-function 'embark-act))
 
 (use-package citar-latex
-  :defer t)
+  :after tex)
 
 (use-package citar-capf
   :hook ((LaTeX-mode . citar-capf-setup)
