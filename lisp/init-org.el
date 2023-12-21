@@ -138,8 +138,6 @@
       (kill-new mytmplink)
       (message "Copied %s to killring (clipboard)" mytmplink))))
 
-(global-set-key (kbd "s-/ c") #'my/copy-idlink)
-
 (defun jf/org-link-remove-link ()
   "Remove the link part of an `org-mode' link at point and keep only the description."
   (interactive)
@@ -153,7 +151,6 @@
           (let ((content (buffer-substring-no-properties content-begin content-end)))
             (delete-region link-begin link-end)
             (insert content)))))))
-(global-set-key (kbd "s-/ r") 'jf/org-link-remove-link)
 
 ;; org-src
 (with-eval-after-load 'org-src
@@ -196,14 +193,12 @@
 (with-eval-after-load 'org-timer
   (setopt org-timer-default-timer "25"))
 
-(defun my/pomodoro-start ()
+(defun my/pomodoro-toggle ()
   (interactive)
   (require 'org-timer)
-  (org-timer-set-timer 25))
-
-(global-set-key (kbd "<f11>") #'my/pomodoro-start)
-(global-set-key (kbd "C-<f11>") #'org-timer-stop)
-(global-set-key (kbd "s-<f11>") #'org-timer-pause-or-continue)
+  (if org-timer-countdown-timer
+	  (org-timer-stop)
+	(org-timer-set-timer 25)))
 
 ;; org indent mode
 (add-hook 'org-mode-hook #'org-indent-mode)

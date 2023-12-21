@@ -20,12 +20,11 @@
 
 (use-package osx-dictionary
   :load-path "packages/osx-dictionary.el/"
-  :commands osx-dictionary-search-pointer)
+  :commands osx-dictionary-search-pointer osx-dictionary-search-input)
 
 (use-package sdcv
   :load-path "packages/sdcv/"
-  :bind (("M-#" . my/search-dictionary)
-         ("C-c t i" . sdcv-search-input))
+  :commands sdcv-search-pointer sdcv-search-pointer+ sdcv-search-input sdcv-search-input+
   ;; :hook (after-init . my/sdcv-tooltip-face-toggle)
   :config
   (defun my/search-dictionary (arg)
@@ -45,6 +44,7 @@
                          :foreground ,fg-value :background ,bg-value))))
       (face-spec-set 'sdcv-tooltip-face face-spec 'face-override-spec)))
   (advice-add 'sdcv-search-pointer+ :before #'my/sdcv-tooltip-face-toggle)
+  (advice-add 'sdcv-search-input+ :before #'my/sdcv-tooltip-face-toggle)
   (setq sdcv-tooltip-border-width 1)
   (setq sdcv-dictionary-data-dir (expand-file-name "sdcv-dict" user-emacs-directory))
   (setq sdcv-program "/opt/homebrew/bin/sdcv")
@@ -73,11 +73,15 @@
 
 (use-package powerthesaurus
   :load-path ("packages/emacs-powerthesaurus/" "packages/jeison")
-  :bind ("C-c t p" . powerthesaurus-lookup-dwim))
+  :commands (powerthesaurus-lookup-synonyms-dwim
+			 powerthesaurus-lookup-antonyms-dwim
+			 powerthesaurus-lookup-related-dwim
+			 powerthesaurus-lookup-definitions-dwim
+			 powerthesaurus-lookup-sentences-dwim))
 
 (use-package popweb-dict
   :load-path ("packages/popweb/" "packages/popweb/extension/dict")
-  :bind ("C-c t s" . popweb-dict-say-word)
+  :commands popweb-dict-say-word
   :config
   (setq popweb-config-location (expand-file-name "popweb" cache-directory)))
 
@@ -103,11 +107,9 @@
 (defun emacs-azure-tts-sentence ()
     (interactive)
     (emacs-azure-tts 1))
-(global-set-key (kbd "C-c t S") 'emacs-azure-tts-sentence)
 
 (use-package go-translate
   :load-path "packages/go-translate/"
-  :bind (("C-c t l" . my/gts-do-translate))
   :commands gts-translate gts-do-translate
   :config
   (add-to-list 'display-buffer-alist '("^\\*Go-Translate\\*"
@@ -124,24 +126,19 @@
                                           )
                                 :render (gts-buffer-render))))
 ;;;###autoload
-(defun my/gts-do-translate (arg)
+(defun my/gts-do-translate ()
   "Prompt for input and perform translation, displaying output in split window.
  With prefix argument, instead save translation to kill-ring."
-  (interactive "P")
-  (if arg
-      (gts-translate (gts-translator
+  (interactive)
+  (gts-translate (gts-translator
                       :picker (gts-noprompt-picker)
                       :engines (gts-google-engine
                                 :parser (gts-google-summary-parser))
-                      :render (gts-kill-ring-render)))
-    (gts-do-translate)))
+                      :render (gts-kill-ring-render))))
 
 (use-package dictionary-overlay
   :load-path "packages/dictionary-overlay/" "packages/websocket-bridge/" "packages/emacs-websocket/"
-  :bind (("C-c t r" . dictionary-overlay-toggle)
-         ("C-c t R" . dictionary-overlay-render-buffer)
-		 ("C-c t k" . dictionary-overlay-mark-word-unknown)
-		 ("C-c t K" . dictionary-overlay-mark-word-known))
+  :commands dictionary-overlay-toggle dictionary-overlay-render-buffer dictionary-overlay-mark-word-unknown dictionary-overlay-mark-word-known
   :config
   (setq dictionary-overlay-translators '("local" "darwin" "sdcv" "web"))
   (setq dictionary-overlay-user-data-directory
@@ -152,16 +149,29 @@
 (use-package jinx
   :load-path "packages/jinx/"
   :hook (text-mode . jinx-mode)
-  :bind ("s-;" . jinx-correct)
+  :bind ("M-#" . jinx-correct)
   :config
   (add-to-list 'jinx-exclude-regexps '(t "\\cc")))
 
 (use-package writegood-mode
   :load-path "packages/writegood-mode/"
-  :bind ("C-c l w" . writegood-mode)
+  :commands writegood-mode
   :config
   (setq writegood-weasel-words
         '("very" "rather" "really" "quite" "in fact" "just" "so" "pretty" "of course" "surely" "that said" "actually")))
+
+;; lsp-bridge-toggle-sdcv-helper use pinyin to search english words,
+;; Disable corfu-mode to turn off cape-dabbrev temporarily.
+(add-to-list 'load-path "~/.emacs.d/packages/lsp-bridge/")
+(autoload 'lsp-bridge-toggle-sdcv-helper "lsp-bridge" "" t)
+(defun my/toggle-corfu ()
+  "Deactivate input method when sdcv helper enabled."
+  (interactive)
+  (if acm-enable-search-sdcv-words
+      (corfu-mode -1)
+    (corfu-mode 1)))
+
+(advice-add 'lsp-bridge-toggle-sdcv-helper :after #'my/toggle-corfu)
 
 (provide 'init-dict)
 ;;; init-dict.el ends here.

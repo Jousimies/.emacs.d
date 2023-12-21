@@ -15,21 +15,7 @@
 
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
-  :bind ("s-M" . mu4e)
-  ;; :init
-  ;; (add-to-list 'display-buffer-alist '((derived-mode . mu4e-main-mode)
-  ;;                                      (display-buffer-in-new-tab)
-  ;;                                      (select . t)))
-  ;; (add-to-list 'display-buffer-alist '((derived-mode . mu4e-headers-mode)
-  ;;                                      (display-buffer-in-side-window)
-  ;;                                      (side . right)
-  ;;                                      (window-width . 0.75)
-  ;;                                      (select . t)))
-  ;; (add-to-list 'display-buffer-alist '((derived-mode . mu4e-view-mode)
-  ;;                                      (display-buffer-in-side-window)
-  ;;                                      (side . bottom)
-  ;;                                      (window-width . 0.75)
-  ;;                                      (select . t)))
+  :commands mu4e
   :config
   ;; mu4e-main
   (setq mu4e-main-hide-personal-addresses nil)

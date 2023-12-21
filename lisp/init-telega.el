@@ -6,6 +6,7 @@
 
 (use-package telega
   :load-path ("packages/telega.el/" "packages/telega.el/contrib/"  "packages/rainbow-identifiers" "packages/visual-fill-column")
+  :commands telega
   :init
   (add-to-list 'display-buffer-alist '((or (derived-mode . telega-image-mode)
                                            (derived-mode . telega-webpage-mode)
@@ -17,9 +18,8 @@
                                        (window-width . 0.4)
 									   (window-parameters
 										(mode-line-format . none))))
-  :bind (("s-T" . telega)
-         (:map telega-chat-mode-map
-               ("C-g" . my/telega-chat-quit-window)))
+  :bind (:map telega-chat-mode-map
+               ("C-g" . my/telega-chat-quit-window))
   :config
   (defun my/telega-deactive-input-method ()
     (when (and (boundp 'this-command) this-command cur-sys-input-method)

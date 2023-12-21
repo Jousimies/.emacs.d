@@ -83,8 +83,4 @@
 
 (fset 'display-startup-echo-area-message 'ignore)
 
-;; Unbind keys
-(global-unset-key (kbd "s-l"))
-(global-unset-key (kbd "s-n"))
-
 ;;; early-init.el ends here

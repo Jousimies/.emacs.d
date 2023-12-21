@@ -45,6 +45,7 @@
 (require 'init-telega)
 (require 'init-mail)
 (require 'init-elfeed)
+(require 'init-keys)
 
 ;; custom
 (load (setq custom-file (locate-user-emacs-file "custom.el")) t)

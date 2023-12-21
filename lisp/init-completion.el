@@ -107,7 +107,7 @@
 
 (use-package marginalia
   :load-path "packages/marginalia/"
-  :hook ((minibuffer-setup . marginalia-mode)))
+  :hook (minibuffer-setup . marginalia-mode))
 
 (use-package embark
   :load-path "packages/embark/"

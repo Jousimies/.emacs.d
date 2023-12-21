@@ -24,12 +24,6 @@
 
 ;;; Code:
 
-;; (defun toggle-tab-bar-mode ()
-;;   (if (eq major-mode 'dashboard-mode)
-;; 	  (tab-bar-mode -1)
-;; 	(tab-bar-mode 1)))
-;; (add-hook 'on-switch-buffer-hook #'toggle-tab-bar-mode)
-;; (add-hook 'find-file-hook #'toggle-tab-bar-mode)
 (add-hook 'after-init-hook #'tab-bar-mode)
 (global-set-key (kbd "C-c b t") #'tab-switch)
 (global-set-key (kbd "s-t") #'tab-new)
@@ -50,10 +44,10 @@
 (defun my/tab-bar-format-right ()
   `((global menu-item ,(format-mode-line my/tab-bar-right-string) ignore)))
 
+(add-hook 'after-init-hook 'display-battery-mode)
 (add-to-list 'my/tab-bar-right-string 'battery-mode-line-string t)
 
 (setopt tab-bar-format '(tab-bar-format-menu-bar
-						 tab-bar-format-history
 						 tab-bar-format-tabs
 						 tab-bar-separator
 						 tab-bar-format-align-right

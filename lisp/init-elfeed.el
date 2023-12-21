@@ -89,8 +89,8 @@
 ;; elfeed
 (use-package elfeed
   :load-path "packages/elfeed/"
-  :bind (("C-c E" . elfeed)
-		 (:map elfeed-search-mode-map
+  :commands elfeed
+  :bind ((:map elfeed-search-mode-map
 			   ("U" . elfeed-update)))
   :config
   (setq elfeed-use-curl nil)

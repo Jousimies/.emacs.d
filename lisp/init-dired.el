@@ -54,7 +54,7 @@
 (defvar file-extensions-with-default-apps '("xls" "doc" "xlsx" "docx" "eps" "dwg" "psd" "drawio" "pptx")
   "List of file extensions to open with default applications.")
 
-(defvar video-file-extensions '("mp4" "mov" "webm"))
+(defvar video-file-extensions '("mp4" "mov" "webm" "mkv"))
 
 (defun open-with-default-app ()
   "Open file with system default app in dired."

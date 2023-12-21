@@ -46,9 +46,7 @@
 
 (use-package citar
   :load-path "packages/citar/"
-  :bind (("C-c n o" . citar-open-files)
-         ("C-c n O" . citar-open)
-         ("C-c n n" . citar-create-note))
+  :commands citar-open-files citar-open citar-create-note
   :config
   (setq citar-indicator-files
     (citar-indicator-create
@@ -86,20 +84,19 @@
      :padding "  "
      :tag "is:cited"))
   (setq citar-indicators (list citar-indicator-links
-                                 citar-indicator-files
-                                 citar-indicator-notes
-                                 citar-indicator-cited))
-
+                               citar-indicator-files
+                               citar-indicator-notes
+                               citar-indicator-cited))
+  (setopt citar-templates '((main . "${author editor:40%sn} | ${date year issued:4} | ${title:110}")
+							(suffix . "​​​​${=key= id:15} ${=type=:12}")
+							(preview . "${author editor:%etal} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.")
+							(note . "Notes on ${author editor:%etal}, ${title}")))
   (add-hook 'minibuffer-setup-hook
             (lambda () (setq truncate-lines t)))
   (setq citar-bibliography my/reference-lists)
   (setq citar-notes-paths `(,(expand-file-name "denote/references" my-galaxy)))
   (setq citar-library-file-extensions '("pdf" "jpg" "epub"))
-  (setq citar-templates '((main . "${author editor:30} ${date year issued:4} ${title:48}")
-                          (suffix . "${=key= id:15} ${=type=:12} ${tags keywords:*}")
-                          (preview . "${author editor} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.\n")
-                          (note . "${title}")))
-  (setq citar-symbol-separator "  ")
+  (setq citar-symbol-separator "​")
   (setq citar-file-additional-files-separator "-")
   (setq citar-at-point-function 'embark-act))
 

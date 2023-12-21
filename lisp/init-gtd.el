@@ -41,8 +41,6 @@
                      (format "(%s)" time-zone))))
   (add-hook 'calendar-today-visible-hook #'calendar-mark-today))
 
-(global-set-key (kbd "C-c C") #'calendar)
-
 (use-package appt
   :hook (diary-mode . appt-activate)
   :config
@@ -70,7 +68,13 @@
 
   (setq diary-file (expand-file-name "logs/diary.org" my-galaxy)))
 
-(global-set-key (kbd "C-<f12>") #'org-agenda)
+(defun my/all-todo-agenda ()
+  (interactive)
+  (org-agenda nil "n"))
+
+(defun my/book-agenda ()
+  (interactive)
+  (org-agenda nil "b"))
 
 (with-eval-after-load 'org-agenda
   (setq org-agenda-window-setup 'reorganize-frame)
@@ -93,6 +97,19 @@
 
 (use-package org-gtd
   :load-path ("packages/org-gtd.el/" "packages/org-agenda-property" "packages/org-edna")
+  :commands (org-gtd-process-inbox
+			 org-gtd-engage-grouped-by-context
+			 org-gtd-engage
+			 org-gtd-clarify-item
+			 org-gtd-clarify-agenda-item
+			 org-gtd-oops
+			 org-gtd-review-area-of-focus
+			 org-gtd-review-stuck-projects
+			 org-gtd-review-stuck-calendar-items
+			 org-gtd-review-stuck-single-action-items
+			 org-gtd-review-stuck-delegated-items
+			 org-gtd-review-stuck-incubated-items
+			 org-gtd-review-stuck-habit-items)
   :init
   (setq org-gtd-update-ack "3.0.0")
   :hook ((org-agenda-mode . org-gtd-mode)
@@ -113,13 +130,7 @@
 							))
   (org-gtd-engage-prefix-width 24)
   (org-gtd-clarify-show-horizons 'right)
-  :bind (("<f12>" . org-gtd-engage)
-         ("s-<f12>" . org-gtd-process-inbox)
-         ("M-<f12> c" . org-gtd-clarify-item)
-         ("M-<f12> C" . org-gtd-clarify-agenda-item)
-         ("M-<f12> r" . org-gtd-review-area-of-focus)
-         ("M-<f12> s" . org-gtd-review-stuck-projects)
-         (:map org-gtd-clarify-map
+  :bind ((:map org-gtd-clarify-map
                ("C-c C-c" . org-gtd-organize))))
 
 (use-package alert

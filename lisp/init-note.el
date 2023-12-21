@@ -6,16 +6,15 @@
 
 (use-package denote
   :load-path "packages/denote/"
-  :commands denote-org-capture-with-prompts
-  :bind (("C-c n s" . denote-signature)
-         ("C-c n S" . denote-subdirectory)
-         ("s-/ l" . denote-link)
-         ("s-/ b" . denote-backlinks)
-         ("s-/ L" . denote-link-insert-links-matching-regexp)
-         ("C-c n r" . denote-rename-file-using-front-matter)
-         ("C-c n k" . denote-keywords-add)
-         ("C-c n K" . denote-keywords-remove)
-         (:map dired-mode-map
+  :commands (denote-signature
+			 denote-subdirectory
+			 denote-org-capture-with-prompts
+			 denote-link
+			 denote-backlinks
+			 denote-rename-file-using-front-matter
+			 denote-keywords-add
+			 denote-keywords-remove)
+  :bind ((:map dired-mode-map
                ("r" . denote-dired-rename-marked-files-with-keywords)))
   :hook (dired-mode . denote-dired-mode-in-directories)
   :config
@@ -34,18 +33,6 @@
               (thread-last denote-directory (expand-file-name "literature"))
               (thread-last denote-directory (expand-file-name "term"))
               (thread-last denote-directory (expand-file-name "references")))))
-
-(with-eval-after-load 'org-capture
-  (add-to-list 'org-capture-templates
-               '("N" "Denote subdirectory" plain
-				 (file denote-last-path)
-				 (function
-                  (lambda ()
-					(denote-org-capture-with-prompts :title :keywords :subdirectory)))
-				 :no-save t
-				 :immediate-finish nil
-				 :kill-buffer t
-				 :jump-to-captured t)))
 
 (use-package denote-org-dblock
   :commands denote-org-dblock-insert-backlinks denote-org-dblock-insert-links)
@@ -175,11 +162,9 @@ Delete the original subtree."
         (insert text))
     (user-error "No subtree to extract; aborting")))
 
-(global-set-key (kbd "C-c n C-s") #'my/denote-org-extract-subtree-with-signature)
-(global-set-key (kbd "C-c n M-s") #'my/denote-org-extract-subtree-to-subdirectory)
 (use-package consult-notes
   :load-path "packages/consult-notes/"
-  :bind ("s-n" . consult-notes)
+  :commands consult-notes
   :config
   (defun my/consult-notes--file-dir-annotate (name dir cand)
 	"Annotate file CAND with its directory DIR, size, and modification time."
@@ -206,7 +191,17 @@ Delete the original subtree."
           ("Logs"  ?L ,(expand-file-name "logs" my-galaxy)))))
 
 (use-package denote-sort
-  :bind ("s-/ s" . denote-sort-dired))
+  :commands denote-sort-dired
+  :config
+  (defun my/denote-sort-with-sigature ()
+	(interactive)
+	(denote-sort-dired (denote-files-matching-regexp-prompt) 'signature nil))
+  (defun my/denote-sort-with-identifer ()
+	(interactive)
+	(denote-sort-dired (denote-files-matching-regexp-prompt) 'identifier nil))
+  (defun my/denote-sort-with-keywords ()
+	(interactive)
+	(denote-sort-dired (denote-files-matching-regexp-prompt) 'keywords nil)))
 
 (defun my/literature-entry (url title keywords file-path file-new-path)
   "Save a literature entry and add it to the 'literature' denote database."
@@ -263,23 +258,20 @@ Delete the original subtree."
       (my/literature-save-from-xwidget)
     (my/literature-save-from-safari)))
 
-(global-set-key (kbd "s-s") 'my/literature-save)
-
 (use-package ibooks-annot
   :load-path "packages/ibooks-annot.el/"
-  :bind ("C-c n e" . ibooks-annot/extract-annotations-to-note)
+  :commands ibooks-annot/extract-annotations-to-note
   :config
   (setq pdfannots-script "~/.emacs.d/packages/pdfannots/pdfannots.py -f json")
   (setq ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
 
-(defun my/new-article (article)
+(defun my/new-blog (title)
   (interactive "sTitle: ")
-  (let ((filename (format "%s" article))
+  (let ((filename (format "%s" title))
         (ext ".org"))
     (find-file (concat website-directory "posts/" filename ext))
-    (insert "#+TITLE: " article "\n")
+    (insert "#+TITLE: " title "\n")
     (tempel-insert 'blog)))
-(global-set-key (kbd "C-c n a") 'my/new-article)
 
 (defun my/new-meeting (meet)
   (interactive "sTitle: ")
@@ -288,8 +280,6 @@ Delete the original subtree."
     (find-file (concat my-galaxy "/meeting/" filename ext))
     (insert "#+TITLE: " meet "\n")
     (tempel-insert 'meeting)))
-
-(global-set-key (kbd "C-c n m") 'my/new-meeting)
 
 ;; https://200ok.ch/posts/2022-12-07_streamline_your_org_mode_workflow_with_automatic_clock_table_recalculation.html
 ;; Need add #+AUTOCALC_CLOCK_TABLES to org file.
@@ -365,7 +355,6 @@ it can be passed in POS."
   (interactive)
   (shell-command "shortcuts run \"OCR Selected Area\"")
   (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
-(global-set-key (kbd "C-c m o") 'my/ocr)
 
 (provide 'init-note)
 ;;; init-note.el ends here.
