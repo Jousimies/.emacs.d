@@ -180,7 +180,7 @@
 		  org-clock-into-drawer "LOGCLOCK"
 		  org-clock-out-remove-zero-time-clocks t
 		  org-clock-out-when-done t
-		  org-clock-persist t
+		  org-clock-persist 'history
 		  org-clock-clocktable-default-properties '(:maxlevel 5 :link t :tags t)
 		  org-clock-persist-query-resume nil
 		  org-clock-report-include-clocking-task t

@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(when (executable-find "gls")
+(when (and (eq system-type 'darwin) (executable-find "gls"))
     (setopt dired-use-ls-dired nil
 			insert-directory-program "gls"
 			dired-listing-switches
@@ -36,25 +36,40 @@
 		dired-recursive-deletes 'top
 		dired-auto-revert-buffer t)
 
-(global-set-key (kbd "C-x d") #'dired)
+;; dired-do-shell-command, open file with default application.
+(let ((cmd (cond ((and (eq system-type 'darwin) (display-graphic-p)) "open")
+                   ((and (eq system-type 'gnu/linux) (display-graphic-p)) "xdg-open")
+                   ((and (eq system-type 'windows-nt) (display-graphic-p)) "start")
+                   (t ""))))
+    (setq dired-guess-shell-alist-user
+          `(("\\.\\(?:docx\\|doc\\|xlsx\\|xls\\|ppt\\|pptx\\)\\'" ,cmd)
+			("\\.\\(?:eps\\|dwg\\|psd\\|drawio)'" ,cmd)
+            ("\\.\\(?:djvu\\|eps\\)\\'" ,cmd)
+            ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" ,cmd)
+            ("\\.\\(?:xcf\\)\\'" ,cmd)
+            ("\\.csv\\'" ,cmd)
+            ("\\.tex\\'" ,cmd)
+            ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\)\\(?:\\.part\\)?\\'" ,cmd)
+            ("\\.\\(?:mp3\\|flac\\)\\'" ,cmd))))
+
+(add-hook 'dired-mode-hook
+          (lambda () (setq-local truncate-lines t)))
 
 (defun z/dired-insert-date-folder ()
   "Create new directory with current date"
   (interactive)
   (dired-create-directory (format-time-string "%Y-%m-%d")))
 
-(defun my/eww-html-file ()
-  (interactive)
-  (let* ((file (dired-get-filename)))
-    (eww (concat "file://" file))))
-
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-c e") 'my/eww-html-file))
-
 (defvar file-extensions-with-default-apps '("xls" "doc" "xlsx" "docx" "eps" "dwg" "psd" "drawio" "pptx")
   "List of file extensions to open with default applications.")
 
 (defvar video-file-extensions '("mp4" "mov" "webm" "mkv"))
+
+(defvar html-file '("html"))
+
+(defun my/eww-html-file ()
+  (let* ((file (dired-get-filename)))
+    (eww (concat "file://" file))))
 
 (defun open-with-default-app ()
   "Open file with system default app in dired."
@@ -67,24 +82,12 @@
                          (expand-file-name (dired-get-filename))))
           ((member ext video-file-extensions)
 		   (my/dired-open-with-mpv))
+		  ((member ext html-file)
+		   (my/eww-html-file))
           (t (dired-find-file)))))
 
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "<return>") 'open-with-default-app))
-
-(defun my/dired-preview ()
-  "Quick look the current file in macOS."
-  (interactive)
-  (let* ((file (dired-get-filename)))
-    (if (eq system-type 'darwin)
-        (call-process-shell-command (concat "qlmanage -p " (shell-quote-argument file)) nil nil)
-      (message "Not supported on this platform."))))
-
-(add-hook 'dired-mode-hook
-          (lambda () (setq-local truncate-lines t)))
-
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-<return>") #'my/dired-preview))
 
 (setopt dired-omit-verbose nil
 		dired-omit-files "^\\.[^.].*")
@@ -114,7 +117,17 @@
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-'") #'my/org-attach-visit-headline-from-dired))
 
-;; dired-preview
+;; Preview file in Dired.
+(when (eq system-type 'darwin)
+  (defun my/dired-preview ()
+	"Quick look the current file in macOS."
+	(interactive)
+	(let* ((file (dired-get-filename)))
+      (call-process-shell-command (concat "qlmanage -p " (shell-quote-argument file)) nil nil)))
+
+  (with-eval-after-load 'dired
+	(define-key dired-mode-map (kbd "SPC") #'my/dired-preview)))
+
 (use-package dired-preview
   :load-path "packages/dired-preview/"
   :commands dired-preview-mode
@@ -156,6 +169,14 @@ This function requires ImageMagick's convert utility to be installed and availab
                          epsfile
                          pngfile)))
       (message "\n%d files were converted from EPS to PNG format." n))))
+
+;; Diredfl
+;; Diredfl is not compatible with denote-dired-mode
+;; (use-package diredfl
+;;   :load-path "packages/diredfl/"
+;;   :hook ((dired-mode . diredfl-mode)
+;; 		 (denote-dired-mode . (lambda ()
+;; 								(setq-local diredfl-mode nil)))))
 
 (provide 'init-dired)
 ;;; init-dired.el ends here

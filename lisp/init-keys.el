@@ -133,7 +133,7 @@
 	("a" "Calculator" calc :transient nil)]
    ])
 
-(global-set-key (kbd "s-.") #'my/application-menu)
+(global-set-key (kbd "C-c a") #'my/application-menu)
 
 (transient-define-prefix my/links-menu ()
   "Links"

@@ -526,3 +526,6 @@
 [submodule "packages/flx-rs"]
 	path = packages/flx-rs
 	url = https://github.com/jcs-elpa/flx-rs.git
+[submodule "packages/diredfl"]
+	path = packages/diredfl
+	url = https://github.com/purcell/diredfl.git
