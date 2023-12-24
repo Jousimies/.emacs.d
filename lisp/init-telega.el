@@ -15,9 +15,7 @@
   (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
                                        (display-buffer-in-side-window)
                                        (side . right)
-                                       (window-width . 0.4)
-									   (window-parameters
-										(mode-line-format . none))))
+                                       (window-width . 0.4)))
   :bind (:map telega-chat-mode-map
                ("C-g" . my/telega-chat-quit-window))
   :config

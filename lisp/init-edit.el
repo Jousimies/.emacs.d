@@ -51,8 +51,7 @@
         history-delete-duplicates t))
 
 (add-hook 'on-first-file-hook #'save-place-mode)
-(with-eval-after-load 'saveplace
-  (setopt save-place-file (expand-file-name "places" cache-directory)))
+(setopt save-place-file (expand-file-name "places" cache-directory))
 
 (use-package undo-fu-session
   :load-path "packages/undo-fu-session/"
