@@ -45,7 +45,8 @@
         (Google . "https://www.google.com/search?q=")
         (Scholar . "https://scholar.google.com/scholar?hl=zh-CN&as_sdt=0%2C33&q=")
         (Github . "github.com/search?q=")
-        (Youtube . "http://www.youtube.com/results?aq=f&oq=&search_query=")))
+        (Youtube . "http://www.youtube.com/results?aq=f&oq=&search_query=")
+		(Bilibili . "https://search.bilibili.com/all?keyword=")))
 
 ;;;###autoload
 (defun my/search ()
