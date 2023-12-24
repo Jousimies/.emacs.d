@@ -190,15 +190,16 @@
                                                     (org-clock-out)))))
 
 ;; org-timer as pomodoro
-(with-eval-after-load 'org-timer
-  (setopt org-timer-default-timer "25"))
-
-(defun my/pomodoro-toggle ()
-  (interactive)
-  (require 'org-timer)
-  (if org-timer-countdown-timer
-	  (org-timer-stop)
-	(org-timer-set-timer 25)))
+(use-package org-timer
+  :commands org-timer-pause-or-continue my/pomodoro-toggle
+  :config
+  (setopt org-timer-default-timer "25")
+  (defun my/pomodoro-toggle ()
+	(interactive)
+	(require 'org-timer)
+	(if org-timer-countdown-timer
+		(org-timer-stop)
+	  (org-timer-set-timer 25))))
 
 ;; org indent mode
 (add-hook 'org-mode-hook #'org-indent-mode)

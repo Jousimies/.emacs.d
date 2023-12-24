@@ -74,7 +74,8 @@
 	("i" "Item" org-gtd-clarify-item :transient nil)
 	("I" "Item: agenda" org-gtd-clarify-agenda-item :transient nil)]
    ["Review"
-	("o" "Missed appointments" org-gtd-oops :transient nil)
+	("o" "Missed Appointments" org-gtd-oops :transient nil)
+	("m" "Missed Items" org-gtd-review-missed-items :transient nil)
 	("f" "Area of Focus" org-gtd-review-area-of-focus :transient nil)]
    ["Review Stuck"
 	("p" "Stuck Projects" org-gtd-review-stuck-projects :transient t)

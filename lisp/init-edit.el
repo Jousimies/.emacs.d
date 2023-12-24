@@ -189,7 +189,6 @@
               ("q" . selected-off)
               ("u" . upcase-region)
               ("d" . downcase-region)
-              ("c" . my/copy-region)
               ("x" . kill-region)
               ("w" . count-words-region)
               ("i" . surround-insert)
@@ -197,13 +196,14 @@
               ("t" . my/gts-do-translate)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
-              (";" . comment-dwim))
-  :config
-  (defun my/copy-region ()
-    (interactive)
-    (if (eq major-mode 'xwidget-webkit-mode)
-        (xwidget-webkit-copy-selection-as-kill)
-      (copy-region-as-kill (region-beginning) (region-end)))))
+              (";" . comment-dwim)))
+
+(defun my/copy-region ()
+  (interactive)
+  (if (eq major-mode 'xwidget-webkit-mode)
+      (xwidget-webkit-copy-selection-as-kill)
+    (ns-copy-including-secondary)))
+(global-set-key (kbd "s-c") #'my/copy-region)
 
 (use-package symbol-overlay
   :load-path "packages/symbol-overlay/"
@@ -254,7 +254,7 @@
 	  (add-text-properties beg end '(read-only t)))))
 
 (defun make-region-writable (beg end)
-  (interactive "r")
+  (interactive "r") 
   (let ((inhibit-read-only t))
 	(with-silent-modifications
 	  (remove-text-properties beg end '(read-only t)))))
