@@ -43,6 +43,13 @@
 	("fs" "With Sigature" my/denote-sort-with-sigature :transient nil)
 	("fi" "With Identifier" my/denote-sort-with-identifer :transient nil)
 	("fk" "With Keywords" my/denote-sort-with-keywords :transient nil)]
+   ["Denote Explore"
+	("c" "Count Keywords" denote-explore-count-keywords :transient nil)
+	("C" "Count Notes" denote-explore-count-notes :transient nil)
+	("t" "BarChart" denote-explore-keywords-barchart :transient t)
+	("i" "Duplicate Identifier" denote-explore-identify-duplicate-identifiers :transient nil)
+	("R" "Rename Keywords" denote-explore-rename-keyword :transient nil)
+	]
    ["Extract Subtree"
 	("x" "With Signature" my/denote-org-extract-subtree-with-signature :transient nil)
 	("X" "To Subdirectory" my/denote-org-extract-subtree-to-subdirectory :transient nil)

@@ -265,6 +265,14 @@ Delete the original subtree."
   (setq pdfannots-script "~/.emacs.d/packages/pdfannots/pdfannots.py -f json")
   (setq ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
 
+(use-package denote-explore
+  :load-path "packages/denote-explore/"
+  :commands (denote-explore-count-notes
+			 denote-explore-count-keywords
+			 denote-explore-keywords-barchart
+			 denote-explore-identify-duplicate-identifiers
+			 denote-explore-rename-keyword))
+
 (defun my/new-blog (title)
   (interactive "sTitle: ")
   (let ((filename (format "%s" title))
