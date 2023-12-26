@@ -178,5 +178,17 @@ This function requires ImageMagick's convert utility to be installed and availab
 ;; 		 (denote-dired-mode . (lambda ()
 ;; 								(setq-local diredfl-mode nil)))))
 
+(use-package file-info
+  :load-path "packages/file-info.el/" "packages/hydra/" "packages/browse-at-remote/"
+  :bind ("C-c i" . 'file-info-show)
+  :config
+  (setq hydra-hint-display-type 'posframe)
+  (setq hydra-posframe-show-params `(:poshandler posframe-poshandler-frame-center
+												 :internal-border-width 2
+												 :internal-border-color "#61AFEF"
+												 :left-fringe 16
+												 :right-fringe 16)))
+
+
 (provide 'init-dired)
 ;;; init-dired.el ends here

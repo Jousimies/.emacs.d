@@ -30,5 +30,17 @@
   :load-path "packages/browse-at-remote/"
   :bind ("M-g b" . browse-at-remote))
 
+(use-package blamer
+  :load-path "~/.emacs.d/packages/blamer.el/"
+  :hook (prog-mode . blamer-mode)
+  :custom
+  (blamer-idle-time 0.3)
+  (blamer-min-offset 70)
+  :custom-face
+  (blamer-face ((t :foreground "#7a88cf"
+                   :background unspecified
+                   :height 140
+                   :italic t))))
+
 (provide 'init-git)
 ;;; init-git.el ends here.

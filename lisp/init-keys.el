@@ -38,11 +38,11 @@
 	("r" "Rename Note" denote-rename-file-using-front-matter :transient nil)
 	("k" "Add Keyword" denote-keywords-add :transient nil)
 	("K" "Remove Keyword" denote-keywords-remove :transient nil)]
-   ["Denote Sort"
-	("/p" "Prompt" denote-sort-dired :transient nil)
-	("/s" "With Sigature" my/denote-sort-with-sigature :transient nil)
-	("/i" "With Identifier" my/denote-sort-with-identifer :transient nil)
-	("/k" "With Keywords" my/denote-sort-with-keywords :transient nil)]
+   ["Denote Filter/Sort"
+	("fp" "Prompt" denote-sort-dired :transient nil)
+	("fs" "With Sigature" my/denote-sort-with-sigature :transient nil)
+	("fi" "With Identifier" my/denote-sort-with-identifer :transient nil)
+	("fk" "With Keywords" my/denote-sort-with-keywords :transient nil)]
    ["Extract Subtree"
 	("x" "With Signature" my/denote-org-extract-subtree-with-signature :transient nil)
 	("X" "To Subdirectory" my/denote-org-extract-subtree-to-subdirectory :transient nil)
@@ -74,9 +74,9 @@
 	("i" "Item" org-gtd-clarify-item :transient nil)
 	("I" "Item: agenda" org-gtd-clarify-agenda-item :transient nil)]
    ["Review"
-	("o" "Missed Appointments" org-gtd-oops :transient nil)
-	("m" "Missed Items" org-gtd-review-missed-items :transient nil)
-	("f" "Area of Focus" org-gtd-review-area-of-focus :transient nil)]
+	("o" "Missed Appointments" org-gtd-oops :transient t)
+	("m" "Missed Items" org-gtd-review-missed-items :transient t)
+	("f" "Area of Focus" org-gtd-review-area-of-focus :transient t)]
    ["Review Stuck"
 	("p" "Stuck Projects" org-gtd-review-stuck-projects :transient t)
 	("c" "Calendar" org-gtd-review-stuck-calendar-items :transient t)

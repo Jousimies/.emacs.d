@@ -529,3 +529,15 @@
 [submodule "packages/diredfl"]
 	path = packages/diredfl
 	url = https://github.com/purcell/diredfl.git
+[submodule "packages/snow.el"]
+	path = packages/snow.el
+	url = https://github.com/alphapapa/snow.el.git
+[submodule "packages/file-info.el"]
+	path = packages/file-info.el
+	url = https://github.com/Artawower/file-info.el.git
+[submodule "packages/hydra"]
+	path = packages/hydra
+	url = https://github.com/abo-abo/hydra.git
+[submodule "packages/blamer.el"]
+	path = packages/blamer.el
+	url = https://github.com/Artawower/blamer.el.git

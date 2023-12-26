@@ -52,5 +52,9 @@
       (insert new-url))
     (error "Not on a Youtube link")))
 
+(use-package snow
+  :load-path "~/.emacs.d/packages/snow.el/"
+  :commands snow)
+
 (provide 'init-misc)
 ;;; init-misc.el ends here.

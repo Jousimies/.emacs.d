@@ -28,6 +28,7 @@
 
 (with-eval-after-load 'register
   (setopt register-preview-delay 0)
+  (set-register ?a (cons 'file (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/gtd_archive_" (format-time-string "%Y"))))
   (set-register ?g (cons 'file (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org/org-gtd-tasks.org" mobile-document)))
   (set-register ?b (cons 'file (expand-file-name "denote/books/20230301T211439--Book-lists-and-reading-record__reading.org" my-galaxy)))
   (set-register ?l (cons 'file (concat my-galaxy "/logs/log_" (format-time-string "%Y") ".org")))
@@ -143,6 +144,14 @@
 
   (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes))
 
+(use-package rime-regexp
+  :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"
+  :hook (minibuffer-mode . rime-regexp-mode)
+  :config
+  (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
+  (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
+  (setq rime-user-data-dir "~/Library/Rime/"))
+
 (use-package emt
   :load-path "packages/emt"
   :bind (("M-f" . emt-forward-word)
@@ -253,7 +262,7 @@
 	  (add-text-properties beg end '(read-only t)))))
 
 (defun make-region-writable (beg end)
-  (interactive "r") 
+  (interactive "r")
   (let ((inhibit-read-only t))
 	(with-silent-modifications
 	  (remove-text-properties beg end '(read-only t)))))

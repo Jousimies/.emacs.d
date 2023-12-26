@@ -47,40 +47,11 @@
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
 (add-hook 'on-first-input-hook #'icomplete-mode)
 
-(add-hook 'minibuffer-mode-hook (lambda ()
-                                  (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
-                                  (require 'orderless)
-                                  (setq-local completion-styles
-                                              '(orderless flex))))
-
-(use-package rime-regexp
-  :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"
-  :hook (minibuffer-mode . rime-regexp-mode)
-  :config
-  (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
-  (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
-  (setq rime-user-data-dir "~/Library/Rime/"))
-
-;; (use-package fussy
-;;   :load-path "packages/fussy/" "packages/flx/"
-;;   :config
-;;   (push 'fussy completion-styles)
-;;   (setq fussy-use-cache t
-;; 		completion-category-defaults nil
-;; 		completion-category-overrides '((file (styles basic partial-completion))
-;; 										(eglot (styles fussy basic)))
-;; 		fussy-filter-fn 'fussy-filter-default)
-;;   (advice-add 'corfu--capf-wrapper :before 'fussy-wipe-cache)
-;;   (add-hook 'corfu-mode-hook
-;;             (lambda ()
-;;               (setq-local fussy-max-candidate-limit 5000
-;;                           fussy-default-regex-fn 'fussy-pattern-first-letter
-;;                           fussy-prefer-prefix nil))))
-
-;; ;; Scoring Backends
-;; (use-package flx-rs
-;;   :load-path "packages/flx-rs/"
-;;   :hook (minibuffer-mode . flx-rs-load-dyn))
+(use-package orderless
+  :load-path "~/.emacs.d/packages/orderless/"
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 
 ;; https://emacs-china.org/t/macos-save-silently-t/24086
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
