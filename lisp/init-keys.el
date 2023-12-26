@@ -46,6 +46,27 @@
 
 (global-set-key (kbd "s-f") #'my/file-folder-menu)
 
+(transient-define-prefix my/wfb-menu ()
+  "WFB Stands for Window, Frame, Buffer."
+  [["Winum"
+	("0" "Win 0" winum-select-window-0 :transient nil)
+	("1" "Win 1" winum-select-window-1 :transient nil)
+	("2" "Win 2" winum-select-window-2 :transient nil)
+	("n" "Win Number" winum-select-window-by-number :transient nil)]
+   ["Winner"
+	("u" "Winner Undo" winner-undo :transient t)
+	("r" "Winner Redo" winner-redo :transient t)]
+   ["Windmove"
+	("k" "Windmove UP" windmove-up :transient nil)
+	("j" "Windmove Down" windmove-down :transient nil)
+	("h" "Windmove Left" windmove-left :transient nil)
+	("l" "Windmove Right" windmove-right :transient nil)]
+   ["Buffer"
+	("m" "Message" switch-to-message :transient nil)
+	("s" "Scratch" scratch-buffer :transient nil)]])
+
+(global-set-key (kbd "M-o") #'my/wfb-menu)
+
 (transient-define-prefix my/note-menu ()
   "Note"
   [:description current-time-string

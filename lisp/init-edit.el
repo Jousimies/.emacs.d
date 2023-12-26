@@ -34,7 +34,6 @@
   (set-register ?l (cons 'file (concat my-galaxy "/logs/log_" (format-time-string "%Y") ".org")))
   (set-register ?f (cons 'file (expand-file-name "finance/beans/finance.bean" my-galaxy))))
 
-(global-set-key (kbd "C-c f r") #'recentf-open)
 (add-hook 'on-first-input-hook #'recentf-mode)
 (with-eval-after-load 'recentf
   (setopt recentf-save-file (expand-file-name "recentf" cache-directory)

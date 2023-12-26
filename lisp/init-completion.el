@@ -82,7 +82,6 @@
          ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
          ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
          ([remap yank-pop] . consult-yank-pop)
-         ("C-c f a" . consult-find)
          :map minibuffer-mode-map
          ("C-r" . consult-history))
   :config
@@ -116,7 +115,6 @@ regarding the asynchronous search and the arguments."
   :bind (([remap describe-bindings] . embark-bindings)
          ("C-;" . embark-act)
          ("M-." . embark-dwim)
-         ("C-c f o" . embark-open-externally)
          (:map minibuffer-local-map
                ("C-;" . embark-act)
                ("C-c C-e" . embark-export)

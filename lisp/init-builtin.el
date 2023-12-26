@@ -25,7 +25,6 @@
 ;;; Code:
 
 ;; files
-(global-set-key (kbd "C-c b s") #'scratch-buffer)
 (global-set-key (kbd "C-h") #'delete-backward-char)
 (global-set-key (kbd "M-h") #'backward-kill-word)
 (global-set-key (kbd "<f1>") #'help-command)
@@ -77,13 +76,10 @@
               (delete-trailing-whitespace)))))))
 (add-hook 'before-save-hook #'auto-save-delete-trailing-whitespace-except-current-line)
 
-(global-set-key (kbd "C-c f f") #'find-file-at-point)
-
 (defun switch-to-message ()
     "Quick switch to `*Message*' buffer."
     (interactive)
     (switch-to-buffer "*Messages*"))
-(global-set-key (kbd "C-c b m") #'switch-to-message)
 
 (setopt message-kill-buffer-on-exit t
         message-kill-buffer-query nil
@@ -199,8 +195,6 @@
                                        (side . right)
                                        (window-width . 0.5)))
 (add-hook 'on-first-buffer-hook #'windmove-mode)
-(global-set-key (kbd "C-c <up>") #'windmove-up)
-(global-set-key (kbd "C-c <down>") #'windmove-down)
 
 (setopt switch-to-buffer-in-dedicated-window 'pop
 		switch-to-buffer-obey-display-actions t)
