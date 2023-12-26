@@ -162,7 +162,7 @@
 
 (use-package macos
   :load-path "packages/EmacsMacOSModule/"
-  :bind ("C-c f F" . macos-reveal-in-finder)
+  :commands macos-reveal-in-finder macos-share
   :config
   (setq macos-module-install-dir (expand-file-name "modules" user-emacs-directory)
 		macos-module-path (expand-file-name "libEmacsMacOSModule.dylib" macos-module-install-dir))
