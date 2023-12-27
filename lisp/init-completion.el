@@ -88,20 +88,14 @@
   (setq consult-preview-key nil))
 
 ;;;###autoload
-(defun my/consult-find (&optional dir initial)
-  "Search for files with `find' in DIR.
-The file names must match the input regexp.  INITIAL is the
-initial minibuffer input.  See `consult-grep' for details
-regarding the asynchronous search and the arguments."
-  (interactive "P")
-  (unwind-protect
-      (progn
-        (fido-vertical-mode 1)
-        (pcase-let* ((`(,prompt ,paths ,dir) (consult--directory-prompt "Find" dir))
-                     (default-directory dir)
-                     (builder (consult--find-make-builder paths)))
-          (find-file (consult--find prompt builder initial))))
-    (fido-vertical-mode -1)))
+(defun my/consult-find-attach ()
+  (interactive)
+  (let* ((dir (expand-file-name "attach" my-galaxy)))
+	(unwind-protect
+		(progn
+		  (fido-vertical-mode)
+		  (consult-find dir)))
+	(fido-vertical-mode -1)))
 
 (use-package consult-imenu
   :bind ([remap imenu] . consult-imenu))

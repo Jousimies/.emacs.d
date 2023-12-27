@@ -25,14 +25,13 @@
 
 ;;; Code:
 
-(setopt transient-show-popup 0.2)
+(setopt transient-show-popup 0.5)
 
 (transient-define-prefix my/file-folder-menu ()
   "Files and Folders manipulation."
   [["Find File"
 	("w" "Other Window" find-file-other-window :transient nil)
 	("t" "Other Tab" find-file-other-tab :transient nil)
-	("f" "With find" my/consult-find :transient nil)
 	("r" "Rencent file" consult-recent-file :transient nil)
 	("p" "At Point" find-file-at-point :transient nil)]
    ["Macos"
@@ -40,8 +39,9 @@
 	("s" "Share" macos-share :transient nil)
 	]
    ["Misc"
+	("a" "Attachment" my/consult-find-attach :transient nil)
 	("i" "File Info" file-info-show :transient nil)
-	]
+	("d" "Consult Dir" consult-dir :transient nil)]
    ])
 
 (global-set-key (kbd "s-f") #'my/file-folder-menu)
