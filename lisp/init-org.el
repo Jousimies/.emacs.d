@@ -366,5 +366,16 @@
   :load-path "packages/advance-words-count.el/"
   :bind ("M-=" . advance-words-count))
 
+(defun my/insert-specified-datetree ()
+  "Insert a datetree entry for a specified date."
+  (interactive)
+  (let* ((date (org-parse-time-string (org-read-date)))
+         (year (nth 5 date))
+         (month (nth 4 date))
+         (day (nth 3 date)))
+    (org-datetree-find-date-create (list month day year))
+	(open-line 1)
+	(forward-line 1)))
+
 (provide 'init-org)
 ;;; init-org.el ends here.
