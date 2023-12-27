@@ -541,3 +541,6 @@
 [submodule "packages/blamer.el"]
 	path = packages/blamer.el
 	url = https://github.com/Artawower/blamer.el.git
+[submodule "packages/consult-dir"]
+	path = packages/consult-dir
+	url = https://github.com/karthink/consult-dir.git

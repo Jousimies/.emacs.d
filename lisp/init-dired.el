@@ -188,7 +188,9 @@ This function requires ImageMagick's convert utility to be installed and availab
 												 :internal-border-color "#61AFEF"
 												 :left-fringe 16
 												 :right-fringe 16)))
-
+(use-package consult-dir
+  :load-path "packages/consult-dir/"
+  :commands consult-dir)
 
 (provide 'init-dired)
 ;;; init-dired.el ends here
