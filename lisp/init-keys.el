@@ -97,7 +97,10 @@
 	("n" "Note" citar-open-notes :transient nil)]
    ["Misc"
 	("s-n" " Consult Notes" consult-notes :transient nil)
-	("SPC" "OCR" my/ocr :transient nil)]])
+	("M" "MindMap" plantuml-org-to-mindmap-open :transient nil)
+	("w" "WBS" plantuml-org-to-mindmap-open :transient nil)
+	("SPC" "OCR" my/ocr :transient nil)
+	]])
 
 (global-set-key (kbd "s-n") #'my/note-menu)
 
