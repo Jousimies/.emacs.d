@@ -48,12 +48,7 @@
 
 (transient-define-prefix my/wfb-menu ()
   "WFB Stands for Window, Frame, Buffer."
-  [["Winum"
-	("0" "Win 0" winum-select-window-0 :transient nil)
-	("1" "Win 1" winum-select-window-1 :transient nil)
-	("2" "Win 2" winum-select-window-2 :transient nil)
-	("n" "Win Number" winum-select-window-by-number :transient nil)]
-   ["Winner"
+  [["Winner"
 	("u" "Winner Undo" winner-undo :transient t)
 	("r" "Winner Redo" winner-redo :transient t)]
    ["Windmove"

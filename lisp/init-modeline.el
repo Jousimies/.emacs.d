@@ -268,9 +268,7 @@
 (use-package winum
   :load-path "packages/emacs-winum/"
   :hook (window-setup . winum-mode)
-  :config
-  (setq winum-auto-setup-mode-line nil)
-
+  :preface
   (defun my/winum-select (num)
     (lambda (&optional arg) (interactive "P")
       (if arg
@@ -281,11 +279,13 @@
 
   (setq winum-keymap
         (let ((map (make-sparse-keymap)))
-          (define-key map (kbd "C-M-0") 'winum-select-window-0-or-10)
+          (define-key map (kbd "C-0") 'winum-select-window-0-or-10)
           (dolist (num '(1 2 3 4 5 6 7 8 9) nil)
-            (define-key map (kbd (concat "C-M-" (int-to-string num)))
+            (define-key map (kbd (concat "C-" (int-to-string num)))
                         (my/winum-select num)))
-          map)))
+          map))
+  :config
+  (setq winum-auto-setup-mode-line nil))
 
 (provide 'init-modeline)
 ;;; init-modeline.el ends here
