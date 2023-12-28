@@ -24,14 +24,18 @@
 
 ;;; Code:
 
-(defcustom prot-modeline-string-truncate-length 9
+
+;; (setq mode-line-right-align-edge 'right-margin)
+
+(defcustom prot-modeline-string-truncate-length 50
   "String length after which truncation should be done in small windows."
   :type 'natnum)
 
 (defun prot-modeline--string-truncate-p (str)
   "Return non-nil if STR should be truncated."
-  (and (< (window-total-width) split-width-threshold)
-       (> (length str) prot-modeline-string-truncate-length)))
+  ;; (and (< (window-total-width) split-width-threshold)
+  ;;      (> (length str) prot-modeline-string-truncate-length))
+  (> (length str) prot-modeline-string-truncate-length))
 
 (defun prot-modeline-string-truncate (str)
   "Return truncated STR, if appropriate, else return STR.
@@ -40,12 +44,14 @@
       (concat (substring str 0 prot-modeline-string-truncate-length) "...")
     str))
 
+;; Major Mode
 (defun my/modeline--major-mode ()
   (capitalize (string-replace "-mode" "" (symbol-name major-mode))))
 
 (defvar-local my/modeline-major-mode
     '(:eval (propertize (my/modeline--major-mode) 'face `(:inherit font-lock-variable-name-face))))
 
+;; File Name, truncate it if its length greater than prot-modeline-string-truncate-length.
 (defun my/modeline--buffer-name ()
   (when-let ((name (buffer-name)))
     (prot-modeline-string-truncate name)))
@@ -68,15 +74,27 @@
     '(:eval (when (mode-line-window-selected-p)
               (propertize (my/modeline-file-name) 'face 'bold))))
 
+;; Readonly Mode
 (defvar-local my/modeline-buffer-readonly
     '(:eval (when buffer-read-only
               (propertize " "
                           'face nil))))
 
+;; Buffer Modified indicator
 (defvar-local my/modeline-buffer-modified
     '(:eval (when (mode-line-window-selected-p)
               (propertize " * " 'face `(:inherit ,(if (buffer-modified-p) 'error nil))))))
 
+;; Buffer Narrow
+(defvar-local prot-modeline-narrow
+    '(:eval
+      (when (and (mode-line-window-selected-p)
+                 (buffer-narrowed-p)
+                 (not (derived-mode-p 'Info-mode 'help-mode 'special-mode 'message-mode)))
+        (propertize " Narrow " 'face `(:inverse-video t))))
+  "Mode line construct to report the multilingual environment.")
+
+;; System Input Method status
 (defvar-local my/modeline-input-method
     '(:eval (when (mode-line-window-selected-p)
               (propertize
@@ -85,6 +103,7 @@
                  " EN ")
                'face `(:inherit ,(if current-system-input-method 'font-lock-string-face nil) :inverse-video t)))))
 
+;; kbd Macro
 (defvar-local my/modeline-kbd-macro
     '(:eval
       (when (and (mode-line-window-selected-p) defining-kbd-macro)
@@ -97,6 +116,7 @@
                        " W" (number-to-string (count-words (region-beginning) (region-end)))
                        " C" (number-to-string (abs (- (mark t) (point)))) " ")))))
 
+;; Image size info
 (defun my/modeline--image-info ()
   (car (process-lines  "identify"  "-format"  "[%m %wx%h %b]" (buffer-file-name))))
 
@@ -138,23 +158,12 @@
               (my/modeline--right-align-width)
               (string-pixel-width (propertize "m" 'face 'mode-line))))))))
 
+;; Date Info
 (defvar-local my/modeline-date
     '(:eval (when (and (mode-line-window-selected-p) (> (window-width) 90))
               (propertize (format-time-string " %Y-%m-%d %a ") 'face `(:inherit success)))))
 
-(defvar org-timer-countdown-timer nil)
-(defun my/modeline--timer ()
-  (when org-timer-countdown-timer
-    (concat " " (org-timer-value-string))))
-
-(defvar-local my/modeline-timer
-    '(:eval (when (and (mode-line-window-selected-p) org-timer-countdown-timer)
-              (propertize (my/modeline--timer) 'face `(:inherit error :inverse-video t)))))
-
-(defvar-local my/modeline-time
-    '(:eval (when (mode-line-window-selected-p)
-              (propertize (format-time-string " %H:%MPM ") 'face `(:inherit success :inverse-video t)))))
-
+;; System coding and eol
 (defun my/modeline--sys-coding-category ()
   (let ((sys (coding-system-plist buffer-file-coding-system)))
     (if (memq (plist-get sys :category)
@@ -173,6 +182,7 @@
 (defvar-local my/modeline-sys
     '(:eval (propertize (concat (my/modeline--sys-coding-category) (my/modeline--sys-coding-eol)) 'face nil)))
 
+;; Position info
 (defun my/modeline--pdf-page ()
   (format " %d/%d " (eval '(pdf-view-current-page)) (pdf-cache-number-of-pages)))
 
@@ -182,6 +192,22 @@
                   (propertize (my/modeline--pdf-page) 'face font-lock-string-face)
 				(propertize (format " %%l:%%c/%d " (line-number-at-pos (point-max))) 'face nil)))))
 
+
+;; Pomodoro
+(defvar org-timer-countdown-timer nil)
+(defun my/modeline--timer ()
+  (when org-timer-countdown-timer
+    (concat " " (org-timer-value-string))))
+
+(defvar-local my/modeline-timer
+    '(:eval (when (and (mode-line-window-selected-p) org-timer-countdown-timer)
+              (propertize (my/modeline--timer) 'face `(:inherit error :inverse-video t)))))
+
+(defvar-local my/modeline-time
+    '(:eval (when (mode-line-window-selected-p)
+              (propertize (format-time-string " %H:%MPM ") 'face `(:inherit success :inverse-video t)))))
+
+;; Clock Info
 (defvar-local my/modeline-clock-info
     '(:eval (when (and (mode-line-window-selected-p) (org-clocking-p))
               (propertize (format " [%s](%s)"
@@ -192,6 +218,29 @@
                                   org-clock-heading)
                           'face `(:inherit font-lock-builtin-face)))))
 
+;; VSC Info
+(defun my/modeline--vsc-state ()
+  (let* ((backend (vc-backend buffer-file-name))
+		 (state (vc-state buffer-file-name backend)))
+	(cond ((eq state 'up-to-date) "√")
+          ((eq state 'edited) "*")
+          ((eq state 'added) "@")
+          ((eq state 'needs-update) "￬")
+          ((eq state 'needs-merge) "&")
+          ((eq state 'unlocked-changes) "")
+          ((eq state 'removed) "×")
+          ((eq state 'conflict) "!")
+          ((eq state 'missing) "?")
+          ((eq state 'ignored) "-")
+          ((eq state 'unregistered) "+")
+          ((stringp state) (concat "#" state ":"))
+          (t " "))))
+
+(defvar-local my/modeline-vsc-info
+	'(:eval (propertize (substring-no-properties vc-mode 1)
+						'face `(:inherit font-lock-builtin-face))))
+
+;; Battery status
 (defun my/modeline--battery-data ()
   (and battery-status-function
        (functionp battery-status-function)
@@ -221,12 +270,21 @@
     '(:eval (when (mode-line-window-selected-p)
               (propertize (my/modeline--battery) 'face `(:inherit ,(if (< (my/modeline--battery-percentage) 20)
                                                                        'error nil))))))
-
+;; Winum
 (defvar-local my/winum
     '(:eval (propertize (format winum-format (winum-get-number-string)) 'face `(:inverse-video t ))))
 
+;; eglot
+(defvar-local prot-modeline-eglot
+    `(:eval
+      (when (and (featurep 'eglot) (mode-line-window-selected-p))
+        '(eglot--managed-mode eglot--mode-line-format)))
+  "Mode line construct displaying Eglot information.
+Specific to the current window's mode line.")
+
 (dolist (construct '(my/modeline-major-mode
                      my/modeline-buffer-indentification
+					 prot-modeline-narrow
                      my/modeline-input-method
                      my/modeline-kbd-macro
                      my/modeline-region-indicator
@@ -242,7 +300,9 @@
                      my/modeline-position
                      my/modeline-image-info
                      my/modeline-clock-info
-                     my/winum))
+                     my/winum
+					 my/modeline-vsc-info
+					 prot-modeline-eglot))
   (put construct 'risky-local-variable t))
 
 (setq-default mode-line-format
@@ -250,6 +310,8 @@
                 my/winum
                 "​"
                 my/modeline-input-method
+				"​"
+				prot-modeline-narrow
                 my/modeline-buffer-readonly
                 my/modeline-buffer-modified
                 my/modeline-file-name
@@ -257,35 +319,33 @@
                 my/modeline-image-info
                 my/modeline-kbd-macro
                 my/modeline-region-indicator
+				prot-modeline-eglot
                 "       "
                 my/modeline-align-right
                 (:eval (with-eval-after-load 'org-clock
                          my/modeline-clock-info))
                 my/modeline-timer
+				my/modeline-sys
+				" "
                 my/modeline-major-mode
-                my/modeline-sys))
+				" "
+				my/modeline-vsc-info
+                ))
 
-(use-package winum
-  :load-path "packages/emacs-winum/"
-  :hook (window-setup . winum-mode)
-  :preface
-  (defun my/winum-select (num)
-    (lambda (&optional arg) (interactive "P")
-      (if arg
-          (winum-select-window-by-number (- 0 num))
-        (if (equal num (winum-get-number))
-            (winum-select-window-by-number (winum-get-number (get-mru-window t)))
-          (winum-select-window-by-number num)))))
-
-  (setq winum-keymap
-        (let ((map (make-sparse-keymap)))
-          (define-key map (kbd "C-0") 'winum-select-window-0-or-10)
-          (dolist (num '(1 2 3 4 5 6 7 8 9) nil)
-            (define-key map (kbd (concat "C-" (int-to-string num)))
-                        (my/winum-select num)))
-          map))
+(use-package keycast
+  :load-path "packages/keycast/"
+  :commands keycast-mode
   :config
-  (setq winum-auto-setup-mode-line nil))
+  (setq keycast-mode-line-format "%2s%k%c%R")
+  (setq keycast-mode-line-insert-after 'my/modeline-position)
+  (setq keycast-mode-line-window-predicate 'mode-line-window-selected-p)
+  (setq keycast-mode-line-remove-tail-elements nil)
+
+  (dolist (input '(self-insert-command org-self-insert-command))
+    (add-to-list 'keycast-substitute-alist `(,input "." "Typing…")))
+
+  (dolist (event '(mouse-event-p mouse-movement-p mwheel-scroll))
+    (add-to-list 'keycast-substitute-alist `(,event nil))))
 
 (provide 'init-modeline)
 ;;; init-modeline.el ends here

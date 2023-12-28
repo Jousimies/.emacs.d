@@ -129,6 +129,10 @@
   (with-eval-after-load 'dired
 	(define-key dired-mode-map (kbd "SPC") #'my/dired-preview)))
 
+(use-package nerd-icons-dired
+  :load-path "packages/emacs-nerd-icons-dired"
+  :hook (dired-mode . nerd-icons-dired-mode))
+
 (use-package dired-preview
   :load-path "packages/dired-preview/"
   :commands dired-preview-mode

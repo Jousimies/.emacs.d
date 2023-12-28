@@ -44,6 +44,10 @@
 
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 
+(use-package nerd-icons-completion
+  :load-path "packages/nerd-icons-completion/"
+  :hook (minibuffer-setup . nerd-icons-completion-mode))
+
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
 (use-package vertico
   :load-path "packages/vertico/"

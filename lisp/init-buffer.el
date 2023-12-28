@@ -31,6 +31,10 @@
 (with-eval-after-load 'ibuffer
   (setopt ibuffer-default-sorting-mode 'major-mode))
 
+(use-package nerd-icons-ibuffer
+  :load-path "packages/nerd-icons-ibuffer/"
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+
 (use-package bufferlo
   :load-path "packages/bufferlo/"
   :bind (([remap switch-to-buffer] . bufferlo-switch-to-buffer))
@@ -168,6 +172,28 @@
 
 (with-eval-after-load 'ibuffer
   (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper))
+
+(use-package winum
+  :load-path "packages/emacs-winum/"
+  :hook (window-setup . winum-mode)
+  :preface
+  (defun my/winum-select (num)
+    (lambda (&optional arg) (interactive "P")
+      (if arg
+          (winum-select-window-by-number (- 0 num))
+        (if (equal num (winum-get-number))
+            (winum-select-window-by-number (winum-get-number (get-mru-window t)))
+          (winum-select-window-by-number num)))))
+
+  (setq winum-keymap
+        (let ((map (make-sparse-keymap)))
+          (define-key map (kbd "C-0") 'winum-select-window-0-or-10)
+          (dolist (num '(1 2 3 4 5 6 7 8 9) nil)
+            (define-key map (kbd (concat "C-" (int-to-string num)))
+                        (my/winum-select num)))
+          map))
+  :config
+  (setq winum-auto-setup-mode-line nil))
 
 (provide 'init-buffer)
 ;;; init-buffer.el ends here

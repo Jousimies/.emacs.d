@@ -199,7 +199,7 @@
 (transient-define-prefix my/application-menu ()
   "Application"
   ["Pomodoro"
-   ("t" "Toggle" my/pomodoro-toggle :transient nil)
+   ("p" "Toggle" my/pomodoro-toggle :transient nil)
    ("SPC" "Pause or Continue" org-timer-pause-or-continue :transient nil)]
   [[("e" "Elfeed" elfeed :transient nil)]
    [("t" "Telega" telega :transient nil)]

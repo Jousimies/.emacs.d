@@ -1,5 +1,5 @@
 #+TITLE: Jousimies's Personal Emacs Configuration
-#+DATE: [2023-11-28 Tue 12:16]
+#+DATE: [2023-12-29 Fri 12:11]
 
 * Interface Show
 #+ATTR_ORG: :width 800px
@@ -11,12 +11,7 @@
   magick composite dark.png light.png mask.png -alpha Off shot.png
   rm mask.png
 #+end_src
-* Why Emacs
-我是怎么知道 Emacs 的？来自编辑器之战，神之编辑器（Emacs）和编辑器之神（VIM）。最先知道的是 VI，因为这个在 Linux 系统中是标配，装上 Linux 系统后怎么都得用到 VI 进行文件配置。寻着一丝丝的线索，VI -> VIM -> sublime -> Atom -> Emacs -> Code . 在这个长长的编辑器上，最终留在了 Emacs 上。至于为什么停留在 Emacs 上，那是因为 Emacs 的强大啊，对于文本的操作强出其他的软件很大一截。Emacs 和 Vim 是大浪淘沙留下来的，也是这个时代最强大的编辑器之一。
-
-本人前前后后尝试过多种的软件来参与到自己的个人事务管理当中。在遇到 Emacs 之前，在各系统中最喜欢尝鲜，每当遇到一个新的应用，总是会主动去试用。每当试用一个新的软件时，总是认为它会很有用。但是这么长时间以来，高效的软件在多年的使用中留下来的很少，直到我遇到了 Emacs 。现在是个电子的时代，试用的软件多了，对于软件的隐私性保护持保留的态度。虽然现在是网上无个人隐私可言，但是我还是不想把自己的信息随便给别人。Emacs 是一个本地的软件，所有的数据只在本地，数据永远在自己的手中。此外，Emacs 具有强大的生态，可以进行文件管理，财务管理，事务管理，邮件管理，还可以用来听音乐，看视频。
-
-
+* Emacs is Swiss Army Knife
 #+NAME: Awesome emacs
 #+CAPTION: What Emacs can do
 #+ATTR_ORG: :width 500px
@@ -28,7 +23,9 @@
 
 2023-02-26 目前升级到 Emacs 29.0.60，使用 git submodule 和 use-package 相结合的方式管理 Packages。
 
-使用 git submodule 是为了更好的管理 package 的版本，相比较直接使用 elpa 和 melpa 上面的包，可以追踪上游的状态。不再使用 borg，是最近在使用 make bootstrap 时出现了报错的问题，So Sad！只好重新开始克隆所有的包。希望使用 git submodule 能有更好的稳定性。
+~git submodule~ 可以更好的管理 package 的版本，相比较直接使用 elpa 和 melpa 上面的包，可以追踪上游的状态。
+
+=use-package= 则是 Emacs 内置包。能使用 Emacs 内置包则不使用第三方插件。合理使用 use-package 管理配置可以有效的提高 Emacs 的启动速度。
 
 #+begin_src shell
   git clone --depth=1 https://github.com/Jousimies/.emacs.d.git -b master
@@ -39,29 +36,22 @@
 
   git submodule foreach git checkout master
 #+end_src
-* About note taking
-作为一名非程序员，使用 Emacs 就是奔着使用 org-mode 管理笔记文件来的，此外，Emacs 还能进行任务管理，财务管理等等。
-
-Emacs and Org-mode is awesome!!!
-
-为什么要进行笔记管理，原因是大脑的优势在于思考，不在于信息的存储。这就体现出笔记在存储信息、帮助思考和理解信息、创造知识之间的链接的作用。
-
-在遇到 Emacs 前，使用过的笔记软件有很多，有 PKM 软件，Mediawiki，Tiddly wiki，Onenote，印象笔记，蚂蚁笔记，Simplenote，Joplin 等等。在这些软件中来回尝试了多次之后，发现没有一个能长久使用的，或多或少的存在痛点。Onenote 是私有格式，意味着当我需要夸平台时，其专有格式会给我带来麻烦。印象笔记也是如此，而且印象笔记的付费一言难尽。
-
-在了解过 markdown，org-mode 等概念后，结合以上软件的使用体验，我确立了对于笔记管理的要求是 *纯文本、本地储存，格式可控* 。
-
-当下最火的笔记管理方式非 Zettelkasten 默属，关于 Zettelkasten 的概念可以看 How to take smart notes 这本书。Emacs 上的 org-roam 和 denote 等包都可以实践该笔记管理准则，我使用 denote 管理笔记。
-
 * Keybindings
+#+ATTR_ORG: :width 500px
 [[./src/keybinding.png]]
 
 此图片通过 Tex 生成，该文件的模版来自 [[https://github.com/bbatsov/prelude][bbatsov/prelude: Prelude is an enhanced Emacs 25.1+ distribution that should make your experience with Emacs both more pleasant and more powerful.]]
 
+* ELISP learning
+使用 Emacs 有必要学习一些 elisp 知识。
+
+- [[https://manateelazycat.github.io/emacs/2022/11/18/write-emacs-plugin.html][Emacs 插件开发手册]]
+- [[http://smacs.github.io/elisp/][Emacs Lisp 简明教程 - 水木社区Emacs版]]
+- [[https://www.youtube.com/watch?v=RQK_DaaX34Q&list=PLEoMzSkcN8oPQtn7FQEF3D7sroZbXuPZ7][Introduction to Emacs Lisp - Learning Emacs Lisp #1 - YouTube]]
 * Acknowledgment
 #+begin_quote
 If I have seen further, it is by standing on the shoulders of giants. ---- Sir Isaac Newton
 #+end_quote
-谢谢以下配置的作者，从他们那学到了很多关于 Emacs 的知识。排名不分先后。
 + https://github.com/bbatsov/prelude
 + https://github.com/syl20bnr/spacemacs
 + https://github.com/seagle0128/.emacs.d
@@ -74,32 +64,3 @@ If I have seen further, it is by standing on the shoulders of giants. ---- Sir I
 + https://sachachua.com/dotemacs/
 + https://github.com/raxod502/radian
 + https://tecosaur.github.io/emacs-config/config.html
-
-* ELISP learning
-- [[https://manateelazycat.github.io/emacs/2022/11/18/write-emacs-plugin.html][Emacs 插件开发手册]]
-- [[http://smacs.github.io/elisp/][Emacs Lisp 简明教程 - 水木社区Emacs版]]
-- [[https://www.youtube.com/watch?v=RQK_DaaX34Q&list=PLEoMzSkcN8oPQtn7FQEF3D7sroZbXuPZ7][Introduction to Emacs Lisp - Learning Emacs Lisp #1 - YouTube]]
-
-* Differences
-
-** ~setq~ vs ~customize-set-variable~
-从[[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=21695][该邮件列表]]中可以总结出：在 init 文件中使用 setq 进行变量的设置是完全可以的，没有必要使用 customize-set-variable。当然使用 customize-set-variable 设置变量也可以。
-
-** ~setq~ and ~setq-default~
-+ [[https://stackoverflow.com/questions/18172728/the-difference-between-setq-and-setq-default-in-emacs-lisp][elisp - The difference between setq and setq-default in Emacs Lisp - Stack Overflow]]
-
-If a variable is buffer-local, then setq sets its local value in the current buffer
-and setq-default sets the global default value.
-
-If a variable is not buffer-local, then setq and setq-default do the same thing.
-
-** ~emacs-startup-hook~ vs ~after-init-hook~
-The difference between the two hooks is that ~emacs-startup-hook~ runs after the user's init file has been loaded, while ~after-init-hook~ runs after Emacs has finished initializing the packages and variables.
-
-** ~with-eval-after-load~ vs ~add-hook~
-#+begin_src emacs-lisp
-  (with-eval-after-load 'evil
-    (evil-collection-init))
-  (add-hook 'evil-mode-hook #'evil-collection-init)
-#+end_src
-The first approach will load and initialize =evil-collection= as soon as evil is loaded, while the second approach will only load and initialize =evil-collection= when =evil-mode= is enabled.
