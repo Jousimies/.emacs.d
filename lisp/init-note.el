@@ -37,6 +37,23 @@
 (use-package denote-org-dblock
   :commands denote-org-dblock-insert-backlinks denote-org-dblock-insert-links)
 
+(defun find-file-other-window-no-jump (filename)
+  "Find file in other window without jumping to that window."
+  (interactive "FFind file in other window: ")
+  (let ((current-window (selected-window)))
+    (find-file-other-window filename)
+    (select-window current-window)))
+
+;;;###autoload
+(defun my/denote-find-link-other-window ()
+  "Use minibuffer completion to visit linked file."
+  (declare (interactive-only t))
+  (interactive)
+  (find-file-other-window-no-jump
+   (denote-link--find-file-prompt
+    (or (denote-link-return-links)
+        (user-error "No links found")))))
+
 ;;;###autoload
 (defun my/denote-signature-from-filename ()
   "Denotes the signature from the filename and kills it."
@@ -272,13 +289,50 @@ Delete the original subtree."
 			 denote-explore-keywords-barchart
 			 denote-explore-identify-duplicate-identifiers
 			 denote-explore-rename-keyword))
+;;;###autoload
+(defun my/denote-info ()
+  "Count number of Denote text files,keywords and attachments."
+  (interactive)
+  (let* ((all-files (length (denote-directory-files)))
+		 (denote-files (length (denote-directory-files nil nil t)))
+		 (attachments (- all-files denote-files))
+		 (keywords (length (denote-keywords))))
+    (message "%s Denote files (%s Attachments), %s Distinct Keywords."
+			 denote-files attachments keywords)))
 
 (use-package citar-denote
   :load-path "packages/citar-denote/"
-  :hook (org-mode . citar-denote-mode)
+  :after citar
+  :commands (citar-denote-dwim
+			 citar-denote-open-reference-entry
+			 citar-denote-find-reference
+			 citar-denote-find-citation
+			 citar-denote-add-citekey
+			 citar-denote-remove-citekey)
+  ;; :hook (on-first-input . citar-denote-mode)
   :config
+  (citar-denote-mode)
   (setq citar-denote-use-bib-keywords t)
   (setq citar-denote-subdir t))
+
+;;;###autoload
+(defun citar-denote-open-files ()
+  "Open attachment with a bibliographic reference.
+
+When more than one bibliographic item is referenced, select item first."
+  (interactive)
+  ;; Any citation keys in the note?
+  (if-let* ((keys (citar-denote--retrieve-references (buffer-file-name)))
+            (key (if (= (length keys) 1)
+                     (car keys)
+                   (citar-select-ref
+                    :filter (citar-denote--has-citekeys keys)))))
+      (citar-open-files key)
+    (if (denote-file-is-note-p (buffer-file-name))
+        (when (yes-or-no-p "Current buffer does not reference a citation key.  Add a reference? ")
+          (citar-denote-add-citekey)
+          (citar-denote-dwim))
+      (user-error "Buffer is not a Denote file"))))
 
 (defun my/new-blog (title)
   (interactive "sTitle: ")

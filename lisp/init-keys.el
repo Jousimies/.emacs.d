@@ -25,21 +25,29 @@
 
 ;;; Code:
 
-(setopt transient-show-popup 0.5)
-
 (transient-define-prefix my/file-folder-menu ()
   "Files and Folders manipulation."
-  [["Find File"
+  ["All about Open a Specific File.\n"
+   ["Find File"
 	("w" "Other Window" find-file-other-window :transient nil)
 	("t" "Other Tab" find-file-other-tab :transient nil)
 	("r" "Rencent file" consult-recent-file :transient nil)
-	("p" "At Point" find-file-at-point :transient nil)]
+	("f" "At Point" find-file-at-point :transient nil)]
    ["Macos"
 	("F" "Finder" macos-reveal-in-finder :transient nil)
 	("s" "Share" macos-share :transient nil)
 	]
+   ["BibFile"
+	("o" "Open" citar-open :transient nil)
+	("p" "Open PDF" citar-open-files :transient nil)
+	("e" "Open Entry" citar-open-entry :transient nil)
+	("c" "Find Citation" citar-denote-find-citation :transient nil)
+	]
+   ["Reference Notes"
+	("C-p" "Open PDF" citar-denote-open-files :transient nil)
+	("C-e" "Open Entry" citar-denote-open-reference-entry :transient nil)]
    ["Misc"
-	("a" "Attachment" my/consult-find-attach :transient nil)
+	("a" "Local Attachment" my/consult-find-attach :transient nil)
 	("i" "File Info" file-info-show :transient nil)
 	("d" "Consult Dir" consult-dir :transient nil)]
    ])
@@ -65,39 +73,40 @@
 (transient-define-prefix my/note-menu ()
   "Note"
   [:description current-time-string
-   ["New Note"
+   ("s-n" " Consult Notes" consult-notes :transient nil)]
+  [["New Note"
 	("s" "With Signature" denote-signature :transient nil)
-	("d" "To Subdirectory" denote-subdirectory :transient nil)
+	("S" "To Subdirectory" denote-subdirectory :transient nil)
 	("b" "Blog" my/new-blog :transient nil)
 	("m" "Meeting" my/new-meeting :transient nil)
-	("l" "Literature" my/literature-save :transient nil)]
+	("l" "Literature" my/literature-save :transient nil)
+	("n" "Reference" citar-create-note :transient nil)]
    ["Denote Meta"
 	("r" "Rename Note" denote-rename-file-using-front-matter :transient nil)
+	("R" "Rename Keywords" denote-explore-rename-keyword :transient nil)
+	("c" "Add Citekey" citar-denote-add-citekey :transient nil)
+	("C" "Remove Citekey" citar-denote-remove-citekey :transient nil)
 	("k" "Add Keyword" denote-keywords-add :transient nil)
 	("K" "Remove Keyword" denote-keywords-remove :transient nil)]
-   ["Denote Filter/Sort"
-	("fp" "Prompt" denote-sort-dired :transient nil)
-	("fs" "With Sigature" my/denote-sort-with-sigature :transient nil)
-	("fi" "With Identifier" my/denote-sort-with-identifer :transient nil)
-	("fk" "With Keywords" my/denote-sort-with-keywords :transient nil)]
+   ["Denote Sort"
+	("/p" "Prompt" denote-sort-dired :transient nil)
+	("/s" "With Sigature" my/denote-sort-with-sigature :transient nil)
+	("/i" "With Identifier" my/denote-sort-with-identifer :transient nil)
+	("/k" "With Keywords" my/denote-sort-with-keywords :transient nil)]
    ["Denote Explore"
-	("c" "Count Keywords" denote-explore-count-keywords :transient nil)
-	("C" "Count Notes" denote-explore-count-notes :transient nil)
+	("i" "Info" my/denote-info :transient nil)
 	("t" "BarChart" denote-explore-keywords-barchart :transient t)
-	("i" "Duplicate Identifier" denote-explore-identify-duplicate-identifiers :transient nil)
-	("R" "Rename Keywords" denote-explore-rename-keyword :transient nil)
+	("d" "Duplicate Identifier" denote-explore-identify-duplicate-identifiers :transient nil)
+	("es" "Extract with Signature" my/denote-org-extract-subtree-with-signature :transient nil)
+	("ed" "Extract to Subdirectory" my/denote-org-extract-subtree-to-subdirectory :transient nil)
+	("eb" "Extract iBooks Annotation" ibooks-annot/extract-annotations-to-note :transient nil)]
+   ["BibFile"
+	("ae" "Zotra: Entry" zotra-add-entry :transient nil)
+	("aa" "SciHub: Attachment" scihub :transient nil)
+	("af" "Local: Add PDF" citar-add-file-to-library :transient nil)
+	("2" "Bibtex to Endnote" my/bib2end :transient nil)
 	]
-   ["Extract Subtree"
-	("x" "With Signature" my/denote-org-extract-subtree-with-signature :transient nil)
-	("X" "To Subdirectory" my/denote-org-extract-subtree-to-subdirectory :transient nil)
-	("a" "Annotation" ibooks-annot/extract-annotations-to-note :transient nil)]
-   ["Reference"
-	("o" "Open" citar-open :transient nil)
-	("p" "PDF" citar-open-files :transient nil)
-	("e" "Entry" citar-open-entry :transient nil)
-	("n" "New Note" citar-create-note :transient nil)]
    ["Misc"
-	("s-n" " Consult Notes" consult-notes :transient nil)
 	("M" "MindMap" plantuml-org-to-mindmap-open :transient nil)
 	("w" "WBS" plantuml-org-to-mindmap-open :transient nil)
 	("SPC" "OCR" my/ocr :transient nil)
@@ -105,12 +114,30 @@
 
 (global-set-key (kbd "s-n") #'my/note-menu)
 
+(transient-define-prefix my/links-menu ()
+  "Links"
+  ["Denote Backlinks"
+	("b" "Buffer" denote-backlinks :transient nil)]
+  [["Org Link"
+	("g" "Grab: Safari" my/link-grab :transient nil)
+	("c" "Copy IDlink" my/copy-idlink :transient nil)
+	("x" "Remove" jf/org-link-remove-link :transient nil)
+	("s" "Store" org-store-link :transient nil)]
+   ["Denote Insert"
+	("l" "Link" denote-link :transient nil)
+	("%" "Links: With Regexp" denote-add-links :transient nil)
+	("d" "Links: DBlock" denote-org-dblock-insert-links :transient nil)
+	("D" "Backlinks: DBlock" denote-org-dblock-insert-backlinks :transient nil)]
+   ["Denote Links Roam"
+	("e" "Explore Links" my/denote-find-link-other-window :transient t)
+	("fb" "Find Backlinks" denote-find-backlink :transient nil)
+	("fr" "References" citar-denote-find-reference :transient nil)]])
+
+(global-set-key (kbd "s-l") #'my/links-menu)
+
 (transient-define-prefix my/agenda-menu ()
   "GTD"
-  [["Pomodoro"
-	("t" "Toggle" my/pomodoro-toggle :transient nil)
-	("SPC" "Pause or Continue" org-timer-pause-or-continue :transient nil)]
-   ["Agenda"
+  [["Agenda"
 	("a" "Agenda" org-agenda :transient nil)
 	("b" "Book" my/book-agenda :transient nil)
 	("T" "TODO" my/all-todo-agenda :transient nil)]
@@ -167,41 +194,20 @@
 	("k" "Known Word" dictionary-overlay-mark-word-known :transient nil)
 	("K" "Unknow Word" dictionary-overlay-mark-word-unknown :transient nil)]])
 
-(global-set-key (kbd "C-c t") #'my/dict-menu)
+(global-set-key (kbd "M-s-t") #'my/dict-menu)
 
 (transient-define-prefix my/application-menu ()
   "Application"
-  [["Elfeed"
-	("e" "Elfeed" elfeed :transient nil)]
-   ["Telega"
-	("t" "Telega" telega :transient nil)]
-   ["Email"
-	("m" "Email" mu4e :transient nil)]
-   ["BuiltIn"
-	("c" "Calendar" calendar :transient nil)
-	("a" "Calculator" calc :transient nil)]
-   ])
+  ["Pomodoro"
+   ("t" "Toggle" my/pomodoro-toggle :transient nil)
+   ("SPC" "Pause or Continue" org-timer-pause-or-continue :transient nil)]
+  [[("e" "Elfeed" elfeed :transient nil)]
+   [("t" "Telega" telega :transient nil)]
+   [("m" "Email" mu4e :transient nil)]
+   [("c" "Calendar" calendar :transient nil)]
+   [("C" "Calculator" calc :transient nil)]])
 
-(global-set-key (kbd "C-c a") #'my/application-menu)
-
-(transient-define-prefix my/links-menu ()
-  "Links"
-  [["Org Link"
-	("g" "Grab: Safari" my/link-grab :transient nil)
-	("c" "Copy IDlink" my/copy-idlink :transient nil)
-	("x" "Remove" jf/org-link-remove-link :transient nil)
-	("s" "Store" org-store-link :transient nil)]
-   ["Denote Link"
-	("l" "Link" denote-link :transient nil)
-	("a" "Add Links" denote-add-links :transient nil)
-	("f" "Find Link" denote-find-link)
-	("d" "DBlock: Insert Link" denote-org-dblock-insert-links :transient nil)
-	("D" "DBlock: Insert Backlinks" denote-org-dblock-insert-backlinks :transient nil)]
-   ["Denote Backlinks"
-	("b" "Backlinks buffer" denote-backlinks :transient nil)
-	("F" "Find backlink" denote-find-backlink :transient nil)]])
-
-(global-set-key (kbd "s-l") #'my/links-menu)
+(global-set-key (kbd "M-s-a") #'my/application-menu)
 
 (provide 'init-keys)
 ;;; init-keys.el ends here

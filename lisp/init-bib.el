@@ -35,6 +35,7 @@
   :config
   (setq ebib-preload-bib-files my/reference-lists)
   (setq ebib-keywords (concat my-galaxy "/bibtexs/keywords.txt"))
+  (setq ebib-file-search-dirs `(,(expand-file-name "PDF/" my-galaxy)))
   (setq ebib-notes-directory (concat my-galaxy "/references"))
   (setq ebib-filters-default-file (concat my-galaxy "/bibtexs/ebib-filters"))
   (setq ebib-reading-list-file (concat my-galaxy "/bibtexs/reading_list.org"))
@@ -84,6 +85,7 @@
 							(preview . "${author editor:%etal} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.")
 							(note . "Notes on ${author editor:%etal}, ${title}")))
   (setq citar-bibliography my/reference-lists)
+  (setq citar-library-paths `(,(expand-file-name "PDF/" my-galaxy)))
   (setq citar-notes-paths `(,(expand-file-name "denote/references" my-galaxy)))
   (setq citar-library-file-extensions '("pdf" "jpg" "epub"))
   (setq citar-symbol-separator "​")
@@ -108,9 +110,37 @@
 
 (use-package zotra
   :load-path "packages/zotra/"
+  :commands zotra-add-entry
   :config
   (setq zotra-backend 'zotra-server)
   (setq zotra-local-server-directory "~/zotra-server/"))
+
+(use-package scihub
+  :load-path "packages/scihub.el/"
+  :commands scihub
+  :config
+  (setq scihub-download-directory "~/Downloads/"
+		scihub-open-after-download t
+		scihub-fetch-domain 'scihub-fetch-domains-lovescihub))
+
+;; Need install bibutils.
+;; https://sourceforge.net/p/bibutils/home/Bibutils/
+;;;###autoload
+(defun my/bib2end (bib-file end-file)
+  "Convert BibTeX file to EndNote file."
+  (interactive
+   (list (read-file-name "BibTeX File: "
+						 (expand-file-name "bibtexs/" my-galaxy) nil nil ".bib")
+         (read-file-name "Output EndNote File: "
+						 (expand-file-name "bibtexs/" my-galaxy) nil nil ".end")))
+  (let* ((xml-file (make-temp-file "bib2xml" nil ".xml"))
+         (bib2xml-cmd (format "bib2xml %s > %s" bib-file xml-file))
+         (xml2end-cmd (format "xml2end %s > %s" xml-file end-file)))
+    (when (= 0 (shell-command bib2xml-cmd))
+      (shell-command xml2end-cmd)
+      (message "XML to EndNote conversion successful."))
+    (delete-file xml-file)))
+
 
 (provide 'init-bib)
 ;;; init-bib.el ends here.

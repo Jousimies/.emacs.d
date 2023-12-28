@@ -47,7 +47,7 @@
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
 (use-package vertico
   :load-path "packages/vertico/"
-  :hook (minibuffer-setup . vertico-mode))
+  :hook (on-first-input . vertico-mode))
 
 (use-package orderless
   :load-path "packages/orderless/"

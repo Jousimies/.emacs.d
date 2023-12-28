@@ -188,7 +188,7 @@
                                 "*Buffer List*"
                                 "*Ibuffer*"
                                 "*esh command on file*"))
-(add-hook 'on-first-buffer-hook #'winner-mode)
+(add-hook 'on-first-input-hook #'winner-mode)
 
 (add-to-list 'display-buffer-alist '("\\*Outline"
                                        (display-buffer-in-side-window)

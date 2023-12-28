@@ -43,10 +43,11 @@
                    (t ""))))
     (setq dired-guess-shell-alist-user
           `(("\\.\\(?:docx\\|doc\\|xlsx\\|xls\\|ppt\\|pptx\\)\\'" ,cmd)
-			("\\.\\(?:eps\\|dwg\\|psd\\|drawio)'" ,cmd)
+			("\\.\\(?:eps\\|dwg\\|psd\\|drawio\\)\\'" ,cmd)
             ("\\.\\(?:djvu\\|eps\\)\\'" ,cmd)
             ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" ,cmd)
             ("\\.\\(?:xcf\\)\\'" ,cmd)
+			("\\.\\(?:epub\\|pdf\\)\\'" ,cmd)
             ("\\.csv\\'" ,cmd)
             ("\\.tex\\'" ,cmd)
             ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\)\\(?:\\.part\\)?\\'" ,cmd)
@@ -180,7 +181,7 @@ This function requires ImageMagick's convert utility to be installed and availab
 
 (use-package file-info
   :load-path "packages/file-info.el/" "packages/hydra/" "packages/browse-at-remote/"
-  :bind ("C-c i" . 'file-info-show)
+  :bind ("C-c i" . file-info-show)
   :config
   (setq hydra-hint-display-type 'posframe)
   (setq hydra-posframe-show-params `(:poshandler posframe-poshandler-frame-center
