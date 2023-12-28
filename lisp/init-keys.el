@@ -92,9 +92,10 @@
 	("X" "To Subdirectory" my/denote-org-extract-subtree-to-subdirectory :transient nil)
 	("a" "Annotation" ibooks-annot/extract-annotations-to-note :transient nil)]
    ["Reference"
-	("p" "PDF" citar-open :transient nil)
+	("o" "Open" citar-open :transient nil)
+	("p" "PDF" citar-open-files :transient nil)
 	("e" "Entry" citar-open-entry :transient nil)
-	("n" "Note" citar-open-notes :transient nil)]
+	("n" "New Note" citar-create-note :transient nil)]
    ["Misc"
 	("s-n" " Consult Notes" consult-notes :transient nil)
 	("M" "MindMap" plantuml-org-to-mindmap-open :transient nil)

@@ -273,6 +273,13 @@ Delete the original subtree."
 			 denote-explore-identify-duplicate-identifiers
 			 denote-explore-rename-keyword))
 
+(use-package citar-denote
+  :load-path "packages/citar-denote/"
+  :hook (org-mode . citar-denote-mode)
+  :config
+  (setq citar-denote-use-bib-keywords t)
+  (setq citar-denote-subdir t))
+
 (defun my/new-blog (title)
   (interactive "sTitle: ")
   (let ((filename (format "%s" title))

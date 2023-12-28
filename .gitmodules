@@ -544,3 +544,9 @@
 [submodule "packages/consult-dir"]
 	path = packages/consult-dir
 	url = https://github.com/karthink/consult-dir.git
+[submodule "packages/mct"]
+	path = packages/mct
+	url = https://github.com/protesilaos/mct.git
+[submodule "packages/vertico"]
+	path = packages/vertico
+	url = https://github.com/minad/vertico.git

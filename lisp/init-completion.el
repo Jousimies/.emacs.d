@@ -45,13 +45,15 @@
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
-(add-hook 'on-first-input-hook #'icomplete-mode)
+(use-package vertico
+  :load-path "packages/vertico/"
+  :hook (minibuffer-setup . vertico-mode))
 
 (use-package orderless
-  :load-path "~/.emacs.d/packages/orderless/"
-  :custom
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion)))))
+  :load-path "packages/orderless/"
+  :config
+  (setq completion-styles '(orderless basic))
+  (setq completion-category-overrides '((file (styles basic partial-completion)))))
 
 ;; https://emacs-china.org/t/macos-save-silently-t/24086
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
@@ -91,11 +93,7 @@
 (defun my/consult-find-attach ()
   (interactive)
   (let* ((dir (expand-file-name "attach" my-galaxy)))
-	(unwind-protect
-		(progn
-		  (fido-vertical-mode)
-		  (consult-find dir)))
-	(fido-vertical-mode -1)))
+	(consult-find dir)))
 
 (use-package consult-imenu
   :bind ([remap imenu] . consult-imenu))
