@@ -50,7 +50,7 @@
   :commands citar-open-files citar-open citar-create-note
   :config
   (setq citar-indicator-files (citar-indicator-create
-							   :symbol (nerd-icons-faicon "nf-fa-file_o"
+							   :symbol (nerd-icons-faicon "nf-fa-file_pdf_o"
 														  :face 'nerd-icons-green
 														  :v-adjust -0.1)
 							   :function #'citar-has-files
@@ -64,9 +64,9 @@
 							   :padding "  "
 							   :tag "has:links"))
   (setq citar-indicator-notes (citar-indicator-create
-							   :symbol (nerd-icons-codicon "nf-cod-note"
+							   :symbol (nerd-icons-faicon "nf-fa-sticky_note_o"
 														   :face 'nerd-icons-blue
-														   :v-adjust -0.3)
+														   :v-adjust 0)
 							   :function #'citar-has-notes
 							   :padding "    "
 							   :tag "has:notes"))

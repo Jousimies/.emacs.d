@@ -237,8 +237,9 @@
           (t " "))))
 
 (defvar-local my/modeline-vsc-info
-	'(:eval (propertize (substring-no-properties vc-mode 1)
-						'face `(:inherit font-lock-builtin-face))))
+	'(:eval (when (vc-backend (buffer-file-name))
+			  (propertize (substring-no-properties vc-mode 1)
+						  'face `(:inherit font-lock-builtin-face)))))
 
 ;; Battery status
 (defun my/modeline--battery-data ()
@@ -301,7 +302,6 @@ Specific to the current window's mode line.")
                      my/modeline-image-info
                      my/modeline-clock-info
                      my/winum
-					 my/modeline-vsc-info
 					 prot-modeline-eglot))
   (put construct 'risky-local-variable t))
 
@@ -328,8 +328,7 @@ Specific to the current window's mode line.")
 				my/modeline-sys
 				" "
                 my/modeline-major-mode
-				" "
-				my/modeline-vsc-info
+				(vc-mode vc-mode)
                 ))
 
 (use-package keycast

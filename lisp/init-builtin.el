@@ -199,6 +199,11 @@
 (setopt switch-to-buffer-in-dedicated-window 'pop
 		switch-to-buffer-obey-display-actions t)
 
+;; desktop
+;; (add-hook 'on-first-buffer-hook #'desktop-save-mode)
+;; (setq desktop-path `(,cache-directory))
+;; (add-hook 'after-init-hook #'desktop-read)
+
 (defun my/scroll-other-windown-down ()
   "Scroll other window down."
   (interactive)
