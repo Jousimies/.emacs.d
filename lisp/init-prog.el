@@ -43,6 +43,10 @@
   :mode ("\\.yaml\\|\\.yml\\'" . yaml-ts-mode))
 
 ;; csv
+(use-package csv-mode
+  :load-path "packages/csv-mode/"
+  :mode ("\\.csv\\'" . csv-mode))
+
 (use-package rainbow-csv
   :load-path "packages/rainbow-csv/"
   :hook ((csv-mode . rainbow-csv-mode)
