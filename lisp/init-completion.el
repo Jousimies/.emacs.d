@@ -57,7 +57,7 @@
   :load-path "packages/vertico/extensions/"
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
   :bind (:map vertico-map
-		 ("DEL" . vertico-directory-up)))
+		 ("C-DEL" . vertico-directory-up)))
 
 (use-package orderless
   :load-path "packages/orderless/"

@@ -565,3 +565,9 @@
 [submodule "packages/keycast"]
 	path = packages/keycast
 	url = https://github.com/tarsius/keycast.git
+[submodule "packages/svg-tag-mode"]
+	path = packages/svg-tag-mode
+	url = https://github.com/rougier/svg-tag-mode.git
+[submodule "packages/Focus"]
+	path = packages/Focus
+	url = https://github.com/larstvei/Focus.git

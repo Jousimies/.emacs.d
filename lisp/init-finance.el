@@ -38,5 +38,48 @@
                                 (if (eq major-mode 'beancount-mode)
                                     (my/beancount-align-transaction)))))
 
+;; Use double-entry-genertor generate beancount file from source date, provided by Alipay and Wechat.
+(defvar my/finance (expand-file-name "finance" my-galaxy))
+(defvar my/finance-source-data (expand-file-name "SourceData/" my/finance))
+(defvar DEG/config-dir (expand-file-name "Config/" my/finance))
+(defvar my/beancount-file (expand-file-name "AllBeans/" my/finance))
+(defvar DEG-cli "/opt/homebrew/bin/double-entry-generator")
+
+(defvar my/bean-regexp "\\([0-9]\\{8\\}[_-]\\([0-9]\\{6\\}\\|[0-9]\\{8\\}\\)\\)")
+
+(defun my/bean-rename-source (file)
+  (when (string-match my/bean-regexp file)
+    (let ((new-file-path (concat my/finance-source-data "wechat_" (match-string 1 file) ".csv")))
+      (rename-file file new-file-path)
+      new-file-path)))
+
+(defun my/bean-generate (file)
+  (interactive (list (read-file-name "CSV transaction:"
+                                     my/finance-source-data nil nil ".csv")))
+  (let* ((file (if (string-match-p "alipay" file) file (my/bean-rename-source file)))
+		 (prefix (if (string-match-p "alipay" file) "alipay" "wechat"))
+		 (config (concat DEG/config-dir prefix ".yaml"))
+		 (output (concat my/beancount-file (file-name-base file) ".bean"))
+		 (provider (if (string= prefix "alipay") "" "--provider wechat")))
+	(shell-command (format "%s translate --config %s %s --output %s %s"
+                           DEG-cli config provider output file))))
+
+;;;###autoload
+(defun my/beancount-fava ()
+  "Start (and open) or stop the fava server."
+  (interactive)
+  (require 'beancount)
+  (if beancount--fava-process
+      (progn
+        (delete-process beancount--fava-process)
+        (setq beancount--fava-process nil)
+        (message "Fava process killed"))
+    (setq beancount--fava-process
+          (start-process "fava" (get-buffer-create "*fava*") "fava"
+                         (if (eq 'beancount-mode major-mode) (buffer-file-name)
+                           (read-file-name "File to load: " my/finance nil nil nil))))
+    (set-process-filter beancount--fava-process #'beancount--fava-filter)
+    (message "Fava process started")))
+
 (provide 'init-finance)
 ;;; init-finance.el ends here.

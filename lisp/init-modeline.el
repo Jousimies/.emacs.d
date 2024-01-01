@@ -71,8 +71,7 @@
       (my/modeline-buffer-name))))
 
 (defvar-local my/modeline-file-name
-    '(:eval (when (mode-line-window-selected-p)
-              (propertize (my/modeline-file-name) 'face 'bold))))
+    '(:eval (propertize (my/modeline-file-name) 'face 'bold)))
 
 ;; Readonly Mode
 (defvar-local my/modeline-buffer-readonly

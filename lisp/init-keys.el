@@ -198,14 +198,17 @@
 
 (transient-define-prefix my/application-menu ()
   "Application"
-  ["Pomodoro"
+  [["Pomodoro"
    ("p" "Toggle" my/pomodoro-toggle :transient nil)
    ("SPC" "Pause or Continue" org-timer-pause-or-continue :transient nil)]
+   ["Finance"
+	("g" "Generator" my/bean-generate :transient t)
+	("f" "Fava" my/beancount-fava :transient nil)]]
   [[("e" "Elfeed" elfeed :transient nil)]
    [("t" "Telega" telega :transient nil)]
    [("m" "Email" mu4e :transient nil)]
    [("c" "Calendar" calendar :transient nil)]
-   [("C" "Calculator" calc :transient nil)]])
+   [("r" "Calculator" calc :transient nil)]])
 
 (global-set-key (kbd "M-s-a") #'my/application-menu)
 
