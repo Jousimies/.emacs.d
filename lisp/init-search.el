@@ -44,7 +44,7 @@
         (Zhihu . "https://www.zhihu.com/search?type=content&q=")
         (Google . "https://www.google.com/search?q=")
         (Scholar . "https://scholar.google.com/scholar?hl=zh-CN&as_sdt=0%2C33&q=")
-        (Github . "github.com/search?q=")
+        (Github . "https://github.com/search?q=")
         (Youtube . "http://www.youtube.com/results?aq=f&oq=&search_query=")
 		(Bilibili . "https://search.bilibili.com/all?keyword=")))
 

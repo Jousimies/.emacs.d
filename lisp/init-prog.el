@@ -52,6 +52,12 @@
   :hook ((csv-mode . rainbow-csv-mode)
 		 (tsv-mode . rainbow-csv-mode)))
 
+;; (use-package demap
+;;   :load-path "~/.emacs.d/packages/demap.el/"
+;;   :hook (prog-mode . demap-toggle)
+;;   :config
+;;   (setq demap-minimap-window-side  'right)
+;;   (setq demap-minimap-window-width 15))
 
 (provide 'init-prog)
 ;;; init-prog.el ends here

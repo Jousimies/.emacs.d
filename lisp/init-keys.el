@@ -25,6 +25,8 @@
 
 ;;; Code:
 
+(global-set-key (kbd "s-q") #'restart-emacs)
+
 (transient-define-prefix my/file-folder-menu ()
   "Files and Folders manipulation."
   ["All about Open a Specific File.\n"
@@ -65,6 +67,7 @@
 	("h" "Windmove Left" windmove-left :transient nil)
 	("l" "Windmove Right" windmove-right :transient nil)]
    ["Buffer"
+	("d" "Dired sidebar" dired-sidebar-toggle-sidebar :transient nil)
 	("m" "Message" switch-to-message :transient nil)
 	("s" "Scratch" scratch-buffer :transient nil)]])
 

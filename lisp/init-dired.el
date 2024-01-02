@@ -197,5 +197,9 @@ This function requires ImageMagick's convert utility to be installed and availab
   :load-path "packages/consult-dir/"
   :commands consult-dir)
 
+(use-package dired-sidebar
+  :load-path ("packages/dired-sidebar/" "packages/dired-hacks/")
+  :commands dired-sidebar-toggle-sidebar)
+
 (provide 'init-dired)
 ;;; init-dired.el ends here
