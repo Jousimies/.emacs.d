@@ -583,3 +583,6 @@
 [submodule "packages/demap.el"]
 	path = packages/demap.el
 	url = https://gitlab.com/sawyerjgardner/demap.el.git
+[submodule "packages/org-reveal"]
+	path = packages/org-reveal
+	url = https://github.com/yjwen/org-reveal.git
