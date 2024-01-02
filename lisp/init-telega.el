@@ -16,8 +16,6 @@
                                        (display-buffer-in-side-window)
                                        (side . right)
                                        (window-width . 0.4)))
-  :bind (:map telega-chat-mode-map
-               ("C-g" . my/telega-chat-quit-window))
   :config
   (defun my/telega-deactive-input-method ()
     (when (and (boundp 'this-command) this-command cur-sys-input-method)
@@ -32,7 +30,7 @@
       (quit-window)))
   (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))
   ;; (setq telega-avatar-workaround-gaps-for '(return t))
-  (setq telega-chat-fill-column 78)
+  (setq telega-chat-fill-column 75)
   (setq telega-translate-to-language-by-default "zh")
   (setq telega-completing-read-function completing-read-function)
   (setq telega-proxies
