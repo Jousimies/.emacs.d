@@ -199,6 +199,8 @@
 (setopt switch-to-buffer-in-dedicated-window 'pop
 		switch-to-buffer-obey-display-actions t)
 
+(add-hook 'after-init-hook 'pixel-scroll-mode)
+
 ;; desktop
 ;; (add-hook 'on-first-buffer-hook #'desktop-save-mode)
 ;; (setq desktop-path `(,cache-directory))

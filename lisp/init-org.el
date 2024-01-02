@@ -326,9 +326,9 @@
       (cond ((eq major-mode 'vterm-mode) (term-paste))
             (t (yank))))))
 
-(use-package org-imgtog
-  :load-path "packages/org-imgtog/"
-  :hook (org-mode . org-imgtog-mode))
+;; (use-package org-imgtog
+;;   :load-path "packages/org-imgtog/"
+;;   :hook (org-mode . org-imgtog-mode))
 
 (use-package plantuml
   :load-path "packages/plantuml-emacs/"
