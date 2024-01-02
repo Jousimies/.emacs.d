@@ -73,9 +73,19 @@
   (interactive)
   (grab-mac-link-dwim 'safari))
 
+;; https://gist.github.com/tkhoa2711/ef99938c8752ca3e52c2
+(defun get-ip-address (&optional dev)
+	"Get the IP-address for device DEV (default: eth0) of the current machine."
+	(let ((dev (if dev dev "en0")))
+      (format-network-address (car (network-interface-info dev)) t)))
+
 (use-package simple-httpd
   :load-path "packages/emacs-web-server"
-  :bind ("M-g h" . httpd-serve-directory))
+  :bind ("M-g h" . httpd-serve-directory)
+  :config
+  (setq httpd-host (format-network-address
+					(car (network-interface-info "en0"))
+					t)))
 
 
 (provide 'init-search)
