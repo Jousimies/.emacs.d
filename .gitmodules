@@ -610,3 +610,9 @@
 [submodule "packages/Emacs-pcsv"]
 	path = packages/Emacs-pcsv
 	url = https://github.com/mhayashi1120/Emacs-pcsv.git
+[submodule "packages/biblio-gbooks"]
+	path = packages/biblio-gbooks
+	url = https://github.com/jrasband/biblio-gbooks.git
+[submodule "packages/biblio.el"]
+	path = packages/biblio.el
+	url = https://github.com/cpitclaudel/biblio.el.git

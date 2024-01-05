@@ -108,12 +108,24 @@
   :after citar
   :hook (org-mode . citar-embark-mode))
 
+;; Another zotero package
+;; https://gitlab.com/fvdbeek/emacs-zotero
+
 (use-package zotra
   :load-path "packages/zotra/"
   :commands zotra-add-entry
   :config
   (setq zotra-backend 'zotra-server)
   (setq zotra-local-server-directory "~/zotra-server/"))
+
+;; Another package for browsing and fetching references.
+(use-package biblio
+  :load-path "packages/biblio.el/"
+  :commands biblio-lookup biblio-crossref-lookup)
+
+;; There are encoding errors.
+;; (use-package biblio-gbooks
+;;   :load-path "packages/biblio-gbooks/")
 
 (use-package scihub
   :load-path "packages/scihub.el/"
