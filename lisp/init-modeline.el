@@ -308,8 +308,8 @@ Specific to the current window's mode line.")
               '("%e"
                 my/winum
                 "​"
-                my/modeline-input-method
-				"​"
+                ;; my/modeline-input-method
+				;; "​"
 				prot-modeline-narrow
                 my/modeline-buffer-readonly
                 my/modeline-buffer-modified

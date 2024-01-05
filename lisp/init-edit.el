@@ -119,6 +119,19 @@
 		 (on-switch-buffer . macim-context-switch)
          (minibuffer-mode . macim-select-ascii))
   :config
+  (defun im-cursor-color ()
+	(interactive)
+	(if current-system-input-method
+		(progn
+		  (setq cursor-type 'bar)
+		  (set-cursor-color "red"))
+	  (progn
+		(setq cursor-type 'box)
+		(set-cursor-color (foreground-color-at-point)))))
+
+  (advice-add 'macim-switch :after #'im-cursor-color)
+  (advice-add 'macim-context-switch :after #'im-cursor-color)
+  
   (setq macim-other "im.rime.inputmethod.Squirrel.Hans")
   (defun macim-switch ()
     (interactive)
