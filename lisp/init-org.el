@@ -326,6 +326,8 @@
       (cond ((eq major-mode 'vterm-mode) (term-paste))
             (t (yank))))))
 
+;; Instead of using `C-c C-x C-v' to toggle display inline image.
+;; pixel-scroll-precision-mode enabled.
 ;; (use-package org-imgtog
 ;;   :load-path "packages/org-imgtog/"
 ;;   :hook (org-mode . org-imgtog-mode))

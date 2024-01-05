@@ -220,6 +220,12 @@
 
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
 
+;; url-history
+
+(setopt url-configuration-directory (expand-file-name "url" cache-directory))
+(setopt url-history-file (expand-file-name "history" url-configuration-directory))
+(setopt url-cookie-file (expand-file-name "cookies" url-configuration-directory))
+
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here

@@ -51,13 +51,14 @@
 ;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars . 0) default-frame-alist)
+(push '(scroll-bar-width . 5) default-frame-alist)
 (push '(undecorated . t) default-frame-alist)
 (push '(width . 100) default-frame-alist)
 ;; (push '(vertical-scroll-bars . nil) default-frame-alist)
 ;; (push '(left-fringe . 0) default-frame-alist)
 ;; (push '(right-fringe . 0) default-frame-alist)
 (push '(fullscreen . fullscreen) initial-frame-alist)
+
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
 (blink-cursor-mode -1)

@@ -49,6 +49,10 @@
   :hook (minibuffer-setup . nerd-icons-completion-mode))
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
+
+;; re-use vertico-mode instead of `icomplete-fido-mode'.
+;; Due to icomplete has compatible problem with citar, a references manager.
+;; use `M-RET' to exit minibuffer input.
 (use-package vertico
   :load-path "packages/vertico/"
   :hook (on-first-input . vertico-mode))

@@ -45,6 +45,8 @@
 (require 'init-telega)
 (require 'init-mail)
 (require 'init-elfeed)
+(require 'init-music)
+
 (require 'init-keys)
 
 ;; custom
