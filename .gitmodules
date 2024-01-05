@@ -586,3 +586,27 @@
 [submodule "packages/org-reveal"]
 	path = packages/org-reveal
 	url = https://github.com/yjwen/org-reveal.git
+[submodule "packages/vuiet"]
+	path = packages/vuiet
+	url = https://github.com/mihaiolteanu/vuiet.git
+[submodule "packages/lastfm.el"]
+	path = packages/lastfm.el
+	url = https://github.com/mihaiolteanu/lastfm.el.git
+[submodule "packages/anaphora"]
+	path = packages/anaphora
+	url = https://github.com/rolandwalker/anaphora.git
+[submodule "packages/emacs-memoize"]
+	path = packages/emacs-memoize
+	url = https://github.com/skeeto/emacs-memoize.git
+[submodule "packages/elquery"]
+	path = packages/elquery
+	url = https://github.com/AdamNiederer/elquery.git
+[submodule "packages/versuri"]
+	path = packages/versuri
+	url = https://github.com/mihaiolteanu/versuri.git
+[submodule "packages/Emacs-esqlite"]
+	path = packages/Emacs-esqlite
+	url = https://github.com/mhayashi1120/Emacs-esqlite.git
+[submodule "packages/Emacs-pcsv"]
+	path = packages/Emacs-pcsv
+	url = https://github.com/mhayashi1120/Emacs-pcsv.git
