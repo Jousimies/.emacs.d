@@ -20,12 +20,7 @@
   :config
   (setq denote-rename-no-confirm t)
   (setq denote-directory (expand-file-name "denote" my-galaxy))
-  ;; letter casing of file name components
-  (setq denote-file-name-letter-casing
-        '((title . verbatim)
-          (signature . verbatim)
-          (keywords . verbatim)
-          (t . downcase)))
+  
   (setq denote-dired-directories
         (list denote-directory
               (thread-last denote-directory (expand-file-name "books"))

@@ -8,10 +8,10 @@
   :load-path ("packages/telega.el/" "packages/telega.el/contrib/"  "packages/rainbow-identifiers" "packages/visual-fill-column")
   :commands telega
   :init
-  (add-to-list 'display-buffer-alist '((or (derived-mode . telega-image-mode)
-                                           (derived-mode . telega-webpage-mode)
-                                           (derived-mode . image-mode))
-                                       (display-buffer-in-tab)))
+  ;; (add-to-list 'display-buffer-alist '((or (derived-mode . telega-image-mode)
+  ;;                                          (derived-mode . telega-webpage-mode)
+  ;;                                          (derived-mode . image-mode))
+  ;;                                      (display-buffer-pop-up-window)))
   (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
                                        (display-buffer-in-side-window)
                                        (side . right)

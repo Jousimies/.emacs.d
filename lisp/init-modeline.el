@@ -81,8 +81,7 @@
 
 ;; Buffer Modified indicator
 (defvar-local my/modeline-buffer-modified
-    '(:eval (when (mode-line-window-selected-p)
-              (propertize " * " 'face `(:inherit ,(if (buffer-modified-p) 'error nil))))))
+    '(:eval (propertize " * " 'face `(:inherit ,(if (buffer-modified-p) 'error nil)))))
 
 ;; Buffer Narrow
 (defvar-local prot-modeline-narrow

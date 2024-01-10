@@ -63,9 +63,9 @@
   :bind (:map vertico-map
 		 ("C-DEL" . vertico-directory-up)))
 
-(use-package orderless
-  :load-path "packages/orderless/"
-  :config
+(add-to-list 'load-path "~/.emacs.d/packages/orderless/")
+(require 'orderless)
+(with-eval-after-load 'orderless
   (setq completion-styles '(orderless basic))
   (setq completion-category-overrides '((file (styles basic partial-completion)))))
 

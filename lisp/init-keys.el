@@ -210,6 +210,7 @@
   [[("e" "Elfeed" elfeed :transient nil)]
    [("t" "Telega" telega :transient nil)]
    [("m" "Email" mu4e :transient nil)]
+   [("s" "Search" my/search :transient nil)]
    [("c" "Calendar" calendar :transient nil)]
    [("r" "Calculator" calc :transient nil)]])
 

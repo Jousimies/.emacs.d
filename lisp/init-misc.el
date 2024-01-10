@@ -71,5 +71,9 @@
   (setopt zoom-ignored-buffer-name-regexps '("^*calc"))
   (setopt zoom-ignored-major-modes '(telega-root-mode telega-chat-mode)))
 
+(defun my/wallpaper-set ()
+  (interactive)
+  (wallpaper-set (buffer-file-name)))
+
 (provide 'init-misc)
 ;;; init-misc.el ends here.

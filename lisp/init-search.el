@@ -62,7 +62,8 @@
       (browse-url search-url)))
   (when (region-active-p)
     (deactivate-mark)))
-(global-set-key (kbd "C-c w") #'my/search)
+;; (global-set-key (kbd "C-c w") #'my/search)
+;; (global-set-key (kbd "s-s") #'my/search)
 
 (use-package grab-mac-link
   :load-path "packages/grab-mac-link.el/"

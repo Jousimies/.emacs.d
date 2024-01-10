@@ -92,8 +92,8 @@
 						((org-agenda-prefix-format " %i")
 						 (org-agenda-overriding-header "Reading Lists")))))))
 
-(with-eval-after-load 'org-archive
-  (setq org-archive-location "%s_archive::datetree/"))
+;; (with-eval-after-load 'org-archive
+;;   (setq org-archive-location "%s_archive::datetree/"))
 
 (use-package org-gtd
   :load-path ("packages/org-gtd.el/" "packages/org-agenda-property" "packages/org-edna")
@@ -110,6 +110,7 @@
 			 org-gtd-review-stuck-delegated-items
 			 org-gtd-review-stuck-incubated-items
 			 org-gtd-review-stuck-habit-items)
+  :bind ([remap org-archive-subtree] . org-gtd-archive-item-at-point)
   :init
   (setq org-gtd-update-ack "3.0.0")
   :hook ((org-agenda-mode . org-gtd-mode)
