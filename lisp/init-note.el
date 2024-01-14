@@ -20,7 +20,9 @@
   :config
   (setq denote-rename-no-confirm t)
   (setq denote-directory (expand-file-name "denote" my-galaxy))
-  
+  (setq denote-file-name-slug-functions '((title . denote-sluggify-title)
+										  (signature . denote-sluggify-signature)
+										  (keyword . identity)))
   (setq denote-dired-directories
         (list denote-directory
               (thread-last denote-directory (expand-file-name "books"))

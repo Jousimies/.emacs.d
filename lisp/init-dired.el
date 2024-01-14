@@ -144,7 +144,7 @@
 		(concat "\\."
 				"\\(mkv\\|webm\\|mp4\\|mp3\\|ogg\\|m4a"
 				"\\|gz\\|zst\\|tar\\|xz\\|rar\\|zip"
-				"\\|png\\|jpg\\|jpeg"
+				;; "\\|png\\|jpg\\|jpeg"
 				"\\|iso\\|epub\\|pdf\\)")))
 
 (with-eval-after-load 'dired

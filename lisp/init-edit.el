@@ -39,7 +39,7 @@
   (setopt recentf-save-file (expand-file-name "recentf" cache-directory)
 		  recentf-auto-cleanup 300
 		  recentf-max-saved-items 1000
-		  recentf-exclude '(".pdf$")))
+		  recentf-exclude '("~/.telega")))
 
 (add-hook 'on-first-file-hook #'savehist-mode)
 (with-eval-after-load 'savehist
@@ -131,7 +131,7 @@
 
   (advice-add 'macim-switch :after #'im-cursor-color)
   (advice-add 'macim-context-switch :after #'im-cursor-color)
-  
+
   (setq macim-other "im.rime.inputmethod.Squirrel.Hans")
   (defun macim-switch ()
     (interactive)

@@ -77,7 +77,10 @@
 							 tab-bar-format-tabs
 							 tab-bar-separator
 							 tab-bar-format-align-right
-							 my/tab-bar-format-right))))
+							 my/tab-bar-format-right)))
+  (dotimes (i 9)
+	(global-set-key (kbd (concat "M-s-" (number-to-string (1+ i))))
+					`(lambda () (interactive) (persp-switch-by-number ,(1+ i))))))
 
 (use-package popper
   :load-path "packages/popper/"

@@ -66,6 +66,12 @@
 	("j" "Windmove Down" windmove-down :transient nil)
 	("h" "Windmove Left" windmove-left :transient nil)
 	("l" "Windmove Right" windmove-right :transient nil)]
+   ["Window"
+	("0" "Delete" delete-window :transient nil)
+	("1" "Delete Other" delete-other-windows :transient nil)
+	("2" "Below" split-window-below :transient nil)
+	("3" "Right" split-window-right :transient nil)
+	]
    ["Buffer"
 	("d" "Dired sidebar" dired-sidebar-toggle-sidebar :transient nil)
 	("m" "Message" switch-to-message :transient nil)
@@ -125,7 +131,8 @@
 	("g" "Grab: Safari" my/link-grab :transient nil)
 	("c" "Copy IDlink" my/copy-idlink :transient nil)
 	("x" "Remove" jf/org-link-remove-link :transient nil)
-	("s" "Store" org-store-link :transient nil)]
+	("s" "Store" org-store-link :transient nil)
+	("t" "Display" org-toggle-link-display :transient nil)]
    ["Denote Insert"
 	("l" "Link" denote-link :transient nil)
 	("%" "Links: With Regexp" denote-add-links :transient nil)
