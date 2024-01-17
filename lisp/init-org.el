@@ -255,76 +255,40 @@
         (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
           (math-preview-all))))))
 
-(use-package org-download
-  :load-path "packages/org-download/"
-  :bind (("C-c d c" . org-download-clipboard)
-         ("C-c d y" . org-download-yank)
-         ("C-c d s" . org-download-screenshot)
-         ("C-c d r" . org-download-rename-at-point)
-         ("s-v" . my/yank))
-  :init
-  (setq org-download-image-dir (expand-file-name "pictures" my-galaxy))
-  (setq org-download-heading-lvl nil)
-  :config
-  (setq org-download-screenshot-method "screencapture -i %s")
-  (setq org-download-abbreviate-filename-function 'expand-file-name)
-  (setq org-download-timestamp "%Y%m%d%H%M%S")
-  (setq org-download-display-inline-images nil)
-  (setq org-download-annotate-function (lambda (_link) ""))
-  (setq org-download-image-attr-list '("#+NAME: fig: "
-                                       "#+CAPTION: "
-                                       "#+ATTR_ORG: :width 500px"
-                                       "#+ATTR_LATEX: :width 10cm :placement [!htpb]"
-                                       "#+ATTR_HTML: :width 600px"))
+(defun org-insert-image (name)
+  "insert a image from clipboard"
+  (interactive "sName: ")
+  (let* ((path (expand-file-name "pictures/" my-galaxy))
+		 (image-file (concat path name ".png")))
+	(do-applescript (concat
+					 "set the_path to \"" image-file "\" \n"
+					 "set png_data to the clipboard as «class PNGf» \n"
+					 "set the_file to open for access (POSIX file the_path as string) with write permission \n"
+					 "write png_data to the_file \n"
+					 "close access the_file"))
+	(insert (format "#+NAME: fig:%s\n#+CAPTION: %s\n" name name))
+	(insert "#+ATTR_ORG: :width 500px\n#+ATTR_LATEX: :width 10cm :placement [!htpb]\n#+ATTR_HTML: :width 600px\n")
+	(org-insert-link nil (concat "file:" image-file) "")))
 
-  (defun my/org-download-rename (arg)
-    (interactive "P")
-    (if arg
-        (org-download-rename-last-file)
-      (org-download-rename-at-point)))
+(defun clipboard-contains-png-p ()
+  "Check if the clipboard contains PNG data."
+  (let ((script (concat
+				 "set clipboardData to the clipboard as record\n"
+				 "set clipboardType to (clipboard info for clipboardData) as string\n"
+				 "if clipboardType contains \"PNG\" then\n"
+				 "return \"true\"\n"
+				 "end if\n"
+				 )))
+	(string-match "true" (shell-command-to-string (concat "osascript -e " (shell-quote-argument script))))))
 
-  (defun my/org-download-adjust (&optional basename)
-    "Adjust the last downloaded file.
+(defun my/yank ()
+  (interactive)
+  (if (clipboard-contains-png-p)
+      (call-interactively 'org-insert-image)
+    (cond ((eq major-mode 'vterm-mode) (term-paste))
+          (t (yank)))))
 
-  This function renames the last downloaded file, replaces all occurrences of the old file name with the new file name in the Org mode buffer, and updates the CAPTION and NAME headers in the Org mode buffer. "
-    (interactive)
-    (let* ((end (point))
-		   (dir-path (org-download--dir))
-           (newname (read-string "Rename last file to: " (file-name-base org-download-path-last-file)))
-           (ext (file-name-extension org-download-path-last-file))
-           (newpath (concat dir-path "/" newname "." ext)))
-      (when org-download-path-last-file
-        (rename-file org-download-path-last-file newpath 1)
-        (org-download-replace-all
-         (file-name-nondirectory org-download-path-last-file)
-         (concat newname "." ext))
-        (setq org-download-path-last-file newpath))
-      (save-excursion
-		(save-restriction
-          (previous-line 7)
-		  (narrow-to-region (point) end)
-		  (goto-char (point-min))
-          (while (re-search-forward "^\\#\\+NAME: fig:" nil t 1)
-			(move-end-of-line 1)
-			(insert newname)
-			(next-line)
-			(move-end-of-line 1)
-			(insert newname))
-          (while (re-search-forward (expand-file-name "~") nil t 1)
-			(replace-match "~" t nil))))))
-
-  (advice-add 'org-download-clipboard :after 'my/org-download-adjust)
-
-  (defun my/clipboard-has-image-p ()
-    (let ((clipboard-contents (shell-command-to-string "pbpaste")))
-      (string-match-p "\\(\\.jpeg\\|\\.jpg\\|\\.png\\|\\.webp\\)$" clipboard-contents)))
-
-  (defun my/yank ()
-    (interactive)
-    (if (my/clipboard-has-image-p)
-        (org-download-clipboard)
-      (cond ((eq major-mode 'vterm-mode) (term-paste))
-            (t (yank))))))
+(global-set-key (kbd "s-v") #'my/yank)
 
 ;; Instead of using `C-c C-x C-v' to toggle display inline image.
 ;; pixel-scroll-precision-mode enabled.
