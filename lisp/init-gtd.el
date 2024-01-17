@@ -147,5 +147,77 @@
   (alert-message-notify info))
 (advice-add 'alert-osx-notifier-notify :override #'my/alert-osx-notifier-notify)
 
+(defun org-clock--get-entries (file)
+  (with-current-buffer (find-file-noselect file)
+	(let* ((ast (org-element-parse-buffer)))
+	  (org-element-map ast 'clock
+		(lambda (c) (org-clock--parse-element c))
+		nil nil))))
+
+(defun org-clock--find-headlines (element)
+  "Returns a list of headline ancestors from closest parent to the farthest"
+  (let ((ph (org-element-lineage element '(headline))))
+    (if ph
+      (cons ph (org-clock--find-headlines ph)))))
+
+(defun org-clock--parse-element (element)
+  (let* ((timestamp (org-element-property :value element))
+		 (headline (org-clock--find-headlines element))
+		 (headline-values (car (mapcar (lambda (h) (org-element-property :raw-value h)) headline)))
+		 (start (format "%s %s %s %s:%s"
+						(org-element-property :month-start timestamp)
+						(org-element-property :day-start timestamp)
+						(org-element-property :year-start timestamp)
+						(org-element-property :hour-start timestamp)
+						(org-element-property :minute-start timestamp)))
+		 (end (format "%s %s %s %s:%s"
+						(org-element-property :month-end timestamp)
+						(org-element-property :day-end timestamp)
+						(org-element-property :year-end timestamp)
+						(org-element-property :hour-end timestamp)
+						(org-element-property :minute-end timestamp))))
+	(list :headline headline-values
+		  :start start
+		  :end end)))
+
+(defun my/org-clock-to-calendar ()
+  (interactive)
+  (dolist (entry (org-clock--get-entries (concat org-gtd-directory "/" org-gtd-default-file-name ".org")))
+	(let* ((current (calendar-current-date))
+		   (start (plist-get entry :start))
+		   (end (plist-get entry :end))
+		   (summary (plist-get entry :headline))
+		   (apple-script (format
+						  "tell application \"Calendar\"
+                             tell calendar \"Calendar\"
+                               set theCurrentDate to date \"%s\"
+                               set EndDate to date \"%s\"
+
+                               set eventExists to false
+                               repeat with eachEvent in every event
+                                 if start date of eachEvent is theCurrentDate and end date of eachEvent is EndDate then
+                                   set eventExists to true
+                                   exit repeat
+                                 end if
+                               end repeat
+
+                               if not eventExists then
+                                 make new event at end with properties {description:\"\", summary:\"%s\", start date:theCurrentDate, end date:EndDate}
+                               end if
+                             end tell
+                             reload calendars
+                           end tell"
+						  start end summary)))
+	  (when (string-match (format "%s %s %s" (nth 0 current) (nth 1 current) (nth 2 current)) start)
+		;; (shell-command-to-string (format "osascript -e %s" (shell-quote-argument apple-script)))
+		(async-start
+         `(lambda ()
+            (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
+         (lambda (_)
+           (message "Async execution completed.")))
+		))))
+
+(add-hook 'org-clock-out-hook #'my/org-clock-to-calendar)
+
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.
