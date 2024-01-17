@@ -59,20 +59,22 @@
 (transient-define-prefix my/wfb-menu ()
   "WFB Stands for Window, Frame, Buffer."
   [["Winner"
-	("u" "Winner Undo" winner-undo :transient t)
-	("r" "Winner Redo" winner-redo :transient t)]
+	("u" "Undo" winner-undo :transient t)
+	("r" "Redo" winner-redo :transient t)]
    ["Windmove"
-	("k" "Windmove UP" windmove-up :transient nil)
-	("j" "Windmove Down" windmove-down :transient nil)
-	("h" "Windmove Left" windmove-left :transient nil)
-	("l" "Windmove Right" windmove-right :transient nil)]
+	("k" "UP" windmove-up :transient nil)
+	("j" "Down" windmove-down :transient nil)
+	("h" "Left" windmove-left :transient nil)
+	("l" "Right" windmove-right :transient nil)]
    ["Window"
 	("0" "Delete" delete-window :transient nil)
 	("1" "Delete Other" delete-other-windows :transient nil)
-	("2" "Below" split-window-below :transient nil)
-	("3" "Right" split-window-right :transient nil)
+	("2" "Split Below" split-window-below :transient nil)
+	("3" "Split Right" split-window-right :transient nil)
 	]
    ["Buffer"
+	("p" "Prev Buffer" previous-buffer :transient nil)
+	("n" "Next Buffer" next-buffer :transient nil)
 	("d" "Dired sidebar" dired-sidebar-toggle-sidebar :transient nil)
 	("m" "Message" switch-to-message :transient nil)
 	("s" "Scratch" scratch-buffer :transient nil)]])
@@ -150,26 +152,32 @@
   [["Agenda"
 	("a" "Agenda" org-agenda :transient nil)
 	("b" "Book" my/book-agenda :transient nil)
-	("T" "TODO" my/all-todo-agenda :transient nil)]
+	("t" "TODO" my/all-todo-agenda :transient nil)]
+   ["Capture"
+	("i" "Inbox" my/org-capture-inbox :transient nil)
+	("I" "Org Capture" org-capture :transient nil)]
    ["Process & Engage"
 	("x" "Process Inbox" org-gtd-process-inbox :transient nil)
 	("@" "By Context" org-gtd-engage-grouped-by-context :transient nil)
 	("<f12>" "Engage" org-gtd-engage :transient nil)]
    ["Clarify"
-	("i" "Item" org-gtd-clarify-item :transient nil)
-	("I" "Item: agenda" org-gtd-clarify-agenda-item :transient nil)]
+	("c" "Item" org-gtd-clarify-item :transient nil)
+	("C" "Item: agenda" org-gtd-clarify-agenda-item :transient nil)]
    ["Review"
 	("o" "Missed Appointments" org-gtd-oops :transient t)
 	("m" "Missed Items" org-gtd-review-missed-items :transient t)
-	("f" "Area of Focus" org-gtd-review-area-of-focus :transient t)]
-   ["Review Stuck"
-	("p" "Stuck Projects" org-gtd-review-stuck-projects :transient t)
-	("c" "Calendar" org-gtd-review-stuck-calendar-items :transient t)
-	("s" "Single Actions" org-gtd-review-stuck-single-action-items :transient t)
-	("d" "Delegated" org-gtd-review-stuck-delegated-items :transient t)
-	("w" "Waited: Incubated" org-gtd-review-stuck-incubated-items :transient t)
-	("h" "Habit" org-gtd-review-stuck-habit-items :transient t)]
+	("f" "Area of Focus" org-gtd-review-area-of-focus :transient t)
+	("s" "Stucks" my/gtd-stuck-menu :transient t)]
    ])
+
+(transient-define-prefix my/gtd-stuck-menu ()
+  "GTD Stuck"
+  [[("p" "Projects" org-gtd-review-stuck-projects :transient t)]
+   [("c" "Calendar" org-gtd-review-stuck-calendar-items :transient t)]
+   [("s" "Single Actions" org-gtd-review-stuck-single-action-items :transient t)]
+   [("d" "Delegated" org-gtd-review-stuck-delegated-items :transient t)]
+   [("w" "Waited: Incubated" org-gtd-review-stuck-incubated-items :transient t)]
+   [("h" "Habit" org-gtd-review-stuck-habit-items :transient t)]])
 
 (global-set-key (kbd "<f12>") #'my/agenda-menu)
 

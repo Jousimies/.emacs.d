@@ -49,11 +49,7 @@
   (advice-add 'org-babel-execute-src-block :before 'my/org-babel-execute-src-block))
 
 ;; org-capture
-(global-set-key (kbd "<f10>") #'org-capture)
 (with-eval-after-load 'org-capture
-  (define-key org-capture-mode-map [remap evil-save-and-close] #'org-capture-finalize)
-  (define-key org-capture-mode-map [remap evil-save-modified-and-close] #'org-capture-finalize)
-  (define-key org-capture-mode-map [remap evil-quit] #'org-capture-kill)
   (setq org-capture-templates
         '(("i" "GTD Inbox"
            entry (file (lambda () (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org")))
@@ -95,6 +91,10 @@
 :SCORE:
 :PLOT: %^{PLOT}
 :END:"))))
+
+(defun my/org-capture-inbox ()
+  (interactive)
+  (org-capture t "i"))
 
 ;; org-capture
 (with-eval-after-load 'org-attach

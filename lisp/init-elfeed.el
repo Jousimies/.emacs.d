@@ -124,10 +124,22 @@
   :commands mpv-start
   :load-path "packages/mpv.el/"
   :bind (("<f8>" . my/mpv-play-or-pause)
-		 ("C-<f8>" . mpv-quit)
+		 ("C-<f8>" . mpv-toggle-video)
+		 ("M-<f8>" . my/mpv-toggle-progress)
+		 ("s-<f8>" . my/mpv-quit-with-save)
 		 ("<f7>" . mpv-seek-backward)
-		 ("<f9>" . mpv-seek-forward))
+		 ("<f9>" . mpv-seek-forward)
+		 ("C-<f7>" . mpv-speed-decrease)
+		 ("C-<f9>" . mpv-speed-increase))
   :config
+  (defun my/mpv-quit-with-save ()
+	(interactive)
+	(mpv-quit t))
+
+  (defun my/mpv-toggle-progress ()
+	(interactive)
+	(mpv-run-command "keypress" "o"))
+
   (defun my/mpv-play-or-pause ()
 	"Toggle between play and pause for mpv process."
 	(interactive)
