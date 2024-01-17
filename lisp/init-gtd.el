@@ -209,13 +209,13 @@
                            end tell"
 						  start end summary)))
 	  (when (string-match (format "%s %s %s" (nth 0 current) (nth 1 current) (nth 2 current)) start)
-		;; (shell-command-to-string (format "osascript -e %s" (shell-quote-argument apple-script)))
+		(unless (featurep 'async)
+		  (require 'async))
 		(async-start
-         `(lambda ()
-            (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
-         (lambda (_)
-           (message "Async execution completed.")))
-		))))
+           `(lambda ()
+              (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
+           (lambda (_)
+			 (message "Async execution completed.")))))))
 
 (add-hook 'org-clock-out-hook #'my/org-clock-to-calendar)
 
