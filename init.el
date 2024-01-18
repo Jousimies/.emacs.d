@@ -14,6 +14,7 @@
 (require 'init-core)
 
 (require 'init-builtin)
+(require 'init-mac)
 
 (require 'init-tab)
 (require 'init-modeline)

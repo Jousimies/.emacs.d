@@ -39,7 +39,7 @@
         async-shell-command-display-buffer nil)
 
 ;; auto-save
-(setopt trash-directory "~/.Trash"
+(setopt 
         auto-save-default nil
         auto-save-visited-interval 1
         save-silently t
