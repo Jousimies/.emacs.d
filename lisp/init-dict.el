@@ -142,7 +142,7 @@
   :config
   (setq dictionary-overlay-translators '("local" "darwin" "sdcv" "web"))
   (setq dictionary-overlay-user-data-directory
-        (expand-file-name "cache/dictionary-overlay" user-emacs-directory))
+        (expand-file-name "dictionary-overlay" cache-directory))
   (setq dictionary-overlay-python "/opt/homebrew/bin/python3.10")
   (dictionary-overlay-start))
 
