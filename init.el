@@ -46,6 +46,7 @@
 (require 'init-mail)
 (require 'init-elfeed)
 (require 'init-music)
+(require 'init-pass)
 
 (require 'init-keys)
 

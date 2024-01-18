@@ -616,3 +616,12 @@
 [submodule "packages/biblio.el"]
 	path = packages/biblio.el
 	url = https://github.com/cpitclaudel/biblio.el.git
+[submodule "packages/pass"]
+	path = packages/pass
+	url = https://github.com/NicolasPetton/pass.git
+[submodule "packages/password-store"]
+	path = packages/password-store
+	url = https://github.com/zx2c4/password-store.git
+[submodule "packages/password-store-otp.el"]
+	path = packages/password-store-otp.el
+	url = https://github.com/volrath/password-store-otp.el.git
