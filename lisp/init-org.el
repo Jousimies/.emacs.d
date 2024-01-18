@@ -25,6 +25,8 @@
 		  org-enforce-todo-dependencies t
 		  org-enforce-todo-checkbox-dependencies t
 		  org-tags-sort-function 'org-string-collate-greaterp
+		  org-lowest-priority ?D
+		  org-priority-default ?C
 		  org-columns-default-format "%50ITEM %TODO %3PRIORITY %TAGS")
 
   (setq org-preview-latex-default-process 'dvisvgm)

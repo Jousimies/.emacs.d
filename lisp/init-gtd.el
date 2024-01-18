@@ -5,13 +5,13 @@
 ;;; Code:
 
 (with-eval-after-load 'org
-  (setopt org-todo-state-tags-triggers
-          (quote (("CNCL" ("CNCL" . t))
-                  ("WAIT" ("WAIT" . t))
-                  (done ("WAIT"))
-                  ("TODO" ("WAIT") ("CNCL"))
-                  ("NEXT" ("WAIT") ("CNCL"))
-                  ("DONE" ("WAIT") ("CNCL")))))
+  ;; (setopt org-todo-state-tags-triggers
+  ;;         (quote (("CNCL" ("CNCL" . t))
+  ;;                 ("WAIT" ("WAIT" . t))
+  ;;                 (done ("WAIT"))
+  ;;                 ("TODO" ("WAIT") ("CNCL"))
+  ;;                 ("NEXT" ("WAIT") ("CNCL"))
+  ;;                 ("DONE" ("WAIT") ("CNCL")))))
   (setq org-todo-repeat-to-state t)
   (setq org-todo-keywords
         '((sequence "NEXT(n)" "TODO(t)" "|" "WAIT(w@)" "CNCL(c@/!)" "DONE(d)"))))
