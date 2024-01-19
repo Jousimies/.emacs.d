@@ -306,10 +306,10 @@ Specific to the current window's mode line.")
 (setq-default mode-line-format
               '("%e"
                 my/winum
-                "​"
+				prot-modeline-narrow
+                "丨"
                 ;; my/modeline-input-method
 				;; "​"
-				prot-modeline-narrow
                 my/modeline-buffer-readonly
                 my/modeline-buffer-modified
                 my/modeline-file-name
