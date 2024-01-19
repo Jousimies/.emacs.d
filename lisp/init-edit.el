@@ -231,10 +231,7 @@
          (html-mode . symbol-overlay-mode))
   :bind (:map symbol-overlay-mode-map
               ("M-i" . symbol-overlay-put)
-              ("M-I" . symbol-overlay-remove-all)
-              ("M-n" . symbol-overlay-jump-next)
-              ("M-p" . symbol-overlay-jump-prev)
-              ("M-%" . symbol-overlay-query-replace)))
+              ("M-I" . symbol-overlay-remove-all)))
 
 (use-package rainbow-mode
   :load-path "packages/rainbow-mode/"
