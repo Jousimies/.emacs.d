@@ -66,18 +66,13 @@
 (set-keyboard-coding-system 'utf-8)
 
 ;; Fonts
-(when (display-graphic-p)
-  (set-face-attribute 'default nil :font "Iosevka Term" :weight 'normal :height 140)
+(set-face-attribute 'default nil :family "Iosevka" :height 160)
+(set-face-attribute 'variable-pitch nil :family "Source Han Sans SC" :height 160 :weight 'regular)
+(set-face-attribute 'fixed-pitch nil :family "Iosevka Fixed" :height 160)
+(with-eval-after-load 'org
+  (set-face-attribute 'org-table nil :family "Sarasa Mono SC"))
 
-  ;; Source Han Serif SC -> TsangerJinKai02
-  (set-fontset-font t 'unicode (font-spec :family "Apple Color Emoj" :size 12) nil 'prepend)
-
-  (set-fontset-font t 'unicode (font-spec :family "Hack Nerd Font Mono" :size 14) nil 'prepend)
-
-  (dolist (charset '(kana han cjk-misc bopomofo))
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset (font-spec :family "Source Han Serif SC" :height 140))
-    t 'prepend))
+(add-hook 'text-mode-hook #'variable-pitch-mode)
 
 ;; load-path
 (add-to-list 'load-path "~/.emacs.d/packages/compat/")
