@@ -25,7 +25,6 @@
 ;;; Code:
 
 (use-package pass
-  :load-path "packages/pass/" "packages/password-store/contrib/emacs/" "packages/password-store-otp.el/"
   :commands pass
   :config
   (setopt pass-suppress-confirmations t))

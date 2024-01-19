@@ -19,7 +19,6 @@
                                          (window-width . 70))))
 
 (use-package osx-dictionary
-  :load-path "packages/osx-dictionary.el/"
   :commands osx-dictionary-search-pointer osx-dictionary-search-input)
 
 (use-package sdcv
@@ -72,7 +71,6 @@
           "quick_eng-zh_CN")))
 
 (use-package powerthesaurus
-  :load-path ("packages/emacs-powerthesaurus/" "packages/jeison")
   :commands (powerthesaurus-lookup-synonyms-dwim
 			 powerthesaurus-lookup-antonyms-dwim
 			 powerthesaurus-lookup-related-dwim
@@ -109,7 +107,6 @@
     (emacs-azure-tts 1))
 
 (use-package go-translate
-  :load-path "packages/go-translate/"
   :commands gts-translate gts-do-translate
   :config
   (add-to-list 'display-buffer-alist '("^\\*Go-Translate\\*"
@@ -147,14 +144,12 @@
   (dictionary-overlay-start))
 
 (use-package jinx
-  :load-path "packages/jinx/"
   :hook (text-mode . jinx-mode)
   :bind ("M-#" . jinx-correct)
   :config
   (add-to-list 'jinx-exclude-regexps '(t "\\cc")))
 
 (use-package writegood-mode
-  :load-path "packages/writegood-mode/"
   :commands writegood-mode
   :config
   (setq writegood-weasel-words

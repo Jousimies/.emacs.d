@@ -4,14 +4,16 @@
 
 ;;; Code:
 
-(use-package tex
-  :load-path "packages/auctex/"
+(use-package auctex
+  :load-path "~/.emacs.d/elpa/auctex-13.3.0/"
   :mode ("\\.tex\\'" . LaTeX-mode)
   :hook (LaTeX-mode . turn-on-reftex)
-  :init
+  :bind (:map LaTeX-mode-map
+              ("C-c h" . TeX-doc))
+
+  :config
   (load "auctex.el" nil t t)
   (load "preview-latex.el" nil t t)
-  :config
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq TeX-save-query nil)
@@ -28,29 +30,19 @@
   (add-to-list 'TeX-view-program-list '("PDF Tools" TeX-pdf-tools-sync-view))
   (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer))
 
-(use-package latex
-  :bind (:map LaTeX-mode-map
-              ("C-c h" . TeX-doc)))
-
 (use-package auctex-latexmk
-  :load-path "packages/auctex-latexmk/"
   :hook (LaTeX-mode . auctex-latexmk-setup))
 
-(use-package reftex
-  :commands turn-on-reftex
-  :config
+(with-eval-after-load 'reftex
   (setq reftex-toc-follow-mode t)
   (setq reftex-toc-split-windows-horizontally t)
   (setq reftex-toc-split-windows-fraction 0.25))
 
 (use-package cdlatex
-  :load-path "packages/cdlatex/"
   :hook ((LaTeX-mode . turn-on-cdlatex)
          (org-mode . org-cdlatex-mode)))
 
-(use-package ox-latex
-  :defer t
-  :config
+(with-eval-after-load 'ox-latex
   (setq org-latex-src-block-backend 'minted)
   (setq org-latex-minted-options '(("breaklines" "true")
                                    ("breakanywhere" "true")))

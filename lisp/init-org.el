@@ -208,7 +208,6 @@
 
 ;; Third party packages related to org-mode
 (use-package imenu-list
-  :load-path "packages/imenu-list/"
   :commands imenu-list-minor-mode
   :config
   (set-face-attribute 'imenu-list-entry-face-0 nil
@@ -222,7 +221,6 @@
   (setq-default imenu-list-mode-line-format nil))
 
 (use-package olivetti
-  :load-path "packages/olivetti/"
   :bind ("s-M-z" . olivetti-mode)
   :hook ((olivetti-mode-on . (lambda ()
                                (imenu-list-minor-mode 1)))
@@ -230,7 +228,6 @@
                                 (imenu-list-minor-mode -1)))))
 
 (use-package form-feed
-  :load-path "packages/form-feed/"
   :hook (org-mode . form-feed-mode))
 
 
@@ -295,7 +292,6 @@
 ;; Instead of using `C-c C-x C-v' to toggle display inline image.
 ;; pixel-scroll-precision-mode enabled.
 ;; (use-package org-imgtog
-;;   :load-path "packages/org-imgtog/"
 ;;   :hook (org-mode . org-imgtog-mode))
 
 (use-package plantuml

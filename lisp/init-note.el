@@ -5,7 +5,6 @@
 ;;; Code:
 
 (use-package denote
-  :load-path "packages/denote/"
   :commands (denote-signature
 			 denote-subdirectory
 			 denote-org-capture-with-prompts
@@ -13,11 +12,16 @@
 			 denote-backlinks
 			 denote-rename-file-using-front-matter
 			 denote-keywords-add
-			 denote-keywords-remove)
+			 denote-keywords-remove
+			 denote-org-dblock-insert-backlinks
+			 denote-org-dblock-insert-links
+			 denote-sort-dired)
   :bind ((:map dired-mode-map
                ("r" . denote-dired-rename-marked-files-with-keywords)))
-  :hook (dired-mode . denote-dired-mode-in-directories)
+  :hook ((dired-mode . denote-dired-mode-in-directories)
+		 (org-mode . denote-rename-buffer-mode))
   :config
+  (setq denote-rename-buffer-format " %t")
   (setq denote-rename-no-confirm t)
   (setq denote-directory (expand-file-name "denote" my-galaxy))
   (setq denote-file-name-slug-functions '((title . denote-sluggify-title)
@@ -30,9 +34,6 @@
               (thread-last denote-directory (expand-file-name "literature"))
               (thread-last denote-directory (expand-file-name "term"))
               (thread-last denote-directory (expand-file-name "references")))))
-
-(use-package denote-org-dblock
-  :commands denote-org-dblock-insert-backlinks denote-org-dblock-insert-links)
 
 (defun find-file-other-window-no-jump (filename)
   "Find file in other window without jumping to that window."
@@ -62,12 +63,6 @@
         (kill-new signature))))
 
 (advice-add 'denote-signature :before #'my/denote-signature-from-filename)
-
-(use-package denote-rename-buffer
-  :load-path "packages/denote/"
-  :hook (org-mode . denote-rename-buffer-mode)
-  :config
-  (setq denote-rename-buffer-format " %t"))
 
 (defvar prot-dired--limit-hist '()
   "Minibuffer history for `prot-dired-limit-regexp'.")
@@ -177,7 +172,6 @@ Delete the original subtree."
     (user-error "No subtree to extract; aborting")))
 
 (use-package consult-notes
-  :load-path "packages/consult-notes/"
   :commands consult-notes
   :config
   (defun my/consult-notes--file-dir-annotate (name dir cand)
@@ -204,18 +198,18 @@ Delete the original subtree."
           ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy))
           ("Logs"  ?L ,(expand-file-name "logs" my-galaxy)))))
 
-(use-package denote-sort
-  :commands denote-sort-dired
-  :config
-  (defun my/denote-sort-with-sigature ()
-	(interactive)
-	(denote-sort-dired (denote-files-matching-regexp-prompt) 'signature nil))
-  (defun my/denote-sort-with-identifer ()
-	(interactive)
-	(denote-sort-dired (denote-files-matching-regexp-prompt) 'identifier nil))
-  (defun my/denote-sort-with-keywords ()
-	(interactive)
-	(denote-sort-dired (denote-files-matching-regexp-prompt) 'keywords nil)))
+
+(defun my/denote-sort-with-sigature ()
+  (interactive)
+  (denote-sort-dired (denote-files-matching-regexp-prompt) 'signature nil))
+
+(defun my/denote-sort-with-identifer ()
+  (interactive)
+  (denote-sort-dired (denote-files-matching-regexp-prompt) 'identifier nil))
+
+(defun my/denote-sort-with-keywords ()
+  (interactive)
+  (denote-sort-dired (denote-files-matching-regexp-prompt) 'keywords nil))
 
 (defun my/literature-entry (url title keywords file-path file-new-path)
   "Save a literature entry and add it to the 'literature' denote database."
@@ -273,14 +267,16 @@ Delete the original subtree."
     (my/literature-save-from-safari)))
 
 (use-package ibooks-annot
-  :load-path "packages/ibooks-annot.el/"
+  :vc (ibooks-annot :url "https://github.com/Jousimies/ibooks-annot.el.git"
+					:branch main)
   :commands ibooks-annot/extract-annotations-to-note
   :config
   (setq pdfannots-script "~/.emacs.d/packages/pdfannots/pdfannots.py -f json")
   (setq ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
 
 (use-package denote-explore
-  :load-path "packages/denote-explore/"
+  :vc (denote-explore :url "https://github.com/pprevos/denote-explore.git"
+					  :branch main)
   :commands (denote-explore-count-notes
 			 denote-explore-count-keywords
 			 denote-explore-keywords-barchart
@@ -298,7 +294,6 @@ Delete the original subtree."
 			 denote-files attachments keywords)))
 
 (use-package citar-denote
-  :load-path "packages/citar-denote/"
   :after citar
   :commands (citar-denote-dwim
 			 citar-denote-open-reference-entry

@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(setopt initial-major-mode 'fundamental-mode
+(setopt ;; initial-major-mode 'fundamental-mode
         inhibit-startup-screen t
         ;; (setq ring-bell-function 'ignore)
         ring-bell-function (lambda ()
@@ -55,9 +55,9 @@
         redisplay-skip-fontification-on-input t
         cursor-in-non-selected-windows nil)
 
-(setq-default initial-scratch-message
-              (propertize
-               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you") 'face 'italic))
+;; (setq-default initial-scratch-message
+;;               (propertize
+;;                (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you") 'face 'italic))
 
 ;; system coding
 (prefer-coding-system 'utf-8)
@@ -66,32 +66,21 @@
 (set-keyboard-coding-system 'utf-8)
 
 ;; Fonts
-(when (display-graphic-p)
-  (set-face-attribute 'default nil :font "Iosevka Term" :weight 'normal :height 140)
+(set-face-attribute 'default nil :family "Iosevka" :height 160)
+(set-face-attribute 'variable-pitch nil :family "Source Han Sans SC" :height 160 :weight 'regular)
+(set-face-attribute 'fixed-pitch nil :family "Iosevka Fixed" :height 160)
+(with-eval-after-load 'org
+  (set-face-attribute 'org-table nil :family "Sarasa Mono SC"))
 
-  ;; Source Han Serif SC -> TsangerJinKai02
-  (set-fontset-font t 'unicode (font-spec :family "Apple Color Emoj" :size 12) nil 'prepend)
+(add-hook 'text-mode-hook #'variable-pitch-mode)
 
-  (set-fontset-font t 'unicode (font-spec :family "Hack Nerd Font Mono" :size 14) nil 'prepend)
-
-  (dolist (charset '(kana han cjk-misc bopomofo))
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset (font-spec :family "Source Han Serif SC" :height 140))
-    t 'prepend))
-
-;; load-path
-(add-to-list 'load-path "~/.emacs.d/packages/compat/")
-(add-to-list 'load-path "~/.emacs.d/packages/dash.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/f.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/s.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/posframe/")
-(add-to-list 'load-path "~/.emacs.d/packages/emacs-async/")
-(add-to-list 'load-path "~/.emacs.d/packages/on.el/")
-(require 'on)
+(use-package on
+  :vc (on :url "https://github.com/ajgrf/on.el.git"
+		  :branch master)
+  :demand t)
 
 ;; icons
 (use-package nerd-icons
-  :load-path "packages/nerd-icons.el/"
   :commands nerd-icons-codicon nerd-icons-faicon nerd-icons-icon-for-file
   :config
   (setq nerd-icons-font-family "Hack Nerd Font Mono"))
@@ -128,7 +117,6 @@
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh
-  :load-path "packages/gcmh"
   :hook (on-first-file . gcmh-mode)
   :config
   (advice-add 'after-focus-change-function :after 'garbage-collect)

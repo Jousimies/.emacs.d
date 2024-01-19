@@ -30,14 +30,14 @@
 			dired-listing-switches
 			"-l --almost-all --human-readable --group-directories-first --no-group"))
 
-(setopt dired-dwim-target t
-		dired-auto-revert-buffer #'dired-buffer-stale-p
-		dired-recursive-copies 'always
-		dired-recursive-deletes 'top
-		dired-auto-revert-buffer t)
-
-;; dired-do-shell-command, open file with default application.
-(let ((cmd (cond ((and (eq system-type 'darwin) (display-graphic-p)) "open")
+(with-eval-after-load 'dired
+  (setopt dired-dwim-target t
+		  dired-auto-revert-buffer #'dired-buffer-stale-p
+		  dired-recursive-copies 'always
+		  dired-recursive-deletes 'top
+		  dired-auto-revert-buffer t)
+  ;; dired-do-shell-command, open file with default application.
+  (let ((cmd (cond ((and (eq system-type 'darwin) (display-graphic-p)) "open")
                    ((and (eq system-type 'gnu/linux) (display-graphic-p)) "xdg-open")
                    ((and (eq system-type 'windows-nt) (display-graphic-p)) "start")
                    (t ""))))
@@ -51,7 +51,7 @@
             ("\\.csv\\'" ,cmd)
             ("\\.tex\\'" ,cmd)
             ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\)\\(?:\\.part\\)?\\'" ,cmd)
-            ("\\.\\(?:mp3\\|flac\\)\\'" ,cmd))))
+            ("\\.\\(?:mp3\\|flac\\)\\'" ,cmd)))))
 
 (add-hook 'dired-mode-hook
           (lambda () (setq-local truncate-lines t)))
@@ -90,10 +90,13 @@
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "<return>") 'open-with-default-app))
 
-(setopt dired-omit-verbose nil
-		dired-omit-files "^\\.[^.].*")
 (add-hook 'dired-mode-hook #'dired-omit-mode)
+(with-eval-after-load 'dired-x
+  (setopt dired-omit-verbose nil
+		dired-omit-files "^\\.[^.].*"))
+
 (add-hook 'dired-mode-hook #'dired-hide-details-mode)
+
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "s-.") #'dired-omit-mode)
   (define-key dired-mode-map (kbd "C-c i") #'image-dired)
@@ -130,12 +133,13 @@
 	(define-key dired-mode-map (kbd "SPC") #'my/dired-preview)))
 
 (use-package nerd-icons-dired
-  :load-path "packages/emacs-nerd-icons-dired"
   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package dired-preview
-  :load-path "packages/dired-preview/"
-  :commands dired-preview-mode
+  :vc (dired-preview :url "https://github.com/protesilaos/dired-preview.git"
+					 :branch main)
+  :bind (:map dired-mode-map
+			  ("P" . dired-preview-mode))
   :config
   (setq dired-preview-delay 0.0)
   (setq dired-preview-max-size (expt 2 20))
@@ -146,9 +150,6 @@
 				"\\|gz\\|zst\\|tar\\|xz\\|rar\\|zip"
 				;; "\\|png\\|jpg\\|jpeg"
 				"\\|iso\\|epub\\|pdf\\)")))
-
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "P") #'dired-preview-mode))
 
 (defun eps-to-png-marked ()
   "Convert all marked EPS files in the current Dired buffer to PNG format using ImageMagick's convert utility.
@@ -178,13 +179,11 @@ This function requires ImageMagick's convert utility to be installed and availab
 ;; Diredfl
 ;; Diredfl is not compatible with denote-dired-mode
 ;; (use-package diredfl
-;;   :load-path "packages/diredfl/"
 ;;   :hook ((dired-mode . diredfl-mode)
 ;; 		 (denote-dired-mode . (lambda ()
 ;; 								(setq-local diredfl-mode nil)))))
 
 (use-package file-info
-  :load-path "packages/file-info.el/" "packages/hydra/" "packages/browse-at-remote/"
   :bind ("C-c i" . file-info-show)
   :config
   (setq hydra-hint-display-type 'posframe)
@@ -194,17 +193,16 @@ This function requires ImageMagick's convert utility to be installed and availab
 												 :left-fringe 16
 												 :right-fringe 16)))
 (use-package consult-dir
-  :load-path "packages/consult-dir/"
   :commands consult-dir)
 
 (use-package dired-sidebar
-  :load-path ("packages/dired-sidebar/" "packages/dired-hacks/")
   :commands dired-sidebar-toggle-sidebar)
 
 ;; Enhancing Dired Sorting With Transient
 ;; http://yummymelon.com/devnull/enhancing-dired-sorting-with-transient.html
-(defun cc/--dired-sort-by (criteria &optional prefix-args)
-  "Sort current Dired buffer according to CRITERIA and PREFIX-ARGS.
+(with-eval-after-load 'dired
+  (defun cc/--dired-sort-by (criteria &optional prefix-args)
+	"Sort current Dired buffer according to CRITERIA and PREFIX-ARGS.
 
 This function will invoke `dired-sort-other' with arguments built from
 CRITERIA and PREFIX-ARGS.
@@ -221,118 +219,115 @@ Transient menu `cc/dired-sort-by'.
 This function requires GNU ls from coreutils installed.
 
 See the man page `ls(1)' for details."
-  (let ((arg-list (list "-l")))
-    (if prefix-args
-        (nconc arg-list prefix-args)
-      (nconc arg-list cc-dired-listing-switches))
-    (cond
-     ((eq criteria :name)
-      (message "Sorted by name"))
+	(let ((arg-list (list "-l")))
+      (if prefix-args
+          (nconc arg-list prefix-args)
+		(nconc arg-list cc-dired-listing-switches))
+      (cond
+       ((eq criteria :name)
+		(message "Sorted by name"))
 
-     ((eq criteria :kind)
-      (message "Sorted by kind")
-      (push "--sort=extension" arg-list))
+       ((eq criteria :kind)
+		(message "Sorted by kind")
+		(push "--sort=extension" arg-list))
 
-     ((eq criteria :date-last-opened)
-      (message "Sorted by date last opened")
-      (push "--sort=time" arg-list)
-      (push "--time=access" arg-list))
+       ((eq criteria :date-last-opened)
+		(message "Sorted by date last opened")
+		(push "--sort=time" arg-list)
+		(push "--time=access" arg-list))
 
-     ((eq criteria :date-added)
-      (message "Sorted by date added")
-      (push "--sort=time" arg-list)
-      (push "--time=creation" arg-list))
+       ((eq criteria :date-added)
+		(message "Sorted by date added")
+		(push "--sort=time" arg-list)
+		(push "--time=creation" arg-list))
 
-     ((eq criteria :date-modified)
-      (message "Sorted by date modified")
-      (push "--sort=time" arg-list)
-      (push "--time=modification" arg-list))
+       ((eq criteria :date-modified)
+		(message "Sorted by date modified")
+		(push "--sort=time" arg-list)
+		(push "--time=modification" arg-list))
 
-     ((eq criteria :date-metadata-changed)
-      (message "Sorted by date metadata changed")
-      (push "--sort=time" arg-list)
-      (push "--time=status" arg-list))
+       ((eq criteria :date-metadata-changed)
+		(message "Sorted by date metadata changed")
+		(push "--sort=time" arg-list)
+		(push "--time=status" arg-list))
 
-     ((eq criteria :version)
-      (message "Sorted by version")
-      (push "--sort=version" arg-list))
+       ((eq criteria :version)
+		(message "Sorted by version")
+		(push "--sort=version" arg-list))
 
-     ((eq criteria :size)
-      (message "Sorted by size")
-      (push "-S" arg-list))
+       ((eq criteria :size)
+		(message "Sorted by size")
+		(push "-S" arg-list))
 
-     (t
-      (message "Default sorted by name")))
+       (t
+		(message "Default sorted by name")))
 
-    (dired-sort-other (mapconcat 'identity arg-list " "))))
-
-(transient-define-prefix cc/dired-sort-by ()
-  "Transient menu to sort Dired buffer by different criteria.
+      (dired-sort-other (mapconcat 'identity arg-list " "))))
+  (transient-define-prefix cc/dired-sort-by ()
+	"Transient menu to sort Dired buffer by different criteria.
 
 This function requires GNU ls from coreutils installed."
-  :value '("--human-readable"
-           "--group-directories-first"
-           "--time-style=long-iso")
-                                     ; TODO: support cc-dired-listing-switches
-  [["Arguments"
-    ("-a" "all" "--all")
-    ("g" "group directories first" "--group-directories-first")
-    ("-r" "reverse" "--reverse")
-    ("-h" "human readable" "--human-readable")
-    ("t" "time style" "--time-style="
-     :choices ("full-iso" "long-iso" "iso" "locale"))]
+	:value '("--human-readable"
+			 "--group-directories-first"
+			 "--time-style=long-iso")
+										; TODO: support cc-dired-listing-switches
+	[["Arguments"
+      ("-a" "all" "--all")
+      ("g" "group directories first" "--group-directories-first")
+      ("-r" "reverse" "--reverse")
+      ("-h" "human readable" "--human-readable")
+      ("t" "time style" "--time-style="
+       :choices ("full-iso" "long-iso" "iso" "locale"))]
 
-   ["Sort By"
-    ("n"
-     "Name"
-     (lambda () (interactive)
-       (cc/--dired-sort-by :name
-                           (transient-args transient-current-command)))
-     :transient nil)
-    ("k"
-     "Kind"
-     (lambda () (interactive)
-       (cc/--dired-sort-by :kind
-                           (transient-args transient-current-command)))
-     :transient nil)
-    ("l"
-     "Date Last Opened"
-     (lambda () (interactive)
-       (cc/--dired-sort-by :date-last-opened
-                           (transient-args transient-current-command)))
-     :transient nil)
-    ("a"
-     "Date Added"
-     (lambda () (interactive)
-       (cc/--dired-sort-by :date-added
-                           (transient-args transient-current-command)))
-     :transient nil)
-    ("m"
-     "Date Modified"
-     (lambda () (interactive)
-       (cc/--dired-sort-by :date-modified
-                           (transient-args transient-current-command)))
-     :transient nil)
-    ("M"
-     "Date Metadata Changed"
-     (lambda () (interactive)
-       (cc/--dired-sort-by :date-metadata-changed
-                           (transient-args transient-current-command)))
-     :transient nil)
-    ("v"
-     "Version"
-     (lambda () (interactive)
-       (cc/--dired-sort-by :version
-                           (transient-args transient-current-command)))
-     :transient nil)
-    ("s"
-     "Size"
-     (lambda () (interactive)
-       (cc/--dired-sort-by :size
-                           (transient-args transient-current-command)))
-     :transient nil)]])
-
-(with-eval-after-load 'dired
+	 ["Sort By"
+      ("n"
+       "Name"
+       (lambda () (interactive)
+		 (cc/--dired-sort-by :name
+							 (transient-args transient-current-command)))
+       :transient nil)
+      ("k"
+       "Kind"
+       (lambda () (interactive)
+		 (cc/--dired-sort-by :kind
+							 (transient-args transient-current-command)))
+       :transient nil)
+      ("l"
+       "Date Last Opened"
+       (lambda () (interactive)
+		 (cc/--dired-sort-by :date-last-opened
+							 (transient-args transient-current-command)))
+       :transient nil)
+      ("a"
+       "Date Added"
+       (lambda () (interactive)
+		 (cc/--dired-sort-by :date-added
+							 (transient-args transient-current-command)))
+       :transient nil)
+      ("m"
+       "Date Modified"
+       (lambda () (interactive)
+		 (cc/--dired-sort-by :date-modified
+							 (transient-args transient-current-command)))
+       :transient nil)
+      ("M"
+       "Date Metadata Changed"
+       (lambda () (interactive)
+		 (cc/--dired-sort-by :date-metadata-changed
+							 (transient-args transient-current-command)))
+       :transient nil)
+      ("v"
+       "Version"
+       (lambda () (interactive)
+		 (cc/--dired-sort-by :version
+							 (transient-args transient-current-command)))
+       :transient nil)
+      ("s"
+       "Size"
+       (lambda () (interactive)
+		 (cc/--dired-sort-by :size
+							 (transient-args transient-current-command)))
+       :transient nil)]])
   (define-key dired-mode-map (kbd "s") #'cc/dired-sort-by))
 
 (provide 'init-dired)

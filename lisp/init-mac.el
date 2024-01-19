@@ -29,10 +29,7 @@
 		  ns-use-proxy-icon nil
 		  ns-pop-up-frames nil
 		  ns-use-srgb-colorspace nil)
-
-  (use-package color-picker
-	:commands color-picker))
-
+  (require 'color-picker))
 
 (provide 'init-mac)
 ;;; init-mac.el ends here

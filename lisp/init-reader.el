@@ -5,7 +5,6 @@
 ;;; Code:
 
 (use-package pdf-tools
-  :load-path ("packages/pdf-tools/lisp" "packages/tablist")
   :commands pdf-tools-install
   :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
   :magic ("%PDF" . pdf-view-mode)
@@ -70,11 +69,9 @@
     (define-key pdf-view-mode-map [remap pdf-misc-print-document] #'mrb/pdf-misc-print-pages)))
 
 (use-package saveplace-pdf-view
-  :load-path "packages/saveplace-pdf-view/"
   :defer t)
 
 (use-package nov
-  :load-path ("packages/nov.el/" "packages/esxml/")
   :mode (".epub" . nov-mode)
   :config
   (setq nov-unzip-program (executable-find "bsdtar")

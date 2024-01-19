@@ -69,10 +69,10 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
   (message "init completed in %.2fms"
            (sanityinc/time-subtract-millis after-init-time before-init-time)))
 
-(add-to-list 'load-path "~/.emacs.d/packages/benchmark-init-el/")
-(require 'benchmark-init-loaddefs)
-(benchmark-init/activate)
+(use-package benchmark-init
+  :config
+  (add-hook 'after-init-hook 'benchmark-init/deactivate)
+  (add-hook 'after-init-hook #'benchmark-init/show-durations-tree))
 
-(global-set-key (kbd "<f7>") #'benchmark-init/show-durations-tree)
 (provide 'init-benchmark)
 ;;; init-beanchmark.el ends here.

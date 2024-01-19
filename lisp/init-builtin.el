@@ -33,26 +33,31 @@
 (add-hook 'on-first-file-hook #'size-indication-mode)
 (add-hook 'org-mode-hook #'visual-line-mode)
 
-(setopt mark-ring-max 128
-        kill-do-not-save-duplicates t
-        kill-ring-max (* kill-ring-max 2)
-        async-shell-command-display-buffer nil)
+(with-eval-after-load 'simple
+  (setopt mark-ring-max 128
+		  kill-read-only-ok t
+          kill-do-not-save-duplicates t
+          kill-ring-max (* kill-ring-max 2)
+          async-shell-command-display-buffer nil))
 
 ;; auto-save
-(setopt 
-        auto-save-default nil
-        auto-save-visited-interval 1
-        save-silently t
-        large-file-warning-threshold nil
-        confirm-kill-processes nil
-        confirm-kill-emacs nil
-        make-backup-files nil
-        view-read-only t
-        kill-read-only-ok t
-		isearch-lazy-count t
-		help-window-select 'other
-		help-window-keep-selected t
-		multisession-directory (expand-file-name "multisession" cache-directory)
+(with-eval-after-load 'files
+  (setopt auto-save-default nil
+          auto-save-visited-interval 1
+          save-silently t
+          confirm-kill-processes nil
+          confirm-kill-emacs nil
+          make-backup-files nil
+          view-read-only t))
+
+(with-eval-after-load 'isearch
+  (setopt isearch-lazy-count t))
+
+(with-eval-after-load 'help
+  (setopt help-window-select 'other
+		  help-window-keep-selected t))
+
+(setopt multisession-directory (expand-file-name "multisession" cache-directory)
 		auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-" cache-directory))
 
 ;; (setq backup-directory-alist '(("." . "~/.emacs.d/cache/backups")))
@@ -81,22 +86,27 @@
     (interactive)
     (switch-to-buffer "*Messages*"))
 
-(setopt message-kill-buffer-on-exit t
-        message-kill-buffer-query nil
-        message-sendmail-envelope-from 'header
-        message-sendmail-extra-arguments '("-a" "outlook"))
+(with-eval-after-load 'message
+  (setopt message-kill-buffer-on-exit t
+          message-kill-buffer-query nil
+          message-sendmail-envelope-from 'header
+          message-sendmail-extra-arguments '("-a" "outlook")))
 
 (add-hook 'on-first-file-hook #'global-so-long-mode)
 (add-hook 'on-first-file-hook #'global-prettify-symbols-mode)
 (add-hook 'on-first-file-hook #'global-word-wrap-whitespace-mode)
 (add-hook 'on-first-buffer-hook #'midnight-mode)
 
-(setopt prettify-symbols-alist '(("lambda" . ?λ)
-                               ("function" . ?𝑓)))
+(with-eval-after-load 'prog-mode
+  (setopt prettify-symbols-alist '(("lambda" . ?λ)
+								   ("function" . ?𝑓))))
 
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
+
 ;;Bookmark
-(setq bookmark-default-file (expand-file-name "bookmarks" cache-directory))
+(with-eval-after-load 'bookmark
+  (setq bookmark-default-file (expand-file-name "bookmarks" cache-directory)))
+
 ;; auto-insert-mode
 (add-hook 'on-first-file-hook #'auto-insert-mode)
 (with-eval-after-load 'auto-insert
@@ -157,9 +167,12 @@
                  ")
 \;;; " (file-name-nondirectory (buffer-file-name)) " ends here\n")))
 
-(setopt display-line-numbers-widen t
-		display-line-numbers-type 'relative)
+
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+
+(with-eval-after-load 'display-line-numbers
+  (setopt display-line-numbers-widen t
+		  display-line-numbers-type 'relative))
 ;; (add-hook 'org-mode-hook #'display-line-numbers-mode)
 
 (face-spec-set 'fill-column-indicator
@@ -174,30 +187,33 @@
 
 (add-hook 'on-first-buffer-hook (lambda ()
 								  (blink-cursor-mode -1)))
-(setopt window-divider-default-bottom-width 1
-		window-divider-default-places 'bottom-only)
+(with-eval-after-load 'frame
+  (setopt window-divider-default-bottom-width 1
+		  window-divider-default-places 'bottom-only))
 
-(setopt winner-dont-bind-my-keys t
-		winner-boring-buffers '("*Completions*"
-                                "*Compile-Log*"
-                                "*inferior-lisp*"
-                                "*Fuzzy Completions*"
-                                "*Apropos*"
-                                "*Help*"
-                                "*cvs*"
-                                "*Buffer List*"
-                                "*Ibuffer*"
-                                "*esh command on file*"))
 (add-hook 'on-first-input-hook #'winner-mode)
-
+(with-eval-after-load 'winner
+  (setopt winner-dont-bind-my-keys t
+		  winner-boring-buffers '("*Completions*"
+                                  "*Compile-Log*"
+                                  "*inferior-lisp*"
+                                  "*Fuzzy Completions*"
+                                  "*Apropos*"
+                                  "*Help*"
+                                  "*cvs*"
+                                  "*Buffer List*"
+                                  "*Ibuffer*"
+                                  "*esh command on file*")))
 (add-to-list 'display-buffer-alist '("\\*Outline"
                                        (display-buffer-in-side-window)
                                        (side . right)
                                        (window-width . 0.5)))
+
 (add-hook 'on-first-buffer-hook #'windmove-mode)
 
-(setopt switch-to-buffer-in-dedicated-window 'pop
-		switch-to-buffer-obey-display-actions t)
+(with-eval-after-load 'window
+  (setopt switch-to-buffer-in-dedicated-window 'pop
+		  switch-to-buffer-obey-display-actions t))
 
 (add-hook 'after-init-hook 'pixel-scroll-mode)
 
@@ -221,10 +237,10 @@
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
 
 ;; url-history
-
-(setopt url-configuration-directory (expand-file-name "url" cache-directory))
-(setopt url-history-file (expand-file-name "history" url-configuration-directory))
-(setopt url-cookie-file (expand-file-name "cookies" url-configuration-directory))
+(with-eval-after-load 'url
+  (setopt url-configuration-directory (expand-file-name "url" cache-directory))
+  (setopt url-history-file (expand-file-name "history" url-configuration-directory))
+  (setopt url-cookie-file (expand-file-name "cookies" url-configuration-directory)))
 
 
 (provide 'init-builtin)

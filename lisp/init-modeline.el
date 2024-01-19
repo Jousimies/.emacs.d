@@ -24,7 +24,6 @@
 
 ;;; Code:
 
-
 ;; (setq mode-line-right-align-edge 'right-margin)
 
 (defcustom prot-modeline-string-truncate-length 50
@@ -306,10 +305,8 @@ Specific to the current window's mode line.")
 (setq-default mode-line-format
               '("%e"
                 my/winum
-                "​"
-                ;; my/modeline-input-method
-				;; "​"
 				prot-modeline-narrow
+				"丨"
                 my/modeline-buffer-readonly
                 my/modeline-buffer-modified
                 my/modeline-file-name
@@ -318,7 +315,7 @@ Specific to the current window's mode line.")
                 my/modeline-kbd-macro
                 my/modeline-region-indicator
 				prot-modeline-eglot
-                "       "
+				" "
                 my/modeline-align-right
                 (:eval (with-eval-after-load 'org-clock
                          my/modeline-clock-info))
@@ -330,8 +327,7 @@ Specific to the current window's mode line.")
                 ))
 
 (use-package keycast
-  :load-path "packages/keycast/"
-  :commands keycast-mode
+  :commands keycast-mode-line-mode
   :config
   (setq keycast-mode-line-format "%2s%k%c%R")
   (setq keycast-mode-line-insert-after 'my/modeline-position)

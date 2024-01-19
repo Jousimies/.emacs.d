@@ -53,15 +53,14 @@
     (error "Not on a Youtube link")))
 
 (use-package snow
-  :load-path "~/.emacs.d/packages/snow.el/"
   :commands snow)
 
 (use-package focus
-  :load-path "packages/Focus/"
-  :hook (on-first-input . focus-mode))
+  :hook ((on-first-file . focus-mode)
+		 (dashboard-mode-hook . (lambda ()
+								  (setq-local focus-mode nil)))))
 
 (use-package zoom
-  :load-path "packages/zoom/"
   :hook (window-setup . zoom-mode)
   :config
   (defun size-callback ()

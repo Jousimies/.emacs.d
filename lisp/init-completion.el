@@ -45,7 +45,6 @@
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 
 (use-package nerd-icons-completion
-  :load-path "packages/nerd-icons-completion/"
   :hook (minibuffer-setup . nerd-icons-completion-mode))
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
@@ -54,18 +53,13 @@
 ;; Due to icomplete has compatible problem with citar, a references manager.
 ;; use `M-RET' to exit minibuffer input.
 (use-package vertico
-  :load-path "packages/vertico/"
-  :hook (on-first-input . vertico-mode))
-
-(use-package vertico-directory
-  :load-path "packages/vertico/extensions/"
-  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
+  :hook ((on-first-input . vertico-mode)
+		 (rfn-eshadow-update-overlay . vertico-directory-tidy))
   :bind (:map vertico-map
-		 ("C-DEL" . vertico-directory-up)))
+			  ("C-DEL" . vertico-directory-up)))
 
-(add-to-list 'load-path "~/.emacs.d/packages/orderless/")
-(require 'orderless)
-(with-eval-after-load 'orderless
+(use-package orderless
+  :config
   (setq completion-styles '(orderless basic))
   (setq completion-category-overrides '((file (styles basic partial-completion)))))
 
@@ -86,7 +80,6 @@
 (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
 (use-package consult
-  :load-path "packages/consult/"
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
@@ -113,11 +106,9 @@
   :bind ([remap imenu] . consult-imenu))
 
 (use-package marginalia
-  :load-path "packages/marginalia/"
   :hook (minibuffer-setup . marginalia-mode))
 
 (use-package embark
-  :load-path "packages/embark/"
   :bind (([remap describe-bindings] . embark-bindings)
          ("C-;" . embark-act)
          ("M-." . embark-dwim)
@@ -127,8 +118,9 @@
                ("C-c C-l" . embark-collect))))
 
 (use-package corfu
-  :load-path "packages/corfu/"
-  :hook (on-first-buffer . global-corfu-mode)
+  :hook ((on-first-buffer . global-corfu-mode)
+		 (corfu-mode . corfu-echo-mode)
+		 (corfu-mode . corfu-popupinfo-mode))
   :config
   (setopt corfu-cycle t
 		  corfu-auto t
@@ -148,16 +140,7 @@
 
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
-(use-package corfu-echo
-  :load-path "packages/corfu/extensions/"
-  :hook (corfu-mode . corfu-echo-mode))
-
-(use-package corfu-popupinfo
-  :load-path "packages/corfu/extensions/"
-  :hook (corfu-mode . corfu-popupinfo-mode))
-
 (use-package kind-icon
-  :load-path "packages/kind-icon/"
   :commands kind-icon-margin-formatter
   :config
   (setq kind-icon-use-icons nil)
@@ -202,7 +185,6 @@
           (t ,(nerd-icons-codicon "nf-cod-code") :face font-lock-warning-face))))
 
 (use-package cape
-  :load-path "packages/cape/"
   :bind (("C-c p p" . completion-at-point) ;; capf
          ("C-c p t" . complete-tag)        ;; etags
          ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
@@ -233,7 +215,6 @@
   )
 
 (use-package which-key
-  :load-path "packages/emacs-which-key/"
   :hook (on-first-input . which-key-mode)
   :config
   (define-key help-map "\C-h" 'which-key-C-h-dispatch)

@@ -5,7 +5,6 @@
 ;;; Code:
 
 (use-package magit
-  :load-path ("packages/magit/lisp" "packages/with-editor/lisp")
   :bind ("C-x g" . magit)
   :config
   (setq magit-git-executable "/usr/bin/git")
@@ -23,24 +22,21 @@
 		transient-values-file (expand-file-name "transient/values.el" cache-directory)))
 
 (use-package git-timemachine
-  :load-path "packages/git-timemachine/"
   :bind ("M-g t" . git-timemachine))
 
 (use-package browse-at-remote
-  :load-path "packages/browse-at-remote/"
   :bind ("M-g b" . browse-at-remote))
 
-(use-package blamer
-  :load-path "~/.emacs.d/packages/blamer.el/"
-  :hook (prog-mode . blamer-mode)
-  :custom
-  (blamer-idle-time 0.3)
-  (blamer-min-offset 70)
-  :custom-face
-  (blamer-face ((t :foreground "#7a88cf"
-                   :background unspecified
-                   :height 140
-                   :italic t))))
+;; (use-package blamer
+;;   :hook (prog-mode . blamer-mode)
+;;   :custom
+;;   (blamer-idle-time 0.3)
+;;   (blamer-min-offset 70)
+;;   :custom-face
+;;   (blamer-face ((t :foreground "#7a88cf"
+;;                    :background unspecified
+;;                    :height 140
+;;                    :italic t))))
 
 (provide 'init-git)
 ;;; init-git.el ends here.

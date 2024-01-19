@@ -24,20 +24,10 @@
 
 ;;; Code:
 
-(add-to-list 'load-path "~/.emacs.d/packages/emacs-request/")
-(add-to-list 'load-path "~/.emacs.d/packages/anaphora/")
-(add-to-list 'load-path "~/.emacs.d/packages/emacs-memoize/")
-(add-to-list 'load-path "~/.emacs.d/packages/elquery/")
-(add-to-list 'load-path "~/.emacs.d/packages/versuri/")
-(add-to-list 'load-path "~/.emacs.d/packages/Emacs-esqlite/")
-(add-to-list 'load-path "~/.emacs.d/packages/Emacs-pcsv/")
-(add-to-list 'load-path "~/.emacs.d/packages/lastfm.el/")
-
 (with-eval-after-load 'request
   (setopt request-storage-directory (expand-file-name "request" cache-directory)))
 
 (use-package vuiet
-  :load-path "~/.emacs.d/packages/vuiet/"
   :commands vuiet-play-artist)
 
 

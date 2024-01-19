@@ -14,6 +14,8 @@
       gc-cons-percentage 1.0)
 
 ;; Emacs startup performance
+(setq package-enable-at-startup nil)
+
 ;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
 (setq auto-mode-case-fold nil)
 
@@ -70,7 +72,7 @@
   ;; ef-themes 没有上述问题。
   (add-to-list 'load-path "~/.emacs.d/packages/ef-themes/")
   (require 'ef-themes)
-
+  (setq ef-themes-mixed-fonts t)
   (defun my/apply-theme (appearance)
     "Load theme, taking current system APPEARANCE into consideration."
     (mapc #'disable-theme custom-enabled-themes)

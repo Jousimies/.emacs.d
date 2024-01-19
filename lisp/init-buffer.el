@@ -32,34 +32,28 @@
   (setopt ibuffer-default-sorting-mode 'major-mode))
 
 (use-package nerd-icons-ibuffer
-  :load-path "packages/nerd-icons-ibuffer/"
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 (use-package bufferlo
-  :load-path "packages/bufferlo/"
   :bind (([remap switch-to-buffer] . bufferlo-switch-to-buffer))
   :hook (after-init . bufferlo-mode))
 
 (use-package helpful
-  :load-path "packages/helpful/" "packages/elisp-refs/"
   :bind (([remap describe-function] . helpful-callable)
          ([remap describe-variable] . helpful-variable)
          ([remap describe-key] . helpful-key))
   :config
   (add-to-list 'display-buffer-alist '("\\*helpful"
-                                         (display-buffer-in-side-window)
-                                         (side . right)
-                                         (window-width . 0.5)
-                                         (window-parameters
-                                          (mode-line-format . none)))))
-
-(add-to-list 'load-path "~/.emacs.d/packages/elisp-refs/")
-(add-to-list 'load-path "~/.emacs.d/packages/elisp-demos/")
-(autoload #'elisp-demos-advice-helpful-update "elisp-demos" nil t)
-(advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 0.5)
+                                       (window-parameters
+                                        (mode-line-format . none))))
+  (use-package elisp-demos
+	:config
+	(advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)))
 
 (use-package perspective
-  :load-path "packages/perspective-el/"
   :bind (("M-s-n" . persp-switch)
          ("M-s-w" . persp-kill))
   :custom
@@ -83,7 +77,6 @@
 					`(lambda () (interactive) (persp-switch-by-number ,(1+ i))))))
 
 (use-package popper
-  :load-path "packages/popper/"
   :bind (("C-`" . popper-toggle)
          :map popper-mode-map
          ("M-<tab>" . popper-cycle)
@@ -177,7 +170,6 @@
   (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper))
 
 (use-package winum
-  :load-path "packages/emacs-winum/"
   :hook (window-setup . winum-mode)
   :preface
   (defun my/winum-select (num)

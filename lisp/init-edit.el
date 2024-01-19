@@ -54,7 +54,6 @@
 (setopt save-place-file (expand-file-name "places" cache-directory))
 
 (use-package undo-fu-session
-  :load-path "packages/undo-fu-session/"
   :hook (on-first-file . undo-fu-session-global-mode)
   :config
   (setq undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory))
@@ -67,13 +66,11 @@
   (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name))
 
 (use-package vundo
-  :load-path "packages/vundo/"
   :bind ("s-z" . vundo)
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package hungry-delete
-  :load-path "packages/hungry-delete/"
   :custom
   (hungry-delete-chars-to-skip " \t\n\r\f\v")
   :hook ((text-mode . hungry-delete-mode)
@@ -81,7 +78,6 @@
          (org-mode . hungry-delete-mode)))
 
 (use-package ace-pinyin
-  :load-path ("packages/ace-pinyin/" "packages/avy/" "packages/pinyinlib.el")
   :bind ([remap goto-char] . ace-pinyin-jump-char-2))
 
 (use-package hippie-exp
@@ -181,7 +177,6 @@
   (load-file macos-module-path))
 
 (use-package tempel
-  :load-path "packages/tempel/"
   :bind (("M-+" . tempel-complete)
          ("M-*" . tempel-insert))
   :config
@@ -189,21 +184,19 @@
                       ,(expand-file-name "config/tempel" my-galaxy))))
 
 (use-package yasnippet
-  :load-path "packages/yasnippet/"
   :hook (minibuffer-mode . yas-global-mode)
   :config
-  (use-package yasnippet-snippets
-    :load-path "packages/yasnippet-snippets/"))
+  (use-package yasnippet-snippets))
 
 (use-package expand-region
-  :load-path "packages/expand-region.el/"
   :bind ("C-=" . er/expand-region)
   :config
   (add-to-list 'expand-region-exclude-text-mode-expansions 'org-mode)
   (add-to-list 'expand-region-exclude-text-mode-expansions 'LaTeX-mode))
 
 (use-package selected
-  :load-path "packages/selected.el/"
+  :vc (selected :url "https://github.com/Kungsgeten/selected.el.git"
+				:branch master)
   :hook (post-select-region . selected-minor-mode)
   :bind (:map selected-keymap
               ("q" . selected-off)
@@ -226,18 +219,15 @@
 (global-set-key (kbd "s-c") #'my/copy-region)
 
 (use-package symbol-overlay
-  :load-path "packages/symbol-overlay/"
   :hook ((prog-mode . symbol-overlay-mode)
          (html-mode . symbol-overlay-mode))
   :bind (:map symbol-overlay-mode-map
               ("M-i" . symbol-overlay-put)
               ("M-I" . symbol-overlay-remove-all)
               ("M-n" . symbol-overlay-jump-next)
-              ("M-p" . symbol-overlay-jump-prev)
-              ("M-%" . symbol-overlay-query-replace)))
+              ("M-p" . symbol-overlay-jump-prev)))
 
 (use-package rainbow-mode
-  :load-path "packages/rainbow-mode/"
   :hook (prog-mode . rainbow-mode))
 
 ;; pulse
@@ -263,7 +253,6 @@
 (add-hook 'imenu-after-jump-hook #'my-recenter)
 
 (use-package surround
-  :load-path "packages/surround/"
   :bind-keymap ("M-'" . surround-keymap))
 
 ;; Make region read-only or writable

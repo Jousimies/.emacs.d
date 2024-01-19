@@ -96,7 +96,6 @@
 ;;   (setq org-archive-location "%s_archive::datetree/"))
 
 (use-package org-gtd
-  :load-path ("packages/org-gtd.el/" "packages/org-agenda-property" "packages/org-edna")
   :commands (org-gtd-process-inbox
 			 org-gtd-engage-grouped-by-context
 			 org-gtd-engage
@@ -135,7 +134,6 @@
                ("C-c C-c" . org-gtd-organize))))
 
 (use-package alert
-  :load-path "packages/alert/"
   :commands alert
   :config
   (setq alert-default-style 'osx-notifier))

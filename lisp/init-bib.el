@@ -4,8 +4,6 @@
 
 ;;; Code:
 
-(add-to-list 'load-path "~/.emacs.d/packages/parsebib/")
-
 (defvar my/reference-lists `(,(concat my-galaxy "/bibtexs/References.bib")
                              ,(concat my-galaxy "/bibtexs/Books.bib")))
 
@@ -30,7 +28,6 @@
         bibtex-autokey-titleword-length 5))
 
 (use-package ebib
-  :load-path "packages/ebib/"
   :bind ("<f2>" . ebib)
   :config
   (setq ebib-preload-bib-files my/reference-lists)
@@ -46,9 +43,24 @@
   (setq ebib-file-associations '(("ps" . "gv"))))
 
 (use-package citar
-  :load-path "packages/citar/"
   :commands citar-open-files citar-open citar-create-note
+  :hook ((LaTeX-mode . citar-capf-setup)
+         (org-mode . citar-capf-setup))
   :config
+  (use-package citar-org
+	:bind (:map citar-org-citation-map
+				("RET" . org-open-at-point))))
+  (setq citar-bibliography my/reference-lists)
+  (setq citar-library-paths `(,(expand-file-name "PDF/" my-galaxy)))
+  (setq citar-notes-paths `(,(expand-file-name "denote/references" my-galaxy)))
+  (setq citar-library-file-extensions '("pdf" "jpg" "epub"))
+  (setq citar-symbol-separator "​")
+  (setq citar-file-additional-files-separator "-")
+  (setq citar-at-point-function 'embark-act)
+  (add-hook 'minibuffer-setup-hook
+            (lambda () (setq-local truncate-lines t)))
+
+(with-eval-after-load 'citar
   (setq citar-indicator-files (citar-indicator-create
 							   :symbol (nerd-icons-faicon "nf-fa-file_pdf_o"
 														  :face 'nerd-icons-green
@@ -65,8 +77,8 @@
 							   :tag "has:links"))
   (setq citar-indicator-notes (citar-indicator-create
 							   :symbol (nerd-icons-faicon "nf-fa-sticky_note_o"
-														   :face 'nerd-icons-blue
-														   :v-adjust 0)
+														  :face 'nerd-icons-blue
+														  :v-adjust 0)
 							   :function #'citar-has-notes
 							   :padding "    "
 							   :tag "has:notes"))
@@ -83,26 +95,7 @@
   (setopt citar-templates '((main . "${author editor:40%sn} | ${date year issued:4} | ${title:110}")
 							(suffix . "​​​​${=key= id:15} ${=type=:12}")
 							(preview . "${author editor:%etal} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.")
-							(note . "Notes on ${author editor:%etal}, ${title}")))
-  (setq citar-bibliography my/reference-lists)
-  (setq citar-library-paths `(,(expand-file-name "PDF/" my-galaxy)))
-  (setq citar-notes-paths `(,(expand-file-name "denote/references" my-galaxy)))
-  (setq citar-library-file-extensions '("pdf" "jpg" "epub"))
-  (setq citar-symbol-separator "​")
-  (setq citar-file-additional-files-separator "-")
-  (setq citar-at-point-function 'embark-act)
-  (add-hook 'minibuffer-setup-hook
-            (lambda () (setq-local truncate-lines t))))
-
-(use-package citar-latex
-  :after tex)
-
-(use-package citar-capf
-  :hook ((LaTeX-mode . citar-capf-setup)
-         (org-mode . citar-capf-setup)))
-
-(with-eval-after-load 'citar-org
-    (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point))
+							(note . "Notes on ${author editor:%etal}, ${title}"))))
 
 (use-package citar-embark
   :after citar
@@ -112,7 +105,6 @@
 ;; https://gitlab.com/fvdbeek/emacs-zotero
 
 (use-package zotra
-  :load-path "packages/zotra/"
   :commands zotra-add-entry
   :config
   (setq zotra-backend 'zotra-server)
@@ -120,7 +112,6 @@
 
 ;; Another package for browsing and fetching references.
 (use-package biblio
-  :load-path "packages/biblio.el/"
   :commands biblio-lookup biblio-crossref-lookup)
 
 ;; There are encoding errors.
@@ -128,7 +119,6 @@
 ;;   :load-path "packages/biblio-gbooks/")
 
 (use-package scihub
-  :load-path "packages/scihub.el/"
   :commands scihub
   :config
   (setq scihub-download-directory "~/Downloads/"

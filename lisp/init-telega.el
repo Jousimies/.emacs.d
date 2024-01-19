@@ -5,32 +5,13 @@
 ;;; Code:
 
 (use-package telega
-  :load-path ("packages/telega.el/" "packages/telega.el/contrib/"  "packages/rainbow-identifiers" "packages/visual-fill-column")
+  :vc (telega :url "https://github.com/zevlg/telega.el.git"
+			  :branch master)
   :commands telega
-  :init
-  ;; (add-to-list 'display-buffer-alist '((or (derived-mode . telega-image-mode)
-  ;;                                          (derived-mode . telega-webpage-mode)
-  ;;                                          (derived-mode . image-mode))
-  ;;                                      (display-buffer-pop-up-window)))
-  (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (window-width . 0.4)))
   :config
-  (defun my/telega-deactive-input-method ()
-    (when (and (boundp 'this-command) this-command cur-sys-input-method)
-      (if (or (string= (symbol-name this-command) "next-line")
-              (string= (symbol-name this-command) "previous-line"))
-          (switch-to-abc-input-method))))
-
-  (defun my/telega-chat-quit-window ()
-    (interactive)
-    (if (region-active-p)
-        (deactivate-mark)
-      (quit-window)))
   (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))
   ;; (setq telega-avatar-workaround-gaps-for '(return t))
-  (setq telega-chat-fill-column 75)
+  (setq telega-chat-fill-column 70)
   (setq telega-translate-to-language-by-default "zh")
   (setq telega-completing-read-function completing-read-function)
   (setq telega-proxies
@@ -79,12 +60,6 @@
 
   (add-hook 'telega-connection-state-hook #'+tab-bar-telega-icon-update)
   (add-hook 'telega-kill-hook #'+tab-bar-telega-icon-update))
-
-(use-package telega-mnz
-  :load-path "~/.emacs.d/packages/telega.el/contrib/"
-  :hook (telega-load . global-telega-mnz-mode)
-  :config
-  (setq telega-mnz-use-language-detection t))
 
 (provide 'init-telega)
 ;;; init-telega.el ends here.

@@ -88,7 +88,6 @@
 
 ;; elfeed
 (use-package elfeed
-  :load-path "packages/elfeed/"
   :commands elfeed
   :bind ((:map elfeed-search-mode-map
 			   ("U" . elfeed-update)))
@@ -97,13 +96,11 @@
   (setq elfeed-show-entry-switch #'elfeed-display-buffer)
   (setq elfeed-search-print-entry-function #'lucius/elfeed-search-print-entry--better-default)
   (use-package elfeed-org
-    :load-path "packages/elfeed-org/"
     :config
 	(elfeed-org)
-    (setq rmh-elfeed-org-files `(,(concat my-galaxy "/denote/20230330T120149==5d2b3--rss-sources__elfeed_emacs.org")))))
+    (setq rmh-elfeed-org-files `(,(concat my-galaxy "/denote/20230330T120149==0g2c--RSS-Sources__elfeed_Emacs.org")))))
 
 (use-package elfeed-tube
-  :load-path "packages/elfeed-tube/" "packages/emacs-aio/"
   :after elfeed
   :bind ((:map elfeed-show-mode-map
 			   ("C-c C-f" . elfeed-tube-mpv-follow-mode)
@@ -122,7 +119,6 @@
 
 (use-package mpv
   :commands mpv-start
-  :load-path "packages/mpv.el/"
   :bind (("<f8>" . my/mpv-play-or-pause)
 		 ("C-<f8>" . mpv-toggle-video)
 		 ("M-<f8>" . my/mpv-toggle-progress)

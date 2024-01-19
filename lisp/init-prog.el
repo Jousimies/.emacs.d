@@ -26,7 +26,6 @@
 
 ;; markdown
 (use-package markdown-mode
-  :load-path "packages/markdown-mode/"
   :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
          ("README\\.md\\'" . gfm-mode))
   :init (setq markdown-command "multimarkdown")
@@ -35,7 +34,6 @@
 
 ;; swift
 (use-package swift-mode
-  :load-path "packages/swift-mode/"
   :mode ("\\.swift\\'" . swift-mode))
 
 ;; yaml
@@ -44,16 +42,13 @@
 
 ;; csv
 (use-package csv-mode
-  :load-path "packages/csv-mode/"
   :mode ("\\.csv\\'" . csv-mode))
 
 (use-package rainbow-csv
-  :load-path "packages/rainbow-csv/"
   :hook ((csv-mode . rainbow-csv-mode)
 		 (tsv-mode . rainbow-csv-mode)))
 
 ;; (use-package demap
-;;   :load-path "~/.emacs.d/packages/demap.el/"
 ;;   :hook (prog-mode . demap-toggle)
 ;;   :config
 ;;   (setq demap-minimap-window-side  'right)
