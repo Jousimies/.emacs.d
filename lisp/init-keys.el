@@ -27,6 +27,20 @@
 
 (global-set-key (kbd "s-q") #'restart-emacs)
 
+(defun my/copy-file-info (info-type)
+  (interactive (list (completing-read "Copy file info (base/name/path/directory): "
+                                      '("base" "name" "path" "directory"))))
+  (when (buffer-file-name)
+    (let ((file-info
+           (pcase info-type
+             ("base" (file-name-base (buffer-file-name)))
+             ("name" (file-name-nondirectory (buffer-file-name)))
+             ("path" (file-truename (buffer-file-name)))
+             ("directory" (file-name-directory (buffer-file-name)))
+             (other (user-error "Invalid info type")))))
+      (kill-new file-info)
+      (message "Copied %s: %s" info-type file-info))))
+
 (transient-define-prefix my/file-folder-menu ()
   "Files and Folders manipulation."
   ["All about Open a Specific File.\n"
@@ -50,7 +64,7 @@
 	("C-e" "Open Entry" citar-denote-open-reference-entry :transient nil)]
    ["Misc"
 	("a" "Local Attachment" my/consult-find-attach :transient nil)
-	("i" "File Info" file-info-show :transient nil)
+	("i" "Copy File Info" my/copy-file-info :transient nil)
 	("d" "Consult Dir" consult-dir :transient nil)]
    ])
 
