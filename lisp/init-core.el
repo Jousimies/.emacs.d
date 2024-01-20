@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(setopt initial-major-mode 'fundamental-mode
+(setopt ;; initial-major-mode 'fundamental-mode
         inhibit-startup-screen t
         ;; (setq ring-bell-function 'ignore)
         ring-bell-function (lambda ()
@@ -55,9 +55,9 @@
         redisplay-skip-fontification-on-input t
         cursor-in-non-selected-windows nil)
 
-(setq-default initial-scratch-message
-              (propertize
-               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you") 'face 'italic))
+;; (setq-default initial-scratch-message
+;;               (propertize
+;;                (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you") 'face 'italic))
 
 ;; system coding
 (prefer-coding-system 'utf-8)

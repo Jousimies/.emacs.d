@@ -11,20 +11,22 @@
 (dashboard-setup-startup-hook)
 
 (add-hook 'dashboard-mode-hook (lambda ()
-								 (setq-local display-line-numbers nil
-											 mode-line-format nil
-											 cursor-type nil)))
+								 (setq-local display-line-numbers nil)))
 (with-eval-after-load 'dashboard
-  (define-key dashboard-mode-map "q" nil))
+  (define-key dashboard-mode-map "q" nil)
+  (define-key dashboard-mode-map (kbd "n") #'dashboard-next-line)
+  (define-key dashboard-mode-map (kbd "p") #'dashboard-previous-line))
 (setq dashboard-icon-type 'nerd-icons)
 (setq dashboard-set-file-icons t)
-(setq dashboard-center-content nil)
-(setq dashboard-set-init-info nil)
+(setq dashboard-center-content t)
+(setq dashboard-set-init-info t)
 (setq dashboard-set-footer nil)
-;; (setq dashboard-banner-logo-title "EXPLORE THE WORLD, FULFILL YOUR BEING.")
-(setq dashboard-banner-logo-title (format-time-string "%Y-%m-%d"))
-(setq dashboard-items nil)
-(setq dashboard-startup-banner (expand-file-name "src/banner4.txt" user-emacs-directory))
+(setq dashboard-banner-logo-title "EXPLORE THE WORLD, FULFILL YOUR BEING.")
+;; (setq dashboard-banner-logo-title (format-time-string "%Y-%m-%d"))
+(setq dashboard-items '((recents  . 5)
+                        (bookmarks . 5)
+                        (registers . 5)))
+(setq dashboard-startup-banner (expand-file-name "src/jousimies.txt" user-emacs-directory))
 
 ;; (use-package dashboard
 ;;   :load-path "packages/emacs-dashboard/"

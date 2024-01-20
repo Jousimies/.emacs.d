@@ -257,17 +257,21 @@
         (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
           (math-preview-all))))))
 
+;; https://emacs-china.org/t/topic/6601
+;; pngpaste or below applescript
 (defun org-insert-image (name)
   "insert a image from clipboard"
   (interactive "sName: ")
   (let* ((path (expand-file-name "pictures/" my-galaxy))
 		 (image-file (concat path name ".png")))
-	(do-applescript (concat
-					 "set the_path to \"" image-file "\" \n"
-					 "set png_data to the clipboard as «class PNGf» \n"
-					 "set the_file to open for access (POSIX file the_path as string) with write permission \n"
-					 "write png_data to the_file \n"
-					 "close access the_file"))
+	(if (executable-find "pngpaste")
+		(shell-command (concat "pngpaste " image-file))
+	  (do-applescript (concat
+					   "set the_path to \"" image-file "\" \n"
+					   "set png_data to the clipboard as «class PNGf» \n"
+					   "set the_file to open for access (POSIX file the_path as string) with write permission \n"
+					   "write png_data to the_file \n"
+					   "close access the_file")))
 	(insert (format "#+NAME: fig:%s\n#+CAPTION: %s\n" name name))
 	(insert "#+ATTR_ORG: :width 500px\n#+ATTR_LATEX: :width 10cm :placement [!htpb]\n#+ATTR_HTML: :width 600px\n")
 	(org-insert-link nil (concat "file:" image-file) "")))
