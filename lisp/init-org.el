@@ -233,18 +233,18 @@
   :load-path "packages/form-feed/"
   :hook (org-mode . form-feed-mode))
 
-
-(use-package math-preview
-  :load-path "packages/math-preview/"
-  :commands math-preview-all math-preview-clear-all
-  :hook (find-file . (lambda ()
-                       (when (eq major-mode 'org-mode)
-                         (auto/math-preview-all))))
-  :config
-  (setq math-preview-scale 1.1)
-  (setq math-preview-raise 0.2)
-  (setq math-preview-margin '(1 . 0))
-  (add-to-list 'org-options-keywords "NO_MATH_PREVIEW:"))
+;; Emacs 30 math-preview do now work as expected.
+;; (use-package math-preview
+;;   :load-path "packages/math-preview/"
+;;   :commands math-preview-all math-preview-clear-all
+;;   :hook (find-file . (lambda ()
+;;                        (when (eq major-mode 'org-mode)
+;;                          (auto/math-preview-all))))
+;;   :config
+;;   (setq math-preview-scale 1.1)
+;;   (setq math-preview-raise 0.2)
+;;   (setq math-preview-margin '(1 . 0))
+;;   (add-to-list 'org-options-keywords "NO_MATH_PREVIEW:"))
 
 ;;;###autoloads
 (defun auto/math-preview-all ()
