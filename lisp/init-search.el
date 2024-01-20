@@ -26,7 +26,7 @@
 
 (use-package rg
   :load-path ("packages/rg.el/" "packages/Emacs-wgrep")
-  :bind ("C-c s". rg)
+  :bind ("C-c s". rg-menu)
   :config
   (add-to-list 'display-buffer-alist '("^\\*rg\\*"
                                        (display-buffer-in-side-window)

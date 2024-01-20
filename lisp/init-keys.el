@@ -214,6 +214,16 @@
 
 (global-set-key (kbd "M-s-t") #'my/dict-menu)
 
+(transient-define-prefix my/pass-menu ()
+  "Pass"
+  ["Password"
+   [("c" "Copy" password-store-copy :transient nil)]
+   [("g" "Generate" password-store-generate :transient nil)]
+   [("i" "insert" password-store-insert :transient nil)]
+   [("e" "Edit" password-store-edit :transient nil)]
+   [("r" "Rename" password-store-rename :transient nil)]
+   [("d" "Delete" password-store-remove :transient nil)]])
+
 (transient-define-prefix my/application-menu ()
   "Application"
   [["Pomodoro"
@@ -225,7 +235,7 @@
   [[("e" "Elfeed" elfeed :transient nil)]
    [("t" "Telega" telega :transient nil)]
    [("m" "Email" mu4e :transient nil)]
-   [("p" "Pass" pass :transient nil)]
+   [("p" "Pass" my/pass-menu :transient nil)]
    [("s" "Search" my/search :transient nil)]
    [("c" "Calendar" calendar :transient nil)]
    [("r" "Calculator" calc :transient nil)]])
