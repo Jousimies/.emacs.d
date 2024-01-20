@@ -625,3 +625,6 @@
 [submodule "packages/password-store-otp.el"]
 	path = packages/password-store-otp.el
 	url = https://github.com/volrath/password-store-otp.el.git
+[submodule "packages/pomm.el"]
+	path = packages/pomm.el
+	url = https://github.com/SqrtMinusOne/pomm.el.git

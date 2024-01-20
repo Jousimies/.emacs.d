@@ -194,12 +194,14 @@
 ;; Pomodoro
 (defvar org-timer-countdown-timer nil)
 (defun my/modeline--timer ()
-  (when org-timer-countdown-timer
-    (concat " " (org-timer-value-string))))
+  (if org-timer-countdown-timer
+      (concat " " (org-timer-value-string))
+	pomm-current-mode-line-string))
 
 (defvar-local my/modeline-timer
-    '(:eval (when (and (mode-line-window-selected-p) org-timer-countdown-timer)
-              (propertize (my/modeline--timer) 'face `(:inherit error :inverse-video t)))))
+    '(:eval (when (and (mode-line-window-selected-p) (or org-timer-countdown-timer
+														 pomm-current-mode-line-string))
+              (propertize (my/modeline--timer) 'face `(:inherit font-lock-constant-face)))))
 
 (defvar-local my/modeline-time
     '(:eval (when (mode-line-window-selected-p)

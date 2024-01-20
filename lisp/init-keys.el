@@ -240,13 +240,11 @@
 
 (transient-define-prefix my/application-menu ()
   "Application"
-  [["Pomodoro"
-   ("P" "Toggle" my/pomodoro-toggle :transient nil)
-   ("SPC" "Pause or Continue" org-timer-pause-or-continue :transient nil)]
-   ["Finance"
+  [["Finance"
 	("g" "Generator" my/bean-generate :transient t)
 	("f" "Fava" my/beancount-fava :transient nil)]]
-  [[("e" "Elfeed" elfeed :transient nil)]
+  [[("SPC" "Pomodoro" pomm-third-time :transient nil)]
+   [("e" "Elfeed" elfeed :transient nil)]
    [("t" "Telega" telega :transient nil)]
    [("m" "Email" mu4e :transient nil)]
    [("p" "Pass" my/pass-menu :transient nil)]
