@@ -6,7 +6,7 @@
 
 (use-package beancount
   :load-path "packages/beancount-mode/"
-  :mode (".bean" . beancount-mode)
+  :mode ("\\.bean\\'" . beancount-mode)
   :hook ((beancount-mode . (lambda ()
                              (setq-local electric-indent-chars nil)))
          (beancount-mode . outline-minor-mode))
