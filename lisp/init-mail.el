@@ -82,7 +82,7 @@
   (setq mu4e-headers-auto-update t)
   (setq mu4e-headers-date-format "%d/%m/%y")
   (setq mu4e-headers-time-format "%H:%M")
-  (setq mu4e-headers-fields '((:flags . 8)
+  (setq mu4e-headers-fields '((:flags . 12)
                               (:human-date . 10)
                               (:subject . 100)
                               (:from-or-to . 40)

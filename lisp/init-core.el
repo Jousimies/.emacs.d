@@ -72,6 +72,8 @@
 (with-eval-after-load 'org
   (set-face-attribute 'org-table nil :family "Sarasa Mono SC"))
 
+(set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 16) nil 'prepend)
+
 (add-hook 'text-mode-hook #'variable-pitch-mode)
 
 ;; load-path
@@ -89,7 +91,7 @@
   :load-path "packages/nerd-icons.el/"
   :commands nerd-icons-codicon nerd-icons-faicon nerd-icons-icon-for-file
   :config
-  (setq nerd-icons-font-family "Hack Nerd Font Mono"))
+  (setq nerd-icons-font-family "Symbols Nerd Font Mono"))
 
 ;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
 (defvar mobile-document "~/Library/Mobile Documents/"
