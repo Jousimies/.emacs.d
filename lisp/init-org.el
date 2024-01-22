@@ -212,6 +212,8 @@
   :hook ((on-first-buffer . pomm-mode-line-mode)
 		 (pomm-third-time-on-status-changed . my/play-sound))
   :config
+  (setq pomm-audio-enabled t)
+  (setq pomm-audio-tick-enabled t)
   (setq pomm-third-time-state-file-location (expand-file-name "pomm-third-time" cache-directory)))
 
 ;; org indent mode
