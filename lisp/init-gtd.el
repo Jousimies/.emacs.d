@@ -163,7 +163,7 @@
 (defun org-clock--parse-element (element)
   (let* ((timestamp (org-element-property :value element))
 		 (headline (org-clock--find-headlines element))
-		 (headline-values (car (mapcar (lambda (h) (org-element-property :raw-value h)) headline)))
+		 (headline-values (mapcar (lambda (h) (org-element-property :raw-value h)) headline))
 		 (start (format "%s %s %s %s:%s"
 						(org-element-property :month-start timestamp)
 						(org-element-property :day-start timestamp)
@@ -186,10 +186,11 @@
 	(let* ((current (calendar-current-date))
 		   (start (plist-get entry :start))
 		   (end (plist-get entry :end))
-		   (summary (plist-get entry :headline))
+		   (headline (plist-get entry :headline))
+		   (summary (mapconcat 'identity (butlast headline)  "-"))
 		   (apple-script (format
 						  "tell application \"Calendar\"
-                             tell calendar \"Calendar\"
+                             tell calendar \"Clocking\"
                                set theCurrentDate to date \"%s\"
                                set EndDate to date \"%s\"
 

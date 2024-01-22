@@ -275,14 +275,12 @@
   (interactive "sName: ")
   (let* ((path (expand-file-name "pictures/" my-galaxy))
 		 (image-file (concat path name ".png")))
-	(if (executable-find "pngpaste")
-		(shell-command (concat "pngpaste " image-file))
-	  (do-applescript (concat
-					   "set the_path to \"" image-file "\" \n"
-					   "set png_data to the clipboard as «class PNGf» \n"
-					   "set the_file to open for access (POSIX file the_path as string) with write permission \n"
-					   "write png_data to the_file \n"
-					   "close access the_file")))
+	(do-applescript (concat
+					 "set the_path to \"" image-file "\" \n"
+					 "set png_data to the clipboard as «class PNGf» \n"
+					 "set the_file to open for access (POSIX file the_path as string) with write permission \n"
+					 "write png_data to the_file \n"
+					 "close access the_file"))
 	(insert (format "#+NAME: fig:%s\n#+CAPTION: %s\n" name name))
 	(insert "#+ATTR_ORG: :width 500px\n#+ATTR_LATEX: :width 10cm :placement [!htpb]\n#+ATTR_HTML: :width 600px\n")
 	(org-insert-link nil (concat "file:" image-file) "")))
@@ -359,6 +357,18 @@
     (org-datetree-find-date-create (list month day year))
 	(open-line 1)
 	(forward-line 1)))
+
+;; org-drawio
+(use-package org-drawio
+  :load-path "packages/org-drawio/"
+  :commands (org-drawio-add
+             org-drawio-open)
+  :custom ((org-drawio-input-dir (abbreviate-file-name (expand-file-name "mindmap" my-galaxy)))
+           (org-drawio-output-dir (abbreviate-file-name (expand-file-name "pictures" my-galaxy)))
+           (org-drawio-output-page "0")
+		   (org-drawio-command-drawio "/Applications/draw.io.app/Contents/MacOS/draw.io")
+		   (org-drawio-command-pdf2svg "/opt/homebrew/bin/pdf2svg")
+		   (org-drawio-crop t)))
 
 (provide 'init-org)
 ;;; init-org.el ends here.

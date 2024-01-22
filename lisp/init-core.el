@@ -72,7 +72,7 @@
 (with-eval-after-load 'org
   (set-face-attribute 'org-table nil :family "Sarasa Mono SC"))
 
-(set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 16) nil 'prepend)
+(set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend)
 
 (add-hook 'text-mode-hook #'variable-pitch-mode)
 

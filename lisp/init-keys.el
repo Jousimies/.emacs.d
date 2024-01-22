@@ -134,6 +134,8 @@
    ["Misc"
 	("M" "MindMap" plantuml-org-to-mindmap-open :transient nil)
 	("w" "WBS" plantuml-org-to-mindmap-open :transient nil)
+	("a" "Drawio Add" org-drawio-add :transient nil)
+	("o" "Drawio Open" org-drawio-open :transient nil)
 	("SPC" "OCR" my/ocr :transient nil)
 	]])
 
@@ -144,25 +146,30 @@
   ["Denote Backlinks"
 	("b" "Buffer" denote-backlinks :transient nil)]
   [["Org Link"
-	("g" "Grab: Safari" my/link-grab :transient nil)
 	("c" "Copy IDlink" my/copy-idlink :transient nil)
-	("x" "Remove" jf/org-link-remove-link :transient nil)
+	("i" "Insert" org-insert-link :transient nil)
 	("s" "Store" org-store-link :transient nil)
 	("t" "Display" org-toggle-link-display :transient nil)]
    ["Denote Insert"
 	("l" "Link" denote-link :transient nil)
+	("h" "Heading" denote-org-extras-link-to-heading :transient nil)
 	("%" "Links: With Regexp" denote-add-links :transient nil)
 	("d" "Links: DBlock" denote-org-dblock-insert-links :transient nil)
 	("D" "Backlinks: DBlock" denote-org-dblock-insert-backlinks :transient nil)]
    ["Denote Links Roam"
 	("e" "Explore Links" my/denote-find-link-other-window :transient t)
 	("fb" "Find Backlinks" denote-find-backlink :transient nil)
-	("fr" "References" citar-denote-find-reference :transient nil)]])
+	("fr" "References" citar-denote-find-reference :transient nil)]
+   ["Misc"
+	("g" "Grab: Safari" my/link-grab :transient nil)
+	("x" "Remove" jf/org-link-remove-link :transient nil)]])
 
 (global-set-key (kbd "s-l") #'my/links-menu)
 
 (transient-define-prefix my/agenda-menu ()
   "GTD"
+  [["Pomodoro"
+	("p" "Pomodoro" pomm-third-time :transient nil)]]
   [["Agenda"
 	("a" "Agenda" org-agenda :transient nil)
 	("b" "Book" my/book-agenda :transient nil)
@@ -243,8 +250,7 @@
   [["Finance"
 	("g" "Generator" my/bean-generate :transient t)
 	("f" "Fava" my/beancount-fava :transient nil)]]
-  [[("SPC" "Pomodoro" pomm-third-time :transient nil)]
-   [("e" "Elfeed" elfeed :transient nil)]
+  [[("e" "Elfeed" elfeed :transient nil)]
    [("t" "Telega" telega :transient nil)]
    [("m" "Email" mu4e :transient nil)]
    [("p" "Pass" my/pass-menu :transient nil)]
@@ -253,6 +259,16 @@
    [("r" "Calculator" calc :transient nil)]])
 
 (global-set-key (kbd "M-s-a") #'my/application-menu)
+
+(transient-define-prefix my/org-menu ()
+  "Org"
+  [["Clock"
+	("i" "Clock In" org-clock-in :transient nil)
+	("o" "Clock Out" org-clock-out :transient nil)
+	("g" "Clock goto" org-clock-goto :transient nil)
+	]])
+
+(global-set-key (kbd "s-o") #'my/org-menu)
 
 (provide 'init-keys)
 ;;; init-keys.el ends here

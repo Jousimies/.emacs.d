@@ -84,6 +84,8 @@ org-mode
 
 (frac "\\frac{" p "}{" p "}")
 
+(drawio "#+drawio: " p)
+
 (ref "* What is the problem addressed in the paper?" n> n>
      "# Is this a new problem? If it is a new problem, why does it matter? If it is not an entirely new problem, why does it still matter?" n>
      "# 这个问题的性质是什么？是一个新的问题吗？如果是一个新问题，它的重要性何在？如果不完全是一个新问题，为什么它“仍然重要”？" n> n>

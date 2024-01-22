@@ -34,6 +34,9 @@
 (use-package denote-org-dblock
   :commands denote-org-dblock-insert-backlinks denote-org-dblock-insert-links)
 
+(use-package denote-org-extras
+  :commands denote-org-extras-extract-org-subtree denote-org-extras-link-to-heading)
+
 (defun find-file-other-window-no-jump (filename)
   "Find file in other window without jumping to that window."
   (interactive "FFind file in other window: ")
@@ -102,77 +105,27 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "/ r") 'prot-dired-limit-regexp))
 
-(defun my/denote-org-extract-subtree-with-signature (&optional silo)
-  "Create new Denote note using current Org subtree.
-Make the new note use the Org file type, regardless of the value
-of `denote-file-type'.
-
-With an optional SILO argument as a prefix (\\[universal-argument]),
-ask user to select a SILO from `my-denote-silo-directories'.
-
-Use the subtree title as the note's title.  If available, use the
-tags of the heading are used as note keywords.
-
-Delete the original subtree."
-  (interactive
-   (list (when current-prefix-arg
-           (completing-read "Select a silo: " my-denote-silo-directories nil t))))
+(defun my/denote-org-extract-subtree-with-signature ()
+  (interactive)
   (if-let ((text (org-get-entry))
-           (heading (org-get-heading :no-tags :no-todo :no-priority :no-comment)))
-      (let ((element (org-element-at-point))
-            (tags (org-get-tags))
-            (denote-user-enforced-denote-directory silo))
+           (heading (denote-link-ol-get-heading)))
+      (let ((tags (org-get-tags))
+            (date (denote-org-extras--get-heading-date)))
         (delete-region (org-entry-beginning-position)
                        (save-excursion (org-end-of-subtree t) (point)))
-        (denote heading
-                tags
-                'org
-                nil
-                (or
-                 ;; Check PROPERTIES drawer for :created: or :date:
-                 (org-element-property :CREATED element)
-                 (org-element-property :DATE element)
-                 ;; Check the subtree for CLOSED
-                 (org-element-property :raw-value
-                                       (org-element-property :closed element)))
-				nil
-				(denote-signature-prompt))
+        (denote heading tags 'org nil date nil (denote-signature-prompt))
         (insert text))
     (user-error "No subtree to extract; aborting")))
 
-(defun my/denote-org-extract-subtree-to-subdirectory (&optional silo)
-  "Create new Denote note using current Org subtree.
-Make the new note use the Org file type, regardless of the value
-of `denote-file-type'.
-
-With an optional SILO argument as a prefix (\\[universal-argument]),
-ask user to select a SILO from `my-denote-silo-directories'.
-
-Use the subtree title as the note's title.  If available, use the
-tags of the heading are used as note keywords.
-
-Delete the original subtree."
-  (interactive
-   (list (when current-prefix-arg
-           (completing-read "Select a silo: " my-denote-silo-directories nil t))))
+(defun my/denote-org-extract-subtree-to-subdirectory ()
+  (interactive)
   (if-let ((text (org-get-entry))
-           (heading (org-get-heading :no-tags :no-todo :no-priority :no-comment)))
-      (let ((element (org-element-at-point))
-            (tags (org-get-tags))
-            (denote-user-enforced-denote-directory silo))
+           (heading (denote-link-ol-get-heading)))
+      (let ((tags (org-get-tags))
+            (date (denote-org-extras--get-heading-date)))
         (delete-region (org-entry-beginning-position)
                        (save-excursion (org-end-of-subtree t) (point)))
-        (denote heading
-                tags
-                'org
-                (denote-subdirectory-prompt)
-                (or
-                 ;; Check PROPERTIES drawer for :created: or :date:
-                 (org-element-property :CREATED element)
-                 (org-element-property :DATE element)
-                 ;; Check the subtree for CLOSED
-                 (org-element-property :raw-value
-                                       (org-element-property :closed element))))
+        (denote heading tags 'org (denote-subdirectory-prompt) date)
         (insert text))
     (user-error "No subtree to extract; aborting")))
 
