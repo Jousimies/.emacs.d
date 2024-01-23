@@ -183,6 +183,8 @@ This function requires ImageMagick's convert utility to be installed and availab
 ;; 		 (denote-dired-mode . (lambda ()
 ;; 								(setq-local diredfl-mode nil)))))
 
+(use-package dired-async
+  :hook (dired-mode . dired-async-mode))
 
 (use-package consult-dir
   :load-path "packages/consult-dir/"
