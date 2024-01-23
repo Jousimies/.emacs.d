@@ -209,8 +209,7 @@
 (use-package pomm-third-time
   :load-path "packages/pomm.el/"
   :commands pomm-third-time
-  :hook ((on-first-buffer . pomm-mode-line-mode)
-		 (pomm-third-time-on-status-changed . my/play-sound))
+  :hook (on-first-buffer . pomm-mode-line-mode)
   :config
   (setq pomm-audio-enabled t)
   (setq pomm-audio-tick-enabled t)
