@@ -92,9 +92,6 @@
 						((org-agenda-prefix-format " %i")
 						 (org-agenda-overriding-header "Reading Lists")))))))
 
-;; (with-eval-after-load 'org-archive
-;;   (setq org-archive-location "%s_archive::datetree/"))
-
 (use-package org-gtd
   :load-path ("packages/org-gtd.el/" "packages/org-agenda-property" "packages/org-edna")
   :commands (org-gtd-process-inbox
@@ -110,7 +107,6 @@
 			 org-gtd-review-stuck-delegated-items
 			 org-gtd-review-stuck-incubated-items
 			 org-gtd-review-stuck-habit-items)
-  :bind ([remap org-archive-subtree] . org-gtd-archive-item-at-point)
   :init
   (setq org-gtd-update-ack "3.0.0")
   :hook ((org-agenda-mode . org-gtd-mode)
@@ -132,7 +128,38 @@
   (org-gtd-engage-prefix-width 24)
   (org-gtd-clarify-show-horizons 'right)
   :bind ((:map org-gtd-clarify-map
-               ("C-c C-c" . org-gtd-organize))))
+               ("C-c C-c" . org-gtd-organize)))
+  :config
+  (with-eval-after-load 'org-archive
+	(setq org-archive-location
+		  (concat
+		   (expand-file-name
+			(format-time-string "gtd_archive_%Y") org-gtd-directory)
+		   "::datetree/"))))
+
+;; org-timer as pomodoro
+(use-package org-timer
+  :commands org-timer-pause-or-continue my/pomodoro-toggle
+  :hook (org-timer-done . my/play-sound)
+  :config
+  (setopt org-timer-default-timer "25")
+  (defun my/pomodoro-toggle ()
+	(interactive)
+	(require 'org-timer)
+	(if org-timer-countdown-timer
+		(org-timer-stop)
+	  (org-timer-set-timer 25)))
+  (defun my/play-sound ()
+    (async-shell-command "afplay /System/Library/Sounds/Submarine.aiff")))
+
+(use-package pomm-third-time
+  :load-path "packages/pomm.el/"
+  :commands pomm-third-time
+  :hook (on-first-buffer . pomm-mode-line-mode)
+  :config
+  (setq pomm-third-time-fraction "1/4")
+  (setq pomm-audio-enabled t)
+  (setq pomm-third-time-state-file-location (expand-file-name "pomm-third-time" cache-directory)))
 
 (use-package alert
   :load-path "packages/alert/"

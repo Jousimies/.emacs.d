@@ -191,30 +191,6 @@
                                                 (if (org-clocking-p)
                                                     (org-clock-out)))))
 
-;; org-timer as pomodoro
-(use-package org-timer
-  :commands org-timer-pause-or-continue my/pomodoro-toggle
-  :hook (org-timer-done . my/play-sound)
-  :config
-  (setopt org-timer-default-timer "25")
-  (defun my/pomodoro-toggle ()
-	(interactive)
-	(require 'org-timer)
-	(if org-timer-countdown-timer
-		(org-timer-stop)
-	  (org-timer-set-timer 25)))
-  (defun my/play-sound ()
-    (async-shell-command "afplay /System/Library/Sounds/Submarine.aiff")))
-
-(use-package pomm-third-time
-  :load-path "packages/pomm.el/"
-  :commands pomm-third-time
-  :hook (on-first-buffer . pomm-mode-line-mode)
-  :config
-  (setq pomm-audio-enabled t)
-  (setq pomm-audio-tick-enabled t)
-  (setq pomm-third-time-state-file-location (expand-file-name "pomm-third-time" cache-directory)))
-
 ;; org indent mode
 (add-hook 'org-mode-hook #'org-indent-mode)
 
