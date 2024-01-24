@@ -192,7 +192,14 @@
                                                     (org-clock-out)))))
 
 ;; org indent mode
-(add-hook 'org-mode-hook #'org-indent-mode)
+;; (add-hook 'org-mode-hook #'org-indent-mode)
+
+;; org-indent-mode hide leading stars, sometimes cursor become invisible.
+(use-package org-superstar
+  :load-path "packages/org-superstar-mode/"
+  :hook (org-mode . org-superstar-mode)
+  :config
+  (setq org-superstar-headline-bullets-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼")))
 
 ;; Third party packages related to org-mode
 (use-package imenu-list
