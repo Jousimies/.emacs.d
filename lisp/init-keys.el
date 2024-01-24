@@ -48,7 +48,8 @@
 	("w" "Other Window" find-file-other-window :transient nil)
 	("t" "Other Tab" find-file-other-tab :transient nil)
 	("r" "Rencent file" consult-recent-file :transient nil)
-	("f" "At Point" find-file-at-point :transient nil)]
+	("f" "At Point" find-file-at-point :transient nil)
+	("l" "Eww at Point" my/open-link-with-eww :transient nil)]
    ["Macos"
 	("F" "Finder" macos-reveal-in-finder :transient nil)
 	("s" "Share" macos-share :transient nil)

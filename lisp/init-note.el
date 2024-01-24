@@ -157,6 +157,21 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
           ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy))
           ("Logs"  ?L ,(expand-file-name "logs" my-galaxy)))))
 
+;; Sometimes I want open the web archive file with eww.
+(defun my/org-get-link-under-point ()
+  "Get the link under the point in Org mode."
+  (let* ((link (org-element-lineage (org-element-context) '(link) t)))
+	(if link
+		(org-element-property :raw-link link)
+	  (url-get-url-at-point))))
+
+(defun my/open-link-with-eww ()
+  (interactive)
+  (when-let ((link (my/org-get-link-under-point)))
+	(if (org-file-url-p link)
+		(org-open-at-point)
+	  (eww (concat "file://" (expand-file-name link))))))
+
 (use-package denote-sort
   :commands denote-sort-dired
   :config
