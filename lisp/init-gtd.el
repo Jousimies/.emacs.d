@@ -77,14 +77,14 @@
   (org-agenda nil "b"))
 
 (with-eval-after-load 'org-agenda
-  (setq org-agenda-window-setup 'reorganize-frame)
+  (setq org-agenda-window-setup 'current-window)
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-agenda-skip-deadline-if-done t)
   (setq org-agenda-todo-ignore-scheduled 'future)
   (setq org-agenda-todo-ignore-deadlines 'near)
   (setq org-agenda-dim-blocked-tasks t)
   (setq org-agenda-compact-blocks t)
-  (setq org-agenda-align-tags-to-column 'auto)
+  (setq org-agenda-align-tags-to-column 120)
   (setq org-deadline-warning-days 7)
   (add-to-list 'org-agenda-custom-commands
 			   '("b" "Book Shelf"
@@ -115,6 +115,8 @@
   (org-gtd-directory (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org" mobile-document))
   (org-agenda-property-list '("DELEGATED_TO"))
   (org-gtd-organize-hooks '(org-gtd-set-area-of-focus org-set-tags-command))
+  ;; only archive knowledge things inside `org-gtd-organize.el'.
+  (org-gtd-archive-file-format "flash_thoughts_%s")
   (org-edna-use-inheritance t)
   (org-gtd-areas-of-focus '(
 							"Basic Life" ;衣食住行方面的基本需求
@@ -131,6 +133,7 @@
                ("C-c C-c" . org-gtd-organize)))
   :config
   (with-eval-after-load 'org-archive
+	;; use `org-archive-subtree' to archive done todos.
 	(setq org-archive-location
 		  (concat
 		   (expand-file-name

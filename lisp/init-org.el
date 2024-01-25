@@ -53,50 +53,29 @@
 ;; org-capture
 (with-eval-after-load 'org-capture
   (setq org-capture-templates
-        '(("i" "GTD Inbox"
+        '(("i" "Inbox"
            entry (file (lambda () (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org")))
            "* %?\n%U\n" :time-prompt t :tree-type week)
-          ("w" "Watch")
-          ("wt" "TV drama"
-           entry (file+headline (lambda ()
-                                  (concat my-galaxy "/logs/watchlist_"
-                                          (format-time-string "%Y") ".org"))
-                                "Drama")
-           "* %?
-    :PROPERTIES:
-    :GENRE: %^{类型|剧情|犯罪|}
-    :COUNTRY:
-    :SCORE:
-    :PLOT: %^{PLOT}
-    :END:")
-          ("ws" "视频"
-           entry (file+headline (lambda ()
-                                  (concat my-galaxy "/logs/watchlist_"
-                                          (format-time-string "%Y") ".org"))
-                                "视频")
-           "* %?")
-          ("wc" "cartoon"
-           entry (file+headline (lambda ()
-                                  (concat my-galaxy "/logs/watchlist_"
-                                          (format-time-string "%Y") ".org"))
-                                "Cartoon")
-           "* %?")
-          ("wm" "Movie"
-           entry (file+headline (lambda ()
-                                  (concat my-galaxy "/logs/watchlist_"
-                                          (format-time-string "%Y") ".org"))
-                                "Movie")
-           "* %?
-:PROPERTIES:
-:GENRE: %^{Film genre|Action|Adventure|Comedy|Drama|Fantasy|Horror|Musicals|Mystery|Romance|Science fiction|Sports|Thriller}
-:COUNTRY:
-:SCORE:
-:PLOT: %^{PLOT}
-:END:"))))
+		  ("l" "Inbox with link"
+           entry (file (lambda () (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org")))
+           "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
+		  ("r" "Review"
+           plain
+           (file+olp+datetree (lambda () (expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy)))
+           (file "~/.emacs.d/template/review-weekly")
+           :tree-type week :jump-to-captured t))))
 
 (defun my/org-capture-inbox ()
   (interactive)
   (org-capture t "i"))
+
+(defun my/org-capture-review ()
+  (interactive)
+  (org-capture t "r"))
+
+(defun my/org-capture-inbox-with-link ()
+  (interactive)
+  (org-capture t "l"))
 
 ;; org-capture
 (with-eval-after-load 'org-attach
@@ -199,6 +178,7 @@
   :load-path "packages/org-superstar-mode/"
   :hook (org-mode . org-superstar-mode)
   :config
+  (setq org-hide-leading-stars t)
   (setq org-superstar-headline-bullets-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼")))
 
 ;; Third party packages related to org-mode

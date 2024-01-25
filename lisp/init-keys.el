@@ -177,7 +177,8 @@
 	("t" "TODO" my/all-todo-agenda :transient nil)]
    ["Capture"
 	("i" "Inbox" my/org-capture-inbox :transient nil)
-	("I" "Org Capture" org-capture :transient nil)]
+	("l" "Inbox with link" my/org-capture-inbox-with-link :transient nil)
+	("r" "Review" my/org-capture-review :transient nil)]
    ["Process & Engage"
 	("x" "Process Inbox" org-gtd-process-inbox :transient nil)
 	("@" "By Context" org-gtd-engage-grouped-by-context :transient nil)
