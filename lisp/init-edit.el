@@ -29,10 +29,10 @@
 (with-eval-after-load 'register
   (setopt register-preview-delay 0)
   (set-register ?a (cons 'file (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/gtd_archive_" (format-time-string "%Y"))))
-  (set-register ?g (cons 'file (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org/org-gtd-tasks.org" mobile-document)))
-  (set-register ?b (cons 'file (expand-file-name "denote/books/20230301T211439--Book-lists-and-reading-record__reading.org" my-galaxy)))
-  (set-register ?l (cons 'file (concat my-galaxy "/logs/log_" (format-time-string "%Y") ".org")))
-  (set-register ?f (cons 'file (expand-file-name "finance/beans/finance.bean" my-galaxy))))
+  (set-register ?f (cons 'file (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/flash_thoughts_" (format-time-string "%Y"))))
+  (set-register ?t (cons 'file (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org/org-gtd-tasks.org" mobile-document)))
+  (set-register ?r (cons 'file (expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy)))
+  (set-register ?l (cons 'file (expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))))
 
 (add-hook 'on-first-input-hook #'recentf-mode)
 (with-eval-after-load 'recentf
