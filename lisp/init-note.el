@@ -154,8 +154,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
           ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
           ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
           ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))
-          ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy))
-          ("Logs"  ?L ,(expand-file-name "logs" my-galaxy)))))
+          ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy)))))
 
 ;; Sometimes I want open the web archive file with eww.
 (defun my/org-get-link-under-point ()

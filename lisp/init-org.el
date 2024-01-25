@@ -59,6 +59,11 @@
 		  ("l" "Inbox with link"
            entry (file (lambda () (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org")))
            "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
+		  ("w" "Work Logs"
+           plain
+           (file+datetree (lambda () (expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy)))
+		   (file "~/.emacs.d/template/tpl-worklog")
+		   :tree-type week :jump-to-captured t)
 		  ("r" "Review"
            plain
            (file+olp+datetree (lambda () (expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy)))
@@ -76,6 +81,10 @@
 (defun my/org-capture-inbox-with-link ()
   (interactive)
   (org-capture t "l"))
+
+(defun my/org-capture-work ()
+  (interactive)
+  (org-capture t "w"))
 
 ;; org-capture
 (with-eval-after-load 'org-attach
@@ -176,7 +185,8 @@
 ;; org-indent-mode hide leading stars, sometimes cursor become invisible.
 (use-package org-superstar
   :load-path "packages/org-superstar-mode/"
-  :hook (org-mode . org-superstar-mode)
+  :hook ((org-mode . org-superstar-mode)
+		 (org-superstar-mode . org-indent-mode))
   :config
   (setq org-hide-leading-stars t)
   (setq org-superstar-headline-bullets-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼")))
