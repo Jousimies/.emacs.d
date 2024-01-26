@@ -52,6 +52,7 @@
 (require 'init-music)
 (require 'init-pass)
 
+(require 'init-misc)
 (require 'init-keys)
 
 ;; custom

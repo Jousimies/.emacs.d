@@ -32,6 +32,9 @@
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2)))
 
+(with-eval-after-load 'org-habit
+  (setopt org-habit-graph-column 70))
+
 ;; ob-core
 (with-eval-after-load 'ob-core
   (setq org-confirm-babel-evaluate nil)

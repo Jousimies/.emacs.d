@@ -54,15 +54,6 @@
 	("F" "Finder" macos-reveal-in-finder :transient nil)
 	("s" "Share" macos-share :transient nil)
 	]
-   ["BibFile"
-	("o" "Open" citar-open :transient nil)
-	("p" "Open PDF" citar-open-files :transient nil)
-	("e" "Open Entry" citar-open-entry :transient nil)
-	("c" "Find Citation" citar-denote-find-citation :transient nil)
-	]
-   ["Reference Notes"
-	("C-p" "Open PDF" citar-denote-open-files :transient nil)
-	("C-e" "Open Entry" citar-denote-open-reference-entry :transient nil)]
    ["Misc"
 	("a" "Local Attachment" my/consult-find-attach :transient nil)
 	("i" "Copy File Info" my/copy-file-info :transient nil)
@@ -96,6 +87,30 @@
 
 (global-set-key (kbd "M-o") #'my/wfb-menu)
 
+(transient-define-prefix my/bibtex-menu ()
+  "References"
+  [["Add"
+	("a" "Zotra: Entry" zotra-add-entry :transient nil)
+	("s" "SciHub" scihub :transient nil)
+	("l" "Local PDF" citar-add-file-to-library :transient nil)]
+   ["Citar Open"
+	("o" "DWIM" citar-open :transient nil)
+	("p" "PDF" citar-open-files :transient nil)
+	("e" "Entry" citar-open-entry :transient nil)
+	("n" "Note" citar-open-notes :transient nil)]
+   ["Notes"
+	("P" "PDF Files" citar-denote-open-files :transient nil)
+	("R" "Open References" citar-denote-open-reference-entry :transient nil)
+	("f" "Find Citation" citar-denote-find-citation :transient nil)]
+   ["Citation"
+	("i" "Insert" org-cite-insert :transient t)
+	("c" "Insert: Tex" reftex-citation :transient t)]
+   ["Export"
+	("1" "Local Bibtex" citar-export-local-bib-file :transient nil)
+	("2" "Bibtex to Endnote" my/bib2end :transient nil)]])
+
+(global-set-key (kbd "s-b") #'my/bibtex-menu)
+
 (transient-define-prefix my/note-menu ()
   "Note"
   [:description current-time-string
@@ -126,12 +141,6 @@
 	("es" "Extract with Signature" my/denote-org-extract-subtree-with-signature :transient nil)
 	("ed" "Extract to Subdirectory" my/denote-org-extract-subtree-to-subdirectory :transient nil)
 	("eb" "Extract iBooks Annotation" ibooks-annot/extract-annotations-to-note :transient nil)]
-   ["BibFile"
-	("ae" "Zotra: Entry" zotra-add-entry :transient nil)
-	("aa" "SciHub: Attachment" scihub :transient nil)
-	("af" "Local: Add PDF" citar-add-file-to-library :transient nil)
-	("2" "Bibtex to Endnote" my/bib2end :transient nil)
-	]
    ["Misc"
 	("M" "MindMap" plantuml-org-to-mindmap-open :transient nil)
 	("w" "WBS" plantuml-org-to-mindmap-open :transient nil)
