@@ -58,7 +58,7 @@
 
 (use-package focus
   :load-path "packages/Focus/"
-  :hook (on-first-input . focus-mode))
+  :hook (prog-mode . focus-mode))
 
 (use-package zoom
   :load-path "packages/zoom/"
