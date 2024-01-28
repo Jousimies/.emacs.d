@@ -207,7 +207,7 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
   "Create an `literature' denote entry from Safari page."
   (interactive)
   (let* ((url (car (grab-mac-link-safari-1)))
-         (title (cadr (split-string (cadr (grab-mac-link-safari-1)) "— ")))
+         (title (cadr (grab-mac-link-safari-1)))
          (keywords (denote-keywords-prompt))
          (ID (format-time-string "%Y%m%dT%H%M%S"))
          (new-title (concat ID "--" title))
@@ -389,5 +389,31 @@ it can be passed in POS."
   (shell-command "shortcuts run \"OCR Selected Area\"")
   (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
 
+;; Apple Notes
+(defun create-apple-note (note-title note-content)
+  "Create a new Apple Note with the given title and content."
+  (let ((script
+         (format
+          "set noteTitle to %S
+           set noteContent to %S
+           tell application \"Notes\" to tell account \"iCloud\"
+               set theNote to make new note at folder \"Notes\" with properties {name:noteTitle, body:noteContent}
+           end tell
+           activate application \"Notes\""
+          note-title note-content)))
+    (start-process "AppleScript" nil "osascript" "-e" script)))
+
+(defun prompt-for-note-title ()
+  "Prompt the user to enter the title for the note using minibuffer."
+  (read-string "Enter note title: "))
+
+(defun create-apple-note-with-title ()
+  "Create a new Apple Note with a title provided by the user."
+  (interactive)
+  (let* ((title (prompt-for-note-title))
+         (content (if (region-active-p)
+                      (buffer-substring-no-properties (region-beginning) (region-end))
+                    "")))
+    (create-apple-note title content)))
 (provide 'init-note)
 ;;; init-note.el ends here.
