@@ -250,5 +250,57 @@
 
 (add-hook 'org-clock-out-hook #'my/org-clock-to-calendar)
 
+(defun org-headline-contains-clock-info ()
+  "Check if the current headline contains clock information."
+  (save-excursion
+    (org-back-to-heading t)
+    (let ((end (save-excursion (outline-next-heading) (point)))
+          (clock-regexp org-clock-line-re))
+      (re-search-forward clock-regexp end t))))
+
+(defun my/done-task-to-calendar ()
+  (interactive)
+  (let* ((timestamp (org-element-map (org-element-at-point) 'headline
+					  (lambda (headline)
+						(org-element-property :closed headline))
+					  nil
+					  t))
+		 (state (org-element-property :todo-type (org-element-at-point)))
+		 (start (format "%s %s %s %s:%s"
+						(org-element-property :month-start timestamp)
+						(org-element-property :day-start timestamp)
+						(org-element-property :year-start timestamp)
+						(org-element-property :hour-start timestamp)
+						(org-element-property :minute-start timestamp)))
+		 (headline (concat
+					(org-element-property :todo-keyword (org-element-at-point))
+					" "
+					(org-element-property :raw-value (org-element-at-point))))
+		 (apple-script (format
+						"tell application \"Calendar\"
+                             tell calendar \"Clocking\"
+                               set theCurrentDate to date \"%s\"
+                               set EndDate to theCurrentDate + 2
+
+                               make new event at end with properties {description:\"\", summary:\"%s\", start date:theCurrentDate, end date:EndDate}
+
+                             end tell
+                             reload calendars
+                           end tell"
+						start headline)))
+	(unless (featurep 'async)
+	  (require 'async))
+	(when (and (eq state 'done)
+			   (not (org-headline-contains-clock-info)))
+	  (async-start
+       `(lambda ()
+          (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
+       (lambda (_)
+		 (message "Async execution completed."))))))
+
+(add-hook 'org-after-todo-state-change-hook #'my/done-task-to-calendar)
+
+
+
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.
