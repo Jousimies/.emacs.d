@@ -56,20 +56,20 @@
   :load-path "~/.emacs.d/packages/snow.el/"
   :commands snow)
 
-(use-package focus
-  :load-path "packages/Focus/"
-  :hook (prog-mode . focus-mode))
+;; (use-package focus
+;;   :load-path "packages/Focus/"
+;;   :hook (prog-mode . focus-mode))
 
-(use-package zoom
-  :load-path "packages/zoom/"
-  :hook (window-setup . zoom-mode)
-  :config
-  (defun size-callback ()
-	(cond ((> (frame-pixel-width) 1280) '(90 . 0.75))
-          (t                            '(0.5 . 0.5))))
-  (setopt zoom-size #'size-callback)
-  (setopt zoom-ignored-buffer-name-regexps '("^*calc"))
-  (setopt zoom-ignored-major-modes '(telega-root-mode telega-chat-mode)))
+;; (use-package zoom
+;;   :load-path "packages/zoom/"
+;;   :hook (window-setup . zoom-mode)
+;;   :config
+;;   (defun size-callback ()
+;; 	(cond ((> (frame-pixel-width) 1280) '(90 . 0.75))
+;;           (t                            '(0.5 . 0.5))))
+;;   (setopt zoom-size #'size-callback)
+;;   (setopt zoom-ignored-buffer-name-regexps '("^*calc"))
+;;   (setopt zoom-ignored-major-modes '(telega-root-mode telega-chat-mode)))
 
 (defun my/wallpaper-set ()
   (interactive)
