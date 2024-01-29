@@ -72,39 +72,6 @@
   :config
   (setq denote-rename-buffer-format " %t"))
 
-(defvar prot-dired--limit-hist '()
-  "Minibuffer history for `prot-dired-limit-regexp'.")
-
-(defun my/dired-denote-signature-get ()
-  (let* ((file (dired-get-filename))
-         (signature (denote-retrieve-filename-signature file)))
-    (concat "==" signature )))
-
-;;;autoloads
-(defun prot-dired-limit-regexp (regexp omit)
-  "Limit Dired to keep files matching REGEXP, default search with Signature.
-
-With optional OMIT argument as a prefix (\\[universal-argument]),
-exclude files matching REGEXP.
-
-Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
-  (interactive
-   (list
-    (read-regexp
-     (concat "Files "
-             (when current-prefix-arg
-               (propertize "NOT " 'face 'warning))
-             "matching PATTERN" (format " (default: %s)" (my/dired-denote-signature-get)) ": ")
-     (my/dired-denote-signature-get)
-     nil)
-    current-prefix-arg))
-  (dired-mark-files-regexp regexp)
-  (unless omit (dired-toggle-marks))
-  (dired-do-kill-lines))
-
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "/ r") 'prot-dired-limit-regexp))
-
 (defun my/denote-org-extract-subtree-with-signature ()
   (interactive)
   (if-let ((text (org-get-entry))
@@ -173,10 +140,23 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 
 (use-package denote-sort
   :commands denote-sort-dired
+  :bind (:map dired-mode-map
+			  ("/ r" . my/denote-sort-with-sigature))
   :config
-  (defun my/denote-sort-with-sigature ()
-	(interactive)
-	(denote-sort-dired (denote-files-matching-regexp-prompt) 'signature nil))
+  (defun my/denote-signature-retrieve ()
+	(let* ((file (cond ((eq major-mode 'dired-mode) (dired-get-filename))
+					   (t (buffer-file-name)))))
+	  (when file
+		(denote-retrieve-filename-signature file))))
+
+  (defun my/denote-sort-with-sigature (regexp)
+	(interactive (list
+				  (read-regexp
+				   (concat "Files matching PATTERN" (format " (default: %s)" (my/denote-signature-retrieve)) ": ")
+				   (my/denote-signature-retrieve)
+				   nil)))
+	(denote-sort-dired (concat "==" regexp) 'signature nil))
+
   (defun my/denote-sort-with-identifer ()
 	(interactive)
 	(denote-sort-dired (denote-files-matching-regexp-prompt) 'identifier nil))
