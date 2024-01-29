@@ -31,11 +31,11 @@
               (thread-last denote-directory (expand-file-name "term"))
               (thread-last denote-directory (expand-file-name "references")))))
 
-(use-package denote-org-dblock
-  :commands denote-org-dblock-insert-backlinks denote-org-dblock-insert-links)
-
 (use-package denote-org-extras
-  :commands denote-org-extras-extract-org-subtree denote-org-extras-link-to-heading)
+  :commands (denote-org-extras-extract-org-subtree
+			 denote-org-extras-link-to-heading
+			 denote-org-extras-dblock-insert-backlinks
+			 denote-org-extras-dblock-insert-links))
 
 (defun find-file-other-window-no-jump (filename)
   "Find file in other window without jumping to that window."

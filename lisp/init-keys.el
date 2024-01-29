@@ -166,8 +166,8 @@
 	("l" "Link" denote-link :transient nil)
 	("h" "Heading" denote-org-extras-link-to-heading :transient nil)
 	("%" "Links: With Regexp" denote-add-links :transient nil)
-	("d" "Links: DBlock" denote-org-dblock-insert-links :transient nil)
-	("D" "Backlinks: DBlock" denote-org-dblock-insert-backlinks :transient nil)]
+	("d" "Links: DBlock" denote-org-extras-dblock-insert-links :transient nil)
+	("D" "Backlinks: DBlock" denote-org-extras-dblock-insert-backlinks :transient nil)]
    ["Denote Links Roam"
 	("e" "Explore Links" my/denote-find-link-other-window :transient t)
 	("fb" "Find Backlinks" denote-find-backlink :transient nil)
