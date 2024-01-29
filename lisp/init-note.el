@@ -184,9 +184,9 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 	(interactive)
 	(denote-sort-dired (denote-files-matching-regexp-prompt) 'keywords nil))
   (defun my/denote-sort-with-days ()
-  (interactive)
-  (let ((regexp (call-interactively 'my/denote-week-ago)))
-    (denote-sort-dired regexp 'signature nil))))
+	(interactive)
+	(let ((regexp (call-interactively 'my/denote-week-ago)))
+      (denote-sort-dired regexp 'signature nil))))
 
 ;; fliter denote create by days ago
 ;;;###autoload

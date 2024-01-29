@@ -550,18 +550,12 @@
 [submodule "packages/vertico"]
 	path = packages/vertico
 	url = https://github.com/minad/vertico.git
-[submodule "packages/transient-showcase"]
-	path = packages/transient-showcase
-	url = https://github.com/positron-solutions/transient-showcase.git
 [submodule "packages/org-roam-bibtex"]
 	path = packages/org-roam-bibtex
 	url = https://github.com/org-roam/org-roam-bibtex.git
 [submodule "packages/meow"]
 	path = packages/meow
 	url = https://github.com/meow-edit/meow.git
-[submodule "packages/transient"]
-	path = packages/transient
-	url = https://github.com/magit/transient.git
 [submodule "packages/keycast"]
 	path = packages/keycast
 	url = https://github.com/tarsius/keycast.git
