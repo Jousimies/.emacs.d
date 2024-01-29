@@ -133,7 +133,9 @@
 	("/p" "Prompt" denote-sort-dired :transient nil)
 	("/s" "With Sigature" my/denote-sort-with-sigature :transient nil)
 	("/i" "With Identifier" my/denote-sort-with-identifer :transient nil)
-	("/k" "With Keywords" my/denote-sort-with-keywords :transient nil)]
+	("/k" "With Keywords" my/denote-sort-with-keywords :transient nil)
+	("/d" "Days Ago" my/denote-sort-with-days :transient nil)
+	]
    ["Denote Explore"
 	("i" "Info" my/denote-info :transient nil)
 	("t" "BarChart" denote-explore-keywords-barchart :transient t)

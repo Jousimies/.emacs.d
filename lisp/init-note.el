@@ -182,7 +182,54 @@ Restore the buffer with \\<dired-mode-map>`\\[revert-buffer]'."
 	(denote-sort-dired (denote-files-matching-regexp-prompt) 'identifier nil))
   (defun my/denote-sort-with-keywords ()
 	(interactive)
-	(denote-sort-dired (denote-files-matching-regexp-prompt) 'keywords nil)))
+	(denote-sort-dired (denote-files-matching-regexp-prompt) 'keywords nil))
+  (defun my/denote-sort-with-days ()
+  (interactive)
+  (let ((regexp (call-interactively 'my/denote-filter)))
+    (denote-sort-dired regexp 'signature nil))))
+
+;; fliter denote create by days ago
+;;;###autoload
+(defun my/denote-filter (&optional last)
+  (interactive (list (read-number "Days Ago: " 7)))
+  (let* ((current-time (current-time))
+		 (current-date (format-time-string "%Y-%m-%d" current-time))
+		 (ago-date-time (time-subtract current-time (days-to-time last)))
+		 (ago-date (format-time-string "%Y-%m-%d" ago-date-time))
+		 (cur-year (substring current-date 0 4))
+		 (cur-month (substring current-date 5 7))
+		 (cur-day (substring current-date 8 10))
+		 (ago-year (substring ago-date 0 4))
+		 (ago-month (substring ago-date 5 7))
+		 (ago-day (substring ago-date 8 10))
+		 (cur-day-d1 (/ (string-to-number cur-day) 10))
+		 (cur-day-d2 (% (string-to-number cur-day) 10))
+		 (ago-day-d1 (/ (string-to-number ago-day) 10))
+		 (ago-day-d2 (% (string-to-number ago-day) 10)))
+	(if (string= cur-year ago-year)
+		(if (string= cur-month ago-month)
+			(if (= cur-day-d1 ago-day-d1)
+				(format "\\(%s%s%s[%s-%s]\\)"
+						cur-year cur-month cur-day-d1
+						ago-day-d2 cur-day-d2)
+			  (format "%s%s\\(%s[%s-9]\\|%s[0-%s]\\)"
+					  cur-year cur-month ago-day-d1
+					  ago-day-d2 cur-day-d1 cur-day-d2))
+		  (cond ((< cur-day-d1 ago-day-d1)
+				 (format "\\(%s\\)\\(%s%s[%s-9]\\|3[0-1]\\|%s%s[0-%s]\\)"
+						 cur-year ago-month ago-day-d1 ago-day-d2
+						 cur-month cur-day-d1 cur-day-d2))
+				(t
+				 (format "\\(%s\\)\\(%s%s[%s-9]\\|%s%s[0-%s]\\)"
+						 cur-year ago-month ago-day-d1 ago-day-d2
+						 cur-month cur-day-d1 cur-day-d2))))
+	  (if (= ago-day-d1 3)
+		  (format "\\(%s123[%s-1]\\|%s010[0-%s]\\)"
+				  ago-year ago-day-d2
+				  cur-year cur-day-d2)
+		(format "\\(%s12%s[%s-9]\\|%s123[0-1]\\|%s01%s[0-%s]\\)"
+				ago-year ago-day-d1 ago-day-d2
+				ago-year cur-year cur-day-d1 cur-day-d2)))))
 
 (defun my/literature-entry (url title keywords file-path file-new-path)
   "Save a literature entry and add it to the 'literature' denote database."
@@ -415,5 +462,6 @@ it can be passed in POS."
                       (buffer-substring-no-properties (region-beginning) (region-end))
                     "")))
     (create-apple-note title content)))
+
 (provide 'init-note)
 ;;; init-note.el ends here.
