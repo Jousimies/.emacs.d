@@ -29,22 +29,6 @@
         bibtex-autokey-titlewords-stretch 1
         bibtex-autokey-titleword-length 5))
 
-(use-package ebib
-  :load-path "packages/ebib/"
-  :bind ("<f2>" . ebib)
-  :config
-  (setq ebib-preload-bib-files my/reference-lists)
-  (setq ebib-keywords (concat my-galaxy "/bibtexs/keywords.txt"))
-  (setq ebib-file-search-dirs `(,(expand-file-name "PDF/" my-galaxy)))
-  (setq ebib-notes-directory (concat my-galaxy "/references"))
-  (setq ebib-filters-default-file (concat my-galaxy "/bibtexs/ebib-filters"))
-  (setq ebib-reading-list-file (concat my-galaxy "/bibtexs/reading_list.org"))
-  (setq ebib-keywords-field-keep-sorted t)
-  (setq ebib-keywords-file-save-on-exit 'always)
-  (setq ebib-index-columns
-        '(("Entry Key" 30 t) ("Note" 1 nil) ("Year" 6 t) ("Title" 50 t)))
-  (setq ebib-file-associations '(("ps" . "gv"))))
-
 (use-package citar
   :load-path "packages/citar/"
   :commands citar-open-files citar-open citar-create-note

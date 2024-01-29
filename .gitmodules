@@ -133,9 +133,6 @@
 [submodule "packages/embark"]
 	path = packages/embark
 	url = https://github.com/oantolin/embark.git
-[submodule "packages/ebib"]
-	path = packages/ebib
-	url = https://github.com/joostkremers/ebib.git
 [submodule "packages/scihub.el"]
 	path = packages/scihub.el
 	url = https://github.com/emacs-pe/scihub.el.git
