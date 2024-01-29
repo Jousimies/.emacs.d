@@ -72,11 +72,13 @@
   (require 'ef-themes)
 
   (defun my/apply-theme (appearance)
-    "Load theme, taking current system APPEARANCE into consideration."
-    (mapc #'disable-theme custom-enabled-themes)
-    (pcase appearance
-      ('light (load-theme 'ef-maris-light t))
-      ('dark (load-theme 'ef-maris-dark t))))
+	"Load theme, taking current system APPEARANCE into consideration."
+	(mapc #'disable-theme custom-enabled-themes)
+	(let* ((themes (if (eq appearance 'light)
+                       ef-themes-light-themes
+					 ef-themes-dark-themes))
+           (theme (elt themes (random (length themes)))))
+      (load-theme theme t)))
 
   (add-hook 'ns-system-appearance-change-functions #'my/apply-theme))
 
