@@ -47,7 +47,8 @@
         (Github . "https://github.com/search?q=")
         (Youtube . "http://www.youtube.com/results?aq=f&oq=&search_query=")
 		(Bilibili . "https://search.bilibili.com/all?keyword=")
-		(WikiPedia_en . "https://en.wikipedia.org/w/index.php?search=")))
+		(WikiPedia_en . "https://en.wikipedia.org/w/index.php?search=")
+		(Annas-Archvie . "https://annas-archive.org/search?q=")))
 
 ;;;###autoload
 (defun my/search ()
