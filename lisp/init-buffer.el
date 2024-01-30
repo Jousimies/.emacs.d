@@ -72,8 +72,7 @@
     (defun tab-bar-format-persp ()
       (setq global-mode-string (delete '(:eval (persp-mode-line)) global-mode-string))
       `((global menu-item ,(format-mode-line (persp-mode-line)) ignore)))
-	(setopt tab-bar-format '(tab-bar-format-menu-bar
-							 tab-bar-format-persp
+	(setopt tab-bar-format '(tab-bar-format-persp
 							 tab-bar-format-tabs
 							 tab-bar-separator
 							 tab-bar-format-align-right

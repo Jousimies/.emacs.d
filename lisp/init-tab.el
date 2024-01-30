@@ -37,7 +37,7 @@
 
 (defvar my/tab-bar-right-string)
 (defun my/tab-bar-time-update (&rest rest)
-  (propertize (format-time-string "[%Y-%m-%d %a %H:%M]") 'face `(:inherit bold)))
+  (format-time-string "%a %b %d %H:%M "))
 
 (setq my/tab-bar-right-string '((:eval (my/tab-bar-time-update))))
 
@@ -47,8 +47,7 @@
 (add-hook 'after-init-hook 'display-battery-mode)
 (add-to-list 'my/tab-bar-right-string 'battery-mode-line-string t)
 
-(setopt tab-bar-format '(tab-bar-format-menu-bar
-						 tab-bar-format-tabs
+(setopt tab-bar-format '(tab-bar-format-tabs
 						 tab-bar-separator
 						 tab-bar-format-align-right
 						 my/tab-bar-format-right))
