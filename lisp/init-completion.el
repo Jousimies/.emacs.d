@@ -240,8 +240,9 @@
   (setq which-key-popup-type 'minibuffer)
   (setq which-key-sort-order #'which-key-prefix-then-key-order)
   ;; (setq which-key-show-early-on-C-h t)
-  (setq which-key-idle-delay 0)
-  (setq which-key-idle-secondary-delay 0.05))
+  ;; (setq which-key-idle-delay 0)
+  ;; (setq which-key-idle-secondary-delay 0.05)
+  )
 
 
 (provide 'init-completion)

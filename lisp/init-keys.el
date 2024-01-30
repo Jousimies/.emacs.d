@@ -41,51 +41,39 @@
       (kill-new file-info)
       (message "Copied %s: %s" info-type file-info))))
 
-(transient-define-prefix my/file-folder-menu ()
-  "Files and Folders manipulation."
-  ["All about Open a Specific File.\n"
-   ["Find File"
-	("w" "Other Window" find-file-other-window :transient nil)
-	("t" "Other Tab" find-file-other-tab :transient nil)
-	("r" "Rencent file" consult-recent-file :transient nil)
-	("f" "At Point" find-file-at-point :transient nil)
-	("l" "Eww at Point" my/open-link-with-eww :transient nil)]
-   ["Macos"
-	("F" "Finder" macos-reveal-in-finder :transient nil)
-	("s" "Share" macos-share :transient nil)
-	]
-   ["Misc"
-	("a" "Local Attachment" my/consult-find-attach :transient nil)
-	("i" "Copy File Info" my/copy-file-info :transient nil)
-	("d" "Consult Dir" consult-dir :transient nil)]
-   ])
+(defvar-keymap my/file-prefix-map
+  :doc "Prefix map for file."
+  "f" #'find-file
+  "w" #'find-file-other-window
+  "j" #'find-file-other-window-no-jump
+  "p" #'find-file-at-point
+  "t" #'find-file-other-tab
+  "r" #'consult-recent-file
+  "e" #'my/open-link-with-eww
+  "F" #'macos-reveal-in-finder
+  "s" #'macos-share
+  "a" #'my/consult-find-attach
+  "i" #'my/copy-file-info
+  "d" #'consult-dir)
 
-(global-set-key (kbd "s-f") #'my/file-folder-menu)
+(keymap-set global-map "s-f" my/file-prefix-map)
+(global-set-key (kbd "C-z") #'repeat)
 
-(transient-define-prefix my/wfb-menu ()
-  "WFB Stands for Window, Frame, Buffer."
-  [["Winner"
-	("u" "Undo" winner-undo :transient t)
-	("r" "Redo" winner-redo :transient t)]
-   ["Windmove"
-	("k" "UP" windmove-up :transient nil)
-	("j" "Down" windmove-down :transient nil)
-	("h" "Left" windmove-left :transient nil)
-	("l" "Right" windmove-right :transient nil)]
-   ["Window"
-	("0" "Delete" delete-window :transient nil)
-	("1" "Delete Other" delete-other-windows :transient nil)
-	("2" "Split Below" split-window-below :transient nil)
-	("3" "Split Right" split-window-right :transient nil)
-	]
-   ["Buffer"
-	("p" "Prev Buffer" previous-buffer :transient nil)
-	("n" "Next Buffer" next-buffer :transient nil)
-	("d" "Dired sidebar" dired-sidebar-toggle-sidebar :transient nil)
-	("m" "Message" switch-to-message :transient nil)
-	("s" "Scratch" scratch-buffer :transient nil)]])
+(defvar-keymap my/window-prefix-map
+  :doc "Keymap for windows"
+  "u" #'winner-undo
+  "r" #'winner-redo
+  "h" #'windmove-left
+  "l" #'windmove-right
+  "j" #'windmove-down
+  "k" #'windmove-up
+  "p" #'previous-buffer
+  "n" #'next-buffer
+  "d" #'dired-sidebar-toggle-sidebar
+  "m" #'switch-to-message
+  "s" #'scratch-buffer)
 
-(global-set-key (kbd "M-o") #'my/wfb-menu)
+(keymap-set global-map "M-o" my/window-prefix-map)
 
 (transient-define-prefix my/bibtex-menu ()
   "References"
@@ -180,8 +168,6 @@
 
 (transient-define-prefix my/agenda-menu ()
   "GTD"
-  [["Pomodoro"
-	("p" "Pomodoro" pomm-third-time :transient nil)]]
   [["Agenda"
 	("a" "Agenda" org-agenda :transient nil)
 	("b" "Book" my/book-agenda :transient nil)
@@ -274,15 +260,14 @@
 
 (global-set-key (kbd "M-s-a") #'my/application-menu)
 
-(transient-define-prefix my/org-menu ()
-  "Org"
-  [["Clock"
-	("i" "Clock In" org-clock-in :transient nil)
-	("o" "Clock Out" org-clock-out :transient nil)
-	("g" "Clock goto" org-clock-goto :transient nil)
-	]])
+(defvar-keymap my/org-prefix-map
+  :doc "keymap for org."
+  "i" #'org-clock-in
+  "o" #'org-clock-out
+  "g" #'org-clock-goto
+  "p" #'pomm-third-time)
 
-(global-set-key (kbd "s-o") #'my/org-menu)
+(keymap-set global-map "s-o" my/org-prefix-map)
 
 (provide 'init-keys)
 ;;; init-keys.el ends here
