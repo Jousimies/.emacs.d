@@ -297,13 +297,12 @@
                  (shell-command-to-string "readlink -f $(brew --prefix plantuml)"))
                 "/libexec/plantuml.jar")))
 
-(defun org-export-docx ()
-  "Convert org to docx."
-  (interactive)
-  (let ((docx-file (concat (file-name-sans-extension (buffer-file-name)) ".docx"))
-        (template-file (expand-file-name "template/template.docx" user-emacs-directory)))
-    (shell-command (format "pandoc %s -o %s --reference-doc=%s" (buffer-file-name) docx-file template-file))
-    (message "Convert finish: %s" docx-file)))
+(defun org-export-docx (input &optional csl)
+  (interactive "FInput file: \nFcsl file (Default is chinese-gb7714-2005-numeric): ")
+  (let* ((base (file-name-sans-extension input))
+		 (csl (or (expand-file-name "csl/chinese-gb7714-2005-numeric.csl" user-emacs-directory)))
+		 (output (concat base ".docx")))
+	(shell-command (format "pandoc %s -o %s --citeproc --csl %s" input output csl))))
 
 ;; https://www.reddit.com/r/emacs/comments/yjobc2/comment/iur16c7/
 (defun nf/parse-headline (x)
