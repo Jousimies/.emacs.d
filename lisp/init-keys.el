@@ -25,6 +25,8 @@
 
 ;;; Code:
 
+(global-set-key (kbd "C-s-k") #'kill-paragraph)
+
 (global-set-key (kbd "s-q") #'restart-emacs)
 
 (defun my/copy-file-info (info-type)

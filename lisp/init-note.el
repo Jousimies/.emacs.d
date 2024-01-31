@@ -141,7 +141,7 @@
 (use-package denote-sort
   :commands denote-sort-dired
   :bind (:map dired-mode-map
-			  ("/ r" . my/denote-sort-with-sigature))
+			  ("/ s" . my/denote-sort-with-sigature))
   :config
   (defun my/denote-signature-retrieve ()
 	(let* ((file (cond ((eq major-mode 'dired-mode) (dired-get-filename))
