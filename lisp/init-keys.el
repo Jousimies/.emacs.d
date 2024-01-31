@@ -134,6 +134,7 @@
    ["Misc"
 	("M" "MindMap" plantuml-org-to-mindmap-open :transient nil)
 	("w" "WBS" plantuml-org-to-mindmap-open :transient nil)
+	("W" "Export to Docx" org-export-docx :transient nil)
 	("a" "Drawio Add" org-drawio-add :transient nil)
 	("o" "Drawio Open" org-drawio-open :transient nil)
 	("SPC" "OCR" my/ocr :transient nil)
