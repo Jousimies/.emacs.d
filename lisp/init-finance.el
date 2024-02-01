@@ -55,7 +55,7 @@
 
 (defun my/bean-generate (file)
   (interactive (list (read-file-name "CSV transaction:"
-                                     my/finance-source-data nil nil ".csv")))
+                                     my/finance-source-data nil nil)))
   (let* ((file (if (string-match-p "alipay" file) file (my/bean-rename-source file)))
 		 (prefix (if (string-match-p "alipay" file) "alipay" "wechat"))
 		 (config (concat DEG/config-dir prefix ".yaml"))
