@@ -53,9 +53,13 @@
       (rename-file file new-file-path)
       new-file-path)))
 
+;; According account data get from alipy and wechat, the csv file name has similiar pattern.
+;; Generaly, I get data at the first day of month, the csv file will as `20240101' or `20240201'.
+(defvar finance-source-regexp (concat (format-time-string "%Y") "0[1-2]01"))
+
 (defun my/bean-generate (file)
   (interactive (list (read-file-name "CSV transaction:"
-                                     my/finance-source-data nil nil)))
+                                     my/finance-source-data nil nil finance-source-regexp)))
   (let* ((file (if (string-match-p "alipay" file) file (my/bean-rename-source file)))
 		 (prefix (if (string-match-p "alipay" file) "alipay" "wechat"))
 		 (config (concat DEG/config-dir prefix ".yaml"))
