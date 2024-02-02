@@ -69,8 +69,6 @@
 (set-face-attribute 'default nil :family "Iosevka" :height 160)
 (set-face-attribute 'variable-pitch nil :family "Source Han Sans SC" :height 160 :weight 'regular)
 (set-face-attribute 'fixed-pitch nil :family "Iosevka Fixed" :height 160)
-(with-eval-after-load 'org
-  (set-face-attribute 'org-table nil :family "Sarasa Mono SC"))
 
 (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend)
 

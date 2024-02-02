@@ -28,7 +28,7 @@
 		  org-lowest-priority ?D
 		  org-priority-default ?C
 		  org-columns-default-format "%50ITEM %TODO %3PRIORITY %TAGS")
-
+  (set-face-attribute 'org-table nil :family "Sarasa Mono SC")
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2)))
 
