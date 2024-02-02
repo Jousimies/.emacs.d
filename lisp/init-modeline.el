@@ -325,6 +325,8 @@ Specific to the current window's mode line.")
                 (:eval (with-eval-after-load 'org-clock
                          my/modeline-clock-info))
                 my/modeline-timer
+				(:eval (when which-function-mode
+						which-func-format))
 				my/modeline-sys
 				" "
                 my/modeline-major-mode
