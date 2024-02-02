@@ -120,12 +120,11 @@
   (org-edna-use-inheritance t)
   (org-gtd-areas-of-focus '(
 							"Basic Life" ;衣食住行方面的基本需求
-							"Personal Development" "Reading" "Skill" "Finances"	;个人成长方面
+							"Reading" "Skill" "Finances"	;个人成长方面
 							"Hobbies" "Travel" "Amusement" ;Life for amusement and entertainment
 							"Health" "Fitness" "Mental" "Spirituality"			  ;Health
-							"Family" "Spouse" "Kids" "Parents" "Sister" "Relative" ;Family
-							"Job" "Professional" "Social"						  ;Work
-							"Society"
+							"Spouse" "Kids" "Parents" "Sister" "Relative" ;Family
+							"Work" "Professional" "Social"						  ;Work
 							))
   (org-gtd-engage-prefix-width 24)
   (org-gtd-clarify-show-horizons 'right)
