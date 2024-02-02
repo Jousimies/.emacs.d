@@ -38,6 +38,7 @@
 
 (use-package reftex
   :commands turn-on-reftex
+  :bind ([remap reftex-citation] . citar-insert-citation)
   :config
   (setq reftex-toc-follow-mode t)
   (setq reftex-toc-split-windows-horizontally t)

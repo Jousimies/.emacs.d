@@ -12,6 +12,7 @@
 (with-eval-after-load 'oc
   (setq org-cite-global-bibliography my/reference-lists)
   (require 'citar-org)
+  (define-key org-mode-map [remap org-cite-insert] #'citar-insert-citation)
   (with-eval-after-load 'citar
 	(setq org-cite-insert-processor 'citar)
 	(setq org-cite-follow-processor 'citar)
@@ -31,7 +32,7 @@
 
 (use-package citar
   :load-path "packages/citar/"
-  :commands citar-open-files citar-open citar-create-note
+  :commands citar-open-files citar-open citar-create-note citar-insert-citation
   :config
   (setq citar-indicator-files (citar-indicator-create
 							   :symbol (nerd-icons-faicon "nf-fa-file_pdf_o"

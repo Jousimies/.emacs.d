@@ -93,8 +93,7 @@
 	("R" "Open References" citar-denote-open-reference-entry :transient nil)
 	("f" "Find Citation" citar-denote-find-citation :transient nil)]
    ["Citation"
-	("i" "Insert" org-cite-insert :transient t)
-	("c" "Insert: Tex" reftex-citation :transient t)]
+	("i" "Insert" citar-insert-citation :transient t)]
    ["Export"
 	("1" "Local Bibtex" citar-export-local-bib-file :transient nil)
 	("2" "Bibtex to Endnote" my/bib2end :transient nil)]])
