@@ -25,9 +25,6 @@
 
 ;;; Code:
 
-(global-set-key (kbd "C-s-k") #'kill-paragraph)
-
-(global-set-key (kbd "s-q") #'restart-emacs)
 
 (defun my/copy-file-info (info-type)
   (interactive (list (completing-read "Copy file info (base/name/path/directory): "
@@ -58,9 +55,6 @@
   "i" #'my/copy-file-info
   "d" #'consult-dir)
 
-(keymap-set global-map "s-f" my/file-prefix-map)
-(global-set-key (kbd "C-z") #'repeat)
-
 (defvar-keymap my/window-prefix-map
   :doc "Keymap for windows"
   "u" #'winner-undo
@@ -75,7 +69,24 @@
   "m" #'switch-to-message
   "s" #'scratch-buffer)
 
-(keymap-set global-map "M-o" my/window-prefix-map)
+(transient-define-prefix my/edit-menu ()
+  "Edit"
+  [["Transpose"
+	("C" "Chars" transpose-chars :transient nil)
+	("w" "Words" transpose-words :transient nil)
+	("L" "Lines" transpose-lines :transient nil)
+	("s" "sexps" transpose-sexps :transient nil)]
+   ["Word"
+	("u" "upcase" upcase-word :transient t)
+	("l" "downcase" downcase-word :transient t)
+	("c" "Capitalize" capitalize-word :transient t)
+	("r" "Capitalize Region" capitalize-region :transient t)]
+   ["Surrond"
+	("i" "Insert" surround-insert :transient t)
+	("x" "Change" surround-change :transient nil)
+	("d" "Delete" surround-delete :transient t)
+	("C-=" "Expand" er/expand-region :transient t)
+	]])
 
 (transient-define-prefix my/bibtex-menu ()
   "References"
@@ -97,8 +108,6 @@
    ["Export"
 	("1" "Local Bibtex" citar-export-local-bib-file :transient nil)
 	("2" "Bibtex to Endnote" my/bib2end :transient nil)]])
-
-(global-set-key (kbd "s-b") #'my/bibtex-menu)
 
 (transient-define-prefix my/note-menu ()
   "Note"
@@ -141,8 +150,6 @@
 	("SPC" "OCR" my/ocr :transient nil)
 	]])
 
-(global-set-key (kbd "s-n") #'my/note-menu)
-
 (transient-define-prefix my/links-menu ()
   "Links"
   ["Denote Backlinks"
@@ -165,8 +172,6 @@
    ["Misc"
 	("g" "Grab: Safari" my/link-grab :transient nil)
 	("x" "Remove" jf/org-link-remove-link :transient nil)]])
-
-(global-set-key (kbd "s-l") #'my/links-menu)
 
 (transient-define-prefix my/agenda-menu ()
   "GTD"
@@ -202,8 +207,6 @@
    [("w" "Waited: Incubated" org-gtd-review-stuck-incubated-items :transient t)]
    [("h" "Habit" org-gtd-review-stuck-habit-items :transient t)]])
 
-(global-set-key (kbd "<f12>") #'my/agenda-menu)
-
 (transient-define-prefix my/dict-menu ()
   "Dictionary"
   [["SDCV"
@@ -235,8 +238,6 @@
 	("k" "Known Word" dictionary-overlay-mark-word-known :transient nil)
 	("K" "Unknow Word" dictionary-overlay-mark-word-unknown :transient nil)]])
 
-(global-set-key (kbd "M-s-t") #'my/dict-menu)
-
 (transient-define-prefix my/pass-menu ()
   "Pass"
   ["Password"
@@ -260,16 +261,34 @@
    [("c" "Calendar" calendar :transient nil)]
    [("r" "Calculator" calc :transient nil)]])
 
-(global-set-key (kbd "M-s-a") #'my/application-menu)
-
 (defvar-keymap my/org-prefix-map
   :doc "keymap for org."
   "i" #'org-clock-in
   "o" #'org-clock-out
   "g" #'org-clock-goto
+  "I" #'org-toggle-inline-images
+  "l" #'org-toggle-link-display
   "p" #'pomm-third-time)
 
+;; defvar-keymap
+(keymap-set global-map "M-o" my/window-prefix-map)
 (keymap-set global-map "s-o" my/org-prefix-map)
+(keymap-set global-map "s-f" my/file-prefix-map)
+
+;; transient
+(global-set-key (kbd "s-a") #'my/application-menu)
+(global-set-key (kbd "s-b") #'my/bibtex-menu)
+(global-set-key (kbd "s-e") #'my/edit-menu)
+(global-set-key (kbd "s-n") #'my/note-menu)
+(global-set-key (kbd "s-l") #'my/links-menu)
+
+(global-set-key (kbd "<f12>") #'my/agenda-menu)
+(global-set-key (kbd "C-t") #'my/dict-menu)
+
+;; functions
+(global-set-key (kbd "C-s-k") #'kill-paragraph)
+(global-set-key (kbd "s-q") #'restart-emacs)
+(global-set-key (kbd "C-z") #'repeat)
 
 (provide 'init-keys)
 ;;; init-keys.el ends here
