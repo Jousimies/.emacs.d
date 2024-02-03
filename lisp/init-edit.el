@@ -261,7 +261,7 @@
 
 (use-package surround
   :load-path "packages/surround/"
-  :bind-keymap ("M-'" . surround-keymap))
+  :commands surround-delete surround-change surround-insert)
 
 ;; Make region read-only or writable
 (defun make-region-read-only (beg end)
