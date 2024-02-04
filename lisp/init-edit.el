@@ -276,5 +276,27 @@
 	(with-silent-modifications
 	  (remove-text-properties beg end '(read-only t)))))
 
+;; https://github.com/takeokunn/.emacs.d/blob/main/index.org
+(defun my/move-line (arg)
+  (interactive)
+  (let ((col (current-column)))
+    (unless (eq col 0)
+      (move-to-column 0))
+    (save-excursion
+      (forward-line)
+      (transpose-lines arg))
+    (forward-line arg)))
+
+(defun my/move-line-down ()
+  (interactive)
+  (my/move-line 1))
+
+(defun my/move-line-up ()
+  (interactive)
+  (my/move-line -1))
+
+(global-set-key (kbd "M-P") #'my/move-line-up)
+(global-set-key (kbd "M-N") #'my/move-line-down)
+
 (provide 'init-edit)
 ;;; init-edit.el ends here
