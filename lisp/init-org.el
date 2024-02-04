@@ -245,9 +245,14 @@
         (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
           (math-preview-all))))))
 
+(defun my/org-image-caption-format (src caption)
+  (insert (format "#+NAME: fig:%s\n#+CAPTION: %s\n" caption caption))
+  (insert "#+ATTR_ORG: :width 500px\n#+ATTR_LATEX: :width 10cm :placement [!htpb]\n#+ATTR_HTML: :width 600px\n")
+  (org-insert-link nil (concat "file:" src) ""))
+
 ;; https://emacs-china.org/t/topic/6601
 ;; pngpaste or below applescript
-(defun org-insert-image (name)
+(defun my/org-insert-image-from-clipboard (name)
   "insert a image from clipboard"
   (interactive "sName: ")
   (let* ((path (expand-file-name "pictures/" my-galaxy))
@@ -258,9 +263,12 @@
 					 "set the_file to open for access (POSIX file the_path as string) with write permission \n"
 					 "write png_data to the_file \n"
 					 "close access the_file"))
-	(insert (format "#+NAME: fig:%s\n#+CAPTION: %s\n" name name))
-	(insert "#+ATTR_ORG: :width 500px\n#+ATTR_LATEX: :width 10cm :placement [!htpb]\n#+ATTR_HTML: :width 600px\n")
-	(org-insert-link nil (concat "file:" image-file) "")))
+	(my/org-image-caption-format image-file name)))
+
+(defun my/org-insert-local-image (src caption)
+  (interactive (list (read-file-name "images to include: " my-pictures)
+					 (read-string "Caption: ")))
+  (my/org-image-caption-format src caption))
 
 (defun clipboard-contains-png-p ()
   "Check if the clipboard contains PNG data."
@@ -269,14 +277,13 @@
 				 "set clipboardType to (clipboard info for clipboardData) as string\n"
 				 "if clipboardType contains \"PNG\" then\n"
 				 "return \"true\"\n"
-				 "end if\n"
-				 )))
+				 "end if\n")))
 	(string-match "true" (shell-command-to-string (concat "osascript -e " (shell-quote-argument script))))))
 
 (defun my/yank ()
   (interactive)
   (if (clipboard-contains-png-p)
-      (call-interactively 'org-insert-image)
+      (call-interactively 'my/org-insert-image-from-clipboard)
     (cond ((eq major-mode 'vterm-mode) (term-paste))
           (t (yank)))))
 

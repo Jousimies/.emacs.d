@@ -105,7 +105,7 @@
 (defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
   "The source folder of my blog.")
 
-(defvar my-pictures (expand-file-name "pictures" my-galaxy)
+(defvar my-pictures (expand-file-name "pictures/" my-galaxy)
   "The folder save pictures.")
 
 (defvar my-web_archive (expand-file-name "web_archive/" my-galaxy)
