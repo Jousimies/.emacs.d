@@ -268,7 +268,8 @@
   "g" #'org-clock-goto
   "I" #'org-toggle-inline-images
   "l" #'org-toggle-link-display
-  "p" #'pomm-third-time)
+  "p" #'pomm-third-time
+  "s-i" #'my/org-insert-local-image)
 
 ;; defvar-keymap
 (keymap-set global-map "M-o" my/window-prefix-map)
