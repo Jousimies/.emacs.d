@@ -130,9 +130,11 @@
    ["Denote Sort"
 	("/p" "Prompt" denote-sort-dired :transient nil)
 	("/s" "With Sigature" my/denote-sort-with-sigature :transient nil)
+	("/1" "Sigature LV1" my/denote-sort-sigature-lv1 :transient nil)
+	("/2" "Sigature LV2" my/denote-sort-sigature-lv2 :transient nil)
 	("/i" "With Identifier" my/denote-sort-with-identifer :transient nil)
 	("/k" "With Keywords" my/denote-sort-with-keywords :transient nil)
-	("/d" "Days Ago" my/denote-sort-with-days :transient nil)
+	("/d" "Week Ago" my/denote-sort-with-days :transient nil)
 	]
    ["Denote Explore"
 	("i" "Info" my/denote-info :transient nil)

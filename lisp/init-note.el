@@ -160,9 +160,11 @@
   (defun my/denote-sort-with-identifer ()
 	(interactive)
 	(denote-sort-dired (denote-files-matching-regexp-prompt) 'identifier nil))
+
   (defun my/denote-sort-with-keywords ()
 	(interactive)
 	(denote-sort-dired (denote-files-matching-regexp-prompt) 'keywords nil))
+
   (defun my/denote-sort-with-days ()
 	(interactive)
 	(let ((regexp (call-interactively 'my/denote-week-ago)))
@@ -210,6 +212,24 @@
 		(format "\\(%s12%s[%s-9]\\|%s123[0-1]\\|%s01%s[0-%s]\\)"
 				ago-year ago-day-d1 ago-day-d2
 				ago-year cur-year cur-day-d1 cur-day-d2)))))
+
+(defun my/denote-sort-sigature-lv1 ()
+  (interactive)
+  (let ((regexp (call-interactively 'my/denote-sort-lv-1)))
+    (denote-sort-dired regexp 'signature nil)))
+
+(defun my/denote-sort-sigature-lv2 ()
+  (interactive)
+  (let ((regexp (call-interactively 'my/denote-sort-lv-2)))
+    (denote-sort-dired regexp 'signature nil)))
+
+(defun my/denote-sort-lv-2 (lv)
+  (interactive "nInput the Level of Signature: ")
+  (format "\\(==%s[a-z]-\\)" lv))
+
+(defun my/denote-sort-lv-1 ()
+  (interactive)
+  (format "\\(==[0-9]-\\)"))
 
 (defun my/literature-entry (url title keywords file-path file-new-path)
   "Save a literature entry and add it to the 'literature' denote database."
@@ -279,7 +299,11 @@
 			 denote-explore-count-keywords
 			 denote-explore-keywords-barchart
 			 denote-explore-identify-duplicate-identifiers
-			 denote-explore-rename-keyword))
+			 denote-explore-rename-keyword)
+  :config
+  (setq denote-explore-network-filename (expand-file-name "mindmap/denote-network.html" my-galaxy))
+  (setq denote-explore-json-edges-filename (expand-file-name "denote-edges.json" cache-directory))
+  (setq denote-explore-json-vertices-filename (expand-file-name "denote-vertices.json" cache-directory)))
 ;;;###autoload
 (defun my/denote-info ()
   "Count number of Denote text files,keywords and attachments."
