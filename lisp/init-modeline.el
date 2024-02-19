@@ -73,6 +73,15 @@
 (defvar-local my/modeline-file-name
     '(:eval (propertize (my/modeline-file-name) 'face 'bold)))
 
+;; denote
+(defun get-last-directory ()
+  "Return the last directory name in the given PATH."
+  (upcase (file-name-nondirectory (directory-file-name (file-name-directory (buffer-file-name))))))
+
+(defvar-local my/modeline-denote
+	'(:eval (when (denote-file-is-note-p (buffer-file-name))
+			  (propertize (concat " " (get-last-directory) " ") 'face `(:inverse-video t)))))
+
 ;; Readonly Mode
 (defvar-local my/modeline-buffer-readonly
     '(:eval (when buffer-read-only
@@ -190,7 +199,6 @@
                   (propertize (my/modeline--pdf-page) 'face font-lock-string-face)
 				(propertize (format " %%l:%%c/%d " (line-number-at-pos (point-max))) 'face nil)))))
 
-
 ;; Pomodoro
 (defvar org-timer-countdown-timer nil)
 (defun my/modeline--timer ()
@@ -302,19 +310,21 @@ Specific to the current window's mode line.")
                      my/modeline-image-info
                      my/modeline-clock-info
                      my/winum
-					 prot-modeline-eglot))
+					 prot-modeline-eglot
+					 my/modeline-denote))
   (put construct 'risky-local-variable t))
 
 (setq-default mode-line-format
               '("%e"
                 my/winum
 				prot-modeline-narrow
-                "丨"
-                ;; my/modeline-input-method
-				;; "​"
+                "丨"					; 丨 is a Chinese character
                 my/modeline-buffer-readonly
                 my/modeline-buffer-modified
                 my/modeline-file-name
+				" "
+				(:eval (with-eval-after-load 'denote
+						 my/modeline-denote))
                 my/modeline-position
                 my/modeline-image-info
                 my/modeline-kbd-macro
