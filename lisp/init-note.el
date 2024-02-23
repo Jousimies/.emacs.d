@@ -19,6 +19,7 @@
   :hook (dired-mode . denote-dired-mode-in-directories)
   :config
   (setq denote-rename-no-confirm t)
+  (setq denote-prompts '(title keywords subdirectory signature))
   (setq denote-directory (expand-file-name "denote" my-galaxy))
   (setq denote-file-name-slug-functions '((title . denote-sluggify-title)
 										  (signature . denote-sluggify-signature)
@@ -71,30 +72,6 @@
   :hook (org-mode . denote-rename-buffer-mode)
   :config
   (setq denote-rename-buffer-format " %t"))
-
-(defun my/denote-org-extract-subtree-with-signature ()
-  (interactive)
-  (if-let ((text (org-get-entry))
-           (heading (denote-link-ol-get-heading)))
-      (let ((tags (org-get-tags))
-            (date (denote-org-extras--get-heading-date)))
-        (delete-region (org-entry-beginning-position)
-                       (save-excursion (org-end-of-subtree t) (point)))
-        (denote heading tags 'org nil date nil (denote-signature-prompt))
-        (insert text))
-    (user-error "No subtree to extract; aborting")))
-
-(defun my/denote-org-extract-subtree-to-subdirectory ()
-  (interactive)
-  (if-let ((text (org-get-entry))
-           (heading (denote-link-ol-get-heading)))
-      (let ((tags (org-get-tags))
-            (date (denote-org-extras--get-heading-date)))
-        (delete-region (org-entry-beginning-position)
-                       (save-excursion (org-end-of-subtree t) (point)))
-        (denote heading tags 'org (denote-subdirectory-prompt) date)
-        (insert text))
-    (user-error "No subtree to extract; aborting")))
 
 (use-package consult-notes
   :load-path "packages/consult-notes/"

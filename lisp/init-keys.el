@@ -140,8 +140,7 @@
 	("i" "Info" my/denote-info :transient nil)
 	("t" "BarChart" denote-explore-keywords-barchart :transient t)
 	("d" "Duplicate Identifier" denote-explore-identify-duplicate-identifiers :transient nil)
-	("es" "Extract with Signature" my/denote-org-extract-subtree-with-signature :transient nil)
-	("ed" "Extract to Subdirectory" my/denote-org-extract-subtree-to-subdirectory :transient nil)
+	("es" "Extract Subtree" denote-org-extras-extract-org-subtree :transient nil)
 	("eb" "Extract iBooks Annotation" ibooks-annot/extract-annotations-to-note :transient nil)]
    ["Misc"
 	("M" "MindMap" plantuml-org-to-mindmap-open :transient nil)
