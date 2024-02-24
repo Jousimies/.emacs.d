@@ -270,6 +270,7 @@
   "I" #'org-toggle-inline-images
   "l" #'org-toggle-link-display
   "p" #'pomm-third-time
+  "u" #'update-org-attach-property
   "s-i" #'my/org-insert-local-image)
 
 ;; defvar-keymap

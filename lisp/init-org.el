@@ -91,6 +91,16 @@
 
 ;; org-capture
 (with-eval-after-load 'org-attach
+  (defun update-org-attach-property ()
+	"Manually update the ORG_ATTACH_FILES property for the current Org entry."
+	(interactive)
+	(let* ((dir (org-attach-dir t))
+           (files (org-attach-file-list dir)))
+      (when (and dir files)
+		(org-with-wide-buffer
+		 (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))
+		(message "ORG_ATTACH_FILES property updated."))))
+
   (setopt org-attach-expert t
 		  org-attach-id-dir (expand-file-name "attach" my-galaxy)
 		  org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format
