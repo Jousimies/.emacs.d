@@ -96,6 +96,9 @@
 ;; Another zotero package
 ;; https://gitlab.com/fvdbeek/emacs-zotero
 
+;; https://gist.github.com/lgatto/f54888e7f16968f853346c67b232cae0
+;; Create and yank bibtex entry from a DOI
+;; I use zotra to get bibtex entry.
 (use-package zotra
   :load-path "packages/zotra/"
   :commands zotra-add-entry
