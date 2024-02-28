@@ -305,6 +305,12 @@
 ;;   :load-path "packages/org-imgtog/"
 ;;   :hook (org-mode . org-imgtog-mode))
 
+;; ox-pandoc
+(with-eval-after-load 'ox
+  (add-to-list 'load-path "~/.emacs.d/packages/ox-pandoc/")
+  (add-to-list 'load-path "~/.emacs.d/packages/ht.el/")
+  (require 'ox-pandoc))
+
 (use-package plantuml
   :load-path "packages/plantuml-emacs/"
   :commands plantuml-org-to-mindmap-open plantuml-org-to-wbs-open

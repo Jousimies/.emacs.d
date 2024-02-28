@@ -172,5 +172,9 @@
 (with-eval-after-load 'elfeed
   (define-key elfeed-show-mode-map (kbd "o") #'elfeed/open-link-with-mpv))
 
+(use-package yeetube
+  :load-path "~/.emacs.d/packages/yeetube/"
+  :commands yeetube-search)
+
 (provide 'init-elfeed)
 ;;; init-elfeed.el ends here
