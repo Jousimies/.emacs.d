@@ -270,6 +270,8 @@
   "I" #'org-toggle-inline-images
   "l" #'org-toggle-link-display
   "p" #'pomm-third-time
+  "n" #'org-narrow-to-subtree
+  "w" #'widen
   "u" #'update-org-attach-property
   "s-i" #'my/org-insert-local-image)
 
@@ -279,14 +281,14 @@
 (keymap-set global-map "s-f" my/file-prefix-map)
 
 ;; transient
-(global-set-key (kbd "s-a") #'my/application-menu)
+(global-set-key (kbd "C-c a") #'my/application-menu)
 (global-set-key (kbd "s-b") #'my/bibtex-menu)
 (global-set-key (kbd "s-e") #'my/edit-menu)
 (global-set-key (kbd "s-n") #'my/note-menu)
 (global-set-key (kbd "s-l") #'my/links-menu)
 
 (global-set-key (kbd "<f12>") #'my/agenda-menu)
-(global-set-key (kbd "C-t") #'my/dict-menu)
+(global-set-key (kbd "C-c t") #'my/dict-menu)
 
 ;; functions
 (global-set-key (kbd "C-s-k") #'kill-paragraph)

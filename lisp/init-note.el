@@ -38,6 +38,31 @@
 			 denote-org-extras-dblock-insert-backlinks
 			 denote-org-extras-dblock-insert-links))
 
+;; A simple HACK to let denote support orderless
+;; https://github.com/protesilaos/denote/issues/253
+;; #+BEGIN: denote-files :regexp "ol: _tag1 _tag2 !boring"
+;; #+END
+(defun denote-orderless--is-orderless-filter (str)
+  "Check whether `str' is an orderless filter and return the filter if it is, otherwise return nil."
+  (let ((prefix "ol: "))
+    (when (s-prefix? "ol: " str)
+      (s-chop-left (length prefix) str))))
+
+(defun denote-orderless-directory-files (oldfun &optional filter omit-current text-only)
+  "Use orderless to filter files."
+  (if-let ((ol-filter (denote-orderless--is-orderless-filter filter)))
+      (let ((files (denote--directory-get-files)))
+        (when (and omit-current buffer-file-name (denote-file-has-identifier-p buffer-file-name))
+          (setq files (delete buffer-file-name files)))
+        (when ol-filter
+          (setq files (orderless-filter ol-filter files)))
+        (when text-only
+          (setq files (seq-filter #'denote-file-is-note-p files)))
+        files)
+    (funcall oldfun filter omit-current text-only)))
+
+(advice-add 'denote-directory-files :around #'denote-orderless-directory-files)
+
 (defun find-file-other-window-no-jump (filename)
   "Find file in other window without jumping to that window."
   (interactive "FFind file in other window: ")
@@ -94,7 +119,7 @@
           ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
           ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
           ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
-          ("Outline"  ?o ,(expand-file-name "denote/outline" my-galaxy))
+          ("Knowledge"  ?k ,(expand-file-name "denote/knowledge" my-galaxy))
           ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
           ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
           ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))
