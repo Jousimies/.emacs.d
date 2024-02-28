@@ -186,6 +186,24 @@ This function requires ImageMagick's convert utility to be installed and availab
 ;; (use-package dired-async
 ;;   :hook (dired-mode . dired-async-mode))
 
+;; https://mbork.pl/2024-02-17_Opening_external_drives_in_Dired
+;; (defcustom automount-directory (format "/run/media/%s" user-login-name)
+;;   "Directory under which drives are automounted.")
+
+;; (defun automount-open-in-dired ()
+;;   "Open the automounted drive in Dired.
+;; If there is more than one, let the user choose."
+;;   (interactive)
+;;   (let ((dirs (directory-files automount-directory nil "^[^.]")))
+;;     (dired (file-name-concat
+;;             automount-directory
+;;             (cond ((null dirs)
+;;                    (error "No drives mounted at the moment"))
+;;                   ((= (length dirs) 1)
+;;                    (car dirs))
+;;                   (t
+;;                    (completing-read "Open in dired: " dirs nil t)))))))
+
 (use-package consult-dir
   :load-path "packages/consult-dir/"
   :commands consult-dir)
