@@ -306,10 +306,10 @@
 ;;   :hook (org-mode . org-imgtog-mode))
 
 ;; ox-pandoc
-(with-eval-after-load 'ox
-  (add-to-list 'load-path "~/.emacs.d/packages/ox-pandoc/")
-  (add-to-list 'load-path "~/.emacs.d/packages/ht.el/")
-  (require 'ox-pandoc))
+;; (with-eval-after-load 'ox
+;;   (add-to-list 'load-path "~/.emacs.d/packages/ox-pandoc/")
+;;   (add-to-list 'load-path "~/.emacs.d/packages/ht.el/")
+;;   (require 'ox-pandoc))
 
 (use-package plantuml
   :load-path "packages/plantuml-emacs/"
@@ -320,9 +320,9 @@
                  (shell-command-to-string "readlink -f $(brew --prefix plantuml)"))
                 "/libexec/plantuml.jar")))
 
-(defun org-export-docx (input &optional csl)
-  (interactive "FInput file: \nFcsl file (Default is chinese-gb7714-2005-numeric): ")
-  (let* ((base (file-name-sans-extension input))
+(defun org-export-docx (input csl)
+  (interactive "FInput file (Default is Buffer File):\nFCSL file (Default is chinese-gb7714-2005-numeric):")
+  (let* ((base (or (file-name-sans-extension input) (buffer-file-name)))
 		 (csl (or (expand-file-name "csl/chinese-gb7714-2005-numeric.csl" user-emacs-directory)))
 		 (output (concat base ".docx")))
 	(shell-command (format "pandoc %s -o %s --citeproc --csl %s" input output csl))))
