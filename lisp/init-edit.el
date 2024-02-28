@@ -202,18 +202,21 @@
   (add-to-list 'expand-region-exclude-text-mode-expansions 'org-mode)
   (add-to-list 'expand-region-exclude-text-mode-expansions 'LaTeX-mode))
 
+(use-package surround
+  :load-path "packages/surround/"
+  :commands surround-delete surround-change surround-insert)
+
 (use-package selected
   :load-path "packages/selected.el/"
   :hook (post-select-region . selected-minor-mode)
   :bind (:map selected-keymap
               ("q" . selected-off)
-              ("u" . upcase-region)
-              ("d" . downcase-region)
               ("x" . kill-region)
               ("w" . count-words-region)
               ("i" . surround-insert)
+			  ("d" . surround-delete)
               ("s" . my/search)
-              ("t" . my/gts-do-translate)
+              ("t" . gts-do-translate)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
               (";" . comment-dwim)))
@@ -258,10 +261,6 @@
 (add-hook 'next-error-hook #'my-recenter)
 (add-hook 'other-window-hook #'my-recenter)
 (add-hook 'imenu-after-jump-hook #'my-recenter)
-
-(use-package surround
-  :load-path "packages/surround/"
-  :commands surround-delete surround-change surround-insert)
 
 ;; Make region read-only or writable
 (defun make-region-read-only (beg end)
