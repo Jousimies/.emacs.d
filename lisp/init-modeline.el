@@ -79,8 +79,9 @@
   (upcase (file-name-nondirectory (directory-file-name (file-name-directory (buffer-file-name))))))
 
 (defvar-local my/modeline-denote
-	'(:eval (when (denote-file-is-note-p (buffer-file-name))
-			  (propertize (concat " " (get-last-directory) " ") 'face `(:inverse-video t)))))
+	'(:eval (when (buffer-file-name)
+			  (when (denote-file-is-note-p (buffer-file-name))
+				(propertize (concat " " (get-last-directory) " ") 'face `(:inverse-video t))))))
 
 ;; Readonly Mode
 (defvar-local my/modeline-buffer-readonly
@@ -201,6 +202,7 @@
 
 ;; Pomodoro
 (defvar org-timer-countdown-timer nil)
+(defvar pomm-current-mode-line-string nil)
 (defun my/modeline--timer ()
   (if org-timer-countdown-timer
       (concat " " (org-timer-value-string))
