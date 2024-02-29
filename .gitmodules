@@ -628,3 +628,6 @@
 [submodule "packages/ox-pandoc"]
 	path = packages/ox-pandoc
 	url = https://github.com/emacsorphanage/ox-pandoc.git
+[submodule "packages/org-mode"]
+	path = packages/org-mode
+	url = https://code.tecosaur.net/tec/org-mode.git
