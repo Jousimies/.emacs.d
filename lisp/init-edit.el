@@ -216,7 +216,7 @@
               ("i" . surround-insert)
 			  ("d" . surround-delete)
               ("s" . my/search)
-              ("t" . gts-do-translate)
+              ("t" . my/gts-do-translate)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
               (";" . comment-dwim)))

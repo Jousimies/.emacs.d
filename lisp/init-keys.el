@@ -100,6 +100,8 @@
 	("e" "Entry" citar-open-entry :transient nil)
 	("n" "Note" citar-open-notes :transient nil)]
    ["Notes"
+	("c" "Add Citekey" citar-denote-add-citekey :transient nil)
+	("C" "Remove Citekey" citar-denote-remove-citekey :transient nil)
 	("P" "PDF Files" citar-denote-open-files :transient nil)
 	("R" "Open References" citar-denote-open-reference-entry :transient nil)
 	("f" "Find Citation" citar-denote-find-citation :transient nil)]
@@ -111,20 +113,29 @@
 
 (transient-define-prefix my/note-menu ()
   "Note"
-  [:description current-time-string
-   ("s-n" " Consult Notes" consult-notes :transient nil)]
+  [[("s-n" " Consult Notes" consult-notes :transient nil)]
+   [("SPC" "OCR" my/ocr :transient nil)]]
   [["New Note"
-	("s" "With Signature" denote-signature :transient nil)
-	("S" "To Subdirectory" denote-subdirectory :transient nil)
+	;; ("s" "With Signature" denote-signature :transient nil)
+	;; ("S" "Sub Directory" denote-subdirectory :transient nil)
+	("n" "Denote" denote :transient nil)
 	("b" "Blog" my/new-blog :transient nil)
 	("m" "Meeting" my/new-meeting :transient nil)
 	("l" "Literature" my/literature-save :transient nil)
-	("n" "Reference" citar-create-note :transient nil)]
+	("N" "Reference" citar-create-note :transient nil)]
+   ["Folgezettel"
+	("C-c" "Child" denote-fz-insert-child :transient nil)
+	("c" "Child Here" denote-fz-insert-child-here :transient nil)
+	("C-s" "sibling" denote-fz-insert-sibling :transient nil)
+	("s" "Sibling Here" denote-fz-insert-sibling-here :transient nil)]
+   ["Goto"
+	("<down>" "Child" denote-fz-goto-child :transient t)
+	("<up>" "Parent" denote-fz-goto-parent :transient t)
+	("<right>" "Next Sibling" denote-fz-goto-next-sibling :transient t)
+	("<left>" "Previous Sibling" denote-fz-goto-previous-sibling :transient t)]
    ["Denote Meta"
 	("r" "Rename Note" denote-rename-file-using-front-matter :transient nil)
 	("R" "Rename Keywords" denote-explore-rename-keyword :transient nil)
-	("c" "Add Citekey" citar-denote-add-citekey :transient nil)
-	("C" "Remove Citekey" citar-denote-remove-citekey :transient nil)
 	("k" "Add Keyword" denote-keywords-add :transient nil)
 	("K" "Remove Keyword" denote-keywords-remove :transient nil)]
    ["Denote Sort"
@@ -140,15 +151,14 @@
 	("i" "Info" my/denote-info :transient nil)
 	("t" "BarChart" denote-explore-keywords-barchart :transient t)
 	("d" "Duplicate Identifier" denote-explore-identify-duplicate-identifiers :transient nil)
-	("es" "Extract Subtree" denote-org-extras-extract-org-subtree :transient nil)
-	("eb" "Extract iBooks Annotation" ibooks-annot/extract-annotations-to-note :transient nil)]
-   ["Misc"
+	("e" "Extract Subtree" denote-org-extras-extract-org-subtree :transient nil)
+	("a" "Extract iBooks Annotation" ibooks-annot/extract-annotations-to-note :transient nil)]
+   ["Export To"
 	("M" "MindMap" plantuml-org-to-mindmap-open :transient nil)
 	("w" "WBS" plantuml-org-to-mindmap-open :transient nil)
-	("W" "Export to Docx" org-export-docx :transient nil)
-	("a" "Drawio Add" org-drawio-add :transient nil)
-	("o" "Drawio Open" org-drawio-open :transient nil)
-	("SPC" "OCR" my/ocr :transient nil)
+	("W" "Docx" org-export-docx :transient nil)
+	;; ("t" "Drawio Add" org-drawio-add :transient nil)
+	;; ("o" "Drawio Open" org-drawio-open :transient nil)
 	]])
 
 (transient-define-prefix my/links-menu ()

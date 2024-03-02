@@ -56,20 +56,20 @@
 ;; org-capture
 (with-eval-after-load 'org-capture
   (setq org-capture-templates
-        '(("i" "Inbox"
-           entry (file (lambda () (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org")))
+        `(("i" "Inbox"
+           entry (file ,(concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n%U\n" :time-prompt t :tree-type week)
 		  ("l" "Inbox with link"
-           entry (file (lambda () (concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org")))
+           entry (file ,(concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
 		  ("w" "Work Logs"
            plain
-           (file+datetree (lambda () (expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy)))
+           (file+datetree ,(expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))
 		   (file "~/.emacs.d/template/tpl-worklog")
 		   :tree-type week :jump-to-captured t)
 		  ("r" "Review"
            plain
-           (file+olp+datetree (lambda () (expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy)))
+           (file+olp+datetree ,(expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy))
            (file "~/.emacs.d/template/review-weekly")
            :tree-type week :jump-to-captured t))))
 
