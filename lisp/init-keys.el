@@ -280,6 +280,7 @@
   "I" #'org-toggle-inline-images
   "l" #'org-toggle-link-display
   "p" #'pomm-third-time
+  "t" #'my/org-chatu
   "n" #'org-narrow-to-subtree
   "w" #'widen
   "u" #'update-org-attach-property

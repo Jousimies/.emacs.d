@@ -362,16 +362,35 @@
 	(forward-line 1)))
 
 ;; org-drawio
-(use-package org-drawio
-  :load-path "packages/org-drawio/"
-  :commands (org-drawio-add
-             org-drawio-open)
-  :custom ((org-drawio-input-dir (abbreviate-file-name (expand-file-name "mindmap" my-galaxy)))
-           (org-drawio-output-dir (abbreviate-file-name (expand-file-name "pictures" my-galaxy)))
-           (org-drawio-output-page "0")
-		   (org-drawio-command-drawio "/Applications/draw.io.app/Contents/MacOS/draw.io")
-		   (org-drawio-command-pdf2svg "/opt/homebrew/bin/pdf2svg")
-		   (org-drawio-crop t)))
+;; (use-package org-drawio
+;;   :load-path "packages/org-drawio/"
+;;   :commands (org-drawio-add
+;;              org-drawio-open)
+;;   :custom ((org-drawio-input-dir (abbreviate-file-name (expand-file-name "mindmap" my-galaxy)))
+;;            (org-drawio-output-dir (abbreviate-file-name (expand-file-name "pictures" my-galaxy)))
+;;            (org-drawio-output-page "0")
+;; 		   (org-drawio-command-drawio "/Applications/draw.io.app/Contents/MacOS/draw.io")
+;; 		   (org-drawio-command-pdf2svg "/opt/homebrew/bin/pdf2svg")
+;; 		   (org-drawio-crop t)))
+
+;; chatu
+(use-package chatu
+  :load-path "packages/chatu/"
+  :hook (org-mode . chatu-mode)
+  :commands (chatu-add
+             chatu-open)
+  :custom ((chatu-input-dir (abbreviate-file-name (expand-file-name "mindmap" my-galaxy)))
+           (chatu-output-dir (abbreviate-file-name (expand-file-name "pictures" my-galaxy)))))
+
+;;;###autoload
+(defun my/org-chatu ()
+  "Insert drawio image into org file with completion for knowledge name."
+  (interactive)
+  (let* ((folder (abbreviate-file-name (expand-file-name "mindmap" my-galaxy)))
+         (files (directory-files folder nil "\\.drawio\\'"))
+         (selected (completing-read "Choose Mindmap: " files))
+         (name selected))
+    (insert (format "#+chatu: :drawio \"%s\" :crop :nopdf\n" name))))
 
 (provide 'init-org)
 ;;; init-org.el ends here.

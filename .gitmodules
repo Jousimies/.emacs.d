@@ -634,3 +634,6 @@
 [submodule "packages/denote-folgezettel"]
 	path = packages/denote-folgezettel
 	url = https://github.com/MirkoHernandez/denote-folgezettel.git
+[submodule "packages/chatu"]
+	path = packages/chatu
+	url = https://github.com/kimim/chatu.git
