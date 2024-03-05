@@ -81,18 +81,6 @@
     (or (denote-link-return-links)
         (user-error "No links found")))))
 
-;;;###autoload
-(defun my/denote-signature-from-filename ()
-  "Denotes the signature from the filename and kills it."
-  (interactive)
-  (let* ((mode (buffer-local-value 'major-mode (current-buffer)))
-         (file (if (eq mode 'org-mode) (buffer-file-name) (dired-get-filename)))
-         (signature (denote-retrieve-filename-signature file)))
-    (if signature
-        (kill-new signature))))
-
-(advice-add 'denote-signature :before #'my/denote-signature-from-filename)
-
 (use-package denote-rename-buffer
   :load-path "packages/denote/"
   :hook (org-mode . denote-rename-buffer-mode)
