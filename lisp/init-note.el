@@ -6,7 +6,8 @@
 
 (use-package denote
   :load-path "packages/denote/"
-  :commands (denote-signature
+  :commands (denote
+			 denote-signature
 			 denote-subdirectory
 			 denote-org-capture-with-prompts
 			 denote-link
@@ -315,6 +316,7 @@
   (setq denote-explore-network-filename (expand-file-name "mindmap/denote-network.html" my-galaxy))
   (setq denote-explore-json-edges-filename (expand-file-name "denote-edges.json" cache-directory))
   (setq denote-explore-json-vertices-filename (expand-file-name "denote-vertices.json" cache-directory)))
+
 ;;;###autoload
 (defun my/denote-info ()
   "Count number of Denote text files,keywords and attachments."
@@ -477,6 +479,20 @@ it can be passed in POS."
                       (buffer-substring-no-properties (region-beginning) (region-end))
                     "")))
     (create-apple-note title content)))
+
+;; (use-package spacious-padding
+;;   :load-path "~/.emacs.d/packages/spacious-padding/"
+;;   :hook (org-mode . spacious-padding-mode)
+;;   :custom
+;;   (spacious-padding-subtle-mode-line t)
+;;   (spacious-padding-widths
+;;       '( :internal-border-width 30
+;;          :header-line-width 4
+;;          :mode-line-width 10
+;;          :tab-width 4
+;;          :right-divider-width 30
+;;          :scroll-bar-width 8
+;;          :fringe-width 8)))
 
 (provide 'init-note)
 ;;; init-note.el ends here.

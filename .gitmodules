@@ -637,3 +637,6 @@
 [submodule "packages/chatu"]
 	path = packages/chatu
 	url = https://github.com/kimim/chatu.git
+[submodule "packages/spacious-padding"]
+	path = packages/spacious-padding
+	url = https://github.com/protesilaos/spacious-padding.git

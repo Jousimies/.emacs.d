@@ -65,9 +65,10 @@
            (if (not (string-blank-p pages))
                (cons (concat "-P " pages) pdf-misc-print-program-args)
              pdf-misc-print-program-args)))
-      (pdf-misc-print-document filename)))
-  (with-eval-after-load 'pdf-view
-    (define-key pdf-view-mode-map [remap pdf-misc-print-document] #'mrb/pdf-misc-print-pages)))
+      (pdf-misc-print-document filename))))
+
+(with-eval-after-load 'pdf-view
+  (define-key pdf-view-mode-map [remap pdf-misc-print-document] #'mrb/pdf-misc-print-pages))
 
 (use-package saveplace-pdf-view
   :load-path "packages/saveplace-pdf-view/"

@@ -24,7 +24,7 @@
 ;; https://github.com/positron-solutions/transient-showcase
 
 ;;; Code:
-
+(require 'transient)
 
 (defun my/copy-file-info (info-type)
   (interactive (list (completing-read "Copy file info (base/name/path/directory): "

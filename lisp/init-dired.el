@@ -214,6 +214,7 @@ This function requires ImageMagick's convert utility to be installed and availab
 
 ;; Enhancing Dired Sorting With Transient
 ;; http://yummymelon.com/devnull/enhancing-dired-sorting-with-transient.html
+(require 'transient)
 (defun cc/--dired-sort-by (criteria &optional prefix-args)
   "Sort current Dired buffer according to CRITERIA and PREFIX-ARGS.
 
