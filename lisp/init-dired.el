@@ -214,7 +214,7 @@ This function requires ImageMagick's convert utility to be installed and availab
 
 ;; Enhancing Dired Sorting With Transient
 ;; http://yummymelon.com/devnull/enhancing-dired-sorting-with-transient.html
-(require 'transient)
+
 (defun cc/--dired-sort-by (criteria &optional prefix-args)
   "Sort current Dired buffer according to CRITERIA and PREFIX-ARGS.
 
@@ -278,7 +278,8 @@ See the man page `ls(1)' for details."
 
     (dired-sort-other (mapconcat 'identity arg-list " "))))
 
-(transient-define-prefix cc/dired-sort-by ()
+(with-eval-after-load 'transient
+ (transient-define-prefix cc/dired-sort-by ()
   "Transient menu to sort Dired buffer by different criteria.
 
 This function requires GNU ls from coreutils installed."
@@ -342,7 +343,7 @@ This function requires GNU ls from coreutils installed."
      (lambda () (interactive)
        (cc/--dired-sort-by :size
                            (transient-args transient-current-command)))
-     :transient nil)]])
+     :transient nil)]]))
 
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "s") #'cc/dired-sort-by))
