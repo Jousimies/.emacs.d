@@ -132,7 +132,10 @@
 (use-package denote-sort
   :commands denote-sort-dired
   :bind (:map dired-mode-map
-			  ("/ s" . my/denote-sort-with-sigature))
+			  ("/ c" . my/denote-sort-children)
+			  ("/ s" . my/denote-sort-siblings)
+			  ("/ r" . my/denote-sort-regexp)
+			  ("/ p" . my/denote-sort-parent-with-children))
   :config
   (defun my/denote-signature-retrieve ()
 	(let* ((file (cond ((eq major-mode 'dired-mode) (dired-get-filename))
@@ -140,7 +143,7 @@
 	  (when file
 		(denote-retrieve-filename-signature file))))
 
-  (defun my/denote-sort-with-sigature (regexp)
+  (defun my/denote-sort-regexp (regexp)
 	(interactive (list
 				  (read-regexp
 				   (concat "Files matching PATTERN" (format " (default: %s)" (my/denote-signature-retrieve)) ": ")
@@ -154,11 +157,39 @@
 
   (defun my/denote-sort-with-keywords ()
 	(interactive)
-	(denote-sort-dired (denote-files-matching-regexp-prompt) 'keywords nil))
+	(denote-sort-dired (regexp-opt (denote-keywords-prompt)) 'keywords nil))
 
   (defun my/denote-sort-with-days ()
 	(interactive)
 	(let ((regexp (call-interactively 'my/denote-week-ago)))
+      (denote-sort-dired regexp 'signature nil)))
+
+  (defun my/denote-sort-parent-with-children ()
+	(interactive)
+	(let* ((index (my/denote-signature-retrieve))
+		   (length (length index))
+		   (regexp (substring index 0 (- length 1))))
+	  (denote-sort-dired (concat "==" regexp) 'signature nil)))
+
+  (defun my/denote-sort-children-regexp ()
+	(let* ((index (my/denote-signature-retrieve)))
+	  (format "==%s" index)))
+
+  (defun my/denote-sort-children ()
+	(interactive)
+	(let ((regexp (my/denote-sort-children-regexp)))
+	  (denote-sort-dired regexp 'signature nil)))
+
+  (defun my/denote-sort-siblings-regexp ()
+	(let* ((index (my/denote-signature-retrieve))
+		   (last-char (substring index (1- (length index)))))
+	  (if (string-match "[0-9]" last-char)
+		  (format "==\\(%s\\|%s[a-z]\\)-" index index)
+		(format "==\\(%s\\|%s[0-9]+\\)-" index index))))
+
+  (defun my/denote-sort-siblings ()
+	(interactive)
+	(let ((regexp (my/denote-sort-siblings-regexp)))
       (denote-sort-dired regexp 'signature nil))))
 
 ;; fliter denote create by days ago

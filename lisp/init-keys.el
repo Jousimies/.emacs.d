@@ -139,10 +139,9 @@
 	("k" "Add Keyword" denote-keywords-add :transient nil)
 	("K" "Remove Keyword" denote-keywords-remove :transient nil)]
    ["Denote Sort"
-	("/p" "Prompt" denote-sort-dired :transient nil)
-	("/s" "With Sigature" my/denote-sort-with-sigature :transient nil)
-	("/1" "Sigature LV1" my/denote-sort-sigature-lv1 :transient nil)
-	("/2" "Sigature LV2" my/denote-sort-sigature-lv2 :transient nil)
+	("/s" "Siblings" my/denote-sort-siblings :transient nil)
+	("/c" "Children" my/denote-sort-children :transient nil)
+	("/r" "REGEXP" my/denote-sort-regexp :transient nil)
 	("/i" "With Identifier" my/denote-sort-with-identifer :transient nil)
 	("/k" "With Keywords" my/denote-sort-with-keywords :transient nil)
 	("/d" "Week Ago" my/denote-sort-with-days :transient nil)
