@@ -33,6 +33,19 @@
               (thread-last denote-directory (expand-file-name "term"))
               (thread-last denote-directory (expand-file-name "references")))))
 
+(defun my/ef-themes-denote-faces (&rest _)
+  (ef-themes-with-colors
+    (custom-set-faces
+     `(denote-faces-year ((,c :foreground ,cyan)))
+     `(denote-faces-month ((,c :foreground ,magenta-warmer)))
+     `(denote-faces-day ((,c :foreground ,cyan)))
+     `(denote-faces-time-delimiter ((,c :foreground ,fg-main)))
+     `(denote-faces-hour ((,c :foreground ,magenta-warmer)))
+     `(denote-faces-minute ((,c :foreground ,cyan)))
+     `(denote-faces-second ((,c :foreground ,magenta-warmer))))))
+
+(add-hook 'ns-system-appearance-change-functions #'my/ef-themes-denote-faces)
+
 (use-package denote-org-extras
   :commands (denote-org-extras-extract-org-subtree
 			 denote-org-extras-link-to-heading
@@ -138,8 +151,7 @@
 			  ("/ p" . my/denote-sort-parent-with-children))
   :config
   (defun my/denote-signature-retrieve ()
-	(let* ((file (cond ((eq major-mode 'dired-mode) (dired-get-filename))
-					   (t (buffer-file-name)))))
+	(let* ((file (or (buffer-file-name) (dired-get-filename))))
 	  (when file
 		(denote-retrieve-filename-signature file))))
 

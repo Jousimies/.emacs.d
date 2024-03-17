@@ -628,9 +628,6 @@
 [submodule "packages/ox-pandoc"]
 	path = packages/ox-pandoc
 	url = https://github.com/emacsorphanage/ox-pandoc.git
-[submodule "packages/org-mode"]
-	path = packages/org-mode
-	url = https://code.tecosaur.net/tec/org-mode.git
 [submodule "packages/denote-folgezettel"]
 	path = packages/denote-folgezettel
 	url = https://github.com/MirkoHernandez/denote-folgezettel.git
@@ -640,3 +637,12 @@
 [submodule "packages/spacious-padding"]
 	path = packages/spacious-padding
 	url = https://github.com/protesilaos/spacious-padding.git
+[submodule "packages/emacs-org-clock-daytime"]
+	path = packages/emacs-org-clock-daytime
+	url = https://github.com/ArneBab/emacs-org-clock-daytime.git
+[submodule "packages/org-mode"]
+	path = packages/org-mode
+	url = https://code.tecosaur.net/tec/org-mode.git
+[submodule "packages/consult-mu"]
+	path = packages/consult-mu
+	url = https://github.com/armindarvish/consult-mu.git

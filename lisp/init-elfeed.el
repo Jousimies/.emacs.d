@@ -140,6 +140,10 @@
 	(interactive)
 	(mpv-run-command "keypress" "o"))
 
+  (defun my/mpv-toggle-fullscreen ()
+	(interactive)
+	(mpv-run-command "keypress" "f"))
+
   (defun my/mpv-play-or-pause ()
 	"Toggle between play and pause for mpv process."
 	(interactive)

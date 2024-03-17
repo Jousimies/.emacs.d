@@ -110,9 +110,10 @@
 
   (setq org-latex-prefer-user-labels t))
 
-(use-package popweb-latex
-  :load-path "packages/popweb/" "packages/popweb/extension/latex/"
-  :hook (LaTeX-mode . popweb-latex-mode))
+;; use org-latex-preview in org 9.7-pre instead
+;; (use-package popweb-latex
+;;   :load-path "packages/popweb/" "packages/popweb/extension/latex/"
+;;   :hook (LaTeX-mode . popweb-latex-mode))
 
 (provide 'init-latex)
 ;;; init-latex.el ends here.
