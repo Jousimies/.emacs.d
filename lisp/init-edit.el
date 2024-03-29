@@ -183,17 +183,19 @@
 (use-package tempel
   :load-path "packages/tempel/"
   :bind (("M-+" . tempel-complete)
-         ("M-*" . tempel-insert))
+         ("M-*" . tempel-insert)
+		 (:map tempel-map
+			   ("<down>" . tempel-next)))
   :config
   (setq tempel-path `("~/.emacs.d/template/tempel"
                       ,(expand-file-name "config/tempel" my-galaxy))))
 
-(use-package yasnippet
-  :load-path "packages/yasnippet/"
-  :hook (minibuffer-mode . yas-global-mode)
-  :config
-  (use-package yasnippet-snippets
-    :load-path "packages/yasnippet-snippets/"))
+;; (use-package yasnippet
+;;   :load-path "packages/yasnippet/"
+;;   :hook (minibuffer-mode . yas-global-mode)
+;;   :config
+;;   (use-package yasnippet-snippets
+;;     :load-path "packages/yasnippet-snippets/"))
 
 (use-package expand-region
   :load-path "packages/expand-region.el/"

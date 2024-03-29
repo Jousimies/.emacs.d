@@ -131,6 +131,7 @@
           "\\*gud-debug\\*$"
           "\\*lsp-help\\*$" "\\*lsp session\\*$"
           "\\*quickrun\\*$"
+		  "\\*One-Key\\*$"
           "\\*tldr\\*$"
           "\\*vc-.*\\*$"
           "^\\*elfeed-entry\\*$"

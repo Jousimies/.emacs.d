@@ -640,9 +640,9 @@
 [submodule "packages/emacs-org-clock-daytime"]
 	path = packages/emacs-org-clock-daytime
 	url = https://github.com/ArneBab/emacs-org-clock-daytime.git
-[submodule "packages/org-mode"]
-	path = packages/org-mode
-	url = https://code.tecosaur.net/tec/org-mode.git
 [submodule "packages/consult-mu"]
 	path = packages/consult-mu
 	url = https://github.com/armindarvish/consult-mu.git
+[submodule "packages/org-mode"]
+	path = packages/org-mode
+	url = https://code.tecosaur.net/tec/org-mode.git

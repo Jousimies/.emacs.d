@@ -39,13 +39,14 @@
 (defun my/tab-bar-time-update (&rest rest)
   (format-time-string "%a %b %d %H:%M "))
 
-(setq my/tab-bar-right-string '((:eval (my/tab-bar-time-update))))
+;; (setq my/tab-bar-right-string '((:eval (my/tab-bar-time-update))))
+(setq my/tab-bar-right-string '((:eval "")))
 
 (defun my/tab-bar-format-right ()
   `((global menu-item ,(format-mode-line my/tab-bar-right-string) ignore)))
 
-(add-hook 'after-init-hook 'display-battery-mode)
-(add-to-list 'my/tab-bar-right-string 'battery-mode-line-string t)
+;; (add-hook 'after-init-hook 'display-battery-mode)
+;; (add-to-list 'my/tab-bar-right-string 'battery-mode-line-string t)
 
 (setopt tab-bar-format '(tab-bar-format-tabs
 						 tab-bar-separator

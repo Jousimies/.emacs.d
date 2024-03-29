@@ -59,5 +59,8 @@
 ;;   (setq demap-minimap-window-side  'right)
 ;;   (setq demap-minimap-window-width 15))
 
+(use-package visual-basic-mode
+  :mode ("\\.vb\\|.bas\\'" . visual-basic-mode))
+
 (provide 'init-prog)
 ;;; init-prog.el ends here

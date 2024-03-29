@@ -166,7 +166,7 @@
 (use-package consult-mu
   :load-path "packages/consult-mu/"
   :after consult mu4e
-  :bind ("s-f m" . consult-mu)
+  ;; :bind ("s-f m" . consult-mu)
   :commands consult-mu)
 
 (provide 'init-mail)

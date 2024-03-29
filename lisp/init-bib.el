@@ -10,13 +10,7 @@
                              ,(concat my-galaxy "/bibtexs/Books.bib")))
 
 (with-eval-after-load 'oc
-  (setq org-cite-global-bibliography my/reference-lists)
-  (require 'citar-org)
-  (define-key org-mode-map [remap org-cite-insert] #'citar-insert-citation)
-  (with-eval-after-load 'citar
-	(setq org-cite-insert-processor 'citar)
-	(setq org-cite-follow-processor 'citar)
-	(setq org-cite-activate-processor 'citar)))
+  (setq org-cite-global-bibliography my/reference-lists))
 
 (use-package bibtex
   :mode ("\\.bib\\'" . bibtex-mode)
@@ -87,7 +81,16 @@
          (org-mode . citar-capf-setup)))
 
 (with-eval-after-load 'citar-org
-    (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point))
+  (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point))
+
+(with-eval-after-load 'org
+  (with-eval-after-load 'oc
+	(define-key org-mode-map [remap org-cite-insert] #'citar-insert-citation)
+	(require 'citar-org)
+	(with-eval-after-load 'citar
+	  (setq org-cite-insert-processor 'citar)
+	  (setq org-cite-follow-processor 'citar)
+	  (setq org-cite-activate-processor 'citar))))
 
 (use-package citar-embark
   :after citar
