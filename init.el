@@ -5,7 +5,7 @@
 ;;; Code:
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
-(add-to-list 'load-path "~/.emacs.d/packages/org-mode/lisp/")
+;; (add-to-list 'load-path "~/.emacs.d/packages/org-mode/lisp/")
 
 (when init-file-debug
   (setq use-package-compute-statistics t)

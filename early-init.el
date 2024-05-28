@@ -57,7 +57,8 @@
 (push '(vertical-scroll-bars . nil) default-frame-alist)
 ;; (push '(left-fringe . 0) default-frame-alist)
 ;; (push '(right-fringe . 0) default-frame-alist)
-(push '(fullscreen . maximized) initial-frame-alist)
+;; (push '(fullscreen . maximized) initial-frame-alist)
+(push '(fullscreen . fullscreen) initial-frame-alist)
 
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
@@ -65,7 +66,7 @@
 
 (when (eq system-type 'darwin)
   (set-exec-path-from-shell-PATH)
-  ;; (setq ns-use-native-fullscreen nil)
+  (setq ns-use-native-fullscreen nil)
   ;; modus-themes 会导致 modeline 的字符计算不准确，因而右侧会超出屏幕范围。
   ;; ef-themes 没有上述问题。
   (add-to-list 'load-path "~/.emacs.d/packages/ef-themes/")

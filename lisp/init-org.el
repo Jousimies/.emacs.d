@@ -232,8 +232,8 @@
   :hook (org-mode . form-feed-mode))
 
 ;; org-9.7-pre org-latex-preview
-(use-package org-latex-preview
-  :hook (org-mode . org-latex-preview-auto-mode))
+;; (use-package org-latex-preview
+;;   :hook (org-mode . org-latex-preview-auto-mode))
 
 ;; Emacs 30 math-preview do now work as expected.
 ;; (use-package math-preview
