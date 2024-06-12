@@ -1,5 +1,5 @@
 #+TITLE: Jousimies's Personal Emacs Configuration
-#+DATE: [2023-12-29 Fri 12:11]
+#+DATE: [2024-06-02 Sun 09:33]
 
 * Interface Show
 #+ATTR_ORG: :width 800px
@@ -36,6 +36,35 @@
 
   git submodule foreach git checkout master
 #+end_src
+
+* Emacs Configuration
+
+** 显示启动时间
+#+begin_src emacs-lisp
+  (defun my/packages-installed (load-path)
+      (let ((my/packages 0))
+        (dolist (path load-path)
+          (when (not (string-prefix-p "/Applications/" path))
+            (setq my/packages (1+ my/packages))))
+        my/packages))
+
+  (add-hook 'window-setup-hook
+              (lambda ()
+                (garbage-collect)
+                (let ((curtime (current-time)))
+                  (with-current-buffer "*scratch*"
+                    (goto-char (point-max))
+                    (insert
+                     (concat "\n"
+                             (format ";; Emacs Startup Times: init:%.03f total:%.03f gc-done:%d"
+                                     (float-time (time-subtract after-init-time before-init-time))
+                                     (float-time (time-subtract curtime before-init-time))
+                                     gcs-done)
+                             "\n"
+                             (format ";; Total Packages Required: %d" (my/packages-installed load-path))
+                             "\n\n"))
+                    90))))
+#+end_src
 * Keybindings
 #+ATTR_ORG: :width 500px
 [[./src/keybinding.png]]
@@ -48,6 +77,7 @@
 - [[https://manateelazycat.github.io/emacs/2022/11/18/write-emacs-plugin.html][Emacs 插件开发手册]]
 - [[http://smacs.github.io/elisp/][Emacs Lisp 简明教程 - 水木社区Emacs版]]
 - [[https://www.youtube.com/watch?v=RQK_DaaX34Q&list=PLEoMzSkcN8oPQtn7FQEF3D7sroZbXuPZ7][Introduction to Emacs Lisp - Learning Emacs Lisp #1 - YouTube]]
+
 * Acknowledgment
 #+begin_quote
 If I have seen further, it is by standing on the shoulders of giants. ---- Sir Isaac Newton

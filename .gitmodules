@@ -646,3 +646,6 @@
 [submodule "packages/org-mode"]
 	path = packages/org-mode
 	url = https://code.tecosaur.net/tec/org-mode.git
+[submodule "packages/EmacsMacPluginModule"]
+	path = packages/EmacsMacPluginModule
+	url = https://github.com/happyo/EmacsMacPluginModule.git

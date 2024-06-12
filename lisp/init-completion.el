@@ -103,6 +103,29 @@
          ("C-r" . consult-history))
   :config
   (setq consult-preview-key nil))
+;; https://takeonrules.com/2024/06/08/adding-a-consult-function-for-visualizing-xref/
+;; Adding a Consult Function for Visualizing Xref
+;; (defvar consult--xref-history nil
+;;   "History for the `consult-recent-xref' results.")
+
+;; (defun consult-recent-xref (&optional markers)
+;;   "Jump to a marker in MARKERS list (defaults to `xref--history'.
+
+;; The command supports preview of the currently selected marker position.
+;; The symbol at point is added to the future history."
+;;   (interactive)
+;;   (consult--read
+;;     (consult--global-mark-candidates
+;;       (or markers (flatten-list xref--history)))
+;;     :prompt "Go to Xref: "
+;;     :annotate (consult--line-prefix)
+;;     :category 'consult-location
+;;     :sort nil
+;;     :require-match t
+;;     :lookup #'consult--lookup-location
+;;     :history '(:input consult--xref-history)
+;;     :add-history (thing-at-point 'symbol)
+;;     :state (consult--jump-state)))
 
 ;;;###autoload
 (defun my/consult-find-attach ()

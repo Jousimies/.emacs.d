@@ -108,54 +108,6 @@
 (use-package delsel
   :hook (text-mode . delete-selection-mode))
 
-(use-package macim
-  :load-path "~/.emacs.d/packages/macim.el/"
-  :bind (("C-\\" . macim-switch)
-         :map isearch-mode-map
-         ("C-\\" . macim-switch))
-  :hook ((emacs-startup . macim-select-ascii)
-         (emacs-startup . macim-mode)
-         (isearch-mode . macim-select-ascii)
-		 (on-switch-buffer . macim-context-switch)
-         (minibuffer-mode . macim-select-ascii))
-  :config
-  (defun im-cursor-color ()
-	(interactive)
-	(if current-system-input-method
-		(progn
-		  (setq cursor-type 'bar)
-		  (set-cursor-color "red"))
-	  (progn
-		(setq cursor-type 'box)
-		(set-cursor-color (foreground-color-at-point)))))
-
-  (advice-add 'macim-switch :after #'im-cursor-color)
-  (advice-add 'macim-context-switch :after #'im-cursor-color)
-
-  (setq macim-other "im.rime.inputmethod.Squirrel.Hans")
-  (defun macim-switch ()
-    (interactive)
-    (if current-system-input-method
-        (progn
-          (macim-select-ascii)
-          (force-mode-line-update))
-      (progn
-        (macim-select-other)
-        (force-mode-line-update))))
-
-  (defvar my/macim-context-ignore-modes '("telega-root-mode"
-										  "telega-image-mode"
-										  "mu4e-headers-mode"
-										  "mu4e-view-mode"
-										  "elfeed-show-mode"
-										  "elfeed-search-mode"))
-  (defun +macim-context-ignore-modes ()
-	(let ((mode (symbol-name major-mode)))
-	  (when (member mode my/macim-context-ignore-modes))
-	  'ascii))
-
-  (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes))
-
 (use-package rime-regexp
   :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"
   :hook (minibuffer-mode . rime-regexp-mode)
@@ -163,22 +115,6 @@
   (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
   (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
   (setq rime-user-data-dir "~/Library/Rime/"))
-
-(use-package emt
-  :load-path "packages/emt"
-  :bind (("M-f" . emt-forward-word)
-         ("M-b" . emt-backward-word)
-         ("M-d" . emt-kill-word)
-         ("M-h" . emt-backward-kill-word))
-  :hook (on-first-input . emt-ensure))
-
-(use-package macos
-  :load-path "packages/EmacsMacOSModule/"
-  :commands macos-reveal-in-finder macos-share
-  :config
-  (setq macos-module-install-dir (expand-file-name "modules" user-emacs-directory)
-		macos-module-path (expand-file-name "libEmacsMacOSModule.dylib" macos-module-install-dir))
-  (load-file macos-module-path))
 
 (use-package tempel
   :load-path "packages/tempel/"

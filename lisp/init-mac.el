@@ -31,7 +31,83 @@
 		  ns-use-srgb-colorspace nil)
 
   (use-package color-picker
-	:commands color-picker))
+	:commands color-picker)
+
+  ;; (use-package mac-plugin
+  ;; 	:load-path "packages/EmacsMacPluginModule/"
+  ;; 	:config
+  ;; 	(setq macos-project-root "~/.emacs.d/packages/EmacsMacPluginModule/")
+  ;; 	(mac-plugin-load-release)
+  ;; 	(atmosphere-enable)
+  ;; 	(mac-plugin-set-cursor-color "#fcc800")
+  ;; 	(mac-plugin-set-shadow-opacity 1.0))
+
+  (use-package macos
+	:load-path "packages/EmacsMacOSModule/"
+	:commands macos-reveal-in-finder macos-share
+	:config
+	(setq macos-module-install-dir (expand-file-name "modules" user-emacs-directory)
+		  macos-module-path (expand-file-name "libEmacsMacOSModule.dylib" macos-module-install-dir))
+	(load-file macos-module-path))
+
+  (use-package emt
+	:load-path "packages/emt"
+	:bind (("M-f" . emt-forward-word)
+           ("M-b" . emt-backward-word)
+           ("M-d" . emt-kill-word)
+           ("M-h" . emt-backward-kill-word))
+	:hook (on-first-input . emt-ensure))
+
+  (use-package macim
+	:load-path "~/.emacs.d/packages/macim.el/"
+	:bind (("C-\\" . macim-switch)
+           :map isearch-mode-map
+           ("C-\\" . macim-switch))
+	:hook ((emacs-startup . macim-select-ascii)
+           (emacs-startup . macim-mode)
+           (isearch-mode . macim-select-ascii)
+		   (on-switch-buffer . macim-context-switch)
+           (minibuffer-mode . macim-select-ascii))
+	:config
+	(defun im-cursor-color ()
+	  (interactive)
+	  (if current-system-input-method
+		  (progn
+			(setq cursor-type 'bar)
+			(set-cursor-color "red"))
+		(progn
+		  (setq cursor-type 'box)
+		  (set-cursor-color (foreground-color-at-point)))))
+
+	(advice-add 'macim-switch :after #'im-cursor-color)
+	(advice-add 'macim-context-switch :after #'im-cursor-color)
+
+	(setq macim-other "im.rime.inputmethod.Squirrel.Hans")
+	(defun macim-switch ()
+      (interactive)
+      (if current-system-input-method
+          (progn
+			(macim-select-ascii)
+			(force-mode-line-update))
+		(progn
+          (macim-select-other)
+          (force-mode-line-update))))
+
+	(defvar my/macim-context-ignore-modes '("telega-root-mode"
+											"telega-image-mode"
+											"mu4e-headers-mode"
+											"mu4e-view-mode"
+											"elfeed-show-mode"
+											"elfeed-search-mode"))
+	(defun +macim-context-ignore-modes ()
+	  (let ((mode (symbol-name major-mode)))
+		(when (member mode my/macim-context-ignore-modes))
+		'ascii))
+
+	(add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes))
+  )
+
+
 
 
 (provide 'init-mac)
