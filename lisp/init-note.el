@@ -118,6 +118,10 @@
   :config
   (setq denote-rename-buffer-format " %t"))
 
+(use-package consult-denote
+  :load-path "packages/consult-denote/"
+  :hook (org-mode . consult-denote-mode))
+
 (use-package consult-notes
   :load-path "packages/consult-notes/"
   :commands consult-notes

@@ -652,3 +652,9 @@
 [submodule "packages/consult-web"]
 	path = packages/consult-web
 	url = https://github.com/armindarvish/consult-web.git
+[submodule "consult-denote"]
+	path = consult-denote
+	url = https://github.com/protesilaos/consult-denote.git
+[submodule "packages/consult-denote"]
+	path = packages/consult-denote
+	url = https://github.com/protesilaos/consult-denote.git
