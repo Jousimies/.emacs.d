@@ -55,9 +55,9 @@
         redisplay-skip-fontification-on-input t
         cursor-in-non-selected-windows nil)
 
-;; (setq-default initial-scratch-message
-;;               (propertize
-;;                (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you") 'face 'italic))
+(setq-default initial-scratch-message
+              (propertize
+               (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you\n" ";; This buffer is for text that is not saved, and for Lisp evaluation.\n;; To create a file, visit it with `\\[find-file]' and enter text in its buffer.\n\n") 'face 'italic))
 
 ;; system coding
 (prefer-coding-system 'utf-8)

@@ -79,11 +79,11 @@
 			 powerthesaurus-lookup-definitions-dwim
 			 powerthesaurus-lookup-sentences-dwim))
 
-(use-package popweb-dict
-  :load-path ("packages/popweb/" "packages/popweb/extension/dict")
-  :commands popweb-dict-say-word
-  :config
-  (setq popweb-config-location (expand-file-name "popweb" cache-directory)))
+;; (use-package popweb-dict
+;;   :load-path ("packages/popweb/" "packages/popweb/extension/dict")
+;;   :commands popweb-dict-say-word
+;;   :config
+;;   (setq popweb-config-location (expand-file-name "popweb" cache-directory)))
 
 (use-package emacs-azure-tts
   :load-path "packages/emacs-azure-tts/"
@@ -162,16 +162,16 @@
 
 ;; lsp-bridge-toggle-sdcv-helper use pinyin to search english words,
 ;; Disable corfu-mode to turn off cape-dabbrev temporarily.
-(add-to-list 'load-path "~/.emacs.d/packages/lsp-bridge/")
-(autoload 'lsp-bridge-toggle-sdcv-helper "lsp-bridge" "" t)
-(defun my/toggle-corfu ()
-  "Deactivate input method when sdcv helper enabled."
-  (interactive)
-  (if acm-enable-search-sdcv-words
-      (corfu-mode -1)
-    (corfu-mode 1)))
+;; (add-to-list 'load-path "~/.emacs.d/packages/lsp-bridge/")
+;; (autoload 'lsp-bridge-toggle-sdcv-helper "lsp-bridge" "" t)
+;; (defun my/toggle-corfu ()
+;;   "Deactivate input method when sdcv helper enabled."
+;;   (interactive)
+;;   (if acm-enable-search-sdcv-words
+;;       (corfu-mode -1)
+;;     (corfu-mode 1)))
 
-(advice-add 'lsp-bridge-toggle-sdcv-helper :after #'my/toggle-corfu)
+;; (advice-add 'lsp-bridge-toggle-sdcv-helper :after #'my/toggle-corfu)
 
 (provide 'init-dict)
 ;;; init-dict.el ends here.

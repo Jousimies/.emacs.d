@@ -649,3 +649,6 @@
 [submodule "packages/EmacsMacPluginModule"]
 	path = packages/EmacsMacPluginModule
 	url = https://github.com/happyo/EmacsMacPluginModule.git
+[submodule "packages/consult-web"]
+	path = packages/consult-web
+	url = https://github.com/armindarvish/consult-web.git

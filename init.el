@@ -56,7 +56,7 @@
 (require 'init-pass)
 
 (require 'init-misc)
-
+(require 'init-lock)
 (require 'init-keys)
 
 ;; custom
