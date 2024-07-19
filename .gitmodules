@@ -655,3 +655,6 @@
 [submodule "packages/consult-denote"]
 	path = packages/consult-denote
 	url = https://github.com/protesilaos/consult-denote.git
+[submodule "packages/indent-bars"]
+	path = packages/indent-bars
+	url = https://github.com/jdtsmith/indent-bars.git
