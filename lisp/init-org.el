@@ -57,10 +57,10 @@
 (with-eval-after-load 'org-capture
   (setq org-capture-templates
         `(("i" "Inbox"
-           entry (file ,(concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
+           entry (file ,(concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n%U\n" :time-prompt t :tree-type week)
 		  ("l" "Inbox with link"
-           entry (file ,(concat mobile-document "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
+           entry (file ,(concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
 		  ("w" "Work Logs"
            plain

@@ -92,14 +92,14 @@
   (setq nerd-icons-font-family "Symbols Nerd Font Mono"))
 
 ;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
-(defvar mobile-document "~/Library/Mobile Documents/"
+(defvar icloud "~/Library/Mobile Documents/"
   "This folder contains documents in icloud.")
 
-(defvar my-cloud "~/Nextcloud"
+(defvar nextcloud "~/Nextcloud"
   "This folder is My cloud.")
 
 ;; L.Personal.Galaxy location may change, but folders in this directory never change.
-(defvar my-galaxy (expand-file-name "L.Personal.Galaxy" my-cloud)
+(defvar my-galaxy (expand-file-name "L.Personal.Galaxy" nextcloud)
   "This folder stores all the plain text files of my life.")
 
 (defvar website-directory (expand-file-name "blogs_source/" my-galaxy)

@@ -40,6 +40,9 @@
     (setenv "PATH" path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
 
+(when (eq system-type 'darwin)
+  (set-exec-path-from-shell-PATH))
+
 (setq-default inhibit-redisplay t
               inhibit-message t)
 (add-hook 'window-setup-hook
@@ -65,7 +68,6 @@
 (blink-cursor-mode -1)
 
 (when (eq system-type 'darwin)
-  (set-exec-path-from-shell-PATH)
   (setq ns-use-native-fullscreen nil)
   ;; modus-themes 会导致 modeline 的字符计算不准确，因而右侧会超出屏幕范围。
   ;; ef-themes 没有上述问题。

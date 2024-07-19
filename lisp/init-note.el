@@ -76,24 +76,24 @@
 ;;     (funcall oldfun filter omit-current text-only)))
 
 ;; (advice-add 'denote-directory-files :around #'denote-orderless-directory-files)
-(with-eval-after-load 'org
-  (defun zyd-expand-and-complete-with-denote ()
-	(interactive)
-	(let ((limit (- (point) 2)))
-      (when (looking-back "((" limit)
-		(progn
-          (call-interactively #'denote-link-or-create)
-          (let ((end-of-link (point)))
-			(goto-char limit)
-			(delete-char 2)
-			(goto-char end-of-link))))))
+;; (with-eval-after-load 'org
+;;   (defun zyd-expand-and-complete-with-denote ()
+;; 	(interactive)
+;; 	(let ((limit (- (point) 2)))
+;;       (when (looking-back "((" limit)
+;; 		(progn
+;;           (call-interactively #'denote-link-or-create)
+;;           (let ((end-of-link (point)))
+;; 			(goto-char limit)
+;; 			(delete-char 2)
+;; 			(goto-char end-of-link))))))
 
-  (defun zyd-try-to-complete-then-cycle (&optional arg)
-	(interactive)
-	(zyd-expand-and-complete-with-denote)
-	(org-cycle arg))
+;;   (defun zyd-try-to-complete-then-cycle (&optional arg)
+;; 	(interactive)
+;; 	(zyd-expand-and-complete-with-denote)
+;; 	(org-cycle arg))
 
-  (define-key org-mode-map (kbd "<tab>") #'zyd-expand-and-complete-with-denote))
+;;   (define-key org-mode-map (kbd "<tab>") #'zyd-expand-and-complete-with-denote))
 
 (defun find-file-other-window-no-jump (filename)
   "Find file in other window without jumping to that window."
