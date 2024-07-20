@@ -136,6 +136,40 @@
 (use-package consult-imenu
   :bind ([remap imenu] . consult-imenu))
 
+;; (use-package consult-omni
+;;   :load-path "packages/consult-omni/" "packages/consult-omni/sources"
+;;   :after consult
+;;   :custom
+;;   ;; General settings that apply to all sources
+;;   (consult-omni-show-preview t) ;;; show previews
+;;   (consult-omni-preview-key "C-o") ;;; set the preview key to C-o
+;;   :config
+;;   ;; Load Sources Core code
+;;   (require 'consult-omni-sources)
+;;   ;; Load Embark Actions
+;;   (require 'consult-omni-embark)
+
+;;   (consult-omni-sources-load-modules)
+;;   (setq consult-omni-multi-sources '("calc"
+;;                                      "File"
+;;                                      "Buffer"
+;;                                      "Bookmark"
+;;                                      "Apps"
+;;                                      ;; "gptel"
+;;                                      ;; "Brave"
+;;                                      "Dictionary"
+;;                                      ;; "Google"
+;;                                      "Wikipedia"
+;;                                      "elfeed"
+;;                                      "mu4e"
+;;                                      ;; "buffers text search"
+;;                                      "Notes Search"
+;;                                      "Org Agenda"
+;;                                      "GitHub"
+;;                                      ;; "YouTube"
+;;                                      ;; "Invidious"))
+;; 									 )))
+
 (use-package marginalia
   :load-path "packages/marginalia/"
   :hook (minibuffer-setup . marginalia-mode))

@@ -658,3 +658,6 @@
 [submodule "packages/indent-bars"]
 	path = packages/indent-bars
 	url = https://github.com/jdtsmith/indent-bars.git
+[submodule "packages/consult-omni"]
+	path = packages/consult-omni
+	url = https://github.com/armindarvish/consult-omni.git
