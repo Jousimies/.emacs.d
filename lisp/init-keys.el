@@ -230,12 +230,9 @@
 	("r" "Related words" powerthesaurus-lookup-related-dwim :transient nil)
 	("d" "Definitions" powerthesaurus-lookup-definitions-dwim :transient nil)
 	("e" "Example sentences" powerthesaurus-lookup-sentences-dwim :transient nil)]
-   ["Pronounce"
-	;; ("w" "Word" popweb-dict-say-word :transient nil)
-	("S" "Sentence" emacs-azure-tts-sentence :transient nil)]
    ["Translate"
-	("l" "Translate" gts-do-translate :transient nil)
-	("L" "Translate: Yank" my/gts-do-translate :transient nil)
+	("w" "Speack" gt-do-speak :transient nil)
+	("l" "Translate" gt-do-translate :transient nil)
 	("W" "Write Good" writegood-mode :transient nil)
 	;; ("h" "LSP Helper" lsp-bridge-toggle-sdcv-helper :transient nil)
 	]

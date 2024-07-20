@@ -85,56 +85,43 @@
 ;;   :config
 ;;   (setq popweb-config-location (expand-file-name "popweb" cache-directory)))
 
-(use-package emacs-azure-tts
-  :load-path "packages/emacs-azure-tts/"
-  :commands emacs-azure-tts
-  :preface
-  (defun play-sound-internal (sound)
-  "Internal function for `play-sound' (which see)."
-  (or (eq (car-safe sound) 'sound)
-      (signal 'wrong-type-argument (list sound)))
+;; (use-package emacs-azure-tts
+;;   :load-path "packages/emacs-azure-tts/"
+;;   :commands emacs-azure-tts
+;;   :preface
+;;   (defun play-sound-internal (sound)
+;;   "Internal function for `play-sound' (which see)."
+;;   (or (eq (car-safe sound) 'sound)
+;;       (signal 'wrong-type-argument (list sound)))
 
-  (cl-destructuring-bind (&key file data volume device)
-      (cdr sound)
+;;   (cl-destructuring-bind (&key file data volume device)
+;;       (cdr sound)
 
-    (and (or data device)
-         (error "DATA and DEVICE arg not supported"))
+;;     (and (or data device)
+;;          (error "DATA and DEVICE arg not supported"))
 
-    (apply #'start-process "afplay" nil
-           "afplay" (append (and volume (list "-v" volume))
-                            (list (expand-file-name file data-directory)))))))
+;;     (apply #'start-process "afplay" nil
+;;            "afplay" (append (and volume (list "-v" volume))
+;;                             (list (expand-file-name file data-directory)))))))
 
-(defun emacs-azure-tts-sentence ()
-    (interactive)
-    (emacs-azure-tts 1))
+;; (defun emacs-azure-tts-sentence ()
+;;     (interactive)
+;;     (emacs-azure-tts 1))
 
 (use-package go-translate
   :load-path "packages/go-translate/"
-  :commands gts-translate gts-do-translate
+  :commands gt-translate gt-do-translate gt-do-speak
   :config
-  (add-to-list 'display-buffer-alist '("^\\*Go-Translate\\*"
-                                           (display-buffer-in-side-window)
-                                           (side . bottom)
-                                           (height . 0.3)))
-  (setq gts-buffer-follow-p t)
-  (setq gts-translate-list '(("en" "zh")))
-  (setq gts-default-translator (gts-translator
-                                :picker (gts-noprompt-picker)
-                                :engines (list
-                                          ;; (gts-google-rpc-engine)
-                                          (gts-google-engine :parser (gts-google-summary-parser))
-                                          )
-                                :render (gts-buffer-render))))
-;;;###autoload
-(defun my/gts-do-translate ()
-  "Prompt for input and perform translation, displaying output in split window.
- With prefix argument, instead save translation to kill-ring."
-  (interactive)
-  (gts-translate (gts-translator
-                      :picker (gts-noprompt-picker)
-                      :engines (gts-google-engine
-                                :parser (gts-google-summary-parser))
-                      :render (gts-kill-ring-render))))
+  (add-to-list 'display-buffer-alist '("^\\*gt-result\\*"
+                                       (display-buffer-in-side-window)
+                                       (side . bottom)
+                                       (height . 0.3)))
+  (setq gt-buffer-render-follow-p t)
+  (setq gt-langs '("en" "zh"))
+
+  (setq gt-default-translator (gt-translator :engines (gt-bing-engine)
+											 :render (list (gt-posframe-pop-render :if 'word :frame-params (list :border-width 0 :border-color "red"))
+														   (gt-buffer-render :then (gt-kill-ring-render))))))
 
 (use-package dictionary-overlay
   :load-path "packages/dictionary-overlay/" "packages/websocket-bridge/" "packages/emacs-websocket/"

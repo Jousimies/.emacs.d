@@ -132,6 +132,7 @@
           "\\*lsp-help\\*$" "\\*lsp session\\*$"
           "\\*quickrun\\*$"
 		  "\\*One-Key\\*$"
+		  "\\*gt-result\\*$"
           "\\*tldr\\*$"
           "\\*vc-.*\\*$"
           "^\\*elfeed-entry\\*$"
