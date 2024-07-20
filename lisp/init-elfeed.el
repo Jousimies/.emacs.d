@@ -124,13 +124,8 @@
   :commands mpv-start
   :load-path "packages/mpv.el/"
   :bind (("<f8>" . my/mpv-play-or-pause)
-		 ("C-<f8>" . mpv-toggle-video)
-		 ("M-<f8>" . my/mpv-toggle-progress)
-		 ("s-<f8>" . my/mpv-quit-with-save)
 		 ("<f7>" . mpv-seek-backward)
-		 ("<f9>" . mpv-seek-forward)
-		 ("C-<f7>" . mpv-speed-decrease)
-		 ("C-<f9>" . mpv-speed-increase))
+		 ("<f9>" . mpv-seek-forward))
   :config
   (defun my/mpv-quit-with-save ()
 	(interactive)
@@ -153,6 +148,7 @@
 		  (mpv-play (dired-get-filename))
 		(let ((file (read-file-name "File: ")))
 		  (mpv-play file)))))
+
   (setq mpv-default-options '("--http-proxy=http://127.0.0.1:7890"
 							  "--ytdl-raw-options-append=proxy=http://127.0.0.1:7890")))
 

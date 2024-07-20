@@ -269,6 +269,17 @@
    [("c" "Calendar" calendar :transient nil)]
    [("r" "Calculator" calc :transient nil)]])
 
+(transient-define-prefix my/mpv-menu ()
+  "References"
+  [["Controls"
+	("[" "Speed decrease" mpv-speed-decrease :transient nil)
+	("]" "Speed increase" mpv-speed-increase :transient nil)
+	("<f8>" "Quit&Save" my/mpv-quit-with-save :transient nil)]
+   ["Toggle"
+	("f" "Fullscreen" my/mpv-toggle-fullscreen :transient nil)
+	("o" "Progress" my/mpv-toggle-progress :transient nil)
+	("v" "video" mpv-toggle-video :transient nil)]])
+
 (defvar-keymap my/org-prefix-map
   :doc "keymap for org."
   "i" #'org-clock-in
