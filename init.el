@@ -24,13 +24,14 @@
 
 ;;; Code:
 
+(add-to-list 'load-path "~/.emacs.d/lisp")
+
 ;; For debug.
 (when init-file-debug
   (setq use-package-compute-statistics t)
   (setq use-package-verbose t)
   (require 'init-benchmark))
 
-(add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'init-core)
 (require 'init-builtin)
 
