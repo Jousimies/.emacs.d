@@ -226,6 +226,16 @@
 (setopt url-history-file (expand-file-name "history" url-configuration-directory))
 (setopt url-cookie-file (expand-file-name "cookies" url-configuration-directory))
 
+;; xref
+;; Prefer ripgrep, then ugrep, and fall back to regular grep.
+(setopt xref-search-program (cond
+						   ((or (executable-find "ripgrep")
+								(executable-find "rg"))
+							'ripgrep)
+						   ((executable-find "ugrep")
+							'ugrep)
+						   (t
+							'grep)))
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here
