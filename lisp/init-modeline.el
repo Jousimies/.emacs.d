@@ -215,7 +215,7 @@
 
 (defvar-local my/modeline-time
     '(:eval (when (mode-line-window-selected-p)
-              (propertize (format-time-string " %H:%MPM ") 'face `(:inherit success :inverse-video t)))))
+              (propertize (format-time-string "%H:%M") 'face nil))))
 
 ;; Clock Info
 (defvar-local my/modeline-clock-info
@@ -343,11 +343,13 @@ Specific to the current window's mode line.")
 				" "
                 my/modeline-major-mode
 				(vc-mode vc-mode)
+				" "
+				my/modeline-time
                 ))
 
 (use-package keycast
   :load-path "packages/keycast/"
-  :commands keycast-mode
+  :commands keycast-mode-line-mode
   :config
   (setq keycast-mode-line-format "%2s%k%c%R")
   (setq keycast-mode-line-insert-after 'my/modeline-position)
