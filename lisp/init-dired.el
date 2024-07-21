@@ -350,3 +350,4 @@ This function requires GNU ls from coreutils installed."
 
 (provide 'init-dired)
 ;;; init-dired.el ends here
+

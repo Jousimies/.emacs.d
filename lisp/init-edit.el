@@ -235,29 +235,29 @@
 (global-set-key (kbd "M-P") #'my/move-line-up)
 (global-set-key (kbd "M-N") #'my/move-line-down)
 
-(use-package indent-bars
-  :load-path "packages/indent-bars/"
-  :hook (prog-mode . indent-bars-mode)
-  :config
-  (require 'indent-bars-ts)
-  :custom-face
-  (indent-bars-face ((t (:height 1.08))))
-  :custom
-  (indent-bars-treesit-support t)
-  (indent-bars-no-descend-string t)
-  (indent-bars-treesit-ignore-blank-lines-types '("module"))
-  (indent-bars-prefer-character t)
-  (indent-bars-treesit-wrap
-   '((python
-	  argument_list
-	  parameters ; for python, as an example
-	  list
-	  list_comprehension
-	  dictionary
-	  dictionary_comprehension
-	  parenthesized_expression
-	  subscript)))
-  (indent-bars-no-stipple-char ?\⎸))
+;; (use-package indent-bars
+;;   :load-path "packages/indent-bars/"
+;;   :hook (prog-mode . indent-bars-mode)
+;;   :config
+;;   (require 'indent-bars-ts)
+;;   :custom-face
+;;   (indent-bars-face ((t (:height 1.08))))
+;;   :custom
+;;   (indent-bars-treesit-support t)
+;;   (indent-bars-no-descend-string t)
+;;   (indent-bars-treesit-ignore-blank-lines-types '("module"))
+;;   (indent-bars-prefer-character t)
+;;   (indent-bars-treesit-wrap
+;;    '((python
+;; 	  argument_list
+;; 	  parameters ; for python, as an example
+;; 	  list
+;; 	  list_comprehension
+;; 	  dictionary
+;; 	  dictionary_comprehension
+;; 	  parenthesized_expression
+;; 	  subscript)))
+;;   (indent-bars-no-stipple-char ?\⎸))
 
 (provide 'init-edit)
 ;;; init-edit.el ends here

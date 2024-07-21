@@ -75,5 +75,44 @@
   (interactive)
   (wallpaper-set (buffer-file-name)))
 
+;; 没啥用
+(defgroup init-lock nil
+  "Lock files behind simple arithmetic."
+  :group 'convenience
+  :prefix "init-lock")
+
+(defcustom init-lock-files nil
+  "Files to lock behind arithmetic."
+  :type '(repeat file))
+
+(defun init-lock-loop ()
+  (let ((answer 1)
+        (input)
+        (a)
+        (b))
+    (while (not (eq answer input))
+      (setq a (random 1000))
+      (setq b (random 100))
+      (setq answer (- a b))
+      (setq input (read-number (format "%s - %s = " a b))))
+    nil))
+
+;;;###autoload
+(defun init-lock (orig-fun &rest args)
+  (when (member (car args) init-lock-files)
+    (init-lock-loop))
+  (apply orig-fun args))
+
+;;;###autoload
+(defun init-lock-enable ()
+  (interactive)
+  (advice-add 'find-file :around 'init-lock))
+
+(defun init-lock-disable ()
+  (interactive)
+  (init-lock-loop)
+  (advice-remove 'find-file 'file-lock))
+
+
 (provide 'init-misc)
 ;;; init-misc.el ends here.

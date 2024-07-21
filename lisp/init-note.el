@@ -116,7 +116,8 @@
   :load-path "packages/denote/"
   :hook (org-mode . denote-rename-buffer-mode)
   :config
-  (setq denote-rename-buffer-format " %t"))
+  (setq denote-rename-buffer-format "%b %t") ;;
+  (setq denote-buffer-has-backlinks-string ""))
 
 (use-package consult-denote
   :load-path "packages/consult-denote/"

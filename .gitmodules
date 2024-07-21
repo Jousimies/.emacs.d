@@ -235,9 +235,6 @@
 [submodule "packages/emacs-devdocs-browser"]
 	path = packages/emacs-devdocs-browser
 	url = https://github.com/blahgeek/emacs-devdocs-browser.git
-[submodule "packages/emacs-azure-tts"]
-	path = packages/emacs-azure-tts
-	url = https://github.com/czqhurricnae/emacs-azure-tts.git
 [submodule "packages/language-chunk"]
 	path = packages/language-chunk
 	url = https://github.com/zbelial/language-chunk.git
@@ -325,9 +322,6 @@
 [submodule "packages/go-translate"]
 	path = packages/go-translate
 	url = https://github.com/lorniu/go-translate.git
-[submodule "packages/modus-themes"]
-	path = packages/modus-themes
-	url = https://github.com/protesilaos/modus-themes.git
 [submodule "packages/benchmark-init-el"]
 	path = packages/benchmark-init-el
 	url = https://github.com/dholm/benchmark-init-el.git
@@ -541,12 +535,6 @@
 [submodule "packages/vertico"]
 	path = packages/vertico
 	url = https://github.com/minad/vertico.git
-[submodule "packages/org-roam-bibtex"]
-	path = packages/org-roam-bibtex
-	url = https://github.com/org-roam/org-roam-bibtex.git
-[submodule "packages/meow"]
-	path = packages/meow
-	url = https://github.com/meow-edit/meow.git
 [submodule "packages/keycast"]
 	path = packages/keycast
 	url = https://github.com/tarsius/keycast.git
@@ -571,12 +559,6 @@
 [submodule "packages/org-reveal"]
 	path = packages/org-reveal
 	url = https://github.com/yjwen/org-reveal.git
-[submodule "packages/vuiet"]
-	path = packages/vuiet
-	url = https://github.com/mihaiolteanu/vuiet.git
-[submodule "packages/lastfm.el"]
-	path = packages/lastfm.el
-	url = https://github.com/mihaiolteanu/lastfm.el.git
 [submodule "packages/anaphora"]
 	path = packages/anaphora
 	url = https://github.com/rolandwalker/anaphora.git
@@ -586,15 +568,9 @@
 [submodule "packages/elquery"]
 	path = packages/elquery
 	url = https://github.com/AdamNiederer/elquery.git
-[submodule "packages/versuri"]
-	path = packages/versuri
-	url = https://github.com/mihaiolteanu/versuri.git
 [submodule "packages/Emacs-esqlite"]
 	path = packages/Emacs-esqlite
 	url = https://github.com/mhayashi1120/Emacs-esqlite.git
-[submodule "packages/Emacs-pcsv"]
-	path = packages/Emacs-pcsv
-	url = https://github.com/mhayashi1120/Emacs-pcsv.git
 [submodule "packages/biblio-gbooks"]
 	path = packages/biblio-gbooks
 	url = https://github.com/jrasband/biblio-gbooks.git

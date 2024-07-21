@@ -119,7 +119,7 @@
   (setq gt-buffer-render-follow-p t)
   (setq gt-langs '("en" "zh"))
 
-  (setq gt-default-translator (gt-translator :engines (gt-bing-engine)
+  (setq gt-default-translator (gt-translator :engines (gt-bing-engine :cache 'word)
 											 :render (list (gt-posframe-pop-render :if 'word :frame-params (list :border-width 0 :border-color "red"))
 														   (gt-buffer-render :then (gt-kill-ring-render))))))
 

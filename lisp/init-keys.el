@@ -94,18 +94,18 @@
 	("a" "Zotra: Entry" zotra-add-entry :transient nil)
 	("s" "SciHub" scihub :transient nil)
 	("l" "Local PDF" citar-add-file-to-library :transient nil)]
-   ["Citar Open"
-	("o" "DWIM" citar-open :transient nil)
-	("p" "PDF" citar-open-files :transient nil)
+   ["Citar"
+	("o" "Open" citar-open :transient nil)
+	("f" "Files" citar-open-files :transient nil)
 	("e" "Entry" citar-open-entry :transient nil)
 	("n" "Note" citar-open-notes :transient nil)]
-   ["Notes"
-	("c" "Add Citekey" citar-denote-add-citekey :transient nil)
-	("C" "Remove Citekey" citar-denote-remove-citekey :transient nil)
-	("P" "PDF Files" citar-denote-open-files :transient nil)
-	("R" "Open References" citar-denote-open-reference-entry :transient nil)
-	("f" "Find Citation" citar-denote-find-citation :transient nil)]
+   ["Citar Denote"
+	("k" "Add Citekey" citar-denote-add-citekey :transient nil)
+	("K" "Remove Citekey" citar-denote-remove-citekey :transient nil)
+	("F" "Files" citar-denote-open-files :transient nil)
+	("E" "Entry" citar-denote-open-reference-entry :transient nil)]
    ["Citation"
+	("c" "Find" citar-denote-find-citation :transient nil)
 	("i" "Insert" citar-insert-citation :transient t)]
    ["Export"
 	("1" "Local Bibtex" citar-export-local-bib-file :transient nil)
@@ -308,11 +308,28 @@
 
 (global-set-key (kbd "<f12>") #'my/agenda-menu)
 (global-set-key (kbd "C-c t") #'my/dict-menu)
+(global-set-key (kbd "C-<f8>") #'my/mpv-menu)
 
 ;; functions
 (global-set-key (kbd "C-s-k") #'kill-paragraph)
 (global-set-key (kbd "s-q") #'restart-emacs)
 (global-set-key (kbd "C-z") #'repeat)
+
+;; 下面的方法可以使用弹窗。
+;; 目前没有想好有什么合适的使用场景。
+;; 不一定需要绑定全局，可以使用 local map。
+;; (defun freedom-context-menu (event)
+;;   "鼠标右键菜单"
+;;   (interactive "e")
+;;   (popup-menu
+;;    '("Freedom Menu"
+;; 	 ["Delete window"        (delete-window)]
+;; 	 ["Delete other window"  (delete-other-windows)]
+;;      ["Spilt window right"   (split-window-right)]
+;;      ["Spilt winodw below"   (split-window-below)]
+;;      ["Agenda"       (org-gtd-engage)]
+;;      )))
+;; (global-set-key [mouse-3] 'freedom-context-menu)
 
 (provide 'init-keys)
 ;;; init-keys.el ends here
