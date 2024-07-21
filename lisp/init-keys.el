@@ -136,8 +136,7 @@
    ["Denote Meta"
 	("r" "Rename Note" denote-rename-file-using-front-matter :transient nil)
 	("R" "Rename Keywords" denote-explore-rename-keyword :transient nil)
-	("k" "Add Keyword" denote-keywords-add :transient nil)
-	("K" "Remove Keyword" denote-keywords-remove :transient nil)]
+	("k" "Add/Remove Keyword" denote-rename-file-keywords :transient nil)]
    ["Denote Sort"
 	("/s" "Siblings" my/denote-sort-siblings :transient nil)
 	("/c" "Children" my/denote-sort-children :transient nil)
