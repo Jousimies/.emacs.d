@@ -61,9 +61,6 @@
 [submodule "packages/corfu"]
 	path = packages/corfu
 	url = https://github.com/minad/corfu.git
-[submodule "packages/kind-icon"]
-	path = packages/kind-icon
-	url = https://github.com/jdtsmith/kind-icon.git
 [submodule "packages/cape"]
 	path = packages/cape
 	url = https://github.com/minad/cape.git
@@ -634,3 +631,6 @@
 [submodule "packages/consult-omni"]
 	path = packages/consult-omni
 	url = https://github.com/armindarvish/consult-omni.git
+[submodule "packages/nerd-icons-corfu"]
+	path = packages/nerd-icons-corfu
+	url = https://github.com/LuigiPiucco/nerd-icons-corfu.git
