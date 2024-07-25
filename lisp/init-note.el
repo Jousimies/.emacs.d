@@ -501,11 +501,11 @@ it can be passed in POS."
     (append reading-list
             (file-expand-wildcards (expand-file-name "denote/books/*.org" my-galaxy)))))
 
+;; Need to install macosrec.
+;; https://github.com/xenodium/macosrec
 (defun my/ocr ()
-  "OCR with Macos system."
   (interactive)
-  (shell-command "shortcuts run \"OCR Selected Area\"")
-  (do-applescript "tell application id \"org.gnu.Emacs\" to activate"))
+  (shell-command "macosrec --ocr --clipboard"))
 
 ;; Apple Notes
 (defun create-apple-note (note-title note-content)
