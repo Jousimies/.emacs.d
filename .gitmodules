@@ -634,3 +634,6 @@
 [submodule "packages/nerd-icons-corfu"]
 	path = packages/nerd-icons-corfu
 	url = https://github.com/LuigiPiucco/nerd-icons-corfu.git
+[submodule "packages/preview-auto.el"]
+	path = packages/preview-auto.el
+	url = https://github.com/ultronozm/preview-auto.el.git
