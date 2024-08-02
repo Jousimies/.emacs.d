@@ -102,7 +102,7 @@
          :map minibuffer-mode-map
          ("C-r" . consult-history))
   :config
-  (setq consult-preview-key nil))
+  (setq consult-preview-key "C-."))
 ;; https://takeonrules.com/2024/06/08/adding-a-consult-function-for-visualizing-xref/
 ;; Adding a Consult Function for Visualizing Xref
 ;; (defvar consult--xref-history nil
@@ -136,6 +136,10 @@
 (use-package consult-imenu
   :bind ([remap imenu] . consult-imenu))
 
+(use-package consult-org
+  :after org
+  :bind (:map org-mode-map
+			  ("M-g h" . consult-org-heading)))
 ;; (use-package consult-omni
 ;;   :load-path "packages/consult-omni/" "packages/consult-omni/sources"
 ;;   :after consult
@@ -242,7 +246,7 @@
   (add-to-list 'completion-at-point-functions #'cape-file)
   ;;(add-to-list 'completion-at-point-functions #'cape-history)
   ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
-  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+  (add-to-list 'completion-at-point-functions #'cape-tex)
   ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
   ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
   ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)

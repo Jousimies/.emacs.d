@@ -32,6 +32,8 @@
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2)))
 
+(add-hook 'org-mode-hook 'org-cdlatex-mode)
+
 (with-eval-after-load 'org-habit
   (setopt org-habit-graph-column 70))
 
@@ -248,16 +250,16 @@
 ;;   (setq math-preview-margin '(1 . 0))
 ;;   (add-to-list 'org-options-keywords "NO_MATH_PREVIEW:"))
 
-;;;###autoloads
-(defun auto/math-preview-all ()
-  "Auto update clock table."
-  (interactive)
-  (when (derived-mode-p 'org-mode)
-    (save-excursion
-      (goto-char 0)
-      (unless (string-equal (cadar (org-collect-keywords '("NO_MATH_PREVIEW"))) "t")
-        (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
-          (math-preview-all))))))
+
+;; (defun auto/math-preview-all ()
+;;   "Auto update clock table."
+;;   (interactive)
+;;   (when (derived-mode-p 'org-mode)
+;;     (save-excursion
+;;       (goto-char 0)
+;;       (unless (string-equal (cadar (org-collect-keywords '("NO_MATH_PREVIEW"))) "t")
+;;         (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
+;;           (math-preview-all))))))
 
 ;; Yank media
 (with-eval-after-load 'org
@@ -356,6 +358,68 @@
          (selected (completing-read "Choose Mindmap: " files))
          (name selected))
     (insert (format "#+chatu: :drawio \"%s\" :crop :nopdf\n" name))))
+
+;; ox-latex
+(use-package ox-latex
+  :after org
+  :config
+  (setq org-latex-src-block-backend 'minted)
+  (setq org-latex-minted-options '(("breaklines" "true")
+                                   ("breakanywhere" "true")))
+  (setq org-latex-classes nil)
+  (add-to-list 'org-latex-classes
+               '("book"
+                 "\\documentclass[UTF8,twoside,a4paper,12pt,openright]{ctexrep}
+                   [NO-DEFAULT-PACKAGES]
+                   [NO-PACKAGES]
+                   [EXTRA]"
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes '("article-cn" "\\documentclass{ctexart}
+                                      [NO-DEFAULT-PACKAGES]
+                                      [NO-PACKAGES]
+                                      [EXTRA]"
+                                    ("\\section{%s}" . "\\section*{%s}")
+                                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes '("article" "\\documentclass[11pt]{article}
+                                      [NO-DEFAULT-PACKAGES]
+                                      [NO-PACKAGES]
+                                      [EXTRA]"
+                                    ("\\section{%s}" . "\\section*{%s}")
+                                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes '("beamer" "\\documentclass[presentation]{beamer}
+                                      [DEFAULT-PACKAGES]
+                                      [PACKAGES]
+                                      [EXTRA]"
+                                    ("\\section{%s}" . "\\section*{%s}")
+                                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+  (setq org-latex-pdf-process
+        '("xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
+          "bibtex -shell-escape %b"
+          "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
+          "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
+          "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl"))
+
+  (setq org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
+                                        "out" "toc" "nav" "snm" "vrb" "dvi"
+                                        "fdb_latexmk" "blg" "brf" "fls"
+                                        "entoc" "ps" "spl" "bbl"))
+
+  (setq org-latex-prefer-user-labels t))
 
 (provide 'init-org)
 ;;; init-org.el ends here.

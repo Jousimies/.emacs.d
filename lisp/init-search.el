@@ -84,7 +84,7 @@
 
 (use-package simple-httpd
   :load-path "packages/emacs-web-server"
-  :bind ("M-g h" . httpd-serve-directory)
+  :bind ("M-g s" . httpd-serve-directory)
   :config
   (setq httpd-host (format-network-address
 					(car (network-interface-info "en0"))

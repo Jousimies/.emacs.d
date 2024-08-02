@@ -121,7 +121,7 @@
   :commands elfeed-tube-mpv-follow-mode elfeed-tube-mpv-where elfeed-tube-mpv)
 
 (use-package mpv
-  :commands mpv-start
+  :defer 1
   :load-path "packages/mpv.el/"
   :bind (("<f8>" . my/mpv-play-or-pause)
 		 ("<f7>" . mpv-seek-backward)

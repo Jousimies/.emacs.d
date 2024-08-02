@@ -354,7 +354,7 @@
 
 (use-package ibooks-annot
   :load-path "packages/ibooks-annot.el/"
-  :commands ibooks-annot/extract-annotations-to-note
+  :commands ibooks-annot/extract-annotations-to-note ibooks-annot/open-book-with-ibooks
   :config
   (setq pdfannots-script "~/.emacs.d/packages/pdfannots/pdfannots.py -f json")
   (setq ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))

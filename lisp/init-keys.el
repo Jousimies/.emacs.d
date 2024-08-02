@@ -43,6 +43,7 @@
 (defvar-keymap my/file-prefix-map
   :doc "Prefix map for file."
   "f" #'find-file
+  "b" #'ibooks-annot/open-book-with-ibooks
   "w" #'find-file-other-window
   "j" #'find-file-other-window-no-jump
   "p" #'find-file-at-point

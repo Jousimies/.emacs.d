@@ -131,12 +131,12 @@ org-mode
 (attr_code
  "#+ATTR_LATEX: :options frame=lines, fontsize=\small, baselinestretch=1, linenos")
 
-(fig "#+CAPTION:" p n>
+(caption "#+CAPTION:" p n>
      "#+ATTR_ORG: :width 500px" n>
      "#+ATTR_LaTeX: :width 12cm :placement [!htpb]" n>
-     "#+ATTR_HTML: :width 600px" n>)
+     "#+ATTR_HTML: :width 600px")
 
-(fig2 "#+begin_latex" n>
+(2fig  "#+begin_latex" n>
       "\\begin{figure}[htbp]" n>
       "\\centering" n>
       "\\subfigure[" p "]{" n>
