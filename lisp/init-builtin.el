@@ -39,7 +39,7 @@
         async-shell-command-display-buffer nil)
 
 ;; auto-save
-(setopt 
+(setopt
         auto-save-default nil
         auto-save-visited-interval 1
         save-silently t
@@ -89,6 +89,8 @@
 (add-hook 'on-first-file-hook #'global-so-long-mode)
 (add-hook 'on-first-file-hook #'global-prettify-symbols-mode)
 (add-hook 'on-first-file-hook #'global-word-wrap-whitespace-mode)
+(add-hook 'after-init-hook 'display-battery-mode)
+(add-hook 'after-init-hook 'display-time-mode)
 (add-hook 'on-first-buffer-hook #'midnight-mode)
 
 (setopt prettify-symbols-alist '(("lambda" . ?λ)

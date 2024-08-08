@@ -64,7 +64,7 @@
 (defvar file-extensions-with-default-apps '("xls" "doc" "xlsx" "docx" "eps" "dwg" "psd" "drawio" "pptx")
   "List of file extensions to open with default applications.")
 
-(defvar video-file-extensions '("mp4" "mov" "webm" "mkv"))
+(defvar video-file-extensions '("mp4" "mov" "webm" "mkv" "mp3"))
 
 (defvar html-file '("html"))
 
@@ -350,4 +350,3 @@ This function requires GNU ls from coreutils installed."
 
 (provide 'init-dired)
 ;;; init-dired.el ends here
-

@@ -66,7 +66,7 @@
   (setq mu4e-confirm-quit nil)
   ;; mu4e-modeline
   (mu4e-modeline-mode 1)
-  (add-to-list 'my/tab-bar-right-string '((:eval (mu4e--modeline-string))))
+  ;; (add-to-list 'my/tab-bar-right-string '((:eval (mu4e--modeline-string))))
   ;; mu4e-folders
   (setq mu4e-maildir-shortcuts
         '(("/outlook/INBOX" . ?o)

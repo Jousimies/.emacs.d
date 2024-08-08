@@ -31,7 +31,7 @@
 
 (setopt tab-bar-new-tab-choice 'scratch-buffer
 		tab-bar-close-button-show nil
-		;; tab-bar-separator "​​"
+		tab-bar-separator "​"
 		tab-bar-select-tab-modifiers '(super)
 		tab-bar-tab-hints t)
 
@@ -40,12 +40,11 @@
   (format-time-string "%a %b %d %H:%M "))
 
 ;; (setq my/tab-bar-right-string '((:eval (my/tab-bar-time-update))))
-(setq my/tab-bar-right-string '((:eval "")))
+(setq my/tab-bar-right-string '((:eval global-mode-string)))
 
 (defun my/tab-bar-format-right ()
   `((global menu-item ,(format-mode-line my/tab-bar-right-string) ignore)))
 
-;; (add-hook 'after-init-hook 'display-battery-mode)
 ;; (add-to-list 'my/tab-bar-right-string 'battery-mode-line-string t)
 
 (setopt tab-bar-format '(tab-bar-format-tabs

@@ -18,7 +18,7 @@
 		  org-treat-S-cursor-todo-selection-as-state-change nil
 		  org-hide-leading-stars nil
 		  org-startup-with-inline-images t
-		  org-startup-folded 'content
+		  ;; org-startup-folded 'content
 		  org-image-actual-width nil
 		  org-use-speed-commands t
 		  org-highlight-latex-and-related '(latex script)

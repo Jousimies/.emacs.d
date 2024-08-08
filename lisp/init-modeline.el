@@ -342,10 +342,7 @@ Specific to the current window's mode line.")
 				my/modeline-sys
 				" "
                 my/modeline-major-mode
-				(vc-mode vc-mode)
-				" "
-				my/modeline-time
-                ))
+				(vc-mode vc-mode)))
 
 (use-package keycast
   :load-path "packages/keycast/"

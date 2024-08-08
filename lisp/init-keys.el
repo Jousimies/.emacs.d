@@ -148,8 +148,8 @@
 	]
    ["Denote Explore"
 	("i" "Info" my/denote-info :transient nil)
-	("t" "BarChart" denote-explore-keywords-barchart :transient t)
-	("d" "Duplicate Identifier" denote-explore-identify-duplicate-identifiers :transient nil)
+	("t" "BarChart" denote-explore-barchart-keywords :transient t)
+	("d" "Duplicate Identifier" denote-explore-identify-duplicate-notes :transient nil)
 	("e" "Extract Subtree" denote-org-extras-extract-org-subtree :transient nil)
 	("a" "Extract iBooks Annotation" ibooks-annot/extract-annotations-to-note :transient nil)]
    ["Export To"

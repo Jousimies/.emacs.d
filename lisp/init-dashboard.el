@@ -14,7 +14,7 @@
 								 (setq-local display-line-numbers nil)))
 
 (with-eval-after-load 'dashboard
-  (define-key dashboard-mode-map "q" nil)
+  ;; (define-key dashboard-mode-map "q" nil)
   (define-key dashboard-mode-map (kbd "n") #'dashboard-next-line)
   (define-key dashboard-mode-map (kbd "p") #'dashboard-previous-line))
 
