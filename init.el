@@ -40,7 +40,7 @@
 (require 'init-tab)
 (require 'init-modeline)
 (require 'init-buffer)
-
+(require 'init-svg-tag)
 ;; Plateform related configuration
 (when (eq system-type 'darwin)
   (require 'init-mac))
