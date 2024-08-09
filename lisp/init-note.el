@@ -501,6 +501,16 @@ it can be passed in POS."
     (append reading-list
             (file-expand-wildcards (expand-file-name "denote/books/*.org" my-galaxy)))))
 
+(defun my/gtd-and-archive-list ()
+  "Append all file names in `org-gtd-directory' to a list."
+  (unless (featurep 'org-gtd)
+	(require 'org-gtd))
+  (let ((file-list '()))
+    (dolist (file (directory-files org-gtd-directory t))
+      (when (and (file-regular-p file) (not (member (file-name-nondirectory file) '("." ".."))))
+        (setq file-list (append file-list (list file)))))
+    file-list))
+
 ;; Need to install macosrec.
 ;; https://github.com/xenodium/macosrec
 (defun my/ocr ()

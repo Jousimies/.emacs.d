@@ -110,7 +110,7 @@
   :init
   (setq org-gtd-update-ack "3.0.0")
   :hook ((org-agenda-mode . org-gtd-mode)
-		 (org-gtd-mode . org-edna-mode))
+		 (org-mode . org-edna-mode))
   :custom
   (org-gtd-directory (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org" icloud))
   (org-agenda-property-list '("DELEGATED_TO"))
