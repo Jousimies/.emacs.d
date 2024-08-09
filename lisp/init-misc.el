@@ -113,6 +113,15 @@
   (init-lock-loop)
   (advice-remove 'find-file 'file-lock))
 
+;; Sometimes I want swith a theme.
+(defun my/switch-theme ()
+  (interactive)
+  (mapc #'disable-theme custom-enabled-themes)
+  (let* ((themes (if (eq ns-system-appearance 'light)
+                     ef-themes-light-themes
+				   love/dark-themes))
+         (theme (elt themes (random (length themes)))))
+    (load-theme theme t)))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.
