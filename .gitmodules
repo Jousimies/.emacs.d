@@ -34,9 +34,6 @@
 [submodule "packages/treepy.el"]
 	path = packages/treepy.el
 	url = https://github.com/volrath/treepy.el.git
-[submodule "packages/tabspaces"]
-	path = packages/tabspaces
-	url = https://github.com/mclear-tools/tabspaces.git
 [submodule "packages/browse-at-remote"]
 	path = packages/browse-at-remote
 	url = https://github.com/rmuslimov/browse-at-remote.git
@@ -109,9 +106,6 @@
 [submodule "packages/olivetti"]
 	path = packages/olivetti
 	url = https://github.com/rnkn/olivetti.git
-[submodule "packages/org-download"]
-	path = packages/org-download
-	url = https://github.com/abo-abo/org-download.git
 [submodule "packages/org-appear"]
 	path = packages/org-appear
 	url = https://github.com/awth13/org-appear.git
@@ -355,9 +349,6 @@
 [submodule "packages/form-feed"]
 	path = packages/form-feed
 	url = https://depp.brause.cc/form-feed.git
-[submodule "packages/Bard.el"]
-	path = packages/Bard.el
-	url = https://github.com/AllTheLife/Bard.el.git
 [submodule "packages/emacs-dashboard"]
 	path = packages/emacs-dashboard
 	url = https://github.com/emacs-dashboard/emacs-dashboard.git
@@ -448,9 +439,6 @@
 [submodule "packages/bufferlo"]
 	path = packages/bufferlo
 	url = https://github.com/florommel/bufferlo.git
-[submodule "packages/emacs-smart-input-source"]
-	path = packages/emacs-smart-input-source
-	url = https://github.com/laishulu/emacs-smart-input-source.git
 [submodule "packages/denote-explore"]
 	path = packages/denote-explore
 	url = https://github.com/pprevos/denote-explore.git
@@ -601,18 +589,12 @@
 [submodule "packages/chatu"]
 	path = packages/chatu
 	url = https://github.com/kimim/chatu.git
-[submodule "packages/spacious-padding"]
-	path = packages/spacious-padding
-	url = https://github.com/protesilaos/spacious-padding.git
 [submodule "packages/emacs-org-clock-daytime"]
 	path = packages/emacs-org-clock-daytime
 	url = https://github.com/ArneBab/emacs-org-clock-daytime.git
 [submodule "packages/consult-mu"]
 	path = packages/consult-mu
 	url = https://github.com/armindarvish/consult-mu.git
-[submodule "packages/org-mode"]
-	path = packages/org-mode
-	url = https://code.tecosaur.net/tec/org-mode.git
 [submodule "packages/EmacsMacPluginModule"]
 	path = packages/EmacsMacPluginModule
 	url = https://github.com/happyo/EmacsMacPluginModule.git
@@ -625,9 +607,6 @@
 [submodule "packages/consult-denote"]
 	path = packages/consult-denote
 	url = https://github.com/protesilaos/consult-denote.git
-[submodule "packages/indent-bars"]
-	path = packages/indent-bars
-	url = https://github.com/jdtsmith/indent-bars.git
 [submodule "packages/consult-omni"]
 	path = packages/consult-omni
 	url = https://github.com/armindarvish/consult-omni.git
