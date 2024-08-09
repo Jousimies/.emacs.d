@@ -250,6 +250,9 @@
 ;;   (setq math-preview-margin '(1 . 0))
 ;;   (add-to-list 'org-options-keywords "NO_MATH_PREVIEW:"))
 
+(use-package org-xlatex
+  :load-path "packages/org-xlatex/"
+  :hook (org-mode . org-xlatex-mode))
 
 ;; (defun auto/math-preview-all ()
 ;;   "Auto update clock table."

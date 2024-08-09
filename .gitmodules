@@ -637,3 +637,6 @@
 [submodule "packages/preview-auto.el"]
 	path = packages/preview-auto.el
 	url = https://github.com/ultronozm/preview-auto.el.git
+[submodule "packages/org-xlatex"]
+	path = packages/org-xlatex
+	url = https://github.com/ksqsf/org-xlatex.git
