@@ -20,6 +20,7 @@
   :hook (dired-mode . denote-dired-mode-in-directories)
   :config
   (setq denote-rename-no-confirm t)
+  (setq denote-org-store-link-to-heading nil)
   (setq denote-prompts '(title keywords subdirectory signature))
   (setq denote-directory (expand-file-name "denote" my-galaxy))
   (setq denote-file-name-slug-functions '((title . denote-sluggify-title)
