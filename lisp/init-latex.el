@@ -10,6 +10,7 @@
 ;; AucTeX
 (use-package tex
   :load-path "packages/auctex"
+  :defer 2
   :init
   (load "auctex.el" nil t t)
   (load "preview-latex.el" nil t t)
