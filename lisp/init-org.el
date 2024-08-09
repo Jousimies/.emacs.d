@@ -66,7 +66,7 @@
            "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
 		  ("w" "Work Logs"
            plain
-           (file+datetree ,(expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))
+           (file+olp+datetree ,(expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))
 		   (file "~/.emacs.d/template/tpl-worklog")
 		   :tree-type week :jump-to-captured t)
 		  ("r" "Review"
