@@ -68,6 +68,8 @@
 ;; 不等高会导致 modeline 跳动，可以在 modeline 中插入中文字体“丨”[gun]
 (set-face-attribute 'default nil :family "Latin Modern Mono" :height 160)
 ;; `set-fontset-font' 用于指定某些字符集使用特定的字体
+;; Unicode
+(set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend)
 ;; 设置中文字集
 ;; `han': 汉字字符集，主要用于简体中文和繁体中文字符
 ;; `cjk-misc': CJK（中日韩）字符集中的其他字符，包含了少量的中文、日文、韩文字符
