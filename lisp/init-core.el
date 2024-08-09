@@ -65,14 +65,31 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
-;; Fonts
-(set-face-attribute 'default nil :family "Iosevka" :height 160)
-(set-face-attribute 'variable-pitch nil :family "Source Han Sans SC" :height 160 :weight 'regular)
-(set-face-attribute 'fixed-pitch nil :family "Iosevka Fixed" :height 160)
+;; `set-face-attribute' 设置默认字体
+;; 对于中英文字体无法做到等宽和等高，两者只能取其一。相对而言，等宽更重要一些。
+;; 不等高会导致 modeline 跳动，可以在 modeline 中插入中文字体“丨”[gun]
+(set-face-attribute 'default nil :family "Latin Modern Mono" :height 160)
+;; `set-fontset-font' 用于指定某些字符集使用特定的字体
+;; 设置中文字集
+;; `han': 汉字字符集，主要用于简体中文和繁体中文字符
+;; `cjk-misc': CJK（中日韩）字符集中的其他字符，包含了少量的中文、日文、韩文字符
+;; `kana': 日文假名字符集，但在处理与中文相关的文档时可能偶尔用到
+;; `bopomofo': 注音符号字符集，用于台湾地区的汉字注音
+(dolist (charset '(kana han cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font) charset
+                      (font-spec :family "Source Han Serif SC")))
+;; According to https://github.com/domtronn/all-the-icons.el
+;; Use 'prepend for the NS and Mac ports or Emacs will crash.
+;; Emoji
+(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
+;; Symbola 中包含一些特殊的字体
+;; 需要单独安装 - https://www.wfonts.com/font/symbola
+(set-fontset-font t 'symbol (font-spec :family "Symbola" :size 14) nil 'prepend)
 
-(set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend)
-
-(add-hook 'text-mode-hook #'variable-pitch-mode)
+;; 除以上方法，也可以使用 `variable-pitch-mode'
+;; (set-face-attribute 'variable-pitch nil :family "TsangerJinKai02" :height 160)
+;; (set-face-attribute 'fixed-pitch nil :family "SF Mono" :height 160)
+;; (add-hook 'text-mode-hook #'variable-pitch-mode)
 
 ;; load-path
 (add-to-list 'load-path "~/.emacs.d/packages/compat/")
