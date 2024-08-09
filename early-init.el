@@ -73,13 +73,18 @@
   ;; ef-themes 没有上述问题。
   (add-to-list 'load-path "~/.emacs.d/packages/ef-themes/")
   (require 'ef-themes)
-
+  (defvar love/dark-themes '(ef-night
+							 ef-rosa
+							 ef-dream
+							 ef-elea-dark
+							 ef-maris-dark)
+	"ef-themes-dark-themes I loved.")
   (defun my/apply-theme (appearance)
 	"Load theme, taking current system APPEARANCE into consideration."
 	(mapc #'disable-theme custom-enabled-themes)
 	(let* ((themes (if (eq appearance 'light)
                        ef-themes-light-themes
-					 ef-themes-dark-themes))
+					 love/dark-themes))
            (theme (elt themes (random (length themes)))))
       (load-theme theme t)))
 
