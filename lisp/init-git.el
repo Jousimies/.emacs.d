@@ -5,7 +5,6 @@
 ;;; Code:
 
 (use-package magit
-  :ensure t
   :bind ("C-x g" . magit)
   :config
   (setq magit-git-executable "/usr/bin/git")
@@ -23,11 +22,9 @@
 		transient-values-file (expand-file-name "transient/values.el" cache-directory)))
 
 (use-package git-timemachine
-  :ensure t
   :bind ("M-g t" . git-timemachine))
 
 (use-package browse-at-remote
-  :ensure t
   :bind ("M-g b" . browse-at-remote))
 
 ;; (use-package blamer

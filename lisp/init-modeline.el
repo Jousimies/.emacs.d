@@ -345,7 +345,6 @@ Specific to the current window's mode line.")
 				(vc-mode vc-mode)))
 
 (use-package keycast
-  :ensure t
   :commands keycast-mode-line-mode
   :custom
   (keycast-mode-line-format "%2s%k%c%R")

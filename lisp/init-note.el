@@ -5,7 +5,6 @@
 ;;; Code:
 
 (use-package denote
-  :ensure t
   :bind ((:map dired-mode-map
                ("r" . denote-dired-rename-marked-files-with-keywords)))
   :hook ((dired-mode . denote-dired-mode-in-directories)
@@ -102,7 +101,6 @@
         (user-error "No links found")))))
 
 (use-package consult-notes
-  :ensure t
   :after (consult)
   :custom
   (consult-notes-file-dir-sources
@@ -132,6 +130,7 @@
 	  (eww (concat "file://" (expand-file-name link))))))
 
 (use-package denote-sort
+  :ensure nil
   :commands denote-sort-dired
   :bind (:map dired-mode-map
 			  ("/ c" . my/denote-sort-children)
@@ -325,8 +324,6 @@
   (setq ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
 
 (use-package denote-explore
-  :ensure t
-  :defer t
   :custom
   (denote-explore-network-filename (expand-file-name "mindmap/denote-network.html" my-galaxy))
   (denote-explore-json-edges-filename (expand-file-name "denote-edges.json" cache-directory))
@@ -344,7 +341,6 @@
 			 denote-files attachments keywords)))
 
 (use-package citar-denote
-  :ensure t
   :after (:any citar denote)
   :hook (on-first-input . citar-denote-mode)
   :custom

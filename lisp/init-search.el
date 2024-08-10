@@ -25,7 +25,6 @@
 ;;; Code:
 
 (use-package rg
-  :ensure t
   :bind ("C-c s". rg-menu)
   :config
   (add-to-list 'display-buffer-alist '("^\\*rg\\*"
@@ -68,7 +67,6 @@
 ;; (global-set-key (kbd "s-s") #'my/search)
 
 (use-package grab-mac-link
-  :ensure t
   :commands grab-mac-link-dwim grab-mac-link-safari-1)
 
 ;;;###autoload
@@ -83,7 +81,6 @@
       (format-network-address (car (network-interface-info dev)) t)))
 
 (use-package simple-httpd
-  :ensure t
   :bind ("M-g s" . httpd-serve-directory)
   :config
   (setq httpd-host (format-network-address

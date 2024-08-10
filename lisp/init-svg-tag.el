@@ -25,7 +25,6 @@
 ;;; Code:
 
 (use-package svg-tag-mode
-  :ensure t
   :hook ((org-mode . svg-tag-mode)
 		 (org-agenda-mode . svg-tag-mode))
   :config
@@ -59,6 +58,20 @@
 		  ("CNCL" . ((lambda (tag) (svg-tag-make "CNCL" :face 'shadow :radius 1 :inverse t :margin 0))))
 		  ("DONE" . ((lambda (tag) (svg-tag-make "DONE" :face 'button :radius 1 :inverse t :margin 0))))
 		  ("WAIT" . ((lambda (tag) (svg-tag-make "WAIT" :face 'warning :radius 1 :inverse t :margin 0))))
+
+		  ;; Denote
+		  ;; 过于喧宾夺主了。
+		  ;; ("#\\+title:" . ((lambda (tag) (svg-tag-make tag :face 'shadow :inverse t :beg 2 :end -1 :margin 0))))
+		  ;; ("#\\+date:" . ((lambda (tag) (svg-tag-make tag :face 'shadow :inverse t :beg 2 :end -1 :margin 0))))
+		  ;; ("#\\+filetags:" . ((lambda (tag) (svg-tag-make tag :face 'shadow :inverse t :beg 2 :end -1 :margin 0))))
+		  ;; ("#\\+identifier:" . ((lambda (tag) (svg-tag-make tag :face 'shadow :inverse t :beg 2 :end -1 :margin 0))))
+		  ;; ("#\\+[A-Za-z_]+:" . ((lambda (tag) (svg-tag-make tag :face 'shadow :inverse t :beg 2 :end -1 :margin 0))))
+		  ;; (":PROPERTIES:" . ((lambda (tag) (svg-tag-make tag :inverse t :beg 1 :end -1 :margin 0))))
+		  ;; (":ID:" . ((lambda (tag) (svg-tag-make tag :face 'org-drawer :inverse t :beg 1 :end -1 :margin 0))))
+		  ;; (":ORG_ATTACH_FILES:" . ((lambda (tag) (svg-tag-make tag :face 'org-drawer :inverse t :beg 1 :end -1 :margin 0))))
+		  ;; (":CUSTOM_ID:" . ((lambda (tag) (svg-tag-make tag :face 'org-drawer :inverse t :beg 1 :end -1 :margin 0))))
+		  ;; (":END:" . ((lambda (tag) (svg-tag-make tag :inverse t :beg 1 :end -1 :margin 0))))
+		  ;; ("[a-z0-9:.]+T[0-9.]+" . ((lambda (tag) (svg-tag-make tag :face 'org-date :inverse t :beg 0 :end -1 :margin 0))))
 
 		  ;; Priority
 		  ("\\[#A\\]" . ((lambda (tag) (svg-tag-make tag :face 'org-level-1 :inverse t :beg 2 :end -1 :margin 0))))

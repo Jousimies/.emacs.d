@@ -199,7 +199,6 @@
 
 ;; org-indent-mode hide leading stars, sometimes cursor become invisible.
 (use-package org-superstar
-  :ensure t
   :hook ((org-mode . org-superstar-mode)
 		 (org-superstar-mode . org-indent-mode))
   :config
@@ -208,7 +207,6 @@
 
 ;; Third party packages related to org-mode
 (use-package imenu-list
-  :ensure t
   :commands imenu-list-minor-mode
   :config
   (set-face-attribute 'imenu-list-entry-face-0 nil
@@ -222,7 +220,6 @@
   (setq-default imenu-list-mode-line-format nil))
 
 (use-package olivetti
-  :ensure t
   :bind ("s-M-z" . olivetti-mode)
   :hook ((olivetti-mode-on . (lambda ()
                                (imenu-list-minor-mode 1)))
@@ -230,7 +227,6 @@
                                 (imenu-list-minor-mode -1)))))
 
 (use-package form-feed
-  :ensure t
   :hook (org-mode . form-feed-mode))
 
 (use-package org-xlatex
@@ -337,6 +333,7 @@
 
 ;; ox-latex
 (use-package ox-latex
+  :ensure nil
   :commands (org-latex-export-as-latex
 			 org-latex-convert-region-to-latex
 			 org-latex-export-as-latex

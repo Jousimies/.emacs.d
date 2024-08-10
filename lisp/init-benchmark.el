@@ -70,7 +70,6 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
            (sanityinc/time-subtract-millis after-init-time before-init-time)))
 
 (use-package benchmark-init
-  :ensure t
   :hook (after-init . benchmark-init/deactivate)
   :init (benchmark-init/activate))
 

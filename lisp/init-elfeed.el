@@ -88,7 +88,6 @@
 
 ;; elfeed
 (use-package elfeed
-  :ensure t
   :commands elfeed
   :bind ((:map elfeed-search-mode-map
 			   ("U" . elfeed-update)))
@@ -97,13 +96,11 @@
   (setq elfeed-show-entry-switch #'elfeed-display-buffer)
   (setq elfeed-search-print-entry-function #'lucius/elfeed-search-print-entry--better-default)
   (use-package elfeed-org
-	:ensure t
     :config
 	(elfeed-org)
     (setq rmh-elfeed-org-files `(,(concat my-galaxy "/denote/20230330T120149==0g2c--RSS-Sources__elfeed_Emacs.org")))))
 
 (use-package elfeed-tube
-  :ensure t
   :after elfeed
   :bind ((:map elfeed-show-mode-map
 			   ("F" . elfeed-tube-fetch)
@@ -115,13 +112,11 @@
   (elfeed-tube-setup))
 
 (use-package elfeed-tube-mpv
-  :ensure t
   :bind (:map elfeed-show-mode-map
 			  ("C-c C-f" . elfeed-tube-mpv-follow-mode)
 			  ("C-c C-w" . elfeed-tube-mpv-where)))
 
 (use-package mpv
-  :ensure t
   :bind (("<f8>" . my/mpv-play-or-pause)
 		 ("<f7>" . mpv-seek-backward)
 		 ("<f9>" . mpv-seek-forward))

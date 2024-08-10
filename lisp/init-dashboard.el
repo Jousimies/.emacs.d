@@ -5,7 +5,6 @@
 ;;; Code:
 
 (use-package dashboard
-  :ensure t
   :demand t
   :hook (dashboard-mode . (lambda ()
 							(setq-local display-line-numbers nil)))

@@ -30,9 +30,6 @@
 		ns-pop-up-frames nil
 		ns-use-srgb-colorspace nil)
 
-(use-package color-picker
-  :commands color-picker)
-
 ;; (use-package mac-plugin
 ;; 	:load-path "packages/EmacsMacPluginModule/"
 ;; 	:config

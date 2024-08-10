@@ -52,9 +52,7 @@
       (insert new-url))
     (error "Not on a Youtube link")))
 
-(use-package snow
-  :ensure t
-  :defer t)
+(use-package snow)
 
 (defun my/wallpaper-set ()
   (interactive)

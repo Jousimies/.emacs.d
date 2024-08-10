@@ -24,13 +24,17 @@
 
 ;;; Code:
 
-(add-to-list 'load-path "~/.emacs.d/lisp")
-
-;; package.el
+;; package.el & use-package
 (setq package-archives '(("melpa" . "https://mirrors.ustc.edu.cn/elpa/melpa/")
 						 ("gnu" . "https://mirrors.ustc.edu.cn/elpa/gnu/")
 						 ("nongnu" . "https://mirrors.ustc.edu.cn/elpa/nongnu/")))
 (package-initialize)
+
+(setq use-package-always-ensure t)
+(setq use-package-always-defer t)
+
+;; Load configuration
+(add-to-list 'load-path "~/.emacs.d/lisp")
 
 ;; For debug.
 (when init-file-debug
@@ -95,3 +99,16 @@
 
 (provide 'init)
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-vc-selected-packages
+   '((rainbow-csv :url "https://github.com/emacs-vs/rainbow-csv/" :branch "master"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

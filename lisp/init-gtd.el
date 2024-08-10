@@ -42,6 +42,7 @@
   (add-hook 'calendar-today-visible-hook #'calendar-mark-today))
 
 (use-package appt
+  :ensure nil
   :hook (diary-mode . appt-activate)
   :config
   (setq appt-display-diary nil)
@@ -53,7 +54,7 @@
   (setq appt-message-warning-time 6))
 
 (use-package diary-lib
-  :defer t
+  :ensure nil
   :config
   (add-hook 'diary-list-entries-hook #'diary-sort-entries)
   (add-hook 'diary-mode-hook #'goto-address-mode)
@@ -93,7 +94,6 @@
 						 (org-agenda-overriding-header "Reading Lists")))))))
 
 (use-package org-gtd
-  :ensure t
   :bind (:map org-gtd-clarify-map
               ("C-c C-c" . org-gtd-organize))
   :hook ((org-agenda-mode . org-gtd-mode)
@@ -166,8 +166,6 @@
 		   "::datetree/"))))
 
 (use-package alert
-  :ensure t
-  :defer t
   :custom
   (alert-default-style 'osx-notifier)
   :config

@@ -26,7 +26,6 @@
 
 ;; markdown
 (use-package markdown-mode
-  :ensure t
   :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
          ("README\\.md\\'" . gfm-mode))
   :init (setq markdown-command "multimarkdown")
@@ -35,7 +34,6 @@
 
 ;; swift
 (use-package swift-mode
-  :ensure t
   :mode ("\\.swift\\'" . swift-mode))
 
 ;; yaml
@@ -44,7 +42,6 @@
 
 ;; csv
 (use-package csv-mode
-  :ensure t
   :mode ("\\.csv\\'" . csv-mode))
 
 (use-package rainbow-csv
@@ -54,6 +51,7 @@
 		 (tsv-mode . rainbow-csv-mode)))
 
 (use-package visual-basic-mode
+  :ensure nil
   :mode ("\\.vb\\|.bas\\'" . visual-basic-mode))
 
 (provide 'init-prog)

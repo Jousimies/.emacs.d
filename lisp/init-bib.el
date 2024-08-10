@@ -25,7 +25,6 @@
   (bibtex-autokey-titleword-length 5))
 
 (use-package citar
-  :ensure t
   :hook ((LaTeX-mode . citar-capf-setup)
          (org-mode . citar-capf-setup))
   :commands citar-create-note
@@ -87,7 +86,6 @@
 	  (setq org-cite-activate-processor 'citar))))
 
 (use-package citar-embark
-  :ensure t
   :after citar embark
   :hook (org-mode . citar-embark-mode))
 
@@ -98,20 +96,15 @@
 ;; Create and yank bibtex entry from a DOI
 ;; I use zotra to get bibtex entry.
 (use-package zotra
-  :ensure t
   :commands zotra-add-entry
   :custom
   (zotra-backend 'zotra-server)
   (zotra-local-server-directory "~/zotra-server/"))
 
 ;; Another package for browsing and fetching references.
-(use-package biblio
-  :ensure t
-  :defer t)
+(use-package biblio)
 
 (use-package scihub
-  :ensure t
-  :defer t
   :custom
   (scihub-download-directory "~/Downloads/")
   (scihub-open-after-download t)

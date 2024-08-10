@@ -18,9 +18,7 @@
                                          (side . right)
                                          (window-width . 70))))
 
-(use-package osx-dictionary
-  :ensure t
-  :defer t)
+(use-package osx-dictionary)
 
 (use-package sdcv
   :load-path "packages/sdcv/"
@@ -71,10 +69,7 @@
           "21世纪双语科技词典"
           "quick_eng-zh_CN")))
 
-(use-package powerthesaurus
-  :ensure t
-  :defer t)
-
+(use-package powerthesaurus)
 ;; (use-package popweb-dict
 ;;   :load-path ("packages/popweb/" "packages/popweb/extension/dict")
 ;;   :commands popweb-dict-say-word
@@ -105,8 +100,6 @@
 ;;     (emacs-azure-tts 1))
 
 (use-package go-translate
-  :ensure t
-  :defer t
   :custom
   (gt-buffer-render-follow-p t)
   (gt-langs '("en" "zh"))
@@ -130,15 +123,12 @@
   (dictionary-overlay-start))
 
 (use-package jinx
-  :ensure t
   :hook (org-mode . jinx-mode)
   :bind ("M-#" . jinx-correct)
   :config
   (add-to-list 'jinx-exclude-regexps '(t "\\cc")))
 
 (use-package writegood-mode
-  :ensure t
-  :defer t
   :custom
   (writegood-weasel-words
    '("very" "rather" "really" "quite" "in fact" "just" "so" "pretty" "of course" "surely" "that said" "actually")))

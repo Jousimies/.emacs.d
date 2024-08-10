@@ -97,7 +97,6 @@
 (add-to-list 'load-path "~/.emacs.d/packages/on.el/")
 (require 'on)
 
-
 ;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
 (defvar icloud "~/Library/Mobile Documents/"
   "This folder contains documents in icloud.")
@@ -151,7 +150,6 @@
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh
-  :ensure t
   :hook (on-first-file . gcmh-mode)
   :custom
   (gc-cons-percentage 0.1)

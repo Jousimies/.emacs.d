@@ -54,7 +54,6 @@
 (setopt save-place-file (expand-file-name "places" cache-directory))
 
 (use-package undo-fu-session
-  :ensure t
   :hook (on-first-file . undo-fu-session-global-mode)
   :custom
   (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory))
@@ -68,13 +67,11 @@
   (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name))
 
 (use-package vundo
-  :ensure t
   :bind ("s-z" . vundo)
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package hungry-delete
-  :ensure t
   :custom
   (hungry-delete-chars-to-skip " \t\n\r\f\v")
   :hook ((text-mode . hungry-delete-mode)
@@ -82,7 +79,6 @@
          (org-mode . hungry-delete-mode)))
 
 (use-package ace-pinyin
-  :ensure t
   :bind ([remap goto-char] . ace-pinyin-jump-char-2))
 
 (use-package hippie-exp
@@ -118,7 +114,6 @@
   (setq rime-user-data-dir "~/Library/Rime/"))
 
 (use-package tempel
-  :ensure t
   :bind (("M-+" . tempel-complete)
          ("M-*" . tempel-insert)
 		 (:map tempel-map
@@ -135,18 +130,15 @@
 ;;     :load-path "packages/yasnippet-snippets/"))
 
 (use-package expand-region
-  :ensure t
   :bind ("C-=" . er/expand-region)
   :config
   (add-to-list 'expand-region-exclude-text-mode-expansions 'org-mode)
   (add-to-list 'expand-region-exclude-text-mode-expansions 'LaTeX-mode))
 
 (use-package surround
-  :ensure t
   :commands surround-delete surround-change surround-insert)
 
 (use-package selected
-  :ensure t
   :hook (post-select-region . selected-minor-mode)
   :bind (:map selected-keymap
               ("q" . selected-off)
@@ -168,7 +160,6 @@
 (global-set-key (kbd "s-c") #'my/copy-region)
 
 (use-package symbol-overlay
-  :ensure t
   :hook ((prog-mode . symbol-overlay-mode)
          (html-mode . symbol-overlay-mode))
   :bind (:map symbol-overlay-mode-map
@@ -176,7 +167,6 @@
               ("M-I" . symbol-overlay-remove-all)))
 
 (use-package rainbow-mode
-  :ensure t
   :hook (prog-mode . rainbow-mode))
 
 ;; pulse

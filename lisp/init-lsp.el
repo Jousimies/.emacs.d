@@ -5,6 +5,7 @@
 ;;; Code:
 
 (use-package treesit
+  :ensure nil
   :when (treesit-available-p)
   :commands treesit-install-language-grammar
   :custom

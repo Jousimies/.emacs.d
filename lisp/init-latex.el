@@ -48,11 +48,11 @@
   (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook #'TeX-revert-document-buffer))
 
 (use-package latex
+  :ensure nil
   :bind (:map LaTeX-mode-map
               ("C-c h ." . TeX-doc)))
 
 (use-package auctex-latexmk
-  :ensure t
   :hook (LaTeX-mode . auctex-latexmk-setup))
 
 (use-package reftex
@@ -64,16 +64,14 @@
   (setq reftex-toc-split-windows-fraction 0.25))
 
 (use-package cdlatex
-  :ensure t
   :hook (LaTeX-mode . turn-on-cdlatex))
 
-(use-package preview-auto
-  :ensure t
-  :custom
-  (preview-protect-point t)
-  (preview-locating-previews-message nil)
-  (preview-leave-open-previews-visible t)
-  :hook (LaTeX-mode . preview-auto-mode))
+;; (use-package preview-auto
+;;   :custom
+;;   (preview-protect-point t)
+;;   (preview-locating-previews-message nil)
+;;   (preview-leave-open-previews-visible t)
+;;   :hook (LaTeX-mode . preview-auto-mode))
 
 (provide 'init-latex)
 ;;; init-latex.el ends here.

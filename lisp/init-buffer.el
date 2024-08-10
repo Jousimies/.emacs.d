@@ -32,16 +32,13 @@
   (setopt ibuffer-default-sorting-mode 'major-mode))
 
 (use-package nerd-icons-ibuffer
-  :ensure t
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 (use-package bufferlo
-  :ensure t
   :bind (([remap switch-to-buffer] . bufferlo-switch-to-buffer))
   :hook (after-init . bufferlo-mode))
 
 (use-package helpful
-  :ensure t
   :bind (([remap describe-function] . helpful-callable)
          ([remap describe-variable] . helpful-variable)
          ([remap describe-key] . helpful-key))
@@ -53,12 +50,10 @@
                                        (window-parameters
                                         (mode-line-format . none))))
   (use-package elisp-demos
-	:ensure t
 	:config
 	(advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)))
 
 (use-package perspective
-  :ensure t
   :bind (("M-s-n" . persp-switch)
          ("M-s-w" . persp-kill))
   :custom
@@ -81,7 +76,6 @@
 					`(lambda () (interactive) (persp-switch-by-number ,(1+ i))))))
 
 (use-package popper
-  :ensure t
   :bind (("C-`" . popper-toggle)
          :map popper-mode-map
          ("M-<tab>" . popper-cycle)
@@ -175,7 +169,6 @@
   (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper))
 
 (use-package winum
-  :ensure t
   :hook (window-setup . winum-mode)
   :preface
   (defun my/winum-select (num)

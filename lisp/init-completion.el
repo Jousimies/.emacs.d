@@ -45,7 +45,6 @@
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 
 (use-package nerd-icons-completion
-  :ensure t
   :hook (minibuffer-setup . nerd-icons-completion-mode))
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
@@ -54,14 +53,12 @@
 ;; Due to icomplete has compatible problem with citar, a references manager.
 ;; use `M-RET' to exit minibuffer input.
 (use-package vertico
-  :ensure t
   :hook ((on-first-input . vertico-mode)
 		 (rfn-eshadow-update-overlay . vertico-directory-tidy))
   :bind (:map vertico-map
 			  ("C-<backspace>" . vertico-directory-up)))
 
 (use-package orderless
-  :ensure t
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
@@ -83,7 +80,6 @@
 (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
 (use-package consult
-  :ensure t
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
@@ -136,11 +132,9 @@
 	(consult-find dir)))
 
 (use-package marginalia
-  :ensure t
   :hook (minibuffer-setup . marginalia-mode))
 
 (use-package embark
-  :ensure t
   :bind (([remap describe-bindings] . embark-bindings)
          ("C-;" . embark-act)
          ("M-." . embark-dwim)
@@ -150,7 +144,6 @@
          ("C-c C-l" . embark-collect)))
 
 (use-package corfu
-  :ensure t
   :hook ((on-first-buffer . global-corfu-mode)
 		 (corfu-mode . corfu-echo-mode)
 		 (corfu-mode . corfu-popupinfo-mode))
@@ -174,12 +167,9 @@
   ;; (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
-(use-package nerd-icons-corfu
-  :ensure t
-  :defer t)
+(use-package nerd-icons-corfu)
 
 (use-package cape
-  :ensure t
   :bind (("C-c p p" . completion-at-point) ;; capf
          ("C-c p t" . complete-tag)        ;; etags
          ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
