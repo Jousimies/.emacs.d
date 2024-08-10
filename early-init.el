@@ -51,6 +51,10 @@
                           inhibit-message nil)
             (redisplay)))
 
+;; use package.el install packages
+(setq package-enable-at-startup nil)
+(setq use-package-enable-imenu-support t)
+
 ;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)

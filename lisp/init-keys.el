@@ -197,7 +197,7 @@
    ["Process & Engage"
 	("x" "Process Inbox" org-gtd-process-inbox :transient nil)
 	("@" "By Context" org-gtd-engage-grouped-by-context :transient nil)
-	("<f12>" "Engage" org-gtd-engage :transient nil)]
+	("<f12>" "Engage" my/org-gtd-engage :transient nil)]
    ["Clarify"
 	("c" "Item" org-gtd-clarify-item :transient nil)
 	("C" "Item: agenda" org-gtd-clarify-agenda-item :transient nil)]

@@ -25,25 +25,26 @@
 ;;; Code:
 
 (use-package svg-tag-mode
-  :load-path "packages/svg-lib/" "packages/svg-tag-mode/"
+  :ensure t
   :hook ((org-mode . svg-tag-mode)
 		 (org-agenda-mode . svg-tag-mode))
   :config
+  ;; 有性能问题
   ;; https://github.com/rougier/svg-tag-mode
   ;; Show svg-tag-mode in org-agenda buffer
-  (defun org-agenda-show-svg ()
-    (let* ((case-fold-search nil)
-           (keywords (mapcar #'svg-tag--build-keywords svg-tag--active-tags))
-           (keyword (car keywords)))
-      (while keyword
-        (save-excursion
-          (while (re-search-forward (nth 0 keyword) nil t)
-            (overlay-put (make-overlay
-                          (match-beginning 0) (match-end 0))
-                         'display  (nth 3 (eval (nth 2 keyword)))) ))
-        (pop keywords)
-        (setq keyword (car keywords)))))
-  (add-hook 'org-agenda-finalize-hook #'org-agenda-show-svg)
+  ;; (defun org-agenda-show-svg ()
+  ;;   (let* ((case-fold-search nil)
+  ;;          (keywords (mapcar #'svg-tag--build-keywords svg-tag--active-tags))
+  ;;          (keyword (car keywords)))
+  ;;     (while keyword
+  ;;       (save-excursion
+  ;;         (while (re-search-forward (nth 0 keyword) nil t)
+  ;;           (overlay-put (make-overlay
+  ;;                         (match-beginning 0) (match-end 0))
+  ;;                        'display  (nth 3 (eval (nth 2 keyword)))) ))
+  ;;       (pop keywords)
+  ;;       (setq keyword (car keywords)))))
+  ;; (add-hook 'org-agenda-finalize-hook #'org-agenda-show-svg)
 
   (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
   (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")

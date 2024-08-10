@@ -26,6 +26,12 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
+;; package.el
+(setq package-archives '(("melpa" . "https://mirrors.ustc.edu.cn/elpa/melpa/")
+						 ("gnu" . "https://mirrors.ustc.edu.cn/elpa/gnu/")
+						 ("nongnu" . "https://mirrors.ustc.edu.cn/elpa/nongnu/")))
+(package-initialize)
+
 ;; For debug.
 (when init-file-debug
   (setq use-package-compute-statistics t)

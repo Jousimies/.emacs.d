@@ -1,6 +1,8 @@
 ;; init-mail.el --- E-mail management. -*- lexical-binding: t; no-byte-compile: t -*-
 
 ;;; Commentary:
+;; 需要安装依赖：`mu' `isync' `msmtp'
+;; 安装 mu 的同时会安装 mu4e，所以不需要在 Emacs 中安装 mu4e
 
 ;;; Code:
 
@@ -8,17 +10,13 @@
 
 (defvar mu4e-outlook "duan_n@outlook.com"
   "My outlook mail address.")
-(use-package auth-source
-  :commands auth-source-pick-first-password)
-(defvar mu4e-gmail (auth-source-pick-first-password :host "mu4e" :user "gmail")
-  "My gmail mail address.")
 
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
   :commands mu4e
   :config
   ;; mu4e-main
-  (setq mu4e-main-hide-personal-addresses nil)
+  (setq mu4e-main-hide-personal-addresses t)
   ;; mu4e-server
   (setq mu4e-mu-binary (executable-find "mu"))
   ;; mu4e-update
@@ -70,9 +68,7 @@
   ;; mu4e-folders
   (setq mu4e-maildir-shortcuts
         '(("/outlook/INBOX" . ?o)
-          ("/outlook/Sent Messages" . ?O)
-          ("/[Gmail]/INBOX" . ?g)
-          ("/[Gmail]/Sent Mail" . ?G)))
+          ("/outlook/Sent Messages" . ?O)))
   (setq mu4e-attachment-dir "~/Downloads/")
   ;; mu4e-helpers
   (setq mu4e-use-fancy-chars t)
@@ -140,24 +136,7 @@
                     (mu4e-drafts-folder . "/outlook/Drafts")
                     (mu4e-refile-folder . "/outlook/Archive")
                     (mu4e-sent-folder . "/outlook/Sent Messages")
-                    (mu4e-trash-folder . "/outlook/Deleted Messages")))
-
-          ,(make-mu4e-context
-            :name "gmail"
-            :enter-func
-            (lambda () (mu4e-message "Enter gmail context"))
-            :leave-func
-            (lambda () (mu4e-message "Leave gmail context"))
-            :match-func
-            (lambda (msg)
-              (when msg
-                (mu4e-message-contact-field-matches msg
-                                                    :to 'mu4e-gmail)))
-            :vars `((user-mail-address . ,mu4e-gmail)
-                    (mu4e-drafts-folder . "/gmail/Drafts")
-                    (mu4e-refile-folder . "/gmail/Archive")
-                    (mu4e-sent-folder . "/gmail/Sent")
-                    (mu4e-trash-folder . "/gmail/Trash")))))
+                    (mu4e-trash-folder . "/outlook/Deleted Messages")))))
   (setq mu4e-context-policy 'pick-first))
 
 (run-with-idle-timer 4 nil (lambda ()

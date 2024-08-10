@@ -5,34 +5,28 @@
 ;;; Code:
 
 (use-package denote
-  :load-path "packages/denote/"
-  :commands (denote
-			 denote-signature
-			 denote-subdirectory
-			 denote-org-capture-with-prompts
-			 denote-link
-			 denote-backlinks
-			 denote-rename-file-using-front-matter
-			 denote-keywords-add
-			 denote-keywords-remove)
+  :ensure t
   :bind ((:map dired-mode-map
                ("r" . denote-dired-rename-marked-files-with-keywords)))
-  :hook (dired-mode . denote-dired-mode-in-directories)
-  :config
-  (setq denote-rename-no-confirm t)
-  (setq denote-org-store-link-to-heading nil)
-  (setq denote-prompts '(title keywords subdirectory signature))
-  (setq denote-directory (expand-file-name "denote" my-galaxy))
-  (setq denote-file-name-slug-functions '((title . denote-sluggify-title)
+  :hook ((dired-mode . denote-dired-mode-in-directories)
+		 (org-mode . denote-rename-buffer-mode))
+  :custom
+  (denote-rename-no-confirm t)
+  (denote-org-store-link-to-heading nil)
+  (denote-prompts '(title keywords subdirectory signature))
+  (denote-directory (expand-file-name "denote" my-galaxy))
+  (denote-file-name-slug-functions '((title . denote-sluggify-title)
 										  (signature . denote-sluggify-signature)
 										  (keyword . identity)))
-  (setq denote-dired-directories
-        (list denote-directory
-              (thread-last denote-directory (expand-file-name "books"))
-              (thread-last denote-directory (expand-file-name "outline"))
-              (thread-last denote-directory (expand-file-name "literature"))
-              (thread-last denote-directory (expand-file-name "term"))
-              (thread-last denote-directory (expand-file-name "references")))))
+  (denote-dired-directories
+   (list denote-directory
+         (thread-last denote-directory (expand-file-name "books"))
+         (thread-last denote-directory (expand-file-name "outline"))
+         (thread-last denote-directory (expand-file-name "literature"))
+         (thread-last denote-directory (expand-file-name "term"))
+         (thread-last denote-directory (expand-file-name "references"))))
+  (denote-rename-buffer-format "%b %t") ;;
+  (denote-buffer-has-backlinks-string ""))
 
 (defun my/ef-themes-denote-faces (&rest _)
   (ef-themes-with-colors
@@ -46,12 +40,6 @@
      `(denote-faces-second ((,c :foreground ,magenta-warmer))))))
 
 (add-hook 'ns-system-appearance-change-functions #'my/ef-themes-denote-faces)
-
-(use-package denote-org-extras
-  :commands (denote-org-extras-extract-org-subtree
-			 denote-org-extras-link-to-heading
-			 denote-org-extras-dblock-insert-backlinks
-			 denote-org-extras-dblock-insert-links))
 
 ;; A simple HACK to let denote support orderless
 ;; https://github.com/protesilaos/denote/issues/253
@@ -113,43 +101,20 @@
     (or (denote-link-return-links)
         (user-error "No links found")))))
 
-(use-package denote-rename-buffer
-  :load-path "packages/denote/"
-  :hook (org-mode . denote-rename-buffer-mode)
-  :config
-  (setq denote-rename-buffer-format "%b %t") ;;
-  (setq denote-buffer-has-backlinks-string ""))
-
-(use-package consult-denote
-  :load-path "packages/consult-denote/"
-  :hook (org-mode . consult-denote-mode))
-
 (use-package consult-notes
-  :load-path "packages/consult-notes/"
-  :commands consult-notes
-  :config
-  (defun my/consult-notes--file-dir-annotate (name dir cand)
-	"Annotate file CAND with its directory DIR, size, and modification time."
-	(let* ((file  (concat (file-name-as-directory dir) cand))
-           (dirs  (abbreviate-file-name dir))
-           (attrs (file-attributes file))
-           (fsize (file-size-human-readable (file-attribute-size attrs)))
-	       (ftime (consult-notes--time (file-attribute-modification-time attrs))))
-      (put-text-property 0 (length name)  'face 'consult-notes-name name)
-      (put-text-property 0 (length fsize) 'face 'consult-notes-size fsize)
-      (put-text-property 0 (length ftime) 'face 'consult-notes-time ftime)
-      (format "%7s %8s  %12s" name fsize ftime)))
-  (setq consult-notes-file-dir-annotate-function 'my/consult-notes--file-dir-annotate)
-  (setq consult-notes-file-dir-sources
-        `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
-          ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
-          ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
-          ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
-          ("Knowledge"  ?k ,(expand-file-name "denote/knowledge" my-galaxy))
-          ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
-          ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
-          ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))
-          ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy)))))
+  :ensure t
+  :after (consult)
+  :custom
+  (consult-notes-file-dir-sources
+   `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
+     ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
+     ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
+     ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
+     ("Knowledge"  ?k ,(expand-file-name "denote/knowledge" my-galaxy))
+     ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
+     ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
+     ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))
+     ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy)))))
 
 ;; Sometimes I want open the web archive file with eww.
 (defun my/org-get-link-under-point ()
@@ -295,8 +260,7 @@
 			 denote-fz-insert-sibling
 			 denote-fz-insert-child-here
 			 denote-fz-insert-sibling-here
-			 denote-fz-dired-mode
-			 ))
+			 denote-fz-dired-mode))
 
 (defun my/literature-entry (url title keywords file-path file-new-path)
   "Save a literature entry and add it to the 'literature' denote database."
@@ -361,16 +325,12 @@
   (setq ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
 
 (use-package denote-explore
-  :load-path "packages/denote-explore/"
-  :commands (denote-explore-count-notes
-			 denote-explore-count-keywords
-			 denote-explore-keywords-barchart
-			 denote-explore-identify-duplicate-identifiers
-			 denote-explore-rename-keyword)
-  :config
-  (setq denote-explore-network-filename (expand-file-name "mindmap/denote-network.html" my-galaxy))
-  (setq denote-explore-json-edges-filename (expand-file-name "denote-edges.json" cache-directory))
-  (setq denote-explore-json-vertices-filename (expand-file-name "denote-vertices.json" cache-directory)))
+  :ensure t
+  :defer t
+  :custom
+  (denote-explore-network-filename (expand-file-name "mindmap/denote-network.html" my-galaxy))
+  (denote-explore-json-edges-filename (expand-file-name "denote-edges.json" cache-directory))
+  (denote-explore-json-vertices-filename (expand-file-name "denote-vertices.json" cache-directory)))
 
 ;;;###autoload
 (defun my/denote-info ()
@@ -384,19 +344,12 @@
 			 denote-files attachments keywords)))
 
 (use-package citar-denote
-  :load-path "packages/citar-denote/"
-  :after citar
-  :commands (citar-denote-dwim
-			 citar-denote-open-reference-entry
-			 citar-denote-find-reference
-			 citar-denote-find-citation
-			 citar-denote-add-citekey
-			 citar-denote-remove-citekey)
-  ;; :hook (on-first-input . citar-denote-mode)
-  :config
-  (citar-denote-mode)
-  (setq citar-denote-use-bib-keywords t)
-  (setq citar-denote-subdir t))
+  :ensure t
+  :after (:any citar denote)
+  :hook (on-first-input . citar-denote-mode)
+  :custom
+  (citar-denote-use-bib-keywords t)
+  (citar-denote-subdir t))
 
 ;;;###autoload
 (defun citar-denote-open-files ()
@@ -545,19 +498,6 @@ it can be passed in POS."
                     "")))
     (create-apple-note title content)))
 
-;; (use-package spacious-padding
-;;   :load-path "~/.emacs.d/packages/spacious-padding/"
-;;   :hook (org-mode . spacious-padding-mode)
-;;   :custom
-;;   (spacious-padding-subtle-mode-line t)
-;;   (spacious-padding-widths
-;;       '( :internal-border-width 30
-;;          :header-line-width 4
-;;          :mode-line-width 10
-;;          :tab-width 4
-;;          :right-divider-width 30
-;;          :scroll-bar-width 8
-;;          :fringe-width 8)))
 
 (provide 'init-note)
 ;;; init-note.el ends here.

@@ -20,6 +20,12 @@
 
 ;;; Commentary:
 
+;; Diredfl is not compatible with denote-dired-mode
+;; (use-package diredfl
+;;   :load-path "packages/diredfl/"
+;;   :hook ((dired-mode . diredfl-mode)
+;; 		 (denote-dired-mode . (lambda ()
+;; 								(setq-local diredfl-mode nil)))))
 ;;
 
 ;;; Code:
@@ -130,11 +136,11 @@
 	(define-key dired-mode-map (kbd "SPC") #'my/dired-preview)))
 
 (use-package nerd-icons-dired
-  :load-path "packages/emacs-nerd-icons-dired"
+  :ensure t
   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package dired-preview
-  :load-path "packages/dired-preview/"
+  :ensure t
   :commands dired-preview-mode
   :config
   (setq dired-preview-delay 0.0)
@@ -175,14 +181,6 @@ This function requires ImageMagick's convert utility to be installed and availab
                          pngfile)))
       (message "\n%d files were converted from EPS to PNG format." n))))
 
-;; Diredfl
-;; Diredfl is not compatible with denote-dired-mode
-;; (use-package diredfl
-;;   :load-path "packages/diredfl/"
-;;   :hook ((dired-mode . diredfl-mode)
-;; 		 (denote-dired-mode . (lambda ()
-;; 								(setq-local diredfl-mode nil)))))
-
 ;; (use-package dired-async
 ;;   :hook (dired-mode . dired-async-mode))
 
@@ -205,12 +203,17 @@ This function requires ImageMagick's convert utility to be installed and availab
 ;;                    (completing-read "Open in dired: " dirs nil t)))))))
 
 (use-package consult-dir
-  :load-path "packages/consult-dir/"
-  :commands consult-dir)
+  :ensure t
+  :bind (("C-x C-d" . consult-dir)
+         :map minibuffer-local-completion-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
 
 (use-package dired-sidebar
-  :load-path ("packages/dired-sidebar/" "packages/dired-hacks/")
-  :commands dired-sidebar-toggle-sidebar)
+  :ensure t
+  :bind ("C-x C-n" . dired-sidebar-toggle-sidebar)
+  :custom
+  (dired-sidebar-mode-line-format '("%e" my/winum "丨" mode-line-front-space mode-line-buffer-identification " " mode-line-end-spaces)))
 
 ;; Enhancing Dired Sorting With Transient
 ;; http://yummymelon.com/devnull/enhancing-dired-sorting-with-transient.html

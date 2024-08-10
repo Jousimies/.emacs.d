@@ -345,17 +345,16 @@ Specific to the current window's mode line.")
 				(vc-mode vc-mode)))
 
 (use-package keycast
-  :load-path "packages/keycast/"
+  :ensure t
   :commands keycast-mode-line-mode
+  :custom
+  (keycast-mode-line-format "%2s%k%c%R")
+  (keycast-mode-line-insert-after 'my/modeline-position)
+  (keycast-mode-line-window-predicate 'mode-line-window-selected-p)
+  (keycast-mode-line-remove-tail-elements nil)
   :config
-  (setq keycast-mode-line-format "%2s%k%c%R")
-  (setq keycast-mode-line-insert-after 'my/modeline-position)
-  (setq keycast-mode-line-window-predicate 'mode-line-window-selected-p)
-  (setq keycast-mode-line-remove-tail-elements nil)
-
   (dolist (input '(self-insert-command org-self-insert-command))
     (add-to-list 'keycast-substitute-alist `(,input "." "Typing…")))
-
   (dolist (event '(mouse-event-p mouse-movement-p mwheel-scroll))
     (add-to-list 'keycast-substitute-alist `(,event nil))))
 

@@ -5,7 +5,7 @@
 ;;; Code:
 
 (use-package vterm
-  :load-path "packages/emacs-libvterm/"
+  :ensure t
   :bind ("<f5>" . vterm)
   :config
   (setq vterm-kill-buffer-on-exit t)

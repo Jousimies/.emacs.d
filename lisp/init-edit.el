@@ -54,10 +54,11 @@
 (setopt save-place-file (expand-file-name "places" cache-directory))
 
 (use-package undo-fu-session
-  :load-path "packages/undo-fu-session/"
+  :ensure t
   :hook (on-first-file . undo-fu-session-global-mode)
+  :custom
+  (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory))
   :config
-  (setq undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory))
   (defun my/undo-fu-session--make-file-name (filename)
     "Take the path FILENAME and return a name base on this."
     (concat
@@ -67,13 +68,13 @@
   (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name))
 
 (use-package vundo
-  :load-path "packages/vundo/"
+  :ensure t
   :bind ("s-z" . vundo)
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package hungry-delete
-  :load-path "packages/hungry-delete/"
+  :ensure t
   :custom
   (hungry-delete-chars-to-skip " \t\n\r\f\v")
   :hook ((text-mode . hungry-delete-mode)
@@ -81,7 +82,7 @@
          (org-mode . hungry-delete-mode)))
 
 (use-package ace-pinyin
-  :load-path ("packages/ace-pinyin/" "packages/avy/" "packages/pinyinlib.el")
+  :ensure t
   :bind ([remap goto-char] . ace-pinyin-jump-char-2))
 
 (use-package hippie-exp
@@ -117,7 +118,7 @@
   (setq rime-user-data-dir "~/Library/Rime/"))
 
 (use-package tempel
-  :load-path "packages/tempel/"
+  :ensure t
   :bind (("M-+" . tempel-complete)
          ("M-*" . tempel-insert)
 		 (:map tempel-map
@@ -134,18 +135,18 @@
 ;;     :load-path "packages/yasnippet-snippets/"))
 
 (use-package expand-region
-  :load-path "packages/expand-region.el/"
+  :ensure t
   :bind ("C-=" . er/expand-region)
   :config
   (add-to-list 'expand-region-exclude-text-mode-expansions 'org-mode)
   (add-to-list 'expand-region-exclude-text-mode-expansions 'LaTeX-mode))
 
 (use-package surround
-  :load-path "packages/surround/"
+  :ensure t
   :commands surround-delete surround-change surround-insert)
 
 (use-package selected
-  :load-path "packages/selected.el/"
+  :ensure t
   :hook (post-select-region . selected-minor-mode)
   :bind (:map selected-keymap
               ("q" . selected-off)
@@ -167,7 +168,7 @@
 (global-set-key (kbd "s-c") #'my/copy-region)
 
 (use-package symbol-overlay
-  :load-path "packages/symbol-overlay/"
+  :ensure t
   :hook ((prog-mode . symbol-overlay-mode)
          (html-mode . symbol-overlay-mode))
   :bind (:map symbol-overlay-mode-map
@@ -175,7 +176,7 @@
               ("M-I" . symbol-overlay-remove-all)))
 
 (use-package rainbow-mode
-  :load-path "packages/rainbow-mode/"
+  :ensure t
   :hook (prog-mode . rainbow-mode))
 
 ;; pulse
@@ -235,29 +236,6 @@
 (global-set-key (kbd "M-P") #'my/move-line-up)
 (global-set-key (kbd "M-N") #'my/move-line-down)
 
-;; (use-package indent-bars
-;;   :load-path "packages/indent-bars/"
-;;   :hook (prog-mode . indent-bars-mode)
-;;   :config
-;;   (require 'indent-bars-ts)
-;;   :custom-face
-;;   (indent-bars-face ((t (:height 1.08))))
-;;   :custom
-;;   (indent-bars-treesit-support t)
-;;   (indent-bars-no-descend-string t)
-;;   (indent-bars-treesit-ignore-blank-lines-types '("module"))
-;;   (indent-bars-prefer-character t)
-;;   (indent-bars-treesit-wrap
-;;    '((python
-;; 	  argument_list
-;; 	  parameters ; for python, as an example
-;; 	  list
-;; 	  list_comprehension
-;; 	  dictionary
-;; 	  dictionary_comprehension
-;; 	  parenthesized_expression
-;; 	  subscript)))
-;;   (indent-bars-no-stipple-char ?\⎸))
 
 (provide 'init-edit)
 ;;; init-edit.el ends here

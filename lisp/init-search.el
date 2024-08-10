@@ -25,7 +25,7 @@
 ;;; Code:
 
 (use-package rg
-  :load-path ("packages/rg.el/" "packages/Emacs-wgrep")
+  :ensure t
   :bind ("C-c s". rg-menu)
   :config
   (add-to-list 'display-buffer-alist '("^\\*rg\\*"
@@ -68,7 +68,7 @@
 ;; (global-set-key (kbd "s-s") #'my/search)
 
 (use-package grab-mac-link
-  :load-path "packages/grab-mac-link.el/"
+  :ensure t
   :commands grab-mac-link-dwim grab-mac-link-safari-1)
 
 ;;;###autoload
@@ -83,7 +83,7 @@
       (format-network-address (car (network-interface-info dev)) t)))
 
 (use-package simple-httpd
-  :load-path "packages/emacs-web-server"
+  :ensure t
   :bind ("M-g s" . httpd-serve-directory)
   :config
   (setq httpd-host (format-network-address

@@ -19,8 +19,8 @@
                                          (window-width . 70))))
 
 (use-package osx-dictionary
-  :load-path "packages/osx-dictionary.el/"
-  :commands osx-dictionary-search-pointer osx-dictionary-search-input)
+  :ensure t
+  :defer t)
 
 (use-package sdcv
   :load-path "packages/sdcv/"
@@ -72,12 +72,8 @@
           "quick_eng-zh_CN")))
 
 (use-package powerthesaurus
-  :load-path ("packages/emacs-powerthesaurus/" "packages/jeison")
-  :commands (powerthesaurus-lookup-synonyms-dwim
-			 powerthesaurus-lookup-antonyms-dwim
-			 powerthesaurus-lookup-related-dwim
-			 powerthesaurus-lookup-definitions-dwim
-			 powerthesaurus-lookup-sentences-dwim))
+  :ensure t
+  :defer t)
 
 ;; (use-package popweb-dict
 ;;   :load-path ("packages/popweb/" "packages/popweb/extension/dict")
@@ -109,19 +105,19 @@
 ;;     (emacs-azure-tts 1))
 
 (use-package go-translate
-  :load-path "packages/go-translate/"
-  :commands gt-translate gt-do-translate gt-do-speak
+  :ensure t
+  :defer t
+  :custom
+  (gt-buffer-render-follow-p t)
+  (gt-langs '("en" "zh"))
+  (gt-default-translator (gt-translator :engines (gt-google-engine :cache 'word)
+										:render (list (gt-posframe-pop-render :if 'word :frame-params (list :border-width 0 :border-color "red"))
+													  (gt-buffer-render :then (gt-kill-ring-render)))))
   :config
   (add-to-list 'display-buffer-alist '("^\\*gt-result\\*"
                                        (display-buffer-in-side-window)
                                        (side . bottom)
-                                       (height . 0.3)))
-  (setq gt-buffer-render-follow-p t)
-  (setq gt-langs '("en" "zh"))
-
-  (setq gt-default-translator (gt-translator :engines (gt-google-engine :cache 'word)
-											 :render (list (gt-posframe-pop-render :if 'word :frame-params (list :border-width 0 :border-color "red"))
-														   (gt-buffer-render :then (gt-kill-ring-render))))))
+                                       (height . 0.3))))
 
 (use-package dictionary-overlay
   :load-path "packages/dictionary-overlay/" "packages/websocket-bridge/" "packages/emacs-websocket/"
@@ -134,18 +130,18 @@
   (dictionary-overlay-start))
 
 (use-package jinx
-  :load-path "packages/jinx/"
+  :ensure t
   :hook (org-mode . jinx-mode)
   :bind ("M-#" . jinx-correct)
   :config
   (add-to-list 'jinx-exclude-regexps '(t "\\cc")))
 
 (use-package writegood-mode
-  :load-path "packages/writegood-mode/"
-  :commands writegood-mode
-  :config
-  (setq writegood-weasel-words
-        '("very" "rather" "really" "quite" "in fact" "just" "so" "pretty" "of course" "surely" "that said" "actually")))
+  :ensure t
+  :defer t
+  :custom
+  (writegood-weasel-words
+   '("very" "rather" "really" "quite" "in fact" "just" "so" "pretty" "of course" "surely" "that said" "actually")))
 
 ;; lsp-bridge-toggle-sdcv-helper use pinyin to search english words,
 ;; Disable corfu-mode to turn off cape-dabbrev temporarily.

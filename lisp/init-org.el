@@ -199,7 +199,7 @@
 
 ;; org-indent-mode hide leading stars, sometimes cursor become invisible.
 (use-package org-superstar
-  :load-path "packages/org-superstar-mode/"
+  :ensure t
   :hook ((org-mode . org-superstar-mode)
 		 (org-superstar-mode . org-indent-mode))
   :config
@@ -208,7 +208,7 @@
 
 ;; Third party packages related to org-mode
 (use-package imenu-list
-  :load-path "packages/imenu-list/"
+  :ensure t
   :commands imenu-list-minor-mode
   :config
   (set-face-attribute 'imenu-list-entry-face-0 nil
@@ -222,7 +222,7 @@
   (setq-default imenu-list-mode-line-format nil))
 
 (use-package olivetti
-  :load-path "packages/olivetti/"
+  :ensure t
   :bind ("s-M-z" . olivetti-mode)
   :hook ((olivetti-mode-on . (lambda ()
                                (imenu-list-minor-mode 1)))
@@ -230,39 +230,12 @@
                                 (imenu-list-minor-mode -1)))))
 
 (use-package form-feed
-  :load-path "packages/form-feed/"
+  :ensure t
   :hook (org-mode . form-feed-mode))
-
-;; org-9.7-pre org-latex-preview
-;; (use-package org-latex-preview
-;;   :hook (org-mode . org-latex-preview-auto-mode))
-
-;; Emacs 30 math-preview do now work as expected.
-;; (use-package math-preview
-;;   :load-path "packages/math-preview/"
-;;   :commands math-preview-all math-preview-clear-all
-;;   :hook (find-file . (lambda ()
-;;                        (when (eq major-mode 'org-mode)
-;;                          (auto/math-preview-all))))
-;;   :config
-;;   (setq math-preview-scale 1.1)
-;;   (setq math-preview-raise 0.2)
-;;   (setq math-preview-margin '(1 . 0))
-;;   (add-to-list 'org-options-keywords "NO_MATH_PREVIEW:"))
 
 (use-package org-xlatex
   :load-path "packages/org-xlatex/"
   :hook (org-mode . org-xlatex-mode))
-
-;; (defun auto/math-preview-all ()
-;;   "Auto update clock table."
-;;   (interactive)
-;;   (when (derived-mode-p 'org-mode)
-;;     (save-excursion
-;;       (goto-char 0)
-;;       (unless (string-equal (cadar (org-collect-keywords '("NO_MATH_PREVIEW"))) "t")
-;;         (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
-;;           (math-preview-all))))))
 
 ;; Yank media
 (with-eval-after-load 'org
@@ -364,11 +337,26 @@
 
 ;; ox-latex
 (use-package ox-latex
-  :after org
+  :commands (org-latex-export-as-latex
+			 org-latex-convert-region-to-latex
+			 org-latex-export-as-latex
+			 org-latex-export-to-latex)
+  :custom
+  (org-latex-src-block-backend 'minted)
+  (org-latex-minted-options '(("breaklines" "true")
+                              ("breakanywhere" "true")))
+  (org-latex-prefer-user-labels t)
+  (org-latex-pdf-process
+   '("xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
+     "bibtex -shell-escape %b"
+     "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
+     "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
+     "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl"))
+  (org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
+                                   "out" "toc" "nav" "snm" "vrb" "dvi"
+                                   "fdb_latexmk" "blg" "brf" "fls"
+                                   "entoc" "ps" "spl" "bbl"))
   :config
-  (setq org-latex-src-block-backend 'minted)
-  (setq org-latex-minted-options '(("breaklines" "true")
-                                   ("breakanywhere" "true")))
   (setq org-latex-classes nil)
   (add-to-list 'org-latex-classes
                '("book"
@@ -408,21 +396,8 @@
                                       [EXTRA]"
                                     ("\\section{%s}" . "\\section*{%s}")
                                     ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
-  (setq org-latex-pdf-process
-        '("xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-          "bibtex -shell-escape %b"
-          "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-          "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-          "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl"))
-
-  (setq org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
-                                        "out" "toc" "nav" "snm" "vrb" "dvi"
-                                        "fdb_latexmk" "blg" "brf" "fls"
-                                        "entoc" "ps" "spl" "bbl"))
-
-  (setq org-latex-prefer-user-labels t))
 
 (provide 'init-org)
 ;;; init-org.el ends here.

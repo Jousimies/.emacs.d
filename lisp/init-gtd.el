@@ -93,13 +93,12 @@
 						 (org-agenda-overriding-header "Reading Lists")))))))
 
 (use-package org-gtd
-  :load-path ("packages/org-gtd.el/" "packages/org-agenda-property" "packages/org-edna")
-  :commands (org-gtd-process-inbox
-			 org-gtd-engage-grouped-by-context
-			 org-gtd-engage
-			 org-gtd-clarify-item
-			 org-gtd-clarify-agenda-item
-			 org-gtd-oops
+  :ensure t
+  :bind (:map org-gtd-clarify-map
+              ("C-c C-c" . org-gtd-organize))
+  :hook ((org-agenda-mode . org-gtd-mode)
+		 (org-mode . org-edna-mode))
+  :commands (org-gtd-oops
 			 org-gtd-review-area-of-focus
 			 org-gtd-review-stuck-projects
 			 org-gtd-review-stuck-calendar-items
@@ -109,8 +108,37 @@
 			 org-gtd-review-stuck-habit-items)
   :init
   (setq org-gtd-update-ack "3.0.0")
-  :hook ((org-agenda-mode . org-gtd-mode)
-		 (org-mode . org-edna-mode))
+  :preface
+  (defun my/org-gtd-engage ()
+	"Display `org-agenda' customized by org-gtd."
+	(interactive)
+	(org-gtd-core-prepare-agenda-buffers)
+	(with-org-gtd-context
+		(let* ((project-format-prefix
+				(format " %%i %%-%d:(org-gtd-agenda--prefix-format) "
+						org-gtd-engage-prefix-width))
+               (org-agenda-custom-commands
+				`(("g" "Scheduled today and all NEXT items"
+                   ((agenda "" ((org-agenda-span 1)
+								(org-deadline-warning-days 0)
+								(org-agenda-block-separator nil)
+								(org-agenda-skip-additional-timestamps-same-entry t)))
+					(tags-todo "*"
+							   ((org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
+								(org-agenda-skip-function '(org-agenda-skip-entry-if
+															'notregexp org-priority-regexp))
+								(org-agenda-block-separator nil)
+								(org-agenda-prefix-format '((tags . ,project-format-prefix)))
+								(org-agenda-sorting-strategy '(priority-down))
+								(org-agenda-overriding-header "Priority Tasks")))
+					(todo org-gtd-next
+						  ((org-agenda-skip-function '(org-agenda-skip-entry-if
+							                           'regexp org-priority-regexp))
+						   (org-agenda-overriding-header "All actions ready to be executed.")
+						   (org-agenda-sorting-strategy '(category-up tag-up))
+                           (org-agenda-prefix-format '((todo . ,project-format-prefix))))))))))
+          (org-agenda nil "g")
+          (goto-char (point-min)))))
   :custom
   (org-gtd-directory (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org" icloud))
   (org-agenda-property-list '("DELEGATED_TO"))
@@ -128,8 +156,6 @@
 							))
   (org-gtd-engage-prefix-width 24)
   (org-gtd-clarify-show-horizons 'right)
-  :bind ((:map org-gtd-clarify-map
-               ("C-c C-c" . org-gtd-organize)))
   :config
   (with-eval-after-load 'org-archive
 	;; use `org-archive-subtree' to archive done todos.
@@ -140,17 +166,17 @@
 		   "::datetree/"))))
 
 (use-package alert
-  :load-path "packages/alert/"
-  :commands alert
+  :ensure t
+  :defer t
+  :custom
+  (alert-default-style 'osx-notifier)
   :config
-  (setq alert-default-style 'osx-notifier))
-
-(defun my/alert-osx-notifier-notify (info)
-  (do-applescript (format "display notification %S with title %S"
-                          (plist-get info :message)
-                          (plist-get info :title)))
-  (alert-message-notify info))
-(advice-add 'alert-osx-notifier-notify :override #'my/alert-osx-notifier-notify)
+  (defun my/alert-osx-notifier-notify (info)
+	(do-applescript (format "display notification %S with title %S"
+							(plist-get info :message)
+							(plist-get info :title)))
+	(alert-message-notify info))
+  (advice-add 'alert-osx-notifier-notify :override #'my/alert-osx-notifier-notify))
 
 (defun org-clock--get-entries (file)
   (with-current-buffer (find-file-noselect file)
@@ -163,7 +189,7 @@
   "Returns a list of headline ancestors from closest parent to the farthest"
   (let ((ph (org-element-lineage element '(headline))))
     (if ph
-      (cons ph (org-clock--find-headlines ph)))))
+		(cons ph (org-clock--find-headlines ph)))))
 
 (defun org-clock--parse-element (element)
   (let* ((timestamp (org-element-property :value element))
@@ -176,11 +202,11 @@
 						(org-element-property :hour-start timestamp)
 						(org-element-property :minute-start timestamp)))
 		 (end (format "%s %s %s %s:%s"
-						(org-element-property :month-end timestamp)
-						(org-element-property :day-end timestamp)
-						(org-element-property :year-end timestamp)
-						(org-element-property :hour-end timestamp)
-						(org-element-property :minute-end timestamp))))
+					  (org-element-property :month-end timestamp)
+					  (org-element-property :day-end timestamp)
+					  (org-element-property :year-end timestamp)
+					  (org-element-property :hour-end timestamp)
+					  (org-element-property :minute-end timestamp))))
 	(list :headline headline-values
 		  :start start
 		  :end end)))
@@ -218,10 +244,10 @@
 		(unless (featurep 'async)
 		  (require 'async))
 		(async-start
-           `(lambda ()
-              (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
-           (lambda (_)
-			 (message "Async execution completed.")))))))
+         `(lambda ()
+            (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
+         (lambda (_)
+		   (message "Async execution completed.")))))))
 
 (add-hook 'org-clock-out-hook #'my/org-clock-to-calendar)
 
@@ -274,7 +300,6 @@
 		 (message "Async execution completed."))))))
 
 (add-hook 'org-after-todo-state-change-hook #'my/done-task-to-calendar)
-
 
 
 (provide 'init-gtd)

@@ -93,41 +93,25 @@
 
 ;; load-path
 (add-to-list 'load-path "~/.emacs.d/packages/compat/")
-(add-to-list 'load-path "~/.emacs.d/packages/dash.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/f.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/s.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/posframe/")
 (add-to-list 'load-path "~/.emacs.d/packages/emacs-async/")
 (add-to-list 'load-path "~/.emacs.d/packages/on.el/")
 (require 'on)
 
-;; icons
-(use-package nerd-icons
-  :load-path "packages/nerd-icons.el/"
-  :commands nerd-icons-codicon nerd-icons-faicon nerd-icons-icon-for-file
-  :config
-  (setq nerd-icons-font-family "Symbols Nerd Font Mono"))
 
 ;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
 (defvar icloud "~/Library/Mobile Documents/"
   "This folder contains documents in icloud.")
-
 (defvar nextcloud "~/Nextcloud"
   "This folder is My cloud.")
-
 ;; L.Personal.Galaxy location may change, but folders in this directory never change.
 (defvar my-galaxy (expand-file-name "L.Personal.Galaxy" nextcloud)
   "This folder stores all the plain text files of my life.")
-
 (defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
   "The source folder of my blog.")
-
 (defvar my-pictures (expand-file-name "pictures/" my-galaxy)
   "The folder save pictures.")
-
 (defvar my-web_archive (expand-file-name "web_archive/" my-galaxy)
   "The folder save web pages.")
-
 (defvar cache-directory (expand-file-name ".cache" user-emacs-directory))
 
 ;; Adjust alpha background
@@ -167,14 +151,15 @@
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh
-  :load-path "packages/gcmh"
+  :ensure t
   :hook (on-first-file . gcmh-mode)
+  :custom
+  (gc-cons-percentage 0.1)
+  (gcmh-idle-delay 'auto)
+  (gcmh-auto-idle-delay-factor 10)
+  (gcmh-high-cons-threshold #x1000000)
   :config
-  (advice-add 'after-focus-change-function :after 'garbage-collect)
-  (setq gc-cons-percentage 0.1)
-  (setq gcmh-idle-delay 'auto)
-  (setq gcmh-auto-idle-delay-factor 10)
-  (setq gcmh-high-cons-threshold #x1000000))
+  (advice-add 'after-focus-change-function :after 'garbage-collect))
 
 (provide 'init-core)
 ;;; init-core.el ends here

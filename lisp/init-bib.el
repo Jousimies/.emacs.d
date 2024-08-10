@@ -4,57 +4,60 @@
 
 ;;; Code:
 
-(add-to-list 'load-path "~/.emacs.d/packages/parsebib/")
-
 (defvar my/reference-lists `(,(concat my-galaxy "/bibtexs/References.bib")
                              ,(concat my-galaxy "/bibtexs/Books.bib")))
 
+;; Builtin package
 (with-eval-after-load 'oc
   (setq org-cite-global-bibliography my/reference-lists))
 
+;; Builtin package
 (use-package bibtex
   :mode ("\\.bib\\'" . bibtex-mode)
-  :config
-  (setq bibtex-align-at-equal-sign t)
-  (setq bibtex-autokey-year-length 4
-        bibtex-autokey-name-year-separator "-"
-        bibtex-autokey-year-title-separator "-"
-        bibtex-autokey-titleword-separator "-"
-        bibtex-autokey-titlewords 2
-        bibtex-autokey-titlewords-stretch 1
-        bibtex-autokey-titleword-length 5))
+  :custom
+  (bibtex-align-at-equal-sign t)
+  (bibtex-autokey-year-length 4)
+  (bibtex-autokey-name-year-separator "-")
+  (bibtex-autokey-year-title-separator "-")
+  (bibtex-autokey-titleword-separator "-")
+  (bibtex-autokey-titlewords 2)
+  (bibtex-autokey-titlewords-stretch 1)
+  (bibtex-autokey-titleword-length 5))
 
 (use-package citar
-  :load-path "packages/citar/"
-  :commands citar-open-files citar-open citar-create-note citar-insert-citation
+  :ensure t
+  :hook ((LaTeX-mode . citar-capf-setup)
+         (org-mode . citar-capf-setup))
+  :commands citar-create-note
   :config
-  (setq citar-indicator-files (citar-indicator-create
-							   :symbol (nerd-icons-faicon "nf-fa-file_pdf_o"
-														  :face 'nerd-icons-green
-														  :v-adjust -0.1)
-							   :function #'citar-has-files
-							   :padding "  " ; need this because the default padding is too low for these anticonscription
-							   :tag "has:files"))
-  (setq citar-indicator-links (citar-indicator-create
-							   :symbol (nerd-icons-faicon "nf-fa-link"
-														  :face 'nerd-icons-orange
-														  :v-adjust 0.01)
-							   :function #'citar-has-links
-							   :padding "  "
-							   :tag "has:links"))
-  (setq citar-indicator-notes (citar-indicator-create
-							   :symbol (nerd-icons-faicon "nf-fa-sticky_note_o"
-														   :face 'nerd-icons-blue
-														   :v-adjust 0)
-							   :function #'citar-has-notes
-							   :padding "    "
-							   :tag "has:notes"))
-  (setq citar-indicator-cited (citar-indicator-create
-							   :symbol (nerd-icons-faicon "nf-fa-circle_o"
-														  :face 'nerd-icon-green)
-							   :function #'citar-is-cited
-							   :padding "  "
-							   :tag "is:cited"))
+  (with-eval-after-load 'nerd-icons
+	(setq citar-indicator-files (citar-indicator-create
+								 :symbol (nerd-icons-faicon "nf-fa-file_pdf_o"
+															:face 'nerd-icons-green
+															:v-adjust -0.1)
+								 :function #'citar-has-files
+								 :padding "  " ; need this because the default padding is too low for these anticonscription
+								 :tag "has:files"))
+	(setq citar-indicator-links (citar-indicator-create
+								 :symbol (nerd-icons-faicon "nf-fa-link"
+															:face 'nerd-icons-orange
+															:v-adjust 0.01)
+								 :function #'citar-has-links
+								 :padding "  "
+								 :tag "has:links"))
+	(setq citar-indicator-notes (citar-indicator-create
+								 :symbol (nerd-icons-faicon "nf-fa-sticky_note_o"
+															:face 'nerd-icons-blue
+															:v-adjust 0)
+								 :function #'citar-has-notes
+								 :padding "    "
+								 :tag "has:notes"))
+	(setq citar-indicator-cited (citar-indicator-create
+								 :symbol (nerd-icons-faicon "nf-fa-circle_o"
+															:face 'nerd-icon-green)
+								 :function #'citar-is-cited
+								 :padding "  "
+								 :tag "is:cited")))
   (setq citar-indicators (list citar-indicator-links
                                citar-indicator-files
                                citar-indicator-notes
@@ -73,27 +76,19 @@
   (add-hook 'minibuffer-setup-hook
             (lambda () (setq-local truncate-lines t))))
 
-(use-package citar-latex
-  :after tex)
-
-(use-package citar-capf
-  :hook ((LaTeX-mode . citar-capf-setup)
-         (org-mode . citar-capf-setup)))
-
-(with-eval-after-load 'citar-org
-  (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point))
-
 (with-eval-after-load 'org
   (with-eval-after-load 'oc
 	(define-key org-mode-map [remap org-cite-insert] #'citar-insert-citation)
 	(require 'citar-org)
+	(define-key citar-org-citation-map (kbd "RET") 'org-open-at-point)
 	(with-eval-after-load 'citar
 	  (setq org-cite-insert-processor 'citar)
 	  (setq org-cite-follow-processor 'citar)
 	  (setq org-cite-activate-processor 'citar))))
 
 (use-package citar-embark
-  :after citar
+  :ensure t
+  :after citar embark
   :hook (org-mode . citar-embark-mode))
 
 ;; Another zotero package
@@ -103,28 +98,24 @@
 ;; Create and yank bibtex entry from a DOI
 ;; I use zotra to get bibtex entry.
 (use-package zotra
-  :load-path "packages/zotra/"
+  :ensure t
   :commands zotra-add-entry
-  :config
-  (setq zotra-backend 'zotra-server)
-  (setq zotra-local-server-directory "~/zotra-server/"))
+  :custom
+  (zotra-backend 'zotra-server)
+  (zotra-local-server-directory "~/zotra-server/"))
 
 ;; Another package for browsing and fetching references.
 (use-package biblio
-  :load-path "packages/biblio.el/"
-  :commands biblio-lookup biblio-crossref-lookup)
-
-;; There are encoding errors.
-;; (use-package biblio-gbooks
-;;   :load-path "packages/biblio-gbooks/")
+  :ensure t
+  :defer t)
 
 (use-package scihub
-  :load-path "packages/scihub.el/"
-  :commands scihub
-  :config
-  (setq scihub-download-directory "~/Downloads/"
-		scihub-open-after-download t
-		scihub-fetch-domain 'scihub-fetch-domains-lovescihub))
+  :ensure t
+  :defer t
+  :custom
+  (scihub-download-directory "~/Downloads/")
+  (scihub-open-after-download t)
+  (scihub-fetch-domain 'scihub-fetch-domains-lovescihub))
 
 ;; Need install bibutils.
 ;; https://sourceforge.net/p/bibutils/home/Bibutils/

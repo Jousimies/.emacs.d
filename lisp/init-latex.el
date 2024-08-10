@@ -9,11 +9,10 @@
 
 ;; AucTeX
 (use-package tex
-  :load-path "packages/auctex"
+  :ensure auctex
   :defer 2
   :init
   (load "auctex.el" nil t t)
-  (load "preview-latex.el" nil t t)
   :custom
   (TeX-data-directory "~/.emacs.d/packages/auctex")
   (TeX-lisp-directory TeX-data-directory)
@@ -53,7 +52,7 @@
               ("C-c h ." . TeX-doc)))
 
 (use-package auctex-latexmk
-  :load-path "packages/auctex-latexmk/"
+  :ensure t
   :hook (LaTeX-mode . auctex-latexmk-setup))
 
 (use-package reftex
@@ -65,17 +64,16 @@
   (setq reftex-toc-split-windows-fraction 0.25))
 
 (use-package cdlatex
-  :load-path "packages/cdlatex/"
+  :ensure t
   :hook (LaTeX-mode . turn-on-cdlatex))
 
-;; (use-package preview-auto
-;;   :load-path "packages/preview-auto.el/"
-;;   :hook (LaTeX-mode . preview-auto-mode))
-
-;; use org-latex-preview in org 9.7-pre instead
-;; (use-package popweb-latex
-;;   :load-path "packages/popweb/" "packages/popweb/extension/latex/"
-;;   :hook (LaTeX-mode . popweb-latex-mode))
+(use-package preview-auto
+  :ensure t
+  :custom
+  (preview-protect-point t)
+  (preview-locating-previews-message nil)
+  (preview-leave-open-previews-visible t)
+  :hook (LaTeX-mode . preview-auto-mode))
 
 (provide 'init-latex)
 ;;; init-latex.el ends here.
