@@ -10,7 +10,12 @@
 
 ;;; Code:
 
-(use-package dictionary)
+(use-package dictionary
+  :config
+  (add-to-list 'display-buffer-alist '("^\\*Dictionary\\*"
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 70))))
 
 (use-package osx-dictionary)
 

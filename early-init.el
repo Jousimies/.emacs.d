@@ -43,6 +43,7 @@
 (when (eq system-type 'darwin)
   (set-exec-path-from-shell-PATH))
 
+;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
 (setq-default inhibit-redisplay t
               inhibit-message t)
 (add-hook 'window-setup-hook
@@ -51,11 +52,6 @@
                           inhibit-message nil)
             (redisplay)))
 
-;; use package.el install packages
-(setq package-enable-at-startup nil)
-(setq use-package-enable-imenu-support t)
-
-;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(scroll-bar-width . 5) default-frame-alist)
@@ -66,7 +62,7 @@
 
 (define-fringe-bitmap 'right-curly-arrow  [])
 (define-fringe-bitmap 'left-curly-arrow  [])
-(blink-cursor-mode -1)
+
 
 (setq ns-use-native-fullscreen nil)
 (defun my/apply-theme (appearance)
@@ -79,6 +75,12 @@
 
 (setq byte-compile-warnings nil)
 
+;; Hide information
+;; For information about GNU Emacs and the GNU system, type <f1> C-a.
 (fset 'display-startup-echo-area-message 'ignore)
+
+;; use package.el install packages
+(setq package-enable-at-startup nil)
+(setq use-package-enable-imenu-support t)
 
 ;;; early-init.el ends here

@@ -43,6 +43,12 @@
          ([remap describe-variable] . helpful-variable)
          ([remap describe-key] . helpful-key))
   :config
+  (add-to-list 'display-buffer-alist '("\\*helpful"
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 0.5)
+                                       (window-parameters
+                                        (mode-line-format . none))))
   (use-package elisp-demos
 	:config
 	(advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)))
@@ -183,26 +189,6 @@
   :custom
   (winum-auto-setup-mode-line nil))
 
-(use-package window
-  :config
-  (add-to-list 'display-buffer-alist '("^\\*Dictionary\\*"
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (window-width . 70)))
-  (add-to-list 'display-buffer-alist '("^\\*rg\\*"
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (window-width . 0.5)))
-  (add-to-list 'display-buffer-alist '("^\\*gt-result\\*"
-                                       (display-buffer-in-side-window)
-                                       (side . bottom)
-                                       (height . 0.3)))
-  (add-to-list 'display-buffer-alist '("\\*helpful"
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (window-width . 0.5)
-                                       (window-parameters
-                                        (mode-line-format . none)))))
 
 (provide 'init-buffer)
 ;;; init-buffer.el ends here

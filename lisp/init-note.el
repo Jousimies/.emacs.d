@@ -27,8 +27,8 @@
   (denote-rename-buffer-format "%b %t") ;;
   (denote-buffer-has-backlinks-string ""))
 
-(defun my/ef-themes-denote-faces (&rest _)
-  (ef-themes-with-colors
+(defun my/modus-themes-denote-faces (&rest _)
+  (modus-themes-with-colors
     (custom-set-faces
      `(denote-faces-year ((,c :foreground ,cyan)))
      `(denote-faces-month ((,c :foreground ,magenta-warmer)))
@@ -38,7 +38,7 @@
      `(denote-faces-minute ((,c :foreground ,cyan)))
      `(denote-faces-second ((,c :foreground ,magenta-warmer))))))
 
-(add-hook 'ns-system-appearance-change-functions #'my/ef-themes-denote-faces)
+(add-hook 'ns-system-appearance-change-functions #'my/modus-themes-denote-faces)
 
 ;; A simple HACK to let denote support orderless
 ;; https://github.com/protesilaos/denote/issues/253

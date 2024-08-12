@@ -1,6 +1,3 @@
-[submodule "packages/compat"]
-	path = packages/compat
-	url = https://github.com/emacs-compat/compat.git
 [submodule "packages/with-editor"]
 	path = packages/with-editor
 	url = https://github.com/magit/with-editor.git
@@ -13,9 +10,6 @@
 [submodule "packages/annalist.el"]
 	path = packages/annalist.el
 	url = https://github.com/noctuid/annalist.el.git
-[submodule "packages/emacs-async"]
-	path = packages/emacs-async
-	url = https://github.com/jwiegley/emacs-async.git
 [submodule "packages/forge"]
 	path = packages/forge
 	url = https://github.com/magit/forge.git
@@ -25,12 +19,6 @@
 [submodule "packages/treepy.el"]
 	path = packages/treepy.el
 	url = https://github.com/volrath/treepy.el.git
-[submodule "packages/elisp-demos"]
-	path = packages/elisp-demos
-	url = https://github.com/xuchunyang/elisp-demos.git
-[submodule "packages/elisp-refs"]
-	path = packages/elisp-refs
-	url = https://github.com/Wilfred/elisp-refs.git
 [submodule "packages/emacs-undo-fu"]
 	path = packages/emacs-undo-fu
 	url = https://codeberg.org/ideasman42/emacs-undo-fu.git
@@ -67,9 +55,6 @@
 [submodule "packages/yasnippet"]
 	path = packages/yasnippet
 	url = https://github.com/joaotavora/yasnippet.git
-[submodule "packages/Emacs-wgrep"]
-	path = packages/Emacs-wgrep
-	url = https://github.com/mhayashi1120/Emacs-wgrep.git
 [submodule "packages/yasnippet-snippets"]
 	path = packages/yasnippet-snippets
 	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
@@ -172,12 +157,6 @@
 [submodule "packages/rainbow-identifiers"]
 	path = packages/rainbow-identifiers
 	url = https://github.com/Fanael/rainbow-identifiers.git
-[submodule "packages/ace-window"]
-	path = packages/ace-window
-	url = https://github.com/abo-abo/ace-window.git
-[submodule "packages/avy"]
-	path = packages/avy
-	url = https://github.com/abo-abo/avy.git
 [submodule "packages/jeison"]
 	path = packages/jeison
 	url = https://github.com/SavchenkoValeriy/jeison.git
@@ -205,9 +184,6 @@
 [submodule "packages/org-side-tree"]
 	path = packages/org-side-tree
 	url = https://github.com/localauthor/org-side-tree.git
-[submodule "packages/company-mode"]
-	path = packages/company-mode
-	url = https://github.com/company-mode/company-mode.git
 [submodule "packages/pdfannots"]
 	path = packages/pdfannots
 	url = https://github.com/0xabu/pdfannots.git

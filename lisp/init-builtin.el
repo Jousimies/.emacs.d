@@ -33,6 +33,8 @@
 (add-hook 'on-first-file-hook #'size-indication-mode)
 (add-hook 'org-mode-hook #'visual-line-mode)
 
+(add-hook 'on-first-buffer-hook (lambda ()
+								  (mouse-avoidance-mode 'banish)))
 (setopt mark-ring-max 128
         kill-do-not-save-duplicates t
         kill-ring-max (* kill-ring-max 2)
