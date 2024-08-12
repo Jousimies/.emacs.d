@@ -10,13 +10,7 @@
 
 ;;; Code:
 
-(use-package dictionary
-  :commands dictionary-lookup-definition
-  :config
-  (add-to-list 'display-buffer-alist '("^\\*Dictionary\\*"
-                                         (display-buffer-in-side-window)
-                                         (side . right)
-                                         (window-width . 70))))
+(use-package dictionary)
 
 (use-package osx-dictionary)
 
@@ -70,47 +64,19 @@
           "quick_eng-zh_CN")))
 
 (use-package powerthesaurus)
-;; (use-package popweb-dict
-;;   :load-path ("packages/popweb/" "packages/popweb/extension/dict")
-;;   :commands popweb-dict-say-word
-;;   :config
-;;   (setq popweb-config-location (expand-file-name "popweb" cache-directory)))
-
-;; (use-package emacs-azure-tts
-;;   :load-path "packages/emacs-azure-tts/"
-;;   :commands emacs-azure-tts
-;;   :preface
-;;   (defun play-sound-internal (sound)
-;;   "Internal function for `play-sound' (which see)."
-;;   (or (eq (car-safe sound) 'sound)
-;;       (signal 'wrong-type-argument (list sound)))
-
-;;   (cl-destructuring-bind (&key file data volume device)
-;;       (cdr sound)
-
-;;     (and (or data device)
-;;          (error "DATA and DEVICE arg not supported"))
-
-;;     (apply #'start-process "afplay" nil
-;;            "afplay" (append (and volume (list "-v" volume))
-;;                             (list (expand-file-name file data-directory)))))))
-
-;; (defun emacs-azure-tts-sentence ()
-;;     (interactive)
-;;     (emacs-azure-tts 1))
 
 (use-package go-translate
   :custom
   (gt-buffer-render-follow-p t)
   (gt-langs '("en" "zh"))
   (gt-default-translator (gt-translator :engines (gt-google-engine :cache 'word)
-										:render (list (gt-posframe-pop-render :if 'word :frame-params (list :border-width 0 :border-color "red"))
+										:render (list (gt-posframe-pop-render :if 'word
+																			  :frame-params
+																			  (list :border-width 1
+																					))
 													  (gt-buffer-render :then (gt-kill-ring-render)))))
-  :config
-  (add-to-list 'display-buffer-alist '("^\\*gt-result\\*"
-                                       (display-buffer-in-side-window)
-                                       (side . bottom)
-                                       (height . 0.3))))
+  (gt-default-http-client (gt-url-http-client :proxies '(("http" . "localhost:7890")
+														 ("https" . "localhost:7890")))))
 
 (use-package dictionary-overlay
   :load-path "packages/dictionary-overlay/" "packages/websocket-bridge/" "packages/emacs-websocket/"

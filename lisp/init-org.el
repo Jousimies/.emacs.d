@@ -201,23 +201,15 @@
 (use-package org-superstar
   :hook ((org-mode . org-superstar-mode)
 		 (org-superstar-mode . org-indent-mode))
-  :config
-  (setq org-hide-leading-stars t)
-  (setq org-superstar-headline-bullets-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼")))
+  :custom
+  (org-hide-leading-stars t)
+  (org-superstar-headline-bullets-list '("󰼏" "󰼐" "󰼑" "󰼒" "󰼓" "󰼔" "󰼕")))
 
 ;; Third party packages related to org-mode
 (use-package imenu-list
-  :commands imenu-list-minor-mode
-  :config
-  (set-face-attribute 'imenu-list-entry-face-0 nil
-                      :foreground (face-foreground 'ef-themes-heading-1)
-                      :inherit 'bold)
-  (set-face-attribute 'imenu-list-entry-face-1 nil
-                      :foreground (face-foreground 'ef-themes-heading-2)
-                      :inherit 'bold)
-
-  (setq imenu-list-position 'left)
-  (setq-default imenu-list-mode-line-format nil))
+  :custom
+  (imenu-list-position 'left)
+  (imenu-list-mode-line-format nil))
 
 (use-package olivetti
   :bind ("s-M-z" . olivetti-mode)
@@ -227,7 +219,8 @@
                                 (imenu-list-minor-mode -1)))))
 
 (use-package form-feed
-  :hook (org-mode . form-feed-mode))
+  :hook ((org-mode . form-feed-mode)
+		 (emacs-news-mode . form-feed-mode)))
 
 (use-package org-xlatex
   :load-path "packages/org-xlatex/"

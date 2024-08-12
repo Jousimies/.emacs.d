@@ -29,38 +29,62 @@
 ;;
 
 ;;; Code:
-
-(when (and (eq system-type 'darwin) (executable-find "gls"))
-    (setopt dired-use-ls-dired nil
-			insert-directory-program "gls"
-			dired-listing-switches
+(use-package dired
+  :ensure nil
+  :if (and (eq system-type 'darwin)
+		   (executable-find "gls"))
+  :custom
+  (dired-use-ls-dired nil)
+  (insert-directory-program "gls")
+  (dired-listing-switches
 			"-l --almost-all --human-readable --group-directories-first --no-group"))
 
-(setopt dired-dwim-target t
-		dired-auto-revert-buffer #'dired-buffer-stale-p
-		dired-recursive-copies 'always
-		dired-recursive-deletes 'top
-		dired-auto-revert-buffer t)
+(use-package dired
+  :ensure nil
+  :bind (:map dired-mode-map
+			  ("C-'" . my/org-attach-visit-headline-from-dired))
+  :hook (dired-mode . (lambda ()
+						(setq-local truncate-lines t)))
+  :custom
+  (dired-dwim-target t)
+  (dired-auto-revert-buffer #'dired-buffer-stale-p)
+  (dired-recursive-copies 'always)
+  (dired-recursive-deletes 'top)
+  (dired-auto-revert-buffer t)
+  (dired-filename-display-length 'window)
+  :preface
+  (defun my/org-attach-visit-headline-from-dired ()
+	"Go to the headline corresponding to this org-attach directory."
+	(interactive)
+	(require 'org-attach)
+	(let* ((path (replace-regexp-in-string (regexp-quote org-attach-directory) "" (expand-file-name (dired-filename-at-point))))
+           (id-parts (split-string path "/"))
+           (id1 (nth 1 id-parts))
+           (id2 (nth 2 id-parts))
+           (id (concat id1 id2)))
+      (let ((m (org-id-find id 'marker)))
+		(unless m (user-error "Cannot find entry with ID \"%s\"" id))
+		(pop-to-buffer (marker-buffer m))
+		(goto-char m)
+		(move-marker m nil)
+		(org-fold-show-context)))))
 
 ;; dired-do-shell-command, open file with default application.
 (let ((cmd (cond ((and (eq system-type 'darwin) (display-graphic-p)) "open")
-                   ((and (eq system-type 'gnu/linux) (display-graphic-p)) "xdg-open")
-                   ((and (eq system-type 'windows-nt) (display-graphic-p)) "start")
-                   (t ""))))
-    (setq dired-guess-shell-alist-user
-          `(("\\.\\(?:docx\\|doc\\|xlsx\\|xls\\|ppt\\|pptx\\)\\'" ,cmd)
-			("\\.\\(?:eps\\|dwg\\|psd\\|drawio\\)\\'" ,cmd)
-            ("\\.\\(?:djvu\\|eps\\)\\'" ,cmd)
-            ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" ,cmd)
-            ("\\.\\(?:xcf\\)\\'" ,cmd)
-			("\\.\\(?:epub\\|pdf\\)\\'" ,cmd)
-            ("\\.csv\\'" ,cmd)
-            ("\\.tex\\'" ,cmd)
-            ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\)\\(?:\\.part\\)?\\'" ,cmd)
-            ("\\.\\(?:mp3\\|flac\\)\\'" ,cmd))))
-
-(add-hook 'dired-mode-hook
-          (lambda () (setq-local truncate-lines t)))
+                 ((and (eq system-type 'gnu/linux) (display-graphic-p)) "xdg-open")
+                 ((and (eq system-type 'windows-nt) (display-graphic-p)) "start")
+                 (t ""))))
+  (setq dired-guess-shell-alist-user
+        `(("\\.\\(?:docx\\|doc\\|xlsx\\|xls\\|ppt\\|pptx\\)\\'" ,cmd)
+		  ("\\.\\(?:eps\\|dwg\\|psd\\|drawio\\)\\'" ,cmd)
+          ("\\.\\(?:djvu\\|eps\\)\\'" ,cmd)
+          ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" ,cmd)
+          ("\\.\\(?:xcf\\)\\'" ,cmd)
+		  ("\\.\\(?:epub\\|pdf\\)\\'" ,cmd)
+          ("\\.csv\\'" ,cmd)
+          ("\\.tex\\'" ,cmd)
+          ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\)\\(?:\\.part\\)?\\'" ,cmd)
+          ("\\.\\(?:mp3\\|flac\\)\\'" ,cmd))))
 
 (defun z/dired-insert-date-folder ()
   "Create new directory with current date"
@@ -96,33 +120,17 @@
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "<return>") 'open-with-default-app))
 
-(setopt dired-omit-verbose nil
-		dired-omit-files "^\\.[^.].*")
-(add-hook 'dired-mode-hook #'dired-omit-mode)
-(add-hook 'dired-mode-hook #'dired-hide-details-mode)
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "s-.") #'dired-omit-mode)
-  (define-key dired-mode-map (kbd "C-c i") #'image-dired)
-  (define-key dired-mode-map (kbd "s-/ l") #'org-store-link))
-
-(defun my/org-attach-visit-headline-from-dired ()
-  "Go to the headline corresponding to this org-attach directory."
-  (interactive)
-  (require 'org-attach)
-  (let* ((path (replace-regexp-in-string (regexp-quote org-attach-directory) "" (expand-file-name (dired-filename-at-point))))
-         (id-parts (split-string path "/"))
-         (id1 (nth 1 id-parts))
-         (id2 (nth 2 id-parts))
-         (id (concat id1 id2)))
-    (let ((m (org-id-find id 'marker)))
-      (unless m (user-error "Cannot find entry with ID \"%s\"" id))
-      (pop-to-buffer (marker-buffer m))
-      (goto-char m)
-      (move-marker m nil)
-      (org-fold-show-context))))
-
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-'") #'my/org-attach-visit-headline-from-dired))
+(use-package dired-x
+  :ensure nil
+  :hook ((dired-mode . dired-omit-mode)
+		 (dired-mode . dired-hide-details-mode))
+  :bind (:map dired-mode-map
+			  ("s-." . dired-omit-mode)
+			  ("C-c i" . image-dired)
+			  ("s-/ l" . org-store-link))
+  :custom
+  (dired-omit-verbose nil)
+  (dired-omit-files "^\\.[^.].*"))
 
 ;; Preview file in Dired.
 (when (eq system-type 'darwin)
@@ -139,17 +147,15 @@
   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package dired-preview
-  :commands dired-preview-mode
-  :config
-  (setq dired-preview-delay 0.0)
-  (setq dired-preview-max-size (expt 2 20))
-
-  (setq dired-preview-ignored-extensions-regexp
-		(concat "\\."
-				"\\(mkv\\|webm\\|mp4\\|mp3\\|ogg\\|m4a"
-				"\\|gz\\|zst\\|tar\\|xz\\|rar\\|zip"
-				;; "\\|png\\|jpg\\|jpeg"
-				"\\|iso\\|epub\\|pdf\\)")))
+  :custom
+  (dired-preview-delay 0.0)
+  (dired-preview-max-size (expt 2 20))
+  (dired-preview-ignored-extensions-regexp
+   (concat "\\."
+		   "\\(mkv\\|webm\\|mp4\\|mp3\\|ogg\\|m4a"
+		   "\\|gz\\|zst\\|tar\\|xz\\|rar\\|zip"
+		   ;; "\\|png\\|jpg\\|jpeg"
+		   "\\|iso\\|epub\\|pdf\\)")))
 
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "P") #'dired-preview-mode))

@@ -43,12 +43,6 @@
          ([remap describe-variable] . helpful-variable)
          ([remap describe-key] . helpful-key))
   :config
-  (add-to-list 'display-buffer-alist '("\\*helpful"
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (window-width . 0.5)
-                                       (window-parameters
-                                        (mode-line-format . none))))
   (use-package elisp-demos
 	:config
 	(advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)))
@@ -58,19 +52,19 @@
          ("M-s-w" . persp-kill))
   :custom
   (persp-mode-prefix-key (kbd "C-c z"))
+  (tab-bar-format '(tab-bar-format-persp
+					tab-bar-format-tabs
+					tab-bar-separator
+					tab-bar-format-align-right
+					my/tab-bar-format-right))
+  (persp-state-default-file (expand-file-name "persp" cache-directory))
   :hook ((emacs-startup . persp-mode)
          (kill-emacs . persp-state-save))
   :config
-  (setq persp-state-default-file (expand-file-name "persp" cache-directory))
   (with-eval-after-load 'tab-bar
     (defun tab-bar-format-persp ()
       (setq global-mode-string (delete '(:eval (persp-mode-line)) global-mode-string))
-      `((global menu-item ,(format-mode-line (persp-mode-line)) ignore)))
-	(setopt tab-bar-format '(tab-bar-format-persp
-							 tab-bar-format-tabs
-							 tab-bar-separator
-							 tab-bar-format-align-right
-							 my/tab-bar-format-right)))
+      `((global menu-item ,(format-mode-line (persp-mode-line)) ignore))))
   (dotimes (i 9)
 	(global-set-key (kbd (concat "M-s-" (number-to-string (1+ i))))
 					`(lambda () (interactive) (persp-switch-by-number ,(1+ i))))))
@@ -186,8 +180,29 @@
             (define-key map (kbd (concat "C-" (int-to-string num)))
                         (my/winum-select num)))
           map))
+  :custom
+  (winum-auto-setup-mode-line nil))
+
+(use-package window
   :config
-  (setq winum-auto-setup-mode-line nil))
+  (add-to-list 'display-buffer-alist '("^\\*Dictionary\\*"
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 70)))
+  (add-to-list 'display-buffer-alist '("^\\*rg\\*"
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 0.5)))
+  (add-to-list 'display-buffer-alist '("^\\*gt-result\\*"
+                                       (display-buffer-in-side-window)
+                                       (side . bottom)
+                                       (height . 0.3)))
+  (add-to-list 'display-buffer-alist '("\\*helpful"
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 0.5)
+                                       (window-parameters
+                                        (mode-line-format . none)))))
 
 (provide 'init-buffer)
 ;;; init-buffer.el ends here

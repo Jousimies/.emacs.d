@@ -3,7 +3,7 @@
 ;;; Commentary:
 
 ;;; Code:
-
+(use-package async)
 
 (defun yt-set-time (time)
   "Set TIME in the YouTube link at point.)
@@ -53,6 +53,10 @@
     (error "Not on a Youtube link")))
 
 (use-package snow)
+
+(use-package 2048-game)
+
+(use-package sudoku)
 
 (defun my/wallpaper-set ()
   (interactive)

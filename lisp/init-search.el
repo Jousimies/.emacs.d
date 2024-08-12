@@ -27,10 +27,6 @@
 (use-package rg
   :bind ("C-c s". rg-menu)
   :config
-  (add-to-list 'display-buffer-alist '("^\\*rg\\*"
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (window-width . 0.5)))
   ;; https://github.com/dajva/rg.el/issues/142#issuecomment-1452525225
   (add-to-list 'rg-finish-functions (lambda (buffer _) (pop-to-buffer buffer)))
   (rg-enable-default-bindings)
@@ -82,10 +78,10 @@
 
 (use-package simple-httpd
   :bind ("M-g s" . httpd-serve-directory)
-  :config
-  (setq httpd-host (format-network-address
-					(car (network-interface-info "en0"))
-					t)))
+  :custom
+  (httpd-host (format-network-address
+			   (car (network-interface-info "en0"))
+			   t)))
 
 
 (provide 'init-search)

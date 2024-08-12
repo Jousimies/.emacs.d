@@ -6,9 +6,9 @@
 
 (use-package vterm
   :bind ("<f5>" . vterm)
-  :config
-  (setq vterm-kill-buffer-on-exit t)
-  (setq vterm-max-scrollback 5000))
+  :custom
+  (vterm-kill-buffer-on-exit t)
+  (vterm-max-scrollback 5000))
 
 (global-set-key (kbd "C-<f5>") #'eshell)
 (with-eval-after-load 'eshell

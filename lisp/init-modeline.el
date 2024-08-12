@@ -345,7 +345,6 @@ Specific to the current window's mode line.")
 				(vc-mode vc-mode)))
 
 (use-package keycast
-  :commands keycast-mode-line-mode
   :custom
   (keycast-mode-line-format "%2s%k%c%R")
   (keycast-mode-line-insert-after 'my/modeline-position)

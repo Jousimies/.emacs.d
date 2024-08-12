@@ -143,31 +143,33 @@
          ("C-c C-e" . embark-export)
          ("C-c C-l" . embark-collect)))
 
+(use-package embark-consult)
+
 (use-package corfu
   :hook ((on-first-buffer . global-corfu-mode)
 		 (corfu-mode . corfu-echo-mode)
-		 (corfu-mode . corfu-popupinfo-mode))
-  :config
-  (setopt corfu-cycle t
-		  corfu-auto t
-		  corfu-auto-prefix 1
-		  corfu-auto-delay 0.0
-		  corfu-preselect 'valid)
-
-  (setq-default corfu-quit-no-match 'separator)
+		 (corfu-mode . corfu-popupinfo-mode)
+		 (minibuffer-setup . corfu-enable-in-minibuffer))
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-prefix 1)
+  (corfu-auto-delay 0.0)
+  (corfu-preselect 'valid)
+  (corfu-quit-no-match 'separator)
+  :preface
   (defun corfu-enable-in-minibuffer ()
     "Enable Corfu in the minibuffer if `completion-at-point' is bound."
     (when (where-is-internal #'completion-at-point (list (current-local-map)))
       ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
       (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
                   corfu-popupinfo-delay nil)
-      (corfu-mode 1)))
-  (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
-
-  ;; (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+      (corfu-mode 1))))
 
 (use-package nerd-icons-corfu)
+
+(with-eval-after-load 'corfu
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package cape
   :bind (("C-c p p" . completion-at-point) ;; capf

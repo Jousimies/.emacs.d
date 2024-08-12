@@ -56,20 +56,12 @@
 (use-package undo-fu-session
   :hook (on-first-file . undo-fu-session-global-mode)
   :custom
-  (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory))
-  :config
-  (defun my/undo-fu-session--make-file-name (filename)
-    "Take the path FILENAME and return a name base on this."
-    (concat
-     (file-name-concat undo-fu-session-directory
-                       (md5 (convert-standard-filename (expand-file-name filename))))
-     (undo-fu-session--file-name-ext)))
-  (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name))
+  (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory)))
 
 (use-package vundo
   :bind ("s-z" . vundo)
-  :config
-  (setq vundo-glyph-alist vundo-unicode-symbols))
+  :custom
+  (vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package hungry-delete
   :custom
@@ -83,15 +75,15 @@
 
 (use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)
-  :config
-  (setq hippie-expand-try-functions-list '(try-complete-file-name-partially
-                                           try-complete-file-name
-                                           try-expand-all-abbrevs
-                                           try-expand-dabbrev
-                                           try-expand-dabbrev-all-buffers
-                                           try-expand-dabbrev-from-kill
-                                           try-complete-lisp-symbol-partially
-                                           try-complete-lisp-symbol)))
+  :custom
+  (hippie-expand-try-functions-list '(try-complete-file-name-partially
+                                      try-complete-file-name
+                                      try-expand-all-abbrevs
+                                      try-expand-dabbrev
+                                      try-expand-dabbrev-all-buffers
+                                      try-expand-dabbrev-from-kill
+                                      try-complete-lisp-symbol-partially
+                                      try-complete-lisp-symbol)))
 
 (add-hook 'prog-mode-hook 'electric-pair-local-mode)
 (add-hook 'org-mode-hook 'electric-pair-local-mode)
@@ -118,16 +110,16 @@
          ("M-*" . tempel-insert)
 		 (:map tempel-map
 			   ("<down>" . tempel-next)))
-  :config
-  (setq tempel-path `("~/.emacs.d/template/tempel"
-                      ,(expand-file-name "config/tempel" my-galaxy))))
+  :custom
+  (tempel-path `("~/.emacs.d/template/tempel"
+                 ,(expand-file-name "config/tempel" my-galaxy))))
 
-;; (use-package yasnippet
-;;   :load-path "packages/yasnippet/"
-;;   :hook (minibuffer-mode . yas-global-mode)
-;;   :config
-;;   (use-package yasnippet-snippets
-;;     :load-path "packages/yasnippet-snippets/"))
+(use-package yasnippet
+  :hook ((prog-mode . yas-minor-mode)
+		 (org-mode . yas-minor-mode)))
+
+(use-package yasnippet-snippets
+  :after yasnippet)
 
 (use-package expand-region
   :bind ("C-=" . er/expand-region)

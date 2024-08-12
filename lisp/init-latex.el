@@ -58,10 +58,10 @@
 (use-package reftex
   :hook (LaTeX-mode . turn-on-reftex)
   :bind ([remap reftex-citation] . citar-insert-citation)
-  :config
-  (setq reftex-toc-follow-mode t)
-  (setq reftex-toc-split-windows-horizontally t)
-  (setq reftex-toc-split-windows-fraction 0.25))
+  :custom
+  (reftex-toc-follow-mode t)
+  (reftex-toc-split-windows-horizontally t)
+  (reftex-toc-split-windows-fraction 0.25))
 
 (use-package cdlatex
   :hook (LaTeX-mode . turn-on-cdlatex))

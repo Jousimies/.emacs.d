@@ -28,10 +28,18 @@
 (setq package-archives '(("melpa" . "https://mirrors.ustc.edu.cn/elpa/melpa/")
 						 ("gnu" . "https://mirrors.ustc.edu.cn/elpa/gnu/")
 						 ("nongnu" . "https://mirrors.ustc.edu.cn/elpa/nongnu/")))
-(package-initialize)
 
+(setq load-prefer-newer t)
 (setq use-package-always-ensure t)
 (setq use-package-always-defer t)
+
+(package-initialize)
+
+;; Auto Compile
+(use-package auto-compile
+  :config
+  (auto-compile-on-load-mode)
+  (auto-compile-on-save-mode))
 
 ;; Load configuration
 (add-to-list 'load-path "~/.emacs.d/lisp")

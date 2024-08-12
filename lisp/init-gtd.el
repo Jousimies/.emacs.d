@@ -44,30 +44,29 @@
 (use-package appt
   :ensure nil
   :hook (diary-mode . appt-activate)
-  :config
-  (setq appt-display-diary nil)
-  (setq appt-disp-window-function #'appt-disp-window)
-  (setq appt-display-mode-line t)
-  (setq appt-display-interval 3)
-  (setq appt-audible nil)
-  (setq appt-warning-time-regexp "appt \\([0-9]+\\)")
-  (setq appt-message-warning-time 6))
+  :custom
+  (appt-display-diary nil)
+  (appt-disp-window-function #'appt-disp-window)
+  (appt-display-mode-line t)
+  (appt-display-interval 3)
+  (appt-audible nil)
+  (appt-warning-time-regexp "appt \\([0-9]+\\)")
+  (appt-message-warning-time 6))
 
 (use-package diary-lib
   :ensure nil
-  :config
-  (add-hook 'diary-list-entries-hook #'diary-sort-entries)
-  (add-hook 'diary-mode-hook #'goto-address-mode)
-  (setq diary-display-function #'diary-fancy-display)
-  (setq diary-header-line-format nil)
-  (setq diary-list-include-blanks nil)
-  (setq diary-abbreviated-year-flag nil)
-  (setq diary-number-of-entries 7)
-  (setq diary-comment-start ");;")
-  (setq diary-comment-end "")
-  (setq diary-nonmarking-symbol "!")
-
-  (setq diary-file (expand-file-name "logs/diary.org" my-galaxy)))
+  :hook ((diary-list-entries . diary-sort-entries)
+		 (diary-mode . goto-address-mode))
+  :custom
+  (diary-display-function #'diary-fancy-display)
+  (diary-header-line-format nil)
+  (diary-list-include-blanks nil)
+  (diary-abbreviated-year-flag nil)
+  (diary-number-of-entries 7)
+  (diary-comment-start ");;")
+  (diary-comment-end "")
+  (diary-nonmarking-symbol "!")
+  (diary-file (expand-file-name "logs/diary.org" my-galaxy)))
 
 (defun my/all-todo-agenda ()
   (interactive)
@@ -211,6 +210,8 @@
 
 (defun my/org-clock-to-calendar ()
   (interactive)
+  (unless (featurep 'org-gtd)
+	(require 'org-gtd))
   (dolist (entry (org-clock--get-entries (concat org-gtd-directory "/" org-gtd-default-file-name ".org")))
 	(let* ((current (calendar-current-date))
 		   (start (plist-get entry :start))

@@ -57,7 +57,11 @@
 
 (setq-default initial-scratch-message nil)
 
-;; system coding
+;; Language Environment
+(set-language-environment "UTF-8")
+(setq default-input-method nil)
+
+;; System Coding
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -91,9 +95,7 @@
 ;; (set-face-attribute 'fixed-pitch nil :family "SF Mono" :height 160)
 ;; (add-hook 'text-mode-hook #'variable-pitch-mode)
 
-;; load-path
-(add-to-list 'load-path "~/.emacs.d/packages/compat/")
-(add-to-list 'load-path "~/.emacs.d/packages/emacs-async/")
+;; Utility hooks and functions from Doom Emacs
 (add-to-list 'load-path "~/.emacs.d/packages/on.el/")
 (require 'on)
 
@@ -155,9 +157,9 @@
   (gc-cons-percentage 0.1)
   (gcmh-idle-delay 'auto)
   (gcmh-auto-idle-delay-factor 10)
-  (gcmh-high-cons-threshold #x1000000)
-  :config
-  (advice-add 'after-focus-change-function :after 'garbage-collect))
+  (gcmh-high-cons-threshold #x1000000))
+
+(advice-add 'after-focus-change-function :after 'garbage-collect)
 
 (provide 'init-core)
 ;;; init-core.el ends here

@@ -88,7 +88,6 @@
 
 ;; elfeed
 (use-package elfeed
-  :commands elfeed
   :bind ((:map elfeed-search-mode-map
 			   ("U" . elfeed-update)))
   :config
