@@ -95,6 +95,15 @@
 ;; (set-face-attribute 'fixed-pitch nil :family "SF Mono" :height 160)
 ;; (add-hook 'text-mode-hook #'variable-pitch-mode)
 
+;; Themes
+(use-package modus-themes
+  :ensure nil
+  :custom
+  (modus-themes-italic-constructs t)
+  (modus-themes-bold-constructs nil)
+  (modus-themes-prompts '(italic bold))
+  (modus-themes-org-blocks 'gray-background))
+
 ;; Utility hooks and functions from Doom Emacs
 (add-to-list 'load-path "~/.emacs.d/packages/on.el/")
 (require 'on)

@@ -316,33 +316,35 @@ Specific to the current window's mode line.")
 					 my/modeline-denote))
   (put construct 'risky-local-variable t))
 
-(setq-default mode-line-format
-              '("%e"
-                my/winum
-				prot-modeline-narrow
-                "丨"					; 丨 is a Chinese character
-                my/modeline-buffer-readonly
-                my/modeline-buffer-modified
-                my/modeline-file-name
-				" "
-				(:eval (with-eval-after-load 'denote
-						 my/modeline-denote))
-                my/modeline-position
-                my/modeline-image-info
-                my/modeline-kbd-macro
-                my/modeline-region-indicator
-				prot-modeline-eglot
-                "       "
-                my/modeline-align-right
-                (:eval (with-eval-after-load 'org-clock
-                         my/modeline-clock-info))
-                my/modeline-timer
-				(:eval (when which-function-mode
-						which-func-format))
-				my/modeline-sys
-				" "
-                my/modeline-major-mode
-				(vc-mode vc-mode)))
+(setopt mode-line-format '("%e"
+						   my/winum
+						   prot-modeline-narrow
+						   "丨"
+						   my/modeline-buffer-readonly
+						   my/modeline-buffer-modified
+						   my/modeline-file-name
+						   mode-line-front-space
+						   (:eval (with-eval-after-load 'denote
+									my/modeline-denote))
+						   "   "
+						   my/modeline-position
+						   my/modeline-image-info
+						   my/modeline-kbd-macro
+						   my/modeline-region-indicator
+						   prot-modeline-eglot
+						   mode-line-format-right-align
+						   (:eval (with-eval-after-load 'org-clock
+									my/modeline-clock-info))
+						   my/modeline-timer
+						   (:eval (when which-function-mode
+									which-func-format))
+						   my/modeline-sys
+						   " "
+						   my/modeline-major-mode
+						   (project-mode-line project-mode-line-format)
+						   (vc-mode vc-mode)
+						   " "
+						   mode-line-end-spaces))
 
 (use-package keycast
   :custom

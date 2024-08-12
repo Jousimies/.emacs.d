@@ -187,9 +187,6 @@
 [submodule "packages/queue"]
 	path = packages/queue
 	url = https://github.com/emacs-straight/queue.git
-[submodule "packages/ef-themes"]
-	path = packages/ef-themes
-	url = https://git.sr.ht/~protesilaos/ef-themes
 [submodule "packages/hammy.el"]
 	path = packages/hammy.el
 	url = https://github.com/alphapapa/hammy.el.git
