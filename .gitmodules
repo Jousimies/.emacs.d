@@ -307,3 +307,9 @@
 [submodule "packages/org-xlatex"]
 	path = packages/org-xlatex
 	url = https://github.com/ksqsf/org-xlatex.git
+[submodule "packages/holo-layer"]
+	path = packages/holo-layer
+	url = https://github.com/manateelazycat/holo-layer.git
+[submodule "packages/emacs-application-framework"]
+	path = packages/emacs-application-framework
+	url = https://github.com/emacs-eaf/emacs-application-framework.git

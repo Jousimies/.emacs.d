@@ -99,6 +99,7 @@
 ;; Some useful functions stealed from Internet
 (require 'init-misc)
 
+(require 'init-eaf)
 ;; Keybindings
 (require 'init-keys)
 
