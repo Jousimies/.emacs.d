@@ -85,14 +85,14 @@
                                       try-complete-lisp-symbol-partially
                                       try-complete-lisp-symbol)))
 
-(add-hook 'prog-mode-hook 'electric-pair-local-mode)
-(add-hook 'org-mode-hook 'electric-pair-local-mode)
-(add-hook 'org-mode-hook
-          (lambda ()
-            (require 'elec-pair)
-            (setq-local electric-pair-inhibit-predicate
-                        `(lambda (c)
-                           (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
+(use-package electric
+  :ensure nil
+  :hook ((prog-mode . electric-indent-local-mode)
+		 (org-mode . (lambda ()
+					   (progn
+						 (electric-pair-mode -1)
+						 (electric-quote-mode -1)
+						 (electric-indent-mode -1))))))
 
 (use-package delsel
   :hook (text-mode . delete-selection-mode))

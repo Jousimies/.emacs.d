@@ -11,6 +11,7 @@
 		 (org-mode . denote-rename-buffer-mode))
   :custom
   (denote-rename-no-confirm t)
+  (denote-backlinks-show-context t)
   (denote-org-store-link-to-heading nil)
   (denote-prompts '(title keywords subdirectory signature))
   (denote-directory (expand-file-name "denote" my-galaxy))
@@ -25,7 +26,7 @@
          (thread-last denote-directory (expand-file-name "term"))
          (thread-last denote-directory (expand-file-name "references"))))
   (denote-rename-buffer-format "%b %t") ;;
-  (denote-buffer-has-backlinks-string ""))
+  (denote-buffer-has-backlinks-string "󰌷"))
 
 (defun my/modus-themes-denote-faces (&rest _)
   (modus-themes-with-colors

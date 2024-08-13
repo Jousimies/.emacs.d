@@ -53,6 +53,12 @@
   (appt-warning-time-regexp "appt \\([0-9]+\\)")
   (appt-message-warning-time 6))
 
+(use-package org-agenda
+  :ensure nil
+  :hook (org-agenda-finalize . org-agenda-to-appt)
+  :custom
+  (org-agenda-window-setup 'other-tab))
+
 (use-package diary-lib
   :ensure nil
   :hook ((diary-list-entries . diary-sort-entries)

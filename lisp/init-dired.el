@@ -132,6 +132,16 @@
   (dired-omit-verbose nil)
   (dired-omit-files "^\\.[^.].*"))
 
+(use-package dired-aux
+  :ensure nil
+  :after dired
+  :custom
+  (dired-isearch-filenames 'dwim)
+  (dired-create-destination-dirs 'ask)
+  (dired-vc-rename-file t)
+  (dired-do-revert-buffer (lambda (dir) (not (file-remote-p dir))))
+  (dired-create-destination-dirs-on-trailing-dirsep t))
+
 ;; Preview file in Dired.
 (when (eq system-type 'darwin)
   (defun my/dired-preview ()

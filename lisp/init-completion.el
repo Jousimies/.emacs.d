@@ -24,31 +24,61 @@
 
 ;;; Code:
 (setopt enable-recursive-minibuffers t)
-
-(add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
-(add-hook 'minibuffer-mode-hook #'cursor-intangible-mode)
+(setopt read-minibuffer-restore-windows nil)
 
 (setopt tab-always-indent 'complete
-		completions-detailed t
-        completions-format 'one-column
-        completion-auto-select t
+		tab-first-completion 'word-or-paren-or-punct)
+(setq-default tab-width 4
+			  indent-tabs-mode nil)
+
+(setopt completion-auto-select t
         completion-ignore-case t
         minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
         read-buffer-completion-ignore-case t
-        completion-show-inline-help nil
-        completions-max-height 50
         completion-show-help nil
-        completion-auto-wrap nil
-        completions-header-format (propertize "%s candidates:\n" 'face 'font-lock-comment-face)
-        completions-highlight-face 'completions-highlight)
+        completion-auto-wrap nil)
 
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 
-(use-package nerd-icons-completion
-  :hook (minibuffer-setup . nerd-icons-completion-mode))
+;; https://emacs-china.org/t/macos-save-silently-t/24086
+(setq inhibit-message-regexps '("^Saving" "^Wrote"))
+(setq set-message-functions '(inhibit-message))
+
+(use-package minibuffer
+  :ensure nil
+  :hook ((minibuffer-mode . minibuffer-electric-default-mode)
+		 (minibuffer-mode . cursor-intangible-mode)
+		 (minibuffer-mode . minibuffer-depth-indicate-mode))
+  :custom
+  (completion-styles '(basic substring initials flex orderless))
+  (completion-category-defaults nil)
+  (completion-category-overrides
+   '((file (styles . (basic partial-completion orderless)))
+     (bookmark (styles . (basic substring)))
+     (library (styles . (basic substring)))
+     (embark-keybinding (styles . (basic substring)))
+     (imenu (styles . (basic substring orderless)))
+     (consult-location (styles . (basic substring orderless)))
+     (kill-ring (styles . (emacs22 orderless)))
+     (eglot (styles . (emacs22 substring orderless)))))
+  (minibuffer-completion-auto-choose t)
+  (minibuffer-visible-completions t)
+  (completions-sort 'historical)
+  (completion-show-inline-help nil)
+  (completions-max-height 50)
+  (completions-detailed t)
+  (completions-format 'one-column)
+  (read-file-name-completion-ignore-case t)
+  (completions-header-format (propertize "%s candidates:\n" 'face 'font-lock-comment-face))
+  (completions-highlight-face 'completions-highlight))
+
+(use-package orderless
+  :custom
+  (orderless-matching-styles '(orderless-prefixes orderless-regexp))
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
-
 ;; re-use vertico-mode instead of `icomplete-fido-mode'.
 ;; Due to icomplete has compatible problem with citar, a references manager.
 ;; use `M-RET' to exit minibuffer input.
@@ -58,24 +88,18 @@
   :bind (:map vertico-map
 			  ("C-<backspace>" . vertico-directory-up)))
 
-(use-package orderless
-  :custom
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion)))))
-
-;; https://emacs-china.org/t/macos-save-silently-t/24086
-(setq inhibit-message-regexps '("^Saving" "^Wrote"))
-(setq set-message-functions '(inhibit-message))
+(use-package nerd-icons-completion
+  :hook (minibuffer-setup . nerd-icons-completion-mode))
 
 (defun crm-indicator (args)
-    (cons (format "[`completing-read-multiple': %s]  %s"
-                  (propertize
-                   (replace-regexp-in-string
-                    "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                    crm-separator)
-                   'face 'error)
-                  (car args))
-          (cdr args)))
+  (cons (format "[`completing-read-multiple': %s]  %s"
+                (propertize
+                 (replace-regexp-in-string
+                  "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                  crm-separator)
+                 'face 'error)
+                (car args))
+        (cdr args)))
 
 (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
@@ -96,7 +120,7 @@
          :map minibuffer-mode-map
 		 ("C-r" . consult-history))
   :custom
-  (consult-preview-key "C-."))
+  (consult-preview-key 'any))
 
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "M-g h") #'consult-org-heading))
@@ -143,7 +167,8 @@
          ("C-c C-e" . embark-export)
          ("C-c C-l" . embark-collect)))
 
-(use-package embark-consult)
+(use-package embark-consult
+  :after embark)
 
 (use-package corfu
   :hook ((on-first-buffer . global-corfu-mode)
@@ -164,7 +189,11 @@
       ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
       (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
                   corfu-popupinfo-delay nil)
-      (corfu-mode 1))))
+      (corfu-mode 1)))
+  :config
+  (with-eval-after-load 'savehist
+    (corfu-history-mode 1)
+    (add-to-list 'savehist-additional-variables 'corfu-history)))
 
 (use-package nerd-icons-corfu)
 

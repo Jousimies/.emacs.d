@@ -34,7 +34,7 @@
 (add-hook 'org-mode-hook #'visual-line-mode)
 
 (add-hook 'on-first-buffer-hook (lambda ()
-								  (mouse-avoidance-mode 'banish)))
+								  (mouse-avoidance-mode 'jump)))
 (setopt mark-ring-max 128
         kill-do-not-save-duplicates t
         kill-ring-max (* kill-ring-max 2)
@@ -240,6 +240,27 @@
 							'ugrep)
 						   (t
 							'grep)))
+
+;;;; Repeatable key chords (repeat-mode)
+(use-package repeat
+  :ensure nil
+  :hook (on-first-input . repeat-mode)
+  :custom
+  (repeat-on-final-keystroke t)
+  (repeat-exit-timeout 5)
+  (repeat-exit-key "<escape>")
+  (repeat-keep-prefix nil)
+  (repeat-check-key t)
+  (repeat-echo-function 'ignore)
+  (set-mark-command-repeat-pop t))
+
+(use-package hl-line
+  :ensure nil
+  :hook ((prog-mode . hl-line-mode)
+         (org-mode . hl-line-mode))
+  :custom
+  (hl-line-sticky-flag nil))
+
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here
