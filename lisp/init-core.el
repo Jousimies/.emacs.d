@@ -86,9 +86,8 @@
 ;; Use 'prepend for the NS and Mac ports or Emacs will crash.
 ;; Emoji
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
-;; Symbola 中包含一些特殊的字体
-;; 需要单独安装 - https://www.wfonts.com/font/symbola
-(set-fontset-font t 'symbol (font-spec :family "Symbola" :size 14) nil 'prepend)
+
+(set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend)
 
 ;; 除以上方法，也可以使用 `variable-pitch-mode'
 ;; (set-face-attribute 'variable-pitch nil :family "TsangerJinKai02" :height 160)
