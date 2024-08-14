@@ -54,5 +54,10 @@
   :ensure nil
   :mode ("\\.vb\\|.bas\\'" . visual-basic-mode))
 
+(use-package devdocs-browser
+  :bind (("M-g o" . devdocs-browser-open))
+  :custom
+  (devdocs-browser-cache-directory (expand-file-name "devdocs" cache-directory)))
+
 (provide 'init-prog)
 ;;; init-prog.el ends here

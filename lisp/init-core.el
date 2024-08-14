@@ -95,6 +95,7 @@
 ;; Proxy
 (use-package socks
   :ensure nil
+  :defer 2
   :custom
   (url-gateway-method 'socks)
   (socks-noproxy '("localhost"))

@@ -1,30 +1,6 @@
-[submodule "packages/with-editor"]
-	path = packages/with-editor
-	url = https://github.com/magit/with-editor.git
 [submodule "packages/closql"]
 	path = packages/closql
 	url = https://github.com/magit/closql.git
-[submodule "packages/emacsql"]
-	path = packages/emacsql
-	url = https://github.com/magit/emacsql.git
-[submodule "packages/annalist.el"]
-	path = packages/annalist.el
-	url = https://github.com/noctuid/annalist.el.git
-[submodule "packages/forge"]
-	path = packages/forge
-	url = https://github.com/magit/forge.git
-[submodule "packages/ghub"]
-	path = packages/ghub
-	url = https://github.com/magit/ghub.git
-[submodule "packages/treepy.el"]
-	path = packages/treepy.el
-	url = https://github.com/volrath/treepy.el.git
-[submodule "packages/emacs-undo-fu"]
-	path = packages/emacs-undo-fu
-	url = https://codeberg.org/ideasman42/emacs-undo-fu.git
-[submodule "packages/emacs-gc-buffers"]
-	path = packages/emacs-gc-buffers
-	url = https://codeberg.org/akib/emacs-gc-buffers.git
 [submodule "packages/emacs-rime"]
 	path = packages/emacs-rime
 	url = https://github.com/DogLooksGood/emacs-rime.git
@@ -43,30 +19,9 @@
 [submodule "packages/beancount-mode"]
 	path = packages/beancount-mode
 	url = https://github.com/beancount/beancount-mode.git
-[submodule "packages/org-appear"]
-	path = packages/org-appear
-	url = https://github.com/awth13/org-appear.git
 [submodule "packages/plantuml-emacs"]
 	path = packages/plantuml-emacs
 	url = https://github.com/ginqi7/plantuml-emacs.git
-[submodule "packages/embrace.el"]
-	path = packages/embrace.el
-	url = https://github.com/cute-jumper/embrace.el.git
-[submodule "packages/yasnippet"]
-	path = packages/yasnippet
-	url = https://github.com/joaotavora/yasnippet.git
-[submodule "packages/yasnippet-snippets"]
-	path = packages/yasnippet-snippets
-	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
-[submodule "packages/org-alert"]
-	path = packages/org-alert
-	url = https://github.com/spegoraro/org-alert.git
-[submodule "packages/Emacs-langtool"]
-	path = packages/Emacs-langtool
-	url = https://github.com/mhayashi1120/Emacs-langtool.git
-[submodule "packages/lingva.el"]
-	path = packages/lingva.el
-	url = https://codeberg.org/martianh/lingva.el.git
 [submodule "packages/sdcv"]
 	path = packages/sdcv
 	url = https://github.com/manateelazycat/sdcv.git
@@ -79,9 +34,6 @@
 [submodule "packages/emacs-request"]
 	path = packages/emacs-request
 	url = https://github.com/tkf/emacs-request.git
-[submodule "packages/prescient.el"]
-	path = packages/prescient.el
-	url = https://github.com/radian-software/prescient.el.git
 [submodule "packages/advance-words-count.el"]
 	path = packages/advance-words-count.el
 	url = https://github.com/LdBeth/advance-words-count.el.git
@@ -91,60 +43,27 @@
 [submodule "packages/sketchviz"]
 	path = packages/sketchviz
 	url = https://github.com/gpotter2/sketchviz.git
-[submodule "packages/ht.el"]
-	path = packages/ht.el
-	url = https://github.com/Wilfred/ht.el.git
 [submodule "packages/emacs-toml"]
 	path = packages/emacs-toml
 	url = https://github.com/gongo/emacs-toml.git
-[submodule "packages/emacs-devdocs-browser"]
-	path = packages/emacs-devdocs-browser
-	url = https://github.com/blahgeek/emacs-devdocs-browser.git
-[submodule "packages/language-chunk"]
-	path = packages/language-chunk
-	url = https://github.com/zbelial/language-chunk.git
 [submodule "packages/popweb"]
 	path = packages/popweb
 	url = https://github.com/manateelazycat/popweb.git
-[submodule "packages/org-anki"]
-	path = packages/org-anki
-	url = https://github.com/eyeinsky/org-anki.git
-[submodule "packages/emacs-promise"]
-	path = packages/emacs-promise
-	url = https://github.com/chuntaro/emacs-promise.git
-[submodule "packages/org-contacts"]
-	path = packages/org-contacts
-	url = https://repo.or.cz/org-contacts.git
 [submodule "packages/visual-fill-column"]
 	path = packages/visual-fill-column
 	url = https://codeberg.org/joostkremers/visual-fill-column.git
-[submodule "packages/denote-menu"]
-	path = packages/denote-menu
-	url = https://github.com/namilus/denote-menu.git
-[submodule "packages/psearch.el"]
-	path = packages/psearch.el
-	url = https://github.com/twlz0ne/psearch.el.git
-[submodule "packages/emacs-denote-refs"]
-	path = packages/emacs-denote-refs
-	url = https://codeberg.org/akib/emacs-denote-refs.git
 [submodule "packages/lsp-bridge"]
 	path = packages/lsp-bridge
 	url = https://github.com/manateelazycat/lsp-bridge.git
 [submodule "packages/org-imgtog"]
 	path = packages/org-imgtog
 	url = https://github.com/gaoDean/org-imgtog.git
-[submodule "packages/pdf-tools"]
-	path = packages/pdf-tools
-	url = https://github.com/vedang/pdf-tools.git
 [submodule "packages/org-change"]
 	path = packages/org-change
 	url = https://github.com/drghirlanda/org-change.git
 [submodule "packages/d2-mode"]
 	path = packages/d2-mode
 	url = https://github.com/andorsk/d2-mode.git
-[submodule "packages/org-footnote-assistant"]
-	path = packages/org-footnote-assistant
-	url = https://github.com/lazzalazza/org-footnote-assistant.git
 [submodule "packages/shrink-path.el"]
 	path = packages/shrink-path.el
 	url = https://gitlab.com/bennya/shrink-path.el.git
@@ -157,111 +76,30 @@
 [submodule "packages/rainbow-identifiers"]
 	path = packages/rainbow-identifiers
 	url = https://github.com/Fanael/rainbow-identifiers.git
-[submodule "packages/jeison"]
-	path = packages/jeison
-	url = https://github.com/SavchenkoValeriy/jeison.git
-[submodule "packages/esxml"]
-	path = packages/esxml
-	url = https://github.com/tali713/esxml.git
-[submodule "packages/queue"]
-	path = packages/queue
-	url = https://github.com/emacs-straight/queue.git
-[submodule "packages/hammy.el"]
-	path = packages/hammy.el
-	url = https://github.com/alphapapa/hammy.el.git
-[submodule "packages/ts.el"]
-	path = packages/ts.el
-	url = https://github.com/alphapapa/ts.el.git
-[submodule "packages/emacs-ibuffer-project"]
-	path = packages/emacs-ibuffer-project
-	url = https://github.com/muffinmad/emacs-ibuffer-project.git
-[submodule "packages/triples"]
-	path = packages/triples
-	url = https://github.com/ahyatt/triples.git
-[submodule "packages/llm"]
-	path = packages/llm
-	url = https://github.com/ahyatt/llm.git
-[submodule "packages/org-side-tree"]
-	path = packages/org-side-tree
-	url = https://github.com/localauthor/org-side-tree.git
 [submodule "packages/pdfannots"]
 	path = packages/pdfannots
 	url = https://github.com/0xabu/pdfannots.git
 [submodule "packages/ibooks-annot.el"]
 	path = packages/ibooks-annot.el
 	url = https://github.com/Jousimies/ibooks-annot.el.git
-[submodule "packages/explain-pause-mode"]
-	path = packages/explain-pause-mode
-	url = https://github.com/lastquestion/explain-pause-mode.git
-[submodule "packages/org-notely"]
-	path = packages/org-notely
-	url = https://github.com/alphapapa/org-notely.git
 [submodule "packages/emt"]
 	path = packages/emt
 	url = https://github.com/roife/emt.git
-[submodule "packages/fussy"]
-	path = packages/fussy
-	url = https://github.com/jojojames/fussy.git
-[submodule "packages/flx"]
-	path = packages/flx
-	url = https://github.com/lewang/flx.git
 [submodule "packages/EmacsMacOSModule"]
 	path = packages/EmacsMacOSModule
 	url = https://github.com/xenodium/EmacsMacOSModule.git
 [submodule "packages/macim.el"]
 	path = packages/macim.el
 	url = https://github.com/Jousimies/macim.el.git
-[submodule "packages/wombag"]
-	path = packages/wombag
-	url = https://github.com/karthink/wombag.git
 [submodule "packages/wallabag.el"]
 	path = packages/wallabag.el
 	url = https://github.com/chenyanming/wallabag.el.git
-[submodule "packages/macrursors"]
-	path = packages/macrursors
-	url = https://github.com/corytertel/macrursors.git
-[submodule "packages/rainbow-csv"]
-	path = packages/rainbow-csv
-	url = https://github.com/emacs-vs/rainbow-csv.git
-[submodule "packages/zoom"]
-	path = packages/zoom
-	url = https://github.com/cyrus-and/zoom.git
-[submodule "packages/flx-rs"]
-	path = packages/flx-rs
-	url = https://github.com/jcs-elpa/flx-rs.git
-[submodule "packages/diredfl"]
-	path = packages/diredfl
-	url = https://github.com/purcell/diredfl.git
-[submodule "packages/file-info.el"]
-	path = packages/file-info.el
-	url = https://github.com/Artawower/file-info.el.git
-[submodule "packages/hydra"]
-	path = packages/hydra
-	url = https://github.com/abo-abo/hydra.git
 [submodule "packages/blamer.el"]
 	path = packages/blamer.el
 	url = https://github.com/Artawower/blamer.el.git
-[submodule "packages/mct"]
-	path = packages/mct
-	url = https://github.com/protesilaos/mct.git
-[submodule "packages/dired-hacks"]
-	path = packages/dired-hacks
-	url = https://github.com/Fuco1/dired-hacks.git
 [submodule "packages/org-reveal"]
 	path = packages/org-reveal
 	url = https://github.com/yjwen/org-reveal.git
-[submodule "packages/anaphora"]
-	path = packages/anaphora
-	url = https://github.com/rolandwalker/anaphora.git
-[submodule "packages/emacs-memoize"]
-	path = packages/emacs-memoize
-	url = https://github.com/skeeto/emacs-memoize.git
-[submodule "packages/elquery"]
-	path = packages/elquery
-	url = https://github.com/AdamNiederer/elquery.git
-[submodule "packages/Emacs-esqlite"]
-	path = packages/Emacs-esqlite
-	url = https://github.com/mhayashi1120/Emacs-esqlite.git
 [submodule "packages/pass"]
 	path = packages/pass
 	url = https://github.com/NicolasPetton/pass.git
@@ -283,24 +121,15 @@
 [submodule "packages/chatu"]
 	path = packages/chatu
 	url = https://github.com/kimim/chatu.git
-[submodule "packages/emacs-org-clock-daytime"]
-	path = packages/emacs-org-clock-daytime
-	url = https://github.com/ArneBab/emacs-org-clock-daytime.git
 [submodule "packages/consult-mu"]
 	path = packages/consult-mu
 	url = https://github.com/armindarvish/consult-mu.git
 [submodule "packages/EmacsMacPluginModule"]
 	path = packages/EmacsMacPluginModule
 	url = https://github.com/happyo/EmacsMacPluginModule.git
-[submodule "packages/consult-web"]
-	path = packages/consult-web
-	url = https://github.com/armindarvish/consult-web.git
 [submodule "consult-denote"]
 	path = consult-denote
 	url = https://github.com/protesilaos/consult-denote.git
-[submodule "packages/consult-omni"]
-	path = packages/consult-omni
-	url = https://github.com/armindarvish/consult-omni.git
 [submodule "packages/org-xlatex"]
 	path = packages/org-xlatex
 	url = https://github.com/ksqsf/org-xlatex.git
