@@ -13,6 +13,10 @@
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 1.0)
 
+;; use package.el install packages
+(setq package-enable-at-startup nil)
+(setq use-package-enable-imenu-support t) ; Must be set before loading use-package.
+
 ;; Emacs startup performance
 ;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
 (setq auto-mode-case-fold nil)
@@ -40,47 +44,57 @@
     (setenv "PATH" path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
 
-(when (eq system-type 'darwin)
+(when (featurep 'ns)
   (set-exec-path-from-shell-PATH))
 
-;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
+;; Prevent flash of messages at startup
+;; https://emacs-china.org/t/macos-emacs/23883/7
 (setq-default inhibit-redisplay t
               inhibit-message t)
-(add-hook 'window-setup-hook
-          (lambda ()
-            (setq-default inhibit-redisplay nil
-                          inhibit-message nil)
-            (redisplay)))
+(defun reset-inhibit-vars ()
+  (setq-default inhibit-redisplay nil
+                inhibit-message nil)
+  (redraw-frame))
+(add-hook 'window-setup-hook #'reset-inhibit-vars)
+(define-advice startup--load-user-init-file (:after (&rest _) reset-inhibit-vars)
+  (and init-file-had-error (reset-inhibit-vars)))
+
+;; UI
+(push '(fullscreen . fullscreen) initial-frame-alist)
 
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(scroll-bar-width . 5) default-frame-alist)
-(push '(undecorated . t) default-frame-alist)
+(push '(undecorated . t) default-frame-alist) ; Hide frame title bar.
 (push '(width . 100) default-frame-alist)
-(push '(vertical-scroll-bars . nil) default-frame-alist)
-(push '(fullscreen . fullscreen) initial-frame-alist)
+(push '(vertical-scroll-bars . 0) default-frame-alist)
 
-(define-fringe-bitmap 'right-curly-arrow  [])
-(define-fringe-bitmap 'left-curly-arrow  [])
-
-
-(setq ns-use-native-fullscreen nil)
-(defun my/apply-theme (appearance)
-  "Load theme, taking current system APPEARANCE into consideration."
-  (mapc #'disable-theme custom-enabled-themes)
-  (pcase appearance
-    ('light (load-theme 'modus-operandi-tritanopia t))
-    ('dark (load-theme 'modus-vivendi-tinted t))))
-(add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
+;; Themes
+;; `ef-themes' is eye candy.
+(add-to-list 'load-path "~/.emacs.d/packages/ef-themes/")
+(require 'ef-themes)
+(defvar love/dark-themes '(ef-night
+						   ef-rosa
+						   ef-dream
+						   ef-elea-dark
+						   ef-maris-dark)
+  "ef-themes-dark-themes I loved.")
+(when (featurep 'ns)
+  (setq ns-use-native-fullscreen nil)
+  (defun my/apply-theme (appearance)
+	"Load theme, taking current system APPEARANCE into consideration."
+	(mapc #'disable-theme custom-enabled-themes)
+	(let* ((themes (if (eq appearance 'light)
+                       ef-themes-light-themes
+					 love/dark-themes))
+           (theme (elt themes (random (length themes)))))
+      (load-theme theme t)))
+  (add-hook 'ns-system-appearance-change-functions #'my/apply-theme))
 
 (setq byte-compile-warnings nil)
 
 ;; Hide information
 ;; For information about GNU Emacs and the GNU system, type <f1> C-a.
 (fset 'display-startup-echo-area-message 'ignore)
-
-;; use package.el install packages
-(setq package-enable-at-startup nil)
-(setq use-package-enable-imenu-support t)
 
 ;;; early-init.el ends here

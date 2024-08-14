@@ -29,11 +29,11 @@
 (global-set-key (kbd "M-h") #'backward-kill-word)
 (global-set-key (kbd "<f1>") #'help-command)
 
-(add-hook 'on-first-buffer-hook #'column-number-mode)
-(add-hook 'on-first-file-hook #'size-indication-mode)
+(add-hook 'after-init-hook #'column-number-mode)
+;; (add-hook 'after-init-hook #'size-indication-mode)
 (add-hook 'org-mode-hook #'visual-line-mode)
 
-(add-hook 'on-first-buffer-hook (lambda ()
+(add-hook 'find-file-hook (lambda ()
 								  (mouse-avoidance-mode 'jump)))
 (setopt mark-ring-max 128
         kill-do-not-save-duplicates t
@@ -41,8 +41,7 @@
         async-shell-command-display-buffer nil)
 
 ;; auto-save
-(setopt
-        auto-save-default nil
+(setopt auto-save-default nil
         auto-save-visited-interval 1
         save-silently t
         large-file-warning-threshold nil
@@ -58,7 +57,7 @@
 		auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-" cache-directory))
 
 ;; (setq backup-directory-alist '(("." . "~/.emacs.d/cache/backups")))
-(add-hook 'on-first-file-hook #'auto-save-visited-mode)
+(add-hook 'find-file-hook #'auto-save-visited-mode)
 
 (defun auto-save-delete-trailing-whitespace-except-current-line ()
     (interactive)
@@ -83,26 +82,30 @@
     (interactive)
     (switch-to-buffer "*Messages*"))
 
-(setopt message-kill-buffer-on-exit t
-        message-kill-buffer-query nil
-        message-sendmail-envelope-from 'header
-        message-sendmail-extra-arguments '("-a" "outlook"))
+(global-set-key (kbd "M-g m") #'switch-to-message)
+(global-set-key (kbd "M-g s") #'scratch-buffer)
 
-(add-hook 'on-first-file-hook #'global-so-long-mode)
-(add-hook 'on-first-file-hook #'global-prettify-symbols-mode)
-(add-hook 'on-first-file-hook #'global-word-wrap-whitespace-mode)
-(add-hook 'after-init-hook 'display-battery-mode)
-(add-hook 'after-init-hook 'display-time-mode)
-(add-hook 'on-first-buffer-hook #'midnight-mode)
+(add-hook 'find-file-hook #'global-so-long-mode)
+(add-hook 'find-file-hook #'global-prettify-symbols-mode)
+(add-hook 'find-file-hook #'global-word-wrap-whitespace-mode)
+
+(add-hook 'tab-bar-mode-hook 'display-battery-mode)
+(add-hook 'tab-bar-mode-hook 'display-time-mode)
+(with-eval-after-load 'time
+  (setopt display-time-default-load-average nil))
+
+(add-hook 'after-init-hook #'midnight-mode)
 
 (setopt prettify-symbols-alist '(("lambda" . ?λ)
                                ("function" . ?𝑓)))
 
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
+
 ;;Bookmark
 (setq bookmark-default-file (expand-file-name "bookmarks" cache-directory))
+
 ;; auto-insert-mode
-(add-hook 'on-first-file-hook #'auto-insert-mode)
+(add-hook 'find-file-hook #'auto-insert-mode)
 (with-eval-after-load 'auto-insert
   (add-to-list 'auto-insert-alist
                '(("\\.el\\'" . "Emacs Lisp header")
@@ -174,41 +177,48 @@
 
 (setopt show-paren-style 'parenthesis
 		show-paren-context-when-offscreen 'overlay)
-(add-hook 'on-first-buffer-hook #'show-paren-mode)
+(add-hook 'find-file-hook #'show-paren-mode)
 
-(add-hook 'on-first-buffer-hook (lambda ()
+(add-hook 'after-init-hook (lambda ()
 								  (blink-cursor-mode -1)))
 (setopt window-divider-default-bottom-width 1
 		window-divider-default-places 'bottom-only)
 
-(setopt winner-dont-bind-my-keys t
-		winner-boring-buffers '("*Completions*"
-                                "*Compile-Log*"
-                                "*inferior-lisp*"
-                                "*Fuzzy Completions*"
-                                "*Apropos*"
-                                "*Help*"
-                                "*cvs*"
-                                "*Buffer List*"
-                                "*Ibuffer*"
-                                "*esh command on file*"))
-(add-hook 'on-first-input-hook #'winner-mode)
+(use-package winner
+  :ensure nil
+  :hook (after-init . winner-mode)
+  :bind (("M-g u" . winner-undo)
+         ("M-g r" . winner-redo))
+  :custom
+  (winner-dont-bind-my-keys t)
+  (winner-boring-buffers '("*Completions*"
+                           "*Compile-Log*"
+                           "*inferior-lisp*"
+                           "*Fuzzy Completions*"
+                           "*Apropos*"
+                           "*Help*"
+                           "*cvs*"
+                           "*Buffer List*"
+                           "*Ibuffer*"
+                           "*esh command on file*")))
 
 (add-to-list 'display-buffer-alist '("\\*Outline"
                                        (display-buffer-in-side-window)
                                        (side . right)
                                        (window-width . 0.5)))
-(add-hook 'on-first-buffer-hook #'windmove-mode)
+
+(use-package windmove
+  :ensure nil
+  :hook (after-init . windmove-mode)
+  :bind (("M-g h" . windmove-left)
+         ("M-g l" . windmove-right)
+         ("M-g k" . windmove-up)
+         ("M-g j" . windmove-down)))
 
 (setopt switch-to-buffer-in-dedicated-window 'pop
 		switch-to-buffer-obey-display-actions t)
 
 (add-hook 'after-init-hook 'pixel-scroll-mode)
-
-;; desktop
-;; (add-hook 'on-first-buffer-hook #'desktop-save-mode)
-;; (setq desktop-path `(,cache-directory))
-;; (add-hook 'after-init-hook #'desktop-read)
 
 (defun my/scroll-other-windown-down ()
   "Scroll other window down."
@@ -244,14 +254,14 @@
 ;;;; Repeatable key chords (repeat-mode)
 (use-package repeat
   :ensure nil
-  :hook (on-first-input . repeat-mode)
+  :hook (after-init . repeat-mode)
   :custom
   (repeat-on-final-keystroke t)
   (repeat-exit-timeout 5)
   (repeat-exit-key "<escape>")
   (repeat-keep-prefix nil)
   (repeat-check-key t)
-  (repeat-echo-function 'ignore)
+  ;; (repeat-echo-function 'ignore)
   (set-mark-command-repeat-pop t))
 
 (use-package hl-line

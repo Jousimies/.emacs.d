@@ -208,9 +208,6 @@
 [submodule "packages/EmacsMacOSModule"]
 	path = packages/EmacsMacOSModule
 	url = https://github.com/xenodium/EmacsMacOSModule.git
-[submodule "packages/on.el"]
-	path = packages/on.el
-	url = https://github.com/ajgrf/on.el.git
 [submodule "packages/macim.el"]
 	path = packages/macim.el
 	url = https://github.com/Jousimies/macim.el.git
@@ -313,3 +310,6 @@
 [submodule "packages/emacs-application-framework"]
 	path = packages/emacs-application-framework
 	url = https://github.com/emacs-eaf/emacs-application-framework.git
+[submodule "packages/ef-themes"]
+	path = packages/ef-themes
+	url = https://github.com/protesilaos/ef-themes.git

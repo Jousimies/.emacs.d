@@ -74,14 +74,13 @@
   :custom
   (gt-buffer-render-follow-p t)
   (gt-langs '("en" "zh"))
-  (gt-default-translator (gt-translator :engines (gt-google-engine :cache 'word)
-										:render (list (gt-posframe-pop-render :if 'word
-																			  :frame-params
-																			  (list :border-width 1
-																					))
-													  (gt-buffer-render :then (gt-kill-ring-render)))))
-  (gt-default-http-client (gt-url-http-client :proxies '(("http" . "localhost:7890")
-														 ("https" . "localhost:7890")))))
+  (gt-default-translator
+   (gt-translator :engines (gt-google-engine :cache 'word)
+				  :render (list
+                           (gt-posframe-pop-render :if 'word
+												   :frame-params
+												   (list :border-width 1))
+						   (gt-buffer-render :then (gt-kill-ring-render))))))
 
 (use-package dictionary-overlay
   :load-path "packages/dictionary-overlay/" "packages/websocket-bridge/" "packages/emacs-websocket/"
@@ -104,18 +103,6 @@
   (writegood-weasel-words
    '("very" "rather" "really" "quite" "in fact" "just" "so" "pretty" "of course" "surely" "that said" "actually")))
 
-;; lsp-bridge-toggle-sdcv-helper use pinyin to search english words,
-;; Disable corfu-mode to turn off cape-dabbrev temporarily.
-;; (add-to-list 'load-path "~/.emacs.d/packages/lsp-bridge/")
-;; (autoload 'lsp-bridge-toggle-sdcv-helper "lsp-bridge" "" t)
-;; (defun my/toggle-corfu ()
-;;   "Deactivate input method when sdcv helper enabled."
-;;   (interactive)
-;;   (if acm-enable-search-sdcv-words
-;;       (corfu-mode -1)
-;;     (corfu-mode 1)))
-
-;; (advice-add 'lsp-bridge-toggle-sdcv-helper :after #'my/toggle-corfu)
 
 (provide 'init-dict)
 ;;; init-dict.el ends here.

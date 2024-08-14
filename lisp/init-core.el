@@ -30,22 +30,20 @@
         ring-bell-function (lambda ()
                              (invert-face 'mode-line)
                              (run-with-timer 0.05 nil 'invert-face 'mode-line))
-        tab-width 4
         use-file-dialog nil
         use-dialog-box nil
         use-short-answers t
         read-process-output-max #x10000
         create-lockfiles nil
         recenter-redisplay nil
-        load-prefer-newer t
         next-screen-context-lines 5
-        frame-inhibit-implied-resize t
         inhibit-compacting-font-caches t
         frame-resize-pixelwise t
         inhibit-quit nil
         fast-but-imprecise-scrolling t
         scroll-preserve-screen-position 'always
         auto-save-list-file-name nil
+        history-length 1000
         history-delete-duplicates t
         bidi-display-reordering nil
         read-buffer-completion-ignore-case t
@@ -94,80 +92,37 @@
 ;; (set-face-attribute 'fixed-pitch nil :family "SF Mono" :height 160)
 ;; (add-hook 'text-mode-hook #'variable-pitch-mode)
 
-;; Themes
-(use-package modus-themes
+;; Proxy
+(use-package socks
   :ensure nil
   :custom
-  (modus-themes-italic-constructs t)
-  (modus-themes-bold-constructs nil)
-  (modus-themes-prompts '(italic bold))
-  (modus-themes-org-blocks 'gray-background))
+  (url-gateway-method 'socks)
+  (socks-noproxy '("localhost"))
+  (socks-server `("Default server" ,my/proxy-ip ,(string-to-number my/proxy-port) 5))
+  (url-proxy-services `(("http" . ,(concat my/proxy-ip ":" my/proxy-port))
+                        ("https" . ,(concat my/proxy-ip ":" my/proxy-port))
+                        ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)")))
+  :config
+  (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port)))
 
-;; Utility hooks and functions from Doom Emacs
-(add-to-list 'load-path "~/.emacs.d/packages/on.el/")
-(require 'on)
-
-;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
-(defvar icloud "~/Library/Mobile Documents/"
-  "This folder contains documents in icloud.")
-(defvar nextcloud "~/Nextcloud"
-  "This folder is My cloud.")
-;; L.Personal.Galaxy location may change, but folders in this directory never change.
-(defvar my-galaxy (expand-file-name "L.Personal.Galaxy" nextcloud)
-  "This folder stores all the plain text files of my life.")
-(defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
-  "The source folder of my blog.")
-(defvar my-pictures (expand-file-name "pictures/" my-galaxy)
-  "The folder save pictures.")
-(defvar my-web_archive (expand-file-name "web_archive/" my-galaxy)
-  "The folder save web pages.")
-(defvar cache-directory (expand-file-name ".cache" user-emacs-directory))
-
-;; Adjust alpha background
-(defun lucius/adjust-opacity (frame incr)
-  "Adjust the background opacity of FRAME by increment INCR."
-  (unless (display-graphic-p frame)
-    (error "Cannot adjust opacity of this frame"))
-  (let* ((oldalpha (or (frame-parameter frame 'alpha-background) 100))
-         ;; The 'alpha frame param became a pair at some point in
-         ;; emacs 24.x, e.g. (100 100)
-         (oldalpha (if (listp oldalpha) (car oldalpha) oldalpha))
-         (newalpha (+ incr oldalpha)))
-    (when (and (<= frame-alpha-lower-limit newalpha) (>= 100 newalpha))
-      (modify-frame-parameters frame (list (cons 'alpha-background newalpha))))))
-
-(defun my/increase-alpha-background ()
-  (interactive)
-  (lucius/adjust-opacity (selected-frame) 5))
-
-(defun my/decrease-alpha-background ()
-  (interactive)
-  (lucius/adjust-opacity (selected-frame) -5))
-
-(global-set-key (kbd "C-<f1>") #'my/decrease-alpha-background)
-(global-set-key (kbd "C-<f2>") #'my/increase-alpha-background)
-
-;; Proxy
-(add-to-list 'process-environment "https_proxy=http://localhost:7890")
-(add-to-list 'process-environment "http_proxy=http://localhost:7890")
-(add-to-list 'process-environment "no_proxy=localhost,127.0.0.0,127.0.0.1,127.0.1.1,local.home")
-
-;; start server, so can use emaclient to edit file outside emacs
-(add-hook 'after-init-hook (lambda ()
-							 (require 'server)
-                             (unless (server-running-p)
-                               (server-start))))
+(use-package server
+  :ensure nil
+  :config
+  (unless (server-running-p)
+    (server-start)))
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh
-  :hook (on-first-file . gcmh-mode)
+  :hook (emacs-startup . gcmh-mode)
   :custom
   (gc-cons-percentage 0.1)
+  (gcmh-verbose nil)
   (gcmh-idle-delay 'auto)
   (gcmh-auto-idle-delay-factor 10)
   (gcmh-high-cons-threshold #x1000000))
 
 (advice-add 'after-focus-change-function :after 'garbage-collect)
+
 
 (provide 'init-core)
 ;;; init-core.el ends here

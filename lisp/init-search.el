@@ -81,7 +81,7 @@
       (format-network-address (car (network-interface-info dev)) t)))
 
 (use-package simple-httpd
-  :bind ("M-g s" . httpd-serve-directory)
+  :bind ("M-g d" . httpd-serve-directory)
   :custom
   (httpd-host (format-network-address
 			   (car (network-interface-info "en0"))

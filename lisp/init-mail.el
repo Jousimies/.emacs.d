@@ -6,27 +6,88 @@
 
 ;;; Code:
 
-(setq user-full-name "Duan Ning")
+(use-package mm-encode
+  :ensure nil
+  :custom
+  (mm-encrypt-option nil)
+  (mm-sign-option nil))
 
-(defvar mu4e-outlook "duan_n@outlook.com"
-  "My outlook mail address.")
+(use-package message
+  :ensure nil
+  :hook (message-setup . message-sort-headers)
+  :custom
+  (message-mail-user-agent t)
+  (compose-mail-user-agent-warnings nil)
+  (message-confirm-send t)
+  (message-kill-buffer-on-exit t)
+  (message-kill-buffer-query nil)
+  (message-wide-reply-confirm-recipients nil))
+
+(setq user-full-name "Duan Ning")
+(setq user-mail-address "duan_n@outlook.com")
 
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
   :commands mu4e
+  :bind (:map mu4e-headers-mode-map
+              ("C-c l" . org-store-link))
+  :hook (mu4e-index-updated . (lambda ()
+                                (mu4e-modeline-mode 1)))
+  :custom
+  (mail-user-agent 'mu4e-user-agent)
+  (mu4e-main-hide-personal-addresses nil)
+  (mu4e-mu-binary (executable-find "mu"))
+  (mu4e-update-interval (* 15 60))
+  (mu4e-get-mail-command (concat (executable-find "mbsync") " -a"))
+  (mu4e-index-update-in-background t)
+  (mu4e-index-update-error-warning t)
+  (mu4e-index-update-error-warning nil)
+  (mu4e-index-cleanup t)
+  (mu4e-notification-support t)
+  (mu4e-confirm-quit nil)
+  (mu4e-maildir-shortcuts
+   '(("/outlook/INBOX" . ?o)
+     ("/outlook/Sent Messages" . ?O)))
+  (mu4e-attachment-dir "~/Downloads/")
+  (mu4e-use-fancy-chars t)
+  (mu4e-headers-precise-alignment t)
+  (mu4e-headers-include-related t)
+  (mu4e-headers-auto-update t)
+  (mu4e-headers-date-format "%d/%m/%y")
+  (mu4e-headers-time-format "%H:%M")
+  (mu4e-headers-fields '((:flags . 12)
+                         (:human-date . 10)
+                         (:subject . 100)
+                         (:from-or-to . 40)
+                         (:tags . 15)))
+  (mu4e-compose-format-flowed nil)
+  (mu4e-compose-signature-auto-include nil)
+  (mu4e-compose-dont-reply-to-self t)
+  (mu4e-compose-reply-ignore-address `("no-?reply" ,user-mail-address))
+  (mu4e-contexts `(,(make-mu4e-context
+                     :name "Outlook"
+                     :enter-func
+                     (lambda () (mu4e-message "Enter outlook context"))
+                     :leave-func
+                     (lambda () (mu4e-message "Leave outlook context"))
+                     :match-func
+                     (lambda (msg)
+                       (when msg
+                         (mu4e-message-contact-field-matches msg
+                                                             :to 'user-mail-address)))
+                     :vars `((user-mail-address . ,user-mail-address)
+                             (mu4e-drafts-folder . "/outlook/Drafts")
+                             (mu4e-refile-folder . "/outlook/Archive")
+                             (mu4e-sent-folder . "/outlook/Sent Messages")
+                             (mu4e-trash-folder . "/outlook/Deleted Messages")))))
+  (mu4e-context-policy 'pick-first)
+  (mu4e-bookmarks '(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
+                    ("flag:trashed" "Trashed" ?t)
+                    ("date:7d..now" "Last 7 days" ?w)
+                    ("maildir:/drafts" "drafts" ?d)
+                    ("flag:flagged AND NOT flag:trashed" "flagged" ?f)
+                    ("mime:image/*" "Messages with images" ?p)))
   :config
-  ;; mu4e-main
-  (setq mu4e-main-hide-personal-addresses t)
-  ;; mu4e-server
-  (setq mu4e-mu-binary (executable-find "mu"))
-  ;; mu4e-update
-  (setq mu4e-update-interval (* 15 60))
-  (setq mu4e-get-mail-command (concat (executable-find "mbsync") " -a"))
-  (setq mu4e-index-update-in-background t)
-  (setq mu4e-index-update-error-warning t)
-  (setq mu4e-index-update-error-warning nil)
-  (setq mu4e-index-cleanup t)
-  ;; mu4e-view
   (defun extra-email-to-pdf (msg &optional args)
     "Pdf temp file MSG to a new name with ARGS ignored."
     (let* ((async-shell-command-display-buffer nil)
@@ -59,30 +120,7 @@
 
   (add-to-list 'mu4e-view-actions '("download as html"  . extra-save-email-html))
   (add-to-list 'mu4e-view-actions '("print to PDF"  . extra-print-email-to-pdf))
-  ;; mu4e-vars
-  (setq mu4e-notification-support t)
-  (setq mu4e-confirm-quit nil)
-  ;; mu4e-modeline
-  (mu4e-modeline-mode 1)
-  ;; (add-to-list 'my/tab-bar-right-string '((:eval (mu4e--modeline-string))))
-  ;; mu4e-folders
-  (setq mu4e-maildir-shortcuts
-        '(("/outlook/INBOX" . ?o)
-          ("/outlook/Sent Messages" . ?O)))
-  (setq mu4e-attachment-dir "~/Downloads/")
-  ;; mu4e-helpers
-  (setq mu4e-use-fancy-chars t)
-  ;; mu4e-headers
-  (setq mu4e-headers-precise-alignment t)
-  (setq mu4e-headers-include-related t)
-  (setq mu4e-headers-auto-update t)
-  (setq mu4e-headers-date-format "%d/%m/%y")
-  (setq mu4e-headers-time-format "%H:%M")
-  (setq mu4e-headers-fields '((:flags . 12)
-                              (:human-date . 10)
-                              (:subject . 100)
-                              (:from-or-to . 40)
-                              (:tags . 15)))
+
   (setq mu4e-headers-unread-mark    '("u" . "󱃚 "))
   (setq mu4e-headers-draft-mark     '("D" . "󰻤 "))
   (setq mu4e-headers-flagged-mark   '("F" . "󰃀 "))
@@ -94,50 +132,11 @@
   (setq mu4e-headers-attach-mark    '("a" . " "))
   (setq mu4e-headers-encrypted-mark '("x" . " "))
   (setq mu4e-headers-signed-mark    '("s" . " "))
-  (setq mu4e-headers-list-mark '("s" . "󰕲 "))
-  (setq mu4e-headers-personal-mark '("p" . "󰸐 "))
-
-  (define-key mu4e-headers-mode-map (kbd "C-c l") 'org-store-link)
-  ;; mu4e-bookmarks
-  (setq mu4e-modeline-unread-items '("U:" . " "))
-  (setq mu4e-modeline-new-items '("N:" . " "))
-  (setq mu4e-modeline-all-clear '("C: " . " "))
-  (setq mu4e-bookmarks '(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
-                         ("date:today..now" "Today's messages" ?t)
-                         ("flag:trashed" "Trashed" ?T)
-                         ("date:7d..now" "Last 7 days" ?w)
-                         ;; ("date:1d..now AND NOT list:emacs-orgmode.gnu.org" "Last 1 days" ?o)
-                         ;; ("date:1d..now AND list:emacs-orgmode.gnu.org" "Last 1 days (org mode)" ?m)
-                         ("maildir:/drafts" "drafts" ?d)
-                         ("flag:flagged AND NOT flag:trashed" "flagged" ?f)
-                         ("mime:image/*" "Messages with images" ?p)))
-  ;; mu4e-drafts
-  (setq mu4e-compose-format-flowed nil)
-  (setq mu4e-compose-signature-auto-include nil)
-  (setq mu4e-compose-dont-reply-to-self t)
-  ;; mu4e-contacts
-  (setq mu4e-compose-reply-ignore-address '("no-?reply" "duan_n@outlook.com"))
-  ;; mu4e-compose
-  (setq mail-user-agent 'mu4e-user-agent)
-  ;; mu4e-context
-  (setq mu4e-contexts
-        `(,(make-mu4e-context
-            :name "Outlook"
-            :enter-func
-            (lambda () (mu4e-message "Enter outlook context"))
-            :leave-func
-            (lambda () (mu4e-message "Leave outlook context"))
-            :match-func
-            (lambda (msg)
-              (when msg
-                (mu4e-message-contact-field-matches msg
-                                                    :to 'mu4e-outlook)))
-            :vars `((user-mail-address . ,mu4e-outlook)
-                    (mu4e-drafts-folder . "/outlook/Drafts")
-                    (mu4e-refile-folder . "/outlook/Archive")
-                    (mu4e-sent-folder . "/outlook/Sent Messages")
-                    (mu4e-trash-folder . "/outlook/Deleted Messages")))))
-  (setq mu4e-context-policy 'pick-first))
+  (setq mu4e-headers-list-mark      '("s" . "󰕲 "))
+  (setq mu4e-headers-personal-mark  '("p" . "󰸐 "))
+  (setq mu4e-modeline-unread-items  '("U:" . " "))
+  (setq mu4e-modeline-new-items     '("N:" . " "))
+  (setq mu4e-modeline-all-clear     '("C: " . "󰉥 ")))
 
 (run-with-idle-timer 4 nil (lambda ()
                              (mu4e 'background)))
@@ -145,8 +144,7 @@
 (use-package consult-mu
   :load-path "packages/consult-mu/"
   :after consult mu4e
-  ;; :bind ("s-f m" . consult-mu)
-  :commands consult-mu)
+  :bind ("s-f m" . consult-mu))
 
 (provide 'init-mail)
 ;;; init-mail.el ends here.

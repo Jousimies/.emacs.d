@@ -12,6 +12,7 @@
 			  ("n" . dashboard-next-line)
 			  ("p" . dashboard-previous-line))
   :custom
+  (dashboard-startup-banner 1)
   (dashboard-icon-type 'nerd-icons)
   (dashboard-set-file-icons t)
   (dashboard-center-content t)

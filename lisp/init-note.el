@@ -29,7 +29,7 @@
   (denote-buffer-has-backlinks-string "󰌷"))
 
 (defun my/modus-themes-denote-faces (&rest _)
-  (modus-themes-with-colors
+  (ef-themes-with-colors
     (custom-set-faces
      `(denote-faces-year ((,c :foreground ,cyan)))
      `(denote-faces-month ((,c :foreground ,magenta-warmer)))
@@ -343,7 +343,7 @@
 
 (use-package citar-denote
   :after (:any citar denote)
-  :hook (on-first-input . citar-denote-mode)
+  :hook (find-file . citar-denote-mode)
   :custom
   (citar-denote-use-bib-keywords t)
   (citar-denote-subdir t))

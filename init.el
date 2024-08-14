@@ -24,25 +24,10 @@
 
 ;;; Code:
 
-;; package.el & use-package
-(setq package-archives '(("melpa" . "https://mirrors.ustc.edu.cn/elpa/melpa/")
-						 ("gnu" . "https://mirrors.ustc.edu.cn/elpa/gnu/")
-						 ("nongnu" . "https://mirrors.ustc.edu.cn/elpa/nongnu/")))
-
-(setq load-prefer-newer t)
-(setq use-package-always-ensure t)
-(setq use-package-always-defer t)
-
-(package-initialize)
-
-;; Auto Compile
-(use-package auto-compile
-  :config
-  (auto-compile-on-load-mode)
-  (auto-compile-on-save-mode))
-
 ;; Load configuration
 (add-to-list 'load-path "~/.emacs.d/lisp")
+
+(require 'init-package)
 
 ;; For debug.
 (when init-file-debug
@@ -50,6 +35,7 @@
   (setq use-package-verbose t)
   (require 'init-benchmark))
 
+(require 'init-const)
 (require 'init-core)
 (require 'init-builtin)
 
@@ -59,8 +45,9 @@
 (require 'init-modeline)
 (require 'init-buffer)
 (require 'init-svg-tag)
+
 ;; Plateform related configuration
-(when (eq system-type 'darwin)
+(when (featurep 'ns)
   (require 'init-mac))
 
 ;; Better Editor
@@ -99,7 +86,7 @@
 ;; Some useful functions stealed from Internet
 (require 'init-misc)
 
-(require 'init-eaf)
+;; (require 'init-eaf)
 ;; Keybindings
 (require 'init-keys)
 
@@ -108,16 +95,3 @@
 
 (provide 'init)
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-vc-selected-packages
-   '((rainbow-csv :url "https://github.com/emacs-vs/rainbow-csv/" :branch "master"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

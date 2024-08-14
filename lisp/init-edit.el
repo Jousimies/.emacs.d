@@ -23,8 +23,9 @@
 ;;
 
 ;;; Code:
-
-(add-hook 'on-first-file-hook #'global-auto-revert-mode)
+(use-package autorevert
+  :ensure nil
+  :hook (find-file . global-auto-revert-mode))
 
 (with-eval-after-load 'register
   (setopt register-preview-delay 0)
@@ -34,27 +35,32 @@
   (set-register ?r (cons 'file (expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy)))
   (set-register ?l (cons 'file (expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))))
 
-(add-hook 'on-first-input-hook #'recentf-mode)
-(with-eval-after-load 'recentf
-  (setopt recentf-save-file (expand-file-name "recentf" cache-directory)
-		  recentf-auto-cleanup 300
-		  recentf-max-saved-items 1000
-		  recentf-exclude '("~/.telega")))
+(use-package recentf
+  :ensure nil
+  :hook (after-init . recentf-mode)
+  :custom
+  (recentf-save-file (expand-file-name "recentf" cache-directory))
+  (recentf-auto-cleanup 300)
+  (recentf-max-saved-items 1000)
+  (recentf-exclude '("~/.telega")))
 
-(add-hook 'on-first-file-hook #'savehist-mode)
-(with-eval-after-load 'savehist
-  (setopt savehist-file (expand-file-name "history" cache-directory)
-		history-length 1000
-        savehist-additional-variables '(kill-ring
-                                        search-ring
-                                        regexp-search-ring)
-        history-delete-duplicates t))
+(use-package savehist
+  :ensure nil
+  :hook (after-init . savehist-mode)
+  :custom
+  (savehist-file (expand-file-name "history" cache-directory))
+  (savehist-additional-variables '(kill-ring
+                                   search-ring
+                                   regexp-search-ring)))
 
-(add-hook 'on-first-file-hook #'save-place-mode)
-(setopt save-place-file (expand-file-name "places" cache-directory))
+(use-package saveplace
+  :ensure nil
+  :hook (after-init . save-place-mode)
+  :custom
+  (save-place-file (expand-file-name "places" cache-directory)))
 
 (use-package undo-fu-session
-  :hook (on-first-file . undo-fu-session-global-mode)
+  :hook (after-init . undo-fu-session-global-mode)
   :custom
   (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory)))
 
@@ -71,7 +77,10 @@
          (org-mode . hungry-delete-mode)))
 
 (use-package ace-pinyin
-  :bind ([remap goto-char] . ace-pinyin-jump-char-2))
+  :bind (([remap goto-char] . ace-pinyin-jump-char)
+         ("M-g C" . ace-pinyin-jump-char-2)
+         ("M-g ." . ace-pinyin-jump-char-in-line)
+         ("M-g w" . ace-pinyin-jump-word)))
 
 (use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)
@@ -87,7 +96,10 @@
 
 (use-package electric
   :ensure nil
-  :hook ((prog-mode . electric-indent-local-mode)
+  :hook ((prog-mode . (lambda ()
+                        (progn
+                          (electric-indent-local-mode 1)
+                          (electric-pair-local-mode 1))))
 		 (org-mode . (lambda ()
 					   (progn
 						 (electric-pair-mode -1)
@@ -127,8 +139,7 @@
   (add-to-list 'expand-region-exclude-text-mode-expansions 'org-mode)
   (add-to-list 'expand-region-exclude-text-mode-expansions 'LaTeX-mode))
 
-(use-package surround
-  :commands surround-delete surround-change surround-insert)
+(use-package surround)
 
 (use-package selected
   :hook (post-select-region . selected-minor-mode)
@@ -162,6 +173,8 @@
   :hook (prog-mode . rainbow-mode))
 
 ;; pulse
+;; Temporarily highlights the line, which is sometimes useful for orientation after a navigation command.
+;; Similar packages `nav-flash' `beacon' `Pulsar'.
 (defun my-pulse-momentary (&rest _)
   "Pulse the current line."
   (pulse-momentary-highlight-one-line (point) 'next-error))

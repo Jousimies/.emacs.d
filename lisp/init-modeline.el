@@ -83,6 +83,11 @@
 			  (when (denote-file-is-note-p (buffer-file-name))
 				(propertize (concat " " (get-last-directory) " ") 'face `(:inverse-video t))))))
 
+(defvar-local my/modeline-repeat
+    '(:eval (when (and repeat-in-progress
+                       (mode-line-window-selected-p))
+              (propertize repeat-echo-mode-line-string 'face `(:inverse-video t)))))
+
 ;; Readonly Mode
 (defvar-local my/modeline-buffer-readonly
     '(:eval (when buffer-read-only
@@ -133,12 +138,6 @@
                                                          (eq major-mode 'telega-image-mode)))
               (propertize (my/modeline--image-info) 'face font-lock-string-face))))
 
-;; https://github.com/protesilaos/dotfiles/blob/master/emacs/.emacs.d/prot-lisp/prot-modeline.el
-(defun my/modeline--right-align-rest ()
-  (format-mode-line
-   `(""
-     ,@(cdr (memq 'my/modeline-align-right mode-line-format)))))
-
 (defun my/modeline--right-align-width ()
   (string-pixel-width (my/modeline--right-align-rest)))
 
@@ -151,20 +150,6 @@
   (let ((height (face-attribute 'mode-line :height nil 'default))
         (m-width (string-pixel-width (propertize "m" 'face 'mode-line))))
     (round height (* m-width (* height m-width 0.001)))))
-
-(defvar-local my/modeline-align-right
-    '(:eval
-      (propertize
-       " "
-       'display
-       `(space
-         :align-to
-         (- right
-            right-fringe
-            right-margin
-            ,(ceiling
-              (my/modeline--right-align-width)
-              (string-pixel-width (propertize "m" 'face 'mode-line))))))))
 
 ;; Date Info
 (defvar-local my/modeline-date
@@ -299,7 +284,6 @@ Specific to the current window's mode line.")
                      my/modeline-input-method
                      my/modeline-kbd-macro
                      my/modeline-region-indicator
-                     my/modeline-align-right
                      my/modeline-file-name
                      my/modeline-buffer-readonly
                      my/modeline-buffer-modified
@@ -313,12 +297,16 @@ Specific to the current window's mode line.")
                      my/modeline-clock-info
                      my/winum
 					 prot-modeline-eglot
-					 my/modeline-denote))
+					 my/modeline-denote
+                     my/modeline-repeat))
   (put construct 'risky-local-variable t))
+
+(setopt mode-line-right-align-edge 'right-margin)
 
 (setopt mode-line-format '("%e"
 						   my/winum
 						   prot-modeline-narrow
+                           my/modeline-repeat
 						   "丨"
 						   my/modeline-buffer-readonly
 						   my/modeline-buffer-modified
@@ -327,15 +315,16 @@ Specific to the current window's mode line.")
 						   (:eval (with-eval-after-load 'denote
 									my/modeline-denote))
 						   "   "
+                           "%I"         ;Display buffer size
 						   my/modeline-position
 						   my/modeline-image-info
 						   my/modeline-kbd-macro
 						   my/modeline-region-indicator
 						   prot-modeline-eglot
 						   mode-line-format-right-align
-						   (:eval (with-eval-after-load 'org-clock
-									my/modeline-clock-info))
-						   my/modeline-timer
+						   ;; (:eval (with-eval-after-load 'org-clock
+						   ;;  		my/modeline-clock-info))
+						   ;; my/modeline-timer
 						   (:eval (when which-function-mode
 									which-func-format))
 						   my/modeline-sys

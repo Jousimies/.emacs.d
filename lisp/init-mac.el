@@ -53,7 +53,7 @@
          ("M-b" . emt-backward-word)
          ("M-d" . emt-kill-word)
          ("M-h" . emt-backward-kill-word))
-  :hook (on-first-input . emt-ensure))
+  :hook (after-init . emt-ensure))
 
 (use-package macim
   :load-path "~/.emacs.d/packages/macim.el/"

@@ -56,19 +56,19 @@
   "i" #'my/copy-file-info
   "d" #'consult-dir)
 
-(defvar-keymap my/window-prefix-map
-  :doc "Keymap for windows"
-  "u" #'winner-undo
-  "r" #'winner-redo
-  "h" #'windmove-left
-  "l" #'windmove-right
-  "j" #'windmove-down
-  "k" #'windmove-up
-  "p" #'previous-buffer
-  "n" #'next-buffer
-  "d" #'dired-sidebar-toggle-sidebar
-  "m" #'switch-to-message
-  "s" #'scratch-buffer)
+;; (defvar-keymap my/window-prefix-map
+;;   :doc "Keymap for windows"
+;;   "u" #'winner-undo
+;;   "r" #'winner-redo
+;;   "h" #'windmove-left
+;;   "l" #'windmove-right
+;;   "j" #'windmove-down
+;;   "k" #'windmove-up
+;;   "p" #'previous-buffer
+;;   "n" #'next-buffer
+;;   "d" #'dired-sidebar-toggle-sidebar
+;;   "m" #'switch-to-message
+;;   "s" #'scratch-buffer)
 
 (transient-define-prefix my/edit-menu ()
   "Edit"
@@ -234,8 +234,7 @@
 	("w" "Speack" gt-do-speak :transient nil)
 	("l" "Translate" gt-do-translate :transient nil)
 	("W" "Write Good" writegood-mode :transient nil)
-	;; ("h" "LSP Helper" lsp-bridge-toggle-sdcv-helper :transient nil)
-	]
+	("h" "LSP Helper" lsp-bridge-toggle-sdcv-helper :transient nil)]
    ["OSX Dictionary"
 	("o" "Input" osx-dictionary-search-input :transient nil)
 	("x" "Pointer" osx-dictionary-search-pointer :transient nil)]
@@ -263,7 +262,7 @@
 	("f" "Fava" my/beancount-fava :transient nil)]]
   [[("e" "Elfeed" elfeed :transient nil)]
    [("t" "Telega" telega :transient nil)]
-   [("m" "Email" mu4e :transient nil)]
+   [("<f11>" "Email" mu4e :transient nil)]
    [("p" "Pass" my/pass-menu :transient nil)]
    [("s" "Search" my/search :transient nil)]
    [("c" "Calendar" calendar :transient nil)]
@@ -294,12 +293,13 @@
   "s-i" #'my/org-insert-local-image)
 
 ;; defvar-keymap
-(keymap-set global-map "M-o" my/window-prefix-map)
+;; (keymap-set global-map "M-o" my/window-prefix-map)
 (keymap-set global-map "s-o" my/org-prefix-map)
 (keymap-set global-map "s-f" my/file-prefix-map)
 
 ;; transient
 (global-set-key (kbd "C-c a") #'my/application-menu)
+(global-set-key (kbd "<f11>") #'my/application-menu)
 (global-set-key (kbd "s-b") #'my/bibtex-menu)
 (global-set-key (kbd "s-e") #'my/edit-menu)
 (global-set-key (kbd "s-n") #'my/note-menu)

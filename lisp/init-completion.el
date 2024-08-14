@@ -28,15 +28,16 @@
 
 (setopt tab-always-indent 'complete
 		tab-first-completion 'word-or-paren-or-punct)
+
 (setq-default tab-width 4
 			  indent-tabs-mode nil)
 
-(setopt completion-auto-select t
-        completion-ignore-case t
-        minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
-        read-buffer-completion-ignore-case t
-        completion-show-help nil
-        completion-auto-wrap nil)
+(use-package simple
+  :ensure nil
+  :custom
+  (completion-auto-select t)
+  (completion-show-help nil)
+  (completion-auto-wrap nil))
 
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 
@@ -83,7 +84,7 @@
 ;; Due to icomplete has compatible problem with citar, a references manager.
 ;; use `M-RET' to exit minibuffer input.
 (use-package vertico
-  :hook ((on-first-input . vertico-mode)
+  :hook ((after-init . vertico-mode)
 		 (rfn-eshadow-update-overlay . vertico-directory-tidy))
   :bind (:map vertico-map
 			  ("C-<backspace>" . vertico-directory-up)))
@@ -116,7 +117,7 @@
          ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
          ([remap yank-pop] . consult-yank-pop)
 		 ([remap imenu] . consult-imenu)
-		 ("M-g l" . consult-goto-line)
+		 ("M-g G" . consult-goto-line)
          :map minibuffer-mode-map
 		 ("C-r" . consult-history))
   :custom
@@ -171,7 +172,7 @@
   :after embark)
 
 (use-package corfu
-  :hook ((on-first-buffer . global-corfu-mode)
+  :hook ((after-init . global-corfu-mode)
 		 (corfu-mode . corfu-echo-mode)
 		 (corfu-mode . corfu-popupinfo-mode)
 		 (minibuffer-setup . corfu-enable-in-minibuffer))
@@ -231,7 +232,7 @@
   )
 
 (use-package which-key
-  :hook (on-first-input . which-key-mode))
+  :hook (after-init . which-key-mode))
 
 
 (provide 'init-completion)
