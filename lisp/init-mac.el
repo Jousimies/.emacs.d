@@ -55,6 +55,7 @@
          ("M-h" . emt-backward-kill-word))
   :hook (after-init . emt-ensure))
 
+;; Left Shift bind to `C-\' if alone with karabiner, to toggle IM.
 (use-package macim
   :load-path "~/.emacs.d/packages/macim.el/"
   :bind (("C-\\" . macim-switch)
@@ -66,29 +67,21 @@
 		 (on-switch-buffer . macim-context-switch)
          (minibuffer-mode . macim-select-ascii))
   :config
-  (defun im-cursor-color ()
-	(interactive)
-	(if current-system-input-method
-		(progn
-		  (setq cursor-type 'bar)
-		  (set-cursor-color "red"))
-	  (progn
-		(setq cursor-type 'box)
-		(set-cursor-color (foreground-color-at-point)))))
+  (defun im-cursor-type ()
+    (interactive)
+    (if current-system-input-method
+    	(setq cursor-type 'bar)
+      (setq cursor-type 'box)))
 
-  (advice-add 'macim-switch :after #'im-cursor-color)
-  (advice-add 'macim-context-switch :after #'im-cursor-color)
+  (advice-add 'macim-switch :after #'im-cursor-type)
+  (advice-add 'macim-context-switch :after #'im-cursor-type)
 
   (setq macim-other "im.rime.inputmethod.Squirrel.Hans")
   (defun macim-switch ()
     (interactive)
     (if current-system-input-method
-        (progn
-		  (macim-select-ascii)
-		  (force-mode-line-update))
-	  (progn
-        (macim-select-other)
-        (force-mode-line-update))))
+        (macim-select-ascii)
+	  (macim-select-other)))
 
   (defvar my/macim-context-ignore-modes '("telega-root-mode"
 										  "telega-image-mode"

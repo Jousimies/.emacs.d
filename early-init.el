@@ -67,7 +67,7 @@
 (push '(scroll-bar-width . 5) default-frame-alist)
 (push '(undecorated . t) default-frame-alist) ; Hide frame title bar.
 (push '(width . 100) default-frame-alist)
-(push '(vertical-scroll-bars . 0) default-frame-alist)
+(push '(vertical-scroll-bars . nil) default-frame-alist)
 
 ;; Themes
 ;; `ef-themes' is eye candy.

@@ -27,15 +27,14 @@
 
 ;; (setq mode-line-right-align-edge 'right-margin)
 
-(defcustom prot-modeline-string-truncate-length 50
+(defcustom prot-modeline-string-truncate-length 20
   "String length after which truncation should be done in small windows."
   :type 'natnum)
 
 (defun prot-modeline--string-truncate-p (str)
   "Return non-nil if STR should be truncated."
-  ;; (and (< (window-total-width) split-width-threshold)
-  ;;      (> (length str) prot-modeline-string-truncate-length))
-  (> (length str) prot-modeline-string-truncate-length))
+  (and (< (window-total-width) split-width-threshold)
+       (> (length str) prot-modeline-string-truncate-length)))
 
 (defun prot-modeline-string-truncate (str)
   "Return truncated STR, if appropriate, else return STR.
@@ -304,10 +303,12 @@ Specific to the current window's mode line.")
 (setopt mode-line-right-align-edge 'right-margin)
 
 (setopt mode-line-format '("%e"
-						   my/winum
-						   prot-modeline-narrow
+                           my/winum
+                           "​"
                            my/modeline-repeat
-						   "丨"
+                           "​"
+                           prot-modeline-narrow
+                           "丨"
 						   my/modeline-buffer-readonly
 						   my/modeline-buffer-modified
 						   my/modeline-file-name
