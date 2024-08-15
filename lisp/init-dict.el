@@ -76,11 +76,15 @@
   (gt-langs '("en" "zh"))
   (gt-default-translator
    (gt-translator :engines (gt-google-engine :cache 'word)
-				  :render (list
-                           (gt-posframe-pop-render :if 'word
-												   :frame-params
-												   (list :border-width 1))
-						   (gt-buffer-render :then (gt-kill-ring-render))))))
+				  :render (gt-buffer-render :then (gt-kill-ring-render)))))
+
+(defun my/translate ()
+  (interactive)
+  (if (use-region-p)
+      (gt-do-translate)
+    (sdcv-search-pointer+)))
+
+(global-set-key (kbd "M-s-t") 'my/translate)
 
 (use-package dictionary-overlay
   :load-path "packages/dictionary-overlay/" "packages/websocket-bridge/" "packages/emacs-websocket/"

@@ -150,7 +150,6 @@
               ("i" . surround-insert)
 			  ("d" . surround-delete)
               ("s" . my/search)
-              ("t" . gt-do-translate)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
               (";" . comment-dwim)))
