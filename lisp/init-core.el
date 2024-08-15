@@ -112,6 +112,8 @@
   (unless (server-running-p)
     (server-start)))
 
+(use-package async)
+
 ;; Better emacs garbage collect behavior
 (use-package gcmh
   :hook (emacs-startup . gcmh-mode)

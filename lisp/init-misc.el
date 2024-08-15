@@ -28,8 +28,6 @@
 (global-set-key (kbd "C-<f1>") #'my/decrease-alpha-background)
 (global-set-key (kbd "C-<f2>") #'my/increase-alpha-background)
 
-(use-package async)
-
 (defun yt-set-time (time)
   "Set TIME in the YouTube link at point.)
   TIME is number of seconds if called from Lisp, and a string if

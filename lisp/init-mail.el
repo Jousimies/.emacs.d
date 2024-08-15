@@ -141,6 +141,35 @@
 (run-with-idle-timer 4 nil (lambda ()
                              (mu4e 'background)))
 
+;; Send mail
+(use-package sendmail
+  :ensure nil
+  :after message
+  :custom
+  (sendmail-program (executable-find "msmtp"))
+  (message-sendmail-envelope-from 'header)
+  :config
+  (require 'smtpmail-async)
+  (setq send-mail-function 'async-sendmail-send-it
+        message-send-mail-function 'async-smtpmail-send-it))
+
+(use-package org-msg
+  :hook (mu4e-compose-pre . org-msg-mode)
+  :custom
+  (org-msg-options "html-preamble:nil html-postamble:nil toc:nil author:nil email:nil")
+  (org-msg-greeting-fmt "\nHi%s,\n\n")
+  (org-msg-recipient-names `(,user-mail-address . ,user-full-name))
+  (org-msg-greeting-name-limit 3)
+  (org-msg-default-alternatives '((new		. (text html))
+                                  (reply-to-html	. (text html))
+                                  (reply-to-text	. (text))))
+  (org-msg-convert-citation t)
+
+  (org-msg-signature (concat "Best Regards,\n\n#+begin_signature\n*"
+                             user-full-name
+                             "*\n\n" (format-time-string "%Y-%m-%d")
+                             "\n#+end_signature")))
+
 (use-package consult-mu
   :load-path "packages/consult-mu/"
   :after consult mu4e
