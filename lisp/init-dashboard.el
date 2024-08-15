@@ -12,7 +12,8 @@
 			  ("n" . dashboard-next-line)
 			  ("p" . dashboard-previous-line))
   :custom
-  (dashboard-startup-banner 1)
+  (dashboard-startup-banner (expand-file-name "src/bitmap.png" user-emacs-directory))
+  (dashboard-image-banner-max-width 500)
   (dashboard-icon-type 'nerd-icons)
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
