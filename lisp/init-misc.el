@@ -133,5 +133,7 @@
          (theme (elt themes (random (length themes)))))
     (load-theme theme t)))
 
+(use-package emacs-everywhere)
+
 (provide 'init-misc)
 ;;; init-misc.el ends here.
