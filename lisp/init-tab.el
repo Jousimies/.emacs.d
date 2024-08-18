@@ -30,6 +30,7 @@
          ("s-t" . tab-new)
          ("s-w" . tab-close))
   :custom
+  (tab-bar-auto-width-max '((160) 20))
   (tab-bar-new-tab-choice 'scratch-buffer)
   (tab-bar-close-button-show nil)
   (tab-bar-separator "​")
