@@ -25,7 +25,8 @@
 ;;; Code:
 (use-package autorevert
   :ensure nil
-  :hook (find-file . global-auto-revert-mode))
+  :hook (find-file . global-auto-revert-mode)
+  :bind ([remap revert-buffer] . revert-buffer-quick))
 
 (with-eval-after-load 'register
   (setopt register-preview-delay 0)
