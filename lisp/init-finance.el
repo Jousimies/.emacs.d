@@ -5,11 +5,12 @@
 ;;; Code:
 
 (use-package beancount
-  :load-path "packages/beancount-mode/"
   :mode ("\\.bean\\'" . beancount-mode)
   :hook ((beancount-mode . (lambda ()
                              (setq-local electric-indent-chars nil)))
          (beancount-mode . outline-minor-mode))
+  :custom
+  (beancount-highlight-transaction-at-point t)
   :config
   ;; insert whole transaction instead of only insert date.
   (defun my/beancount-insert-transaction (&optional days)
