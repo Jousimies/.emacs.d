@@ -29,10 +29,18 @@
   :hook (after-init . holo-layer-enable)
   :custom
   (holo-layer-python-command "~/.env/bin/python3")
-  (holo-layer-enable-cursor-animation nil)
-  (holo-layer-enable-place-info t)
-  (holo-layer-enable-type-animation t))
+  (holo-layer-enable-place-info t))
 
+;; 在最新的 Emacs 上存在 Bug
+;; (use-package popweb-latex
+;;   :load-path "~/.emacs.d/packages/popweb/" "~/.emacs.d/packages/popweb/extension/latex/" "~/.emacs.d/packages/popweb/extension/dict/"
+;;   :hook (LaTeX-mode . popweb-latex-mode)
+;;   :custom
+;;   (popweb-python-command "~/.env/bin/python3")
+;;   :config
+;;   (require 'popweb-dict))
+
+;; 在最新的 Emacs 上不可用
 ;; (use-package eaf
 ;;   :load-path "~/.emacs.d/packages/emacs-application-framework/"
 ;;   :custom

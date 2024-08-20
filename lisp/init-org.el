@@ -222,9 +222,9 @@
   :hook ((org-mode . form-feed-mode)
 		 (emacs-news-mode . form-feed-mode)))
 
-(use-package org-xlatex
-  :load-path "packages/org-xlatex/"
-  :hook (org-mode . org-xlatex-mode))
+;; (use-package org-xlatex
+;;   :load-path "packages/org-xlatex/"
+;;   :hook (org-mode . org-xlatex-mode))
 
 ;; Yank media
 (with-eval-after-load 'org
