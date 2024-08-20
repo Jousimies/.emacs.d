@@ -32,6 +32,7 @@
 ;; For debug.
 (when init-file-debug
   (setq use-package-compute-statistics t)
+  (setq use-package-minimum-reported-time 0)
   (setq use-package-verbose t)
   (require 'init-benchmark))
 

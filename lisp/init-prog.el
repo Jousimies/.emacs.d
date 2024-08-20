@@ -57,7 +57,7 @@
 (use-package devdocs-browser
   :bind (("M-g o" . devdocs-browser-open))
   :custom
-  (devdocs-browser-cache-directory (expand-file-name "devdocs" cache-directory)))
+  (devdocs-browser-data-directory (expand-file-name "devdocs-browser" cache-directory)))
 
 (provide 'init-prog)
 ;;; init-prog.el ends here

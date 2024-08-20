@@ -96,6 +96,7 @@
   (setq dictionary-overlay-python "/opt/homebrew/bin/python3.10")
   (dictionary-overlay-start))
 
+;; Emacs 内置的 ispell 和 flyspell 没有 jinx 性能好
 (use-package jinx
   :hook (org-mode . jinx-mode)
   :bind ("M-#" . jinx-correct)

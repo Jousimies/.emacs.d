@@ -18,6 +18,7 @@
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
   (dashboard-set-init-info t)
+  (dashboard-week-agenda nil)
   (dashboard-set-footer nil)
   (dashboard-items '((recents  . 5)
                      (bookmarks . 5)

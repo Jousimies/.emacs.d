@@ -116,8 +116,15 @@
      ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy)))))
 
 ;; Sometimes I want open the web archive file with eww.
+(defun my/org-move-to-heading-forward-3-char ()
+  (when (re-search-forward "^\\*+.*:Reference:" nil t)
+    ;; Move to the beginning of the heading
+    (org-back-to-heading t)
+    (forward-char 3)))
+
 (defun my/org-get-link-under-point ()
   "Get the link under the point in Org mode."
+  (my/org-move-to-heading-forward-3-char)
   (let* ((link (org-element-lineage (org-element-context) '(link) t)))
 	(if link
 		(org-element-property :raw-link link)

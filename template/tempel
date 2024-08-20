@@ -4,7 +4,7 @@ fundamental-mode ;; Available everywhere
 
 (today (format-time-string "%Y-%m-%d"))
 (time (format-time-string "%Y-%m-%d %H:%m"))
-
+(id (format-time-string "%Y%m%d"))
 prog-mode
 
 (fixme (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "FIXME ")

@@ -148,6 +148,8 @@
 ;;;###autoload
 (defun my/dired-open-with-mpv ()
   (interactive)
+  (unless (featurep 'mpv)
+    (require 'mpv))
   (mpv-start (dired-get-filename)))
 
 ;; @Lucius_Chen

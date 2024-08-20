@@ -264,7 +264,7 @@
    [("t" "Telega" telega :transient nil)]
    [("<f11>" "Email" mu4e :transient nil)]
    [("p" "Pass" my/pass-menu :transient nil)]
-   [("s" "Search" my/search :transient nil)]
+   [("s" "Search" my/search-menu :transient nil)]
    [("c" "Calendar" calendar :transient nil)]
    [("r" "Calculator" calc :transient nil)]])
 
@@ -279,6 +279,20 @@
 	("o" "Progress" my/mpv-toggle-progress :transient nil)
 	("v" "video" mpv-toggle-video :transient nil)]])
 
+(transient-define-prefix my/search-menu ()
+  "Dictionary"
+  [[("r" "rg" rg :transient nil)]
+   [("R" "rg menu" rg-menu :transient nil)]
+   [("g" "Google" my/search-google :transient nil)]
+   [("w" "Wikipedia English" my/search-wikipedia_en :transient nil)]
+   [("z" "Zhi Hu" my/search-zhihu :transient nil)]
+   [("m" "Movie DouBan" my/search-doubanmovie :transient nil)]
+   [("b" "Book DouBan" my/search-doubanbook :transient nil)]
+   [("l" "Bilibili" my/search-bilibili :transient nil)]
+   [("y" "Youtube" my/search-youtube :transient nil)]
+   [("s" "Scholar" my/search-scholar :transient nil)]
+   ])
+
 (defvar-keymap my/org-prefix-map
   :doc "keymap for org."
   "i" #'org-clock-in
@@ -291,6 +305,7 @@
   "w" #'widen
   "u" #'update-org-attach-property
   "s-i" #'my/org-insert-local-image)
+
 
 ;; defvar-keymap
 ;; (keymap-set global-map "M-o" my/window-prefix-map)
@@ -308,6 +323,7 @@
 (global-set-key (kbd "<f12>") #'my/agenda-menu)
 (global-set-key (kbd "C-c t") #'my/dict-menu)
 (global-set-key (kbd "C-<f8>") #'my/mpv-menu)
+(global-set-key (kbd "C-c s") #'my/search-menu)
 
 ;; functions
 (global-set-key (kbd "C-s-k") #'kill-paragraph)

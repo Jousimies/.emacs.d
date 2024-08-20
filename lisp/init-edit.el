@@ -150,7 +150,7 @@
               ("w" . count-words-region)
               ("i" . surround-insert)
 			  ("d" . surround-delete)
-              ("s" . my/search)
+              ("s" . my/search-menu)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
               (";" . comment-dwim)))
