@@ -25,7 +25,7 @@
 ;;; Code:
 (use-package autorevert
   :ensure nil
-  :hook (find-file . global-auto-revert-mode)
+  :hook (on-first-file . global-auto-revert-mode)
   :bind ([remap revert-buffer] . revert-buffer-quick))
 
 (with-eval-after-load 'register
@@ -38,7 +38,7 @@
 
 (use-package recentf
   :ensure nil
-  :hook (after-init . recentf-mode)
+  :hook (on-first-buffer . recentf-mode)
   :custom
   (recentf-save-file (expand-file-name "recentf" cache-directory))
   (recentf-auto-cleanup 300)
@@ -47,7 +47,7 @@
 
 (use-package savehist
   :ensure nil
-  :hook (after-init . savehist-mode)
+  :hook (on-first-buffer . savehist-mode)
   :custom
   (savehist-file (expand-file-name "history" cache-directory))
   (savehist-additional-variables '(kill-ring
@@ -56,12 +56,12 @@
 
 (use-package saveplace
   :ensure nil
-  :hook (after-init . save-place-mode)
+  :hook (on-first-buffer . save-place-mode)
   :custom
   (save-place-file (expand-file-name "places" cache-directory)))
 
 (use-package undo-fu-session
-  :hook (after-init . undo-fu-session-global-mode)
+  :hook (on-first-buffer . undo-fu-session-global-mode)
   :custom
   (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory)))
 
@@ -108,7 +108,7 @@
 						 (electric-indent-mode -1))))))
 
 (use-package delsel
-  :hook (text-mode . delete-selection-mode))
+  :hook (on-first-buffer . delete-selection-mode))
 
 (use-package rime-regexp
   :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"

@@ -84,7 +84,7 @@
 ;; Due to icomplete has compatible problem with citar, a references manager.
 ;; use `M-RET' to exit minibuffer input.
 (use-package vertico
-  :hook ((after-init . vertico-mode)
+  :hook ((on-first-buffer . vertico-mode)
 		 (rfn-eshadow-update-overlay . vertico-directory-tidy))
   :bind (:map vertico-map
 			  ("C-<backspace>" . vertico-directory-up)))
@@ -172,7 +172,7 @@
   :after embark)
 
 (use-package corfu
-  :hook ((after-init . global-corfu-mode)
+  :hook ((on-first-buffer . global-corfu-mode)
 		 (corfu-mode . corfu-echo-mode)
 		 (corfu-mode . corfu-popupinfo-mode)
 		 (minibuffer-setup . corfu-enable-in-minibuffer))
@@ -232,7 +232,7 @@
   )
 
 (use-package which-key
-  :hook (after-init . which-key-mode))
+  :hook (on-first-input . which-key-mode))
 
 
 (provide 'init-completion)

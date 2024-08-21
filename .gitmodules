@@ -142,3 +142,6 @@
 [submodule "packages/ef-themes"]
 	path = packages/ef-themes
 	url = https://github.com/protesilaos/ef-themes.git
+[submodule "packages/on.el"]
+	path = packages/on.el
+	url = https://github.com/ajgrf/on.el.git

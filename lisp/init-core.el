@@ -116,7 +116,7 @@
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh
-  :hook (emacs-startup . gcmh-mode)
+  :hook (on-first-buffer . gcmh-mode)
   :custom
   (gc-cons-percentage 0.1)
   (gcmh-verbose nil)

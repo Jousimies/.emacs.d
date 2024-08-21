@@ -25,25 +25,24 @@
 ;;; Code:
 
 (use-package svg-tag-mode
-  :hook ((org-mode . svg-tag-mode)
-		 (org-agenda-mode . svg-tag-mode))
+  :hook (org-mode . svg-tag-mode)
   :config
   ;; 有性能问题
   ;; https://github.com/rougier/svg-tag-mode
   ;; Show svg-tag-mode in org-agenda buffer
-  ;; (defun org-agenda-show-svg ()
-  ;;   (let* ((case-fold-search nil)
-  ;;          (keywords (mapcar #'svg-tag--build-keywords svg-tag--active-tags))
-  ;;          (keyword (car keywords)))
-  ;;     (while keyword
-  ;;       (save-excursion
-  ;;         (while (re-search-forward (nth 0 keyword) nil t)
-  ;;           (overlay-put (make-overlay
-  ;;                         (match-beginning 0) (match-end 0))
-  ;;                        'display  (nth 3 (eval (nth 2 keyword)))) ))
-  ;;       (pop keywords)
-  ;;       (setq keyword (car keywords)))))
-  ;; (add-hook 'org-agenda-finalize-hook #'org-agenda-show-svg)
+  (defun org-agenda-show-svg ()
+    (let* ((case-fold-search nil)
+           (keywords (mapcar #'svg-tag--build-keywords svg-tag--active-tags))
+           (keyword (car keywords)))
+      (while keyword
+        (save-excursion
+          (while (re-search-forward (nth 0 keyword) nil t)
+            (overlay-put (make-overlay
+                          (match-beginning 0) (match-end 0))
+                         'display  (nth 3 (eval (nth 2 keyword)))) ))
+        (pop keywords)
+        (setq keyword (car keywords)))))
+  (add-hook 'org-agenda-finalize-hook #'org-agenda-show-svg)
 
   (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
   (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
@@ -87,7 +86,7 @@
 		  ;; Citation likes [cite:@svenkinnunen1960]
 		  ;; 与 Tags 一样，同样无法处理多种情况
 		  ("\\[cite:@[A-Za-z0-9.]+\\]" . ((lambda (tag) (svg-tag-make tag :face 'org-cite-key :inverse t
-																 :margin 0 :beg 7 :end -1))))
+																      :margin 0 :beg 7 :end -1))))
 
 		  ;; https://github.com/rougier/svg-tag-mode/blob/main/examples/example-2.el
 		  ;; Active date (with or without day name, with or without time)

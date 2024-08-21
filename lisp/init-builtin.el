@@ -33,8 +33,8 @@
 ;; (add-hook 'after-init-hook #'size-indication-mode)
 (add-hook 'org-mode-hook #'visual-line-mode)
 
-(add-hook 'find-file-hook (lambda ()
-								  (mouse-avoidance-mode 'jump)))
+(add-hook 'on-first-file-hook (lambda ()
+							    (mouse-avoidance-mode 'jump)))
 (setopt mark-ring-max 128
         kill-do-not-save-duplicates t
         kill-ring-max (* kill-ring-max 2)
@@ -60,44 +60,44 @@
 (add-hook 'find-file-hook #'auto-save-visited-mode)
 
 (defun auto-save-delete-trailing-whitespace-except-current-line ()
-    (interactive)
-    (let ((begin (line-beginning-position))
-          (end (point))
-          (buffername (buffer-name (buffer-base-buffer))))
-      (when (not (or (string-prefix-p "inbox" buffername)
-                     (string-match-p "^[0-9]" buffername)))
-        (save-excursion
-          (when (< (point-min) begin)
-            (save-restriction
-              (narrow-to-region (point-min) (1- begin))
-              (delete-trailing-whitespace)))
-          (when (> (point-max) end)
-            (save-restriction
-              (narrow-to-region end (point-max))
-              (delete-trailing-whitespace)))))))
+  (interactive)
+  (let ((begin (line-beginning-position))
+        (end (point))
+        (buffername (buffer-name (buffer-base-buffer))))
+    (when (not (or (string-prefix-p "inbox" buffername)
+                   (string-match-p "^[0-9]" buffername)))
+      (save-excursion
+        (when (< (point-min) begin)
+          (save-restriction
+            (narrow-to-region (point-min) (1- begin))
+            (delete-trailing-whitespace)))
+        (when (> (point-max) end)
+          (save-restriction
+            (narrow-to-region end (point-max))
+            (delete-trailing-whitespace)))))))
 (add-hook 'before-save-hook #'auto-save-delete-trailing-whitespace-except-current-line)
 
 (defun switch-to-message ()
-    "Quick switch to `*Message*' buffer."
-    (interactive)
-    (switch-to-buffer "*Messages*"))
+  "Quick switch to `*Message*' buffer."
+  (interactive)
+  (switch-to-buffer "*Messages*"))
 
 (global-set-key (kbd "M-g m") #'switch-to-message)
 (global-set-key (kbd "M-g s") #'scratch-buffer)
 
-(add-hook 'find-file-hook #'global-so-long-mode)
-(add-hook 'find-file-hook #'global-prettify-symbols-mode)
-(add-hook 'find-file-hook #'global-word-wrap-whitespace-mode)
+(add-hook 'on-first-file-hook #'global-so-long-mode)
+(add-hook 'on-first-file-hook #'global-prettify-symbols-mode)
+(add-hook 'on-first-file-hook #'global-word-wrap-whitespace-mode)
 
 (add-hook 'tab-bar-mode-hook 'display-battery-mode)
 (add-hook 'tab-bar-mode-hook 'display-time-mode)
 (with-eval-after-load 'time
   (setopt display-time-default-load-average nil))
 
-(add-hook 'after-init-hook #'midnight-mode)
+(add-hook 'on-first-file-hook #'midnight-mode)
 
 (setopt prettify-symbols-alist '(("lambda" . ?λ)
-                               ("function" . ?𝑓)))
+                                 ("function" . ?𝑓)))
 
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 
@@ -105,7 +105,7 @@
 (setq bookmark-default-file (expand-file-name "bookmarks" cache-directory))
 
 ;; auto-insert-mode
-(add-hook 'find-file-hook #'auto-insert-mode)
+(add-hook 'on-first-file-hook #'auto-insert-mode)
 (with-eval-after-load 'auto-insert
   (add-to-list 'auto-insert-alist
                '(("\\.el\\'" . "Emacs Lisp header")
@@ -170,23 +170,23 @@
 ;; (add-hook 'org-mode-hook #'display-line-numbers-mode)
 
 (face-spec-set 'fill-column-indicator
-                 '((default :height 0.1))
-                 'face-override-spec)
+               '((default :height 0.1))
+               'face-override-spec)
 (setq-default fill-column 90)
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 (setopt show-paren-style 'parenthesis
 		show-paren-context-when-offscreen 'overlay)
-(add-hook 'find-file-hook #'show-paren-mode)
+(add-hook 'on-first-buffer-hook #'show-paren-mode)
 
-(add-hook 'after-init-hook (lambda ()
-								  (blink-cursor-mode -1)))
+(add-hook 'on-first-input-hook (lambda ()
+								 (blink-cursor-mode -1)))
 (setopt window-divider-default-bottom-width 1
 		window-divider-default-places 'bottom-only)
 
 (use-package winner
   :ensure nil
-  :hook (after-init . winner-mode)
+  :hook (on-first-buffer . winner-mode)
   :bind (("M-g u" . winner-undo)
          ("M-g r" . winner-redo))
   :custom
@@ -203,13 +203,13 @@
                            "*esh command on file*")))
 
 (add-to-list 'display-buffer-alist '("\\*Outline"
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (window-width . 0.5)))
+                                     (display-buffer-in-side-window)
+                                     (side . right)
+                                     (window-width . 0.5)))
 
 (use-package windmove
   :ensure nil
-  :hook (after-init . windmove-mode)
+  :hook (on-first-buffer . windmove-mode)
   :bind (("M-g h" . windmove-left)
          ("M-g l" . windmove-right)
          ("M-g k" . windmove-up)
@@ -218,7 +218,7 @@
 (setopt switch-to-buffer-in-dedicated-window 'pop
 		switch-to-buffer-obey-display-actions t)
 
-(add-hook 'after-init-hook 'pixel-scroll-mode)
+(add-hook 'on-first-buffer-hook 'pixel-scroll-mode)
 
 (defun my/scroll-other-windown-down ()
   "Scroll other window down."
@@ -243,18 +243,18 @@
 ;; xref
 ;; Prefer ripgrep, then ugrep, and fall back to regular grep.
 (setopt xref-search-program (cond
-						   ((or (executable-find "ripgrep")
-								(executable-find "rg"))
-							'ripgrep)
-						   ((executable-find "ugrep")
-							'ugrep)
-						   (t
-							'grep)))
+						     ((or (executable-find "ripgrep")
+								  (executable-find "rg"))
+							  'ripgrep)
+						     ((executable-find "ugrep")
+							  'ugrep)
+						     (t
+							  'grep)))
 
 ;;;; Repeatable key chords (repeat-mode)
 (use-package repeat
   :ensure nil
-  :hook (after-init . repeat-mode)
+  :hook (on-first-buffer . repeat-mode)
   :custom
   (repeat-on-final-keystroke t)
   (repeat-exit-timeout 5)

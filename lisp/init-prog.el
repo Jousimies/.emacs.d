@@ -59,5 +59,14 @@
   :custom
   (devdocs-browser-data-directory (expand-file-name "devdocs-browser" cache-directory)))
 
+;; 需要安装 `mermaid-cli'
+;; npm install -g @mermaid-js/mermaid-cli
+;; `mermaid-cli' 使用见官方教程
+;; https://mermaid.js.org/intro/
+(use-package mermaid-mode
+  :mode ("\\.mmd\\'" . mermaid-mode)
+  :custom
+  (mermaid-mmdc-location "/opt/homebrew/bin/mmdc"))
+
 (provide 'init-prog)
 ;;; init-prog.el ends here

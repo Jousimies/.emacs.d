@@ -27,6 +27,11 @@
 ;; Load configuration
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
+;; Hooks for faster startup
+(add-to-list 'load-path "~/.emacs.d/packages/on.el/")
+(require 'on)
+
+;; package.el
 (require 'init-package)
 
 ;; For debug.

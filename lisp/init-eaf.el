@@ -26,7 +26,7 @@
 (use-package holo-layer
   :load-path "~/.emacs.d/packages/holo-layer/"
   :commands holo-layer-enable
-  :hook (after-init . holo-layer-enable)
+  :hook (on-first-buffer . holo-layer-enable)
   :custom
   (holo-layer-python-command "~/.env/bin/python3")
   (holo-layer-enable-place-info t))

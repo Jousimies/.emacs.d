@@ -36,7 +36,7 @@
 
 (use-package bufferlo
   :bind (([remap switch-to-buffer] . bufferlo-switch-to-buffer))
-  :hook (after-init . bufferlo-mode))
+  :hook (on-first-buffer . bufferlo-mode))
 
 (use-package helpful
   :bind (([remap describe-function] . helpful-callable)
@@ -81,7 +81,7 @@
          :map popper-mode-map
          ("M-<tab>" . popper-cycle)
          ("M-`" . popper-toggle-type))
-  :hook ((emacs-startup . popper-mode)
+  :hook ((on-first-buffer . popper-mode)
 		 (popper-mode . popper-echo-mode))
   :init
   (setq popper-reference-buffers
@@ -159,12 +159,12 @@
 
 ;; https://github.com/roife/.emacs.d/blob/323536f51674ef68cad78f72eef31c8b49795518/core/init-ibuffer.el#L8
 (defun +ibuffer-visit-buffer-in-popper ()
-    (interactive)
-    (if (window-parameter nil 'window-side)
-        (let ((win (selected-window)))
-          (ibuffer-visit-buffer-other-window)
-          (delete-window win))
-      (ibuffer-visit-buffer)))
+  (interactive)
+  (if (window-parameter nil 'window-side)
+      (let ((win (selected-window)))
+        (ibuffer-visit-buffer-other-window)
+        (delete-window win))
+    (ibuffer-visit-buffer)))
 
 (with-eval-after-load 'ibuffer
   (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper))

@@ -53,7 +53,7 @@
          ("M-b" . emt-backward-word)
          ("M-d" . emt-kill-word)
          ("M-h" . emt-backward-kill-word))
-  :hook (after-init . emt-ensure))
+  :hook (on-first-buffer . emt-ensure))
 
 ;; Left Shift bind to `C-\' if alone with karabiner, to toggle IM.
 (use-package macim
@@ -61,8 +61,8 @@
   :bind (("C-\\" . macim-switch)
          :map isearch-mode-map
          ("C-\\" . macim-switch))
-  :hook ((emacs-startup . macim-select-ascii)
-         (emacs-startup . macim-mode)
+  :hook ((on-first-input . macim-select-ascii)
+         (on-first-buffer . macim-mode)
          (isearch-mode . macim-select-ascii)
 		 (on-switch-buffer . macim-context-switch)
          (minibuffer-mode . macim-select-ascii))

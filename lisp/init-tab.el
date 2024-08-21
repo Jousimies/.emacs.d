@@ -25,7 +25,7 @@
 ;;; Code:
 
 (use-package tab-bar
-  :hook (after-init . tab-bar-mode)
+  :hook (on-first-buffer . tab-bar-mode)
   :bind (("C-c b t" . tab-switch)
          ("s-t" . tab-new)
          ("s-w" . tab-close))
