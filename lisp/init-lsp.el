@@ -4,14 +4,16 @@
 
 ;;; Code:
 
+;; Find treesit language source here:
+;; https://github.com/tree-sitter/tree-sitter/wiki/List-of-parsers
 (use-package treesit
   :ensure nil
   :when (treesit-available-p)
-  :commands treesit-install-language-grammar
   :custom
   (treesit-language-source-alist
    '((python "https://github.com/tree-sitter/tree-sitter-python.git")
-     (yaml "https://github.com/ikatyang/tree-sitter-yaml.git"))))
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml.git")
+     (typst "https://github.com/uben0/tree-sitter-typst.git"))))
 
 (use-package eglot
   :after yasnippet

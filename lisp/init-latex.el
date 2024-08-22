@@ -73,5 +73,14 @@
 ;;   (preview-leave-open-previews-visible t)
 ;;   :hook (LaTeX-mode . preview-auto-mode))
 
+;; brew install typst
+;; set `treesit-language-source-alist', see init-lsp.el
+(use-package typst-ts-mode
+  :vc (:url "https://github.com/Ziqi-Yang/typst-ts-mode"
+            :branch "main")
+  :custom
+  (typst-ts-mode-executable-location "/opt/homebrew/bin/typst")
+  (typst-ts-mode-watch-options "--open"))
+
 (provide 'init-latex)
 ;;; init-latex.el ends here.
