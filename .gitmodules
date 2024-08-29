@@ -145,3 +145,6 @@
 [submodule "packages/on.el"]
 	path = packages/on.el
 	url = https://github.com/ajgrf/on.el.git
+[submodule "packages/typst-ts-mode"]
+	path = packages/typst-ts-mode
+	url = https://codeberg.org/meow_king/typst-ts-mode.git

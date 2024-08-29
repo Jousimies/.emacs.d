@@ -75,9 +75,10 @@
 
 ;; brew install typst
 ;; set `treesit-language-source-alist', see init-lsp.el
+;; lsp, see https://myriad-dreamin.github.io/tinymist/frontend/emacs.html
 (use-package typst-ts-mode
-  :vc (:url "https://github.com/Ziqi-Yang/typst-ts-mode"
-            :branch "main")
+  :load-path "packages/typst-ts-mode/"
+  :mode ("\\.typ\\'" . typst-ts-mode)
   :custom
   (typst-ts-mode-executable-location "/opt/homebrew/bin/typst")
   (typst-ts-mode-watch-options "--open"))

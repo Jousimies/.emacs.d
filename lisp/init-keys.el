@@ -19,8 +19,12 @@
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
+;; 如果有内置的按键，优先使用内置的按键。
+;; 如果内置的按键不好用，则自己定义。
+;; C-x for global keybinding
+;; C-c for local keybinding
 
-;; See here
+;; See here for transient use.
 ;; https://github.com/positron-solutions/transient-showcase
 
 ;;; Code:
@@ -264,9 +268,7 @@
    [("t" "Telega" telega :transient nil)]
    [("<f11>" "Email" mu4e :transient nil)]
    [("p" "Pass" my/pass-menu :transient nil)]
-   [("s" "Search" my/search-menu :transient nil)]
-   [("c" "Calendar" calendar :transient nil)]
-   [("r" "Calculator" calc :transient nil)]])
+   [("c" "Calendar" calendar :transient nil)]])
 
 (transient-define-prefix my/mpv-menu ()
   "References"

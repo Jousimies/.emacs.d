@@ -28,19 +28,6 @@
           (?B . org-priority)
           (?C . (shadow . org-priority)))))
 
-(with-eval-after-load 'calendar
-  (setq calendar-view-diary-initially-flag t)
-  (setq calendar-mark-diary-entries-flag t)
-
-  (setq calendar-date-style 'iso)
-  (setq calendar-date-display-form calendar-iso-date-display-form)
-  (setq diary-date-forms diary-iso-date-forms)
-  (setq calendar-time-display-form
-        '(24-hours ":" minutes
-                   (when time-zone
-                     (format "(%s)" time-zone))))
-  (add-hook 'calendar-today-visible-hook #'calendar-mark-today))
-
 (use-package appt
   :ensure nil
   :hook (diary-mode . appt-activate)

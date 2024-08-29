@@ -271,6 +271,20 @@
   :custom
   (hl-line-sticky-flag nil))
 
+(use-package calendar
+  :ensure nil
+  :bind ("C-x c" . calendar)
+  :hook (calendar-today-visible . calendar-mark-today)
+  :custom
+  (calendar-view-diary-initially-flag t)
+  (calendar-mark-diary-entries-flag t)
+  (calendar-date-style 'iso)
+  (calendar-date-display-form calendar-iso-date-display-form)
+  (diary-date-forms diary-iso-date-forms)
+  (calendar-time-display-form '(24-hours ":" minutes
+                                         (when time-zone
+                                           (format "(%s)" time-zone)))))
+
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here

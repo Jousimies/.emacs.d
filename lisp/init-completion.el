@@ -85,9 +85,13 @@
 ;; use `M-RET' to exit minibuffer input.
 (use-package vertico
   :hook ((on-first-buffer . vertico-mode)
-		 (rfn-eshadow-update-overlay . vertico-directory-tidy))
+		 (rfn-eshadow-update-overlay . vertico-directory-tidy)
+         (vertico-mode . vertico-multiform-mode))
   :bind (:map vertico-map
 			  ("C-<backspace>" . vertico-directory-up)))
+
+(with-eval-after-load 'vertico-multiform
+  (add-to-list 'vertico-multiform-categories '(embark-keybinding grid)))
 
 (use-package nerd-icons-completion
   :hook (minibuffer-setup . nerd-icons-completion-mode))
@@ -166,7 +170,9 @@
          :map minibuffer-local-map
          ("C-;" . embark-act)
          ("C-c C-e" . embark-export)
-         ("C-c C-l" . embark-collect)))
+         ("C-c C-l" . embark-collect))
+  :custom
+  (prefix-help-command #'embark-prefix-help-command))
 
 (use-package embark-consult
   :after embark)
@@ -174,27 +180,18 @@
 (use-package corfu
   :hook ((on-first-buffer . global-corfu-mode)
 		 (corfu-mode . corfu-echo-mode)
-		 (corfu-mode . corfu-popupinfo-mode)
-		 (minibuffer-setup . corfu-enable-in-minibuffer))
+         (corfu-mode . corfu-history-mode)
+		 (corfu-mode . corfu-popupinfo-mode))
+  :bind (:map corfu-map
+              ("SPC" . corfu-insert-separator)
+              ("RET" . nil))
   :custom
   (corfu-cycle t)
   (corfu-auto t)
   (corfu-auto-prefix 1)
   (corfu-auto-delay 0.0)
   (corfu-preselect 'valid)
-  (corfu-quit-no-match 'separator)
-  :preface
-  (defun corfu-enable-in-minibuffer ()
-    "Enable Corfu in the minibuffer if `completion-at-point' is bound."
-    (when (where-is-internal #'completion-at-point (list (current-local-map)))
-      ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
-      (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
-                  corfu-popupinfo-delay nil)
-      (corfu-mode 1)))
-  :config
-  (with-eval-after-load 'savehist
-    (corfu-history-mode 1)
-    (add-to-list 'savehist-additional-variables 'corfu-history)))
+  (corfu-quit-no-match 'separator))
 
 (use-package nerd-icons-corfu)
 
@@ -202,37 +199,16 @@
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package cape
-  :bind (("C-c p p" . completion-at-point) ;; capf
-         ("C-c p t" . complete-tag)        ;; etags
-         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c p h" . cape-history)
-         ("C-c p f" . cape-file)
-         ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-symbol)
-         ("C-c p a" . cape-abbrev)
-         ("C-c p w" . cape-dict)
-         ("C-c p l" . cape-line)
-         ("C-c p \\" . cape-tex)
-         ("C-c p _" . cape-tex)
-         ("C-c p ^" . cape-tex)
-         ("C-c p &" . cape-sgml)
-         ("C-c p r" . cape-rfc1345))
+  :bind ("C-c p" . cape-prefix-map)
   :init
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  ;;(add-to-list 'completion-at-point-functions #'cape-history)
-  ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
-  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
-  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
-  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
-  (add-to-list 'completion-at-point-functions #'cape-dict)
-  ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
-  ;;(add-to-list 'completion-at-point-functions #'cape-line)
-  )
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-dict))
 
 (use-package which-key
-  :hook (on-first-input . which-key-mode))
+  :hook (on-first-input . which-key-mode)
+  :custom
+  (which-key-idle-delay 0.1))
 
 
 (provide 'init-completion)

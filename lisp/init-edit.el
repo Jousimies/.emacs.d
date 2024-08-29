@@ -97,15 +97,16 @@
 
 (use-package electric
   :ensure nil
-  :hook ((prog-mode . (lambda ()
-                        (progn
-                          (electric-indent-local-mode 1)
-                          (electric-pair-local-mode 1))))
+  :hook ((on-first-buffer . (lambda ()
+                              (progn
+                                (electric-pair-mode 1)
+                                (electric-quote-mode 1)
+                                (electric-indent-mode 1))))
 		 (org-mode . (lambda ()
 					   (progn
-						 (electric-pair-mode -1)
-						 (electric-quote-mode -1)
-						 (electric-indent-mode -1))))))
+						 (electric-pair-local-mode -1)
+						 (electric-quote-local-mode -1)
+						 (electric-indent-local-mode -1))))))
 
 (use-package delsel
   :hook (on-first-buffer . delete-selection-mode))

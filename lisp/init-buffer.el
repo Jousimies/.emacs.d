@@ -47,8 +47,7 @@
                                        (display-buffer-in-side-window)
                                        (side . right)
                                        (window-width . 0.5)
-                                       (window-parameters
-                                        (mode-line-format . none))))
+                                       ))
   (use-package elisp-demos
 	:config
 	(advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)))
@@ -101,7 +100,7 @@
           bookmark-bmenu-mode
           comint-mode
           compilation-mode
-          help-mode helpful-mode
+          ;; help-mode helpful-mode
           tabulated-list-mode
           Buffer-menu-mode
 
@@ -132,7 +131,7 @@
           "\\*vc-.*\\*$"
           "^\\*elfeed-entry\\*$"
           "^\\*macro expansion\\**"
-
+          "^\\*typst-ts-compilation\\*$"
           "\\*TeX Help\\*"
           "^\\*denote-backlinks to "
           "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Org Note\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"))

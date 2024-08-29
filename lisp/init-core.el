@@ -65,13 +65,18 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
+;; Font setting.
 ;; `set-face-attribute' 设置默认字体
 ;; 对于中英文字体无法做到等宽和等高，两者只能取其一。相对而言，等宽更重要一些。
 ;; 不等高会导致 modeline 跳动，可以在 modeline 中插入中文字体“丨”[gun]
-(set-face-attribute 'default nil :family "Latin Modern Mono" :height 160)
-;; `set-fontset-font' 用于指定某些字符集使用特定的字体
+;; 字体搭配1: Cascadia Next SC
+;; 字体搭配2: Latin Modern Mono 和 Source Han Serif SC
+(set-face-attribute 'default nil :family "Cascadia Next SC" :height 160)
+
 ;; Unicode
+;; `set-fontset-font' 用于指定某些字符集使用特定的字体
 (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend)
+
 ;; 设置中文字集
 ;; `han': 汉字字符集，主要用于简体中文和繁体中文字符
 ;; `cjk-misc': CJK（中日韩）字符集中的其他字符，包含了少量的中文、日文、韩文字符
@@ -79,12 +84,12 @@
 ;; `bopomofo': 注音符号字符集，用于台湾地区的汉字注音
 (dolist (charset '(kana han cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Source Han Serif SC")))
+                      (font-spec :family "Cascadia Next SC")))
+
+;; Emoji
 ;; According to https://github.com/domtronn/all-the-icons.el
 ;; Use 'prepend for the NS and Mac ports or Emacs will crash.
-;; Emoji
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
-
 (set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend)
 
 ;; 除以上方法，也可以使用 `variable-pitch-mode'
