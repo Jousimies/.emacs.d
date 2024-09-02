@@ -93,9 +93,13 @@
   (interactive)
   (org-capture t "l"))
 
-(defun my/org-capture-work ()
+(defun my/org-capture-work-clock ()
   (interactive)
-  (org-capture t "w"))
+  (org-capture t "wc"))
+
+(defun my/org-capture-work-date ()
+  (interactive)
+  (org-capture t "wp"))
 
 ;; org-capture
 (with-eval-after-load 'org-attach

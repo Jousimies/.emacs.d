@@ -196,7 +196,8 @@
    ["Capture"
 	("i" "Inbox" my/org-capture-inbox :transient nil)
 	("l" "Inbox with link" my/org-capture-inbox-with-link :transient nil)
-	("w" "Work Log" my/org-capture-work :transient nil)
+	("wc" "Work Log" my/org-capture-work-clock :transient nil)
+    ("wp" "Work Log" my/org-capture-work-date :transient nil)
 	("r" "Review" my/org-capture-review :transient nil)]
    ["Process & Engage"
 	("x" "Process Inbox" org-gtd-process-inbox :transient nil)

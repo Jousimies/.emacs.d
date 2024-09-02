@@ -201,45 +201,60 @@
 		  :start start
 		  :end end)))
 
+(defun my/get-org-clock-files ()
+  "Return a list of org files for clock entries."
+  (list (concat org-gtd-directory "/" org-gtd-default-file-name ".org")
+        (concat my-galaxy "/logs/" (format-time-string "work_log_%Y") ".org")))
+
+(defun my/create-applescript (start end summary)
+  "Create an AppleScript to add an event to Calendar."
+  (format
+   "tell application \"Calendar\"
+      tell calendar \"Clocking\"
+        set theCurrentDate to date \"%s\"
+        set EndDate to date \"%s\"
+
+        set eventExists to false
+        repeat with eachEvent in every event
+          if start date of eachEvent is theCurrentDate and end date of eachEvent is EndDate then
+            set eventExists to true
+            exit repeat
+          end if
+        end repeat
+
+        if not eventExists then
+          make new event at end with properties {description:\"\", summary:\"%s\", start date:theCurrentDate, end date:EndDate}
+        end if
+      end tell
+      reload calendars
+    end tell"
+   start end summary))
+
+(defun my/process-org-clock-entry (entry)
+  "Process a single org clock ENTRY and add it to Calendar."
+  (let* ((current (calendar-current-date))
+         (start (plist-get entry :start))
+         (end (plist-get entry :end))
+         (headline (plist-get entry :headline))
+         (summary (mapconcat 'identity (butlast headline) "-"))
+         (apple-script (my/create-applescript start end summary)))
+    (when (string-match (format "%s %s %s" (nth 0 current) (nth 1 current) (nth 2 current)) start)
+      (unless (featurep 'async)
+        (require 'async))
+      (async-start
+       `(lambda ()
+          (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
+       (lambda (_)
+         (message "Async execution completed."))))))
+
 (defun my/org-clock-to-calendar ()
+  "Main function to sync org clock entries to Calendar."
   (interactive)
   (unless (featurep 'org-gtd)
-	(require 'org-gtd))
-  (dolist (entry (org-clock--get-entries (concat org-gtd-directory "/" org-gtd-default-file-name ".org")))
-	(let* ((current (calendar-current-date))
-		   (start (plist-get entry :start))
-		   (end (plist-get entry :end))
-		   (headline (plist-get entry :headline))
-		   (summary (mapconcat 'identity (butlast headline)  "-"))
-		   (apple-script (format
-						  "tell application \"Calendar\"
-                             tell calendar \"Clocking\"
-                               set theCurrentDate to date \"%s\"
-                               set EndDate to date \"%s\"
-
-                               set eventExists to false
-                               repeat with eachEvent in every event
-                                 if start date of eachEvent is theCurrentDate and end date of eachEvent is EndDate then
-                                   set eventExists to true
-                                   exit repeat
-                                 end if
-                               end repeat
-
-                               if not eventExists then
-                                 make new event at end with properties {description:\"\", summary:\"%s\", start date:theCurrentDate, end date:EndDate}
-                               end if
-                             end tell
-                             reload calendars
-                           end tell"
-						  start end summary)))
-	  (when (string-match (format "%s %s %s" (nth 0 current) (nth 1 current) (nth 2 current)) start)
-		(unless (featurep 'async)
-		  (require 'async))
-		(async-start
-         `(lambda ()
-            (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
-         (lambda (_)
-		   (message "Async execution completed.")))))))
+    (require 'org-gtd))
+  (dolist (file (my/get-org-clock-files))
+    (dolist (entry (org-clock--get-entries file))
+      (my/process-org-clock-entry entry))))
 
 (add-hook 'org-clock-out-hook #'my/org-clock-to-calendar)
 
