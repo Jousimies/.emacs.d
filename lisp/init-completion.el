@@ -191,7 +191,7 @@
   (corfu-auto-prefix 1)
   (corfu-auto-delay 0.0)
   (corfu-preselect 'valid)
-  (corfu-quit-no-match 'separator))
+  (corfu-quit-no-match t))
 
 (use-package nerd-icons-corfu)
 
