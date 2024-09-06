@@ -124,7 +124,7 @@
 (defvar-local my/modeline-region-indicator
     '(:eval (when (and (mode-line-window-selected-p) (use-region-p))
               (propertize
-               (concat "| L" (number-to-string (count-lines (region-beginning) (region-end)))
+               (concat " L" (number-to-string (count-lines (region-beginning) (region-end)))
                        " W" (number-to-string (count-words (region-beginning) (region-end)))
                        " C" (number-to-string (abs (- (mark t) (point)))) " ")))))
 
@@ -308,7 +308,7 @@ Specific to the current window's mode line.")
                            my/modeline-repeat
                            "​"
                            prot-modeline-narrow
-                           "丨"
+                           ;; "丨"
 						   my/modeline-buffer-readonly
 						   my/modeline-buffer-modified
 						   my/modeline-file-name
