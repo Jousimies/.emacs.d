@@ -26,6 +26,14 @@
 (setq user-full-name "Duan Ning")
 (setq user-mail-address "duan_n@outlook.com")
 
+(use-package auth-source
+  :ensure nil
+  :commands auth-source-pick-first-password)
+
+(defvar mu4e-private (auth-source-pick-first-password :host "mail" :user "mail")
+  "My private mail address.")
+
+
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
   :commands mu4e
@@ -45,9 +53,6 @@
   (mu4e-index-cleanup t)
   (mu4e-notification-support t)
   (mu4e-confirm-quit nil)
-  (mu4e-maildir-shortcuts
-   '(("/outlook/INBOX" . ?o)
-     ("/outlook/Sent Messages" . ?O)))
   (mu4e-attachment-dir "~/Downloads/")
   (mu4e-use-fancy-chars t)
   (mu4e-headers-precise-alignment t)
@@ -64,30 +69,54 @@
   (mu4e-compose-signature-auto-include nil)
   (mu4e-compose-dont-reply-to-self t)
   (mu4e-compose-reply-ignore-address `("no-?reply" ,user-mail-address))
-  (mu4e-contexts `(,(make-mu4e-context
-                     :name "Outlook"
-                     :enter-func
-                     (lambda () (mu4e-message "Enter outlook context"))
-                     :leave-func
-                     (lambda () (mu4e-message "Leave outlook context"))
-                     :match-func
-                     (lambda (msg)
-                       (when msg
-                         (mu4e-message-contact-field-matches msg
-                                                             :to 'user-mail-address)))
-                     :vars `((user-mail-address . ,user-mail-address)
-                             (mu4e-drafts-folder . "/outlook/Drafts")
-                             (mu4e-refile-folder . "/outlook/Archive")
-                             (mu4e-sent-folder . "/outlook/Sent Messages")
-                             (mu4e-trash-folder . "/outlook/Deleted Messages")))))
   (mu4e-context-policy 'pick-first)
-  (mu4e-bookmarks '(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
-                    ("flag:trashed" "Trashed" ?t)
-                    ("date:7d..now" "Last 7 days" ?w)
-                    ("maildir:/drafts" "drafts" ?d)
-                    ("flag:flagged AND NOT flag:trashed" "flagged" ?f)
-                    ("mime:image/*" "Messages with images" ?p)))
+  (mu4e-bookmarks '((:name "Unread" :query "flag:unread AND NOT flag:trashed" :key ?u)
+                    (:name "Last 7 days" :query "date:7d..now AND NOT flag:trashed" :key ?w)
+                    (:name "Messages with images" :query "mime:image/*" :key ?p)))
   :config
+  (setq mu4e-contexts `(,(make-mu4e-context
+                          :name "outlook"
+                          :enter-func
+                          (lambda () (mu4e-message "Enter outlook context"))
+                          :leave-func
+                          (lambda () (mu4e-message "Leave outlook context"))
+                          :match-func
+                          (lambda (msg)
+                            (when msg
+                              (mu4e-message-contact-field-matches msg
+                                                                  :to user-mail-address)))
+                          :vars `((user-mail-address . ,user-mail-address)
+                                  (mu4e-drafts-folder . "/outlook/Drafts")
+                                  (mu4e-refile-folder . "/outlook/Archive")
+                                  (mu4e-sent-folder . "/outlook/Sent")
+                                  (mu4e-trash-folder . "/outlook/Deleted")
+                                  (mu4e-maildir-shortcuts . ((:name "Archive" :maildir "/outlook/Archive" :key ?a)
+                                                             (:name "Deleted" :maildir "/outlook/Deleted" :key ?d)
+                                                             (:name "Draft" :maildir "/outlook/Draft" :key ?D)
+                                                             (:name "Sent" :maildir "/outlook/Sent" :key ?s)
+                                                             (:name "Junk" :maildir "/outlook/Junk" :key ?j)
+                                                             (:name "Google Scholar" :maildir "/outlook/Google Scholar" :key ?g)))))
+                        ,(make-mu4e-context
+                          :name "seu"
+                          :enter-func
+                          (lambda () (mu4e-message "Enter seu context"))
+                          :leave-func
+                          (lambda () (mu4e-message "Leave seu context"))
+                          :match-func
+                          (lambda (msg)
+                            (when msg
+                              (mu4e-message-contact-field-matches msg
+                                                                  :to mu4e-private)))
+                          :vars `((user-mail-address . ,mu4e-private)
+                                  (mu4e-drafts-folder . "/seu/&g0l6P3ux-")
+                                  (mu4e-sent-folder . "/seu/&XfJT0ZAB-")
+                                  (mu4e-trash-folder . "/seu/&XfJSIJZk-")
+                                  (mu4e-maildir-shortcuts . ((:name "Inbox" :maildir "/seu/Inbox" :key ?i)
+                                                             (:name "Junk" :maildir "/seu/&V4NXPpCuTvY-" :key ?j)
+                                                             (:name "Deleted" :maildir "seu/&XfJSIJZk-" :key ?d)
+                                                             (:name "Draft" :maildir "/seu/&g0l6P3ux-" :key ?D)
+                                                             (:name "Sent" :maildir "/seu/&XfJT0ZAB-" :key ?s)))
+                                  ))))
   (defun extra-email-to-pdf (msg &optional args)
     "Pdf temp file MSG to a new name with ARGS ignored."
     (let* ((async-shell-command-display-buffer nil)
@@ -149,9 +178,12 @@
   (sendmail-program (executable-find "msmtp"))
   (message-sendmail-envelope-from 'header)
   :config
-  (require 'smtpmail-async)
-  (setq send-mail-function 'async-sendmail-send-it
-        message-send-mail-function 'async-smtpmail-send-it))
+  (setq send-mail-function 'message-send-mail-with-sendmail
+        message-send-mail-function 'message-send-mail-with-sendmail)
+  ;; (require 'smtpmail-async)
+  ;; (setq send-mail-function 'async-sendmail-send-it
+  ;;       message-send-mail-function 'async-smtpmail-send-it)
+  )
 
 (use-package org-msg
   :hook (mu4e-compose-pre . org-msg-mode)
