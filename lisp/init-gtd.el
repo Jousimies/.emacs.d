@@ -168,13 +168,24 @@
 	(alert-message-notify info))
   (advice-add 'alert-osx-notifier-notify :override #'my/alert-osx-notifier-notify))
 
-(defun org-clock--get-entries (file)
-  (with-current-buffer (find-file-noselect file)
-	(let* ((ast (org-element-parse-buffer)))
-	  (org-element-map ast 'clock
-		(lambda (c) (org-clock--parse-element c))
-		nil nil))))
+;; Pomodoro
+(defun my/pomodoro-sound ()
+  (async-shell-command "afplay /System/Library/Sounds/Submarine.aiff"))
 
+(use-package org-timer
+  :ensure nil
+  :hook ((org-timer-done . my/pomodoro-sound)
+         (org-timer-done . org-clock-out)
+         (org-clock-in . my/pomodoro-start)
+         (org-clock-out . org-timer-stop))
+  :custom
+  (org-timer-default-timer "25")
+  :config
+  (defun my/pomodoro-start ()
+    (interactive)
+    (org-timer-set-timer org-timer-default-timer)))
+
+;; Sync org entry with clocking to MacOS Calendar.
 (defun org-clock--find-headlines (element)
   "Returns a list of headline ancestors from closest parent to the farthest"
   (let ((ph (org-element-lineage element '(headline))))
@@ -183,8 +194,6 @@
 
 (defun org-clock--parse-element (element)
   (let* ((timestamp (org-element-property :value element))
-		 (headline (org-clock--find-headlines element))
-		 (headline-values (mapcar (lambda (h) (org-element-property :raw-value h)) headline))
 		 (start (format "%s %s %s %s:%s"
 						(org-element-property :month-start timestamp)
 						(org-element-property :day-start timestamp)
@@ -197,14 +206,8 @@
 					  (org-element-property :year-end timestamp)
 					  (org-element-property :hour-end timestamp)
 					  (org-element-property :minute-end timestamp))))
-	(list :headline headline-values
-		  :start start
+	(list :start start
 		  :end end)))
-
-(defun my/get-org-clock-files ()
-  "Return a list of org files for clock entries."
-  (list (concat org-gtd-directory "/" org-gtd-default-file-name ".org")
-        (concat my-galaxy "/logs/" (format-time-string "work_log_%Y") ".org")))
 
 (defun my/create-applescript (start end summary)
   "Create an AppleScript to add an event to Calendar."
@@ -213,101 +216,53 @@
       tell calendar \"Clocking\"
         set theCurrentDate to date \"%s\"
         set EndDate to date \"%s\"
-
-        set eventExists to false
-        repeat with eachEvent in every event
-          if start date of eachEvent is theCurrentDate and end date of eachEvent is EndDate then
-            set eventExists to true
-            exit repeat
-          end if
-        end repeat
-
-        if not eventExists then
-          make new event at end with properties {description:\"\", summary:\"%s\", start date:theCurrentDate, end date:EndDate}
-        end if
+        make new event at end with properties {description:\"\", summary:\"%s\", start date:theCurrentDate, end date:EndDate}
       end tell
       reload calendars
     end tell"
    start end summary))
 
-(defun my/process-org-clock-entry (entry)
-  "Process a single org clock ENTRY and add it to Calendar."
-  (let* ((current (calendar-current-date))
-         (start (plist-get entry :start))
-         (end (plist-get entry :end))
-         (headline (plist-get entry :headline))
-         (summary (mapconcat 'identity (butlast headline) "-"))
-         (apple-script (my/create-applescript start end summary)))
-    (when (string-match (format "%s %s %s" (nth 0 current) (nth 1 current) (nth 2 current)) start)
-      (unless (featurep 'async)
-        (require 'async))
-      (async-start
-       `(lambda ()
-          (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
-       (lambda (_)
-         (message "Async execution completed."))))))
+(defun org2calendar-get-heading-and-clocklog ()
+  "获取当前 org heading 的标题和内容。"
+  (let ((heading (org-no-properties (org-get-heading t t t t)))
+        (clocklog (buffer-substring-no-properties
+                   (org-element-property :contents-begin (org-element-headline-parser))
+                   (org-element-property :contents-end (org-element-headline-parser)))))
+    (list heading clocklog)))
 
-(defun my/org-clock-to-calendar ()
-  "Main function to sync org clock entries to Calendar."
-  (interactive)
-  (unless (featurep 'org-gtd)
-    (require 'org-gtd))
-  (dolist (file (my/get-org-clock-files))
-    (dolist (entry (org-clock--get-entries file))
-      (my/process-org-clock-entry entry))))
+(defun org2calendar-extract-clock-entries (clocklog)
+  "从 Org 内容中提取 CLOCK 记录。"
+  (with-temp-buffer
+    (insert clocklog)
+    (let* ((ast (org-element-parse-buffer)))
+      (org-element-map ast 'clock
+        (lambda (c) (org-clock--parse-element c))
+        nil nil))))
 
-(add-hook 'org-clock-out-hook #'my/org-clock-to-calendar)
+(defun org2calendar-sync (start end summary)
+  "生成 AppleScript 并异步执行它。"
+  (let ((apple-script (my/create-applescript start end summary)))
+    (alert (format "Start Sync to Calendar: %s" summary))
+    (async-start
+     `(lambda ()
+        (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
+     (lambda (_)
+       (message "Async execution completed.")))))
 
-(defun org-headline-contains-clock-info ()
-  "Check if the current headline contains clock information."
-  (save-excursion
-    (org-back-to-heading t)
-    (let ((end (save-excursion (outline-next-heading) (point)))
-          (clock-regexp org-clock-line-re))
-      (re-search-forward clock-regexp end t))))
+(defun org2calendar-handle-last-clock-entry ()
+  "处理当前 org-clock-history 中的 CLOCK 记录。"
+  (with-current-buffer (marker-buffer (car org-clock-history))
+    (goto-char (car org-clock-history))
+    (org-back-to-heading)
+    (let* ((heading-and-clocklog (org2calendar-get-heading-and-clocklog))
+           (heading (nth 0 heading-and-clocklog))
+           (clock-entries (org2calendar-extract-clock-entries (nth 1 heading-and-clocklog)))
+           (entry (nth 0 clock-entries))
+           (start (plist-get entry :start))
+           (end (plist-get entry :end)))
+      (org2calendar-sync start end heading))))
 
-(defun my/done-task-to-calendar ()
-  (interactive)
-  (let* ((timestamp (org-element-map (org-element-at-point) 'headline
-					  (lambda (headline)
-						(org-element-property :closed headline))
-					  nil
-					  t))
-		 (state (org-element-property :todo-type (org-element-at-point)))
-		 (start (format "%s %s %s %s:%s"
-						(org-element-property :month-start timestamp)
-						(org-element-property :day-start timestamp)
-						(org-element-property :year-start timestamp)
-						(org-element-property :hour-start timestamp)
-						(org-element-property :minute-start timestamp)))
-		 (headline (concat
-					(org-element-property :todo-keyword (org-element-at-point))
-					" "
-					(org-element-property :raw-value (org-element-at-point))))
-		 (apple-script (format
-						"tell application \"Calendar\"
-                             tell calendar \"Clocking\"
-                               set theCurrentDate to date \"%s\"
-                               set EndDate to theCurrentDate + 2
-
-                               make new event at end with properties {description:\"\", summary:\"%s\", start date:theCurrentDate, end date:EndDate}
-
-                             end tell
-                             reload calendars
-                           end tell"
-						start headline)))
-	(unless (featurep 'async)
-	  (require 'async))
-	(when (and (eq state 'done)
-			   (not (org-headline-contains-clock-info)))
-	  (async-start
-       `(lambda ()
-          (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
-       (lambda (_)
-		 (message "Async execution completed."))))))
-
-(add-hook 'org-after-todo-state-change-hook #'my/done-task-to-calendar)
-
+(add-hook 'org-clock-out-hook #'org2calendar-handle-last-clock-entry)
 
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.
