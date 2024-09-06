@@ -32,7 +32,12 @@
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2)))
 
-(add-hook 'org-mode-hook 'org-cdlatex-mode)
+(use-package cdlatex
+  :ensure nil
+  :hook ((org-mode . org-cdlatex-mode)
+         (LaTeX-mode . turn-on-cdlatex))
+  :custom
+  (cdlatex-auto-help-delay 0))
 
 (with-eval-after-load 'org-habit
   (setopt org-habit-graph-column 70))

@@ -63,9 +63,6 @@
   (reftex-toc-split-windows-horizontally t)
   (reftex-toc-split-windows-fraction 0.25))
 
-(use-package cdlatex
-  :hook (LaTeX-mode . turn-on-cdlatex))
-
 ;; (use-package preview-auto
 ;;   :custom
 ;;   (preview-protect-point t)
