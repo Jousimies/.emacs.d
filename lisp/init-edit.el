@@ -77,11 +77,22 @@
          (prog-mode . hungry-delete-mode)
          (org-mode . hungry-delete-mode)))
 
-(use-package ace-pinyin
-  :bind (([remap goto-char] . ace-pinyin-jump-char)
-         ("M-g C" . ace-pinyin-jump-char-2)
-         ("M-g ." . ace-pinyin-jump-char-in-line)
-         ("M-g w" . ace-pinyin-jump-word)))
+(use-package avy
+  :bind ([remap goto-char] . my/avy-goto-char-timer)
+  :config
+  (defun my/avy-goto-char-timer (&optional arg)
+    (interactive "P")
+    (unless (featurep 'pinyinlib)
+      (require 'pinyinlib))
+    (let ((avy-all-windows (if arg
+                               (not avy-all-windows)
+                             avy-all-windows)))
+      (avy-with avy-goto-char-timer
+        (setq avy--old-cands (avy--read-candidates
+                              'pinyinlib-build-regexp-string))
+        (avy-process avy--old-cands))))
+
+  (advice-add 'avy-goto-char-timer :override #'my/avy-goto-char-timer))
 
 (use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)
