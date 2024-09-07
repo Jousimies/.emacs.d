@@ -46,5 +46,10 @@
 ;; Tab-bar
 (defvar my/tab-bar-right-string nil)
 
+;; plateform
+(defconst IS-MAC     (eq system-type 'darwin))
+(defconst IS-LINUX   (eq system-type 'gnu/linux))
+(defconst IS-WINDOWS (memq system-type '(cygwin windows-nt ms-dos)))
+
 (provide 'init-const)
 ;;; init-const.el ends here

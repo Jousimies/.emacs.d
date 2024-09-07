@@ -32,6 +32,15 @@
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2)))
 
+(use-package math-preview
+  :custom
+  (math-preview-command "/opt/homebrew/bin/math-preview")
+  (math-preview-scale 1.1)
+  (math-preview-raise 0.2)
+  (math-preview-margin '(1 . 0)))
+;; (use-package org-xlatex
+;;   :hook (org-mode . org-xlatex-mode))
+
 (use-package cdlatex
   :ensure nil
   :hook ((org-mode . org-cdlatex-mode)
@@ -106,18 +115,19 @@
   (interactive)
   (org-capture t "wp"))
 
-;; org-capture
-(with-eval-after-load 'org-attach
-  (defun update-org-attach-property ()
-	"Manually update the ORG_ATTACH_FILES property for the current Org entry."
-	(interactive)
-	(let* ((dir (org-attach-dir t))
-           (files (org-attach-file-list dir)))
-      (when (and dir files)
-		(org-with-wide-buffer
-		 (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))
-		(message "ORG_ATTACH_FILES property updated."))))
+;; org-attach
+;;;###autoload
+(defun update-org-attach-property ()
+  "Manually update the ORG_ATTACH_FILES property for the current Org entry."
+  (interactive)
+  (let* ((dir (org-attach-dir t))
+         (files (org-attach-file-list dir)))
+    (when (and dir files)
+	  (org-with-wide-buffer
+	   (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))
+	  (message "ORG_ATTACH_FILES property updated."))))
 
+(with-eval-after-load 'org-attach
   (setopt org-attach-expert t
 		  org-attach-id-dir (expand-file-name "attach" my-galaxy)
 		  org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format

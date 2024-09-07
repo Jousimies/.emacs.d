@@ -133,7 +133,19 @@
          (theme (elt themes (random (length themes)))))
     (load-theme theme t)))
 
-(use-package emacs-everywhere)
+(use-package gptel
+  :bind ("<f10>" . gptel)
+  :config
+  (setq gptel-model "deepseek-chat"
+        gptel-backend
+        (gptel-make-openai "DeepSeek"
+          :host "api.deepseek.com"
+          :endpoint "/chat/completions"
+          :stream t
+          :key (auth-source-pick-first-password
+                :host "deepseek"
+                :user "apikey")
+          :models '("deepseek-chat" "deepseek-coder"))))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.

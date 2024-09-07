@@ -8,8 +8,10 @@
                              ,(concat my-galaxy "/bibtexs/Books.bib")))
 
 ;; Builtin package
-(with-eval-after-load 'oc
-  (setq org-cite-global-bibliography my/reference-lists))
+(use-package oc
+  :ensure nil
+  :custom
+  (org-cite-global-bibliography my/reference-lists))
 
 ;; Builtin package
 (use-package bibtex
@@ -26,54 +28,25 @@
 
 (use-package citar
   :hook ((LaTeX-mode . citar-capf-setup)
-         (org-mode . citar-capf-setup))
-  :commands citar-create-note
-  :config
-  (with-eval-after-load 'nerd-icons
-	(setq citar-indicator-files (citar-indicator-create
-								 :symbol (nerd-icons-faicon "nf-fa-file_pdf_o"
-															:face 'nerd-icons-green
-															:v-adjust -0.1)
-								 :function #'citar-has-files
-								 :padding "  " ; need this because the default padding is too low for these anticonscription
-								 :tag "has:files"))
-	(setq citar-indicator-links (citar-indicator-create
-								 :symbol (nerd-icons-faicon "nf-fa-link"
-															:face 'nerd-icons-orange
-															:v-adjust 0.01)
-								 :function #'citar-has-links
-								 :padding "  "
-								 :tag "has:links"))
-	(setq citar-indicator-notes (citar-indicator-create
-								 :symbol (nerd-icons-faicon "nf-fa-sticky_note_o"
-															:face 'nerd-icons-blue
-															:v-adjust 0)
-								 :function #'citar-has-notes
-								 :padding "    "
-								 :tag "has:notes"))
-	(setq citar-indicator-cited (citar-indicator-create
-								 :symbol (nerd-icons-faicon "nf-fa-circle_o"
-															:face 'nerd-icon-green)
-								 :function #'citar-is-cited
-								 :padding "  "
-								 :tag "is:cited")))
-  (setq citar-indicators (list citar-indicator-links
-                               citar-indicator-files
-                               citar-indicator-notes
-                               citar-indicator-cited))
-  (setopt citar-templates '((main . "${author editor:40%sn} | ${date year issued:4} | ${title:110}")
-							(suffix . "​​​​${=key= id:15} ${=type=:12}")
-							(preview . "${author editor:%etal} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.")
-							(note . "Notes on ${author editor:%etal}, ${title}")))
-  (setq citar-bibliography my/reference-lists)
-  (setq citar-library-paths `(,(expand-file-name "PDF/" my-galaxy)))
-  (setq citar-notes-paths `(,(expand-file-name "denote/references" my-galaxy)))
-  (setq citar-library-file-extensions '("pdf" "jpg" "epub"))
-  (setq citar-symbol-separator "​")
-  (setq citar-file-additional-files-separator "-")
-  (setq citar-at-point-function 'embark-act)
-  (add-hook 'minibuffer-setup-hook
-            (lambda () (setq-local truncate-lines t))))
+         (org-mode . citar-capf-setup)
+         (minibuffer-setup . (lambda ()
+                               (setq-local truncate-lines t))))
+  :custom
+  (citar-indicators (list citar-indicator-links
+                          citar-indicator-files
+                          citar-indicator-notes
+                          citar-indicator-cited))
+  (citar-templates '((main . "${=type=:12}|${date year issued:4}| ${title:80}")
+					 (suffix . " |${=key= id:15} |${tags keywords:*} |${author editor:20%sn}") ;
+					 (preview . "${author editor:%etal} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.")
+					 (note . "Notes on ${author editor:%etal}, ${title}")))
+  (citar-bibliography my/reference-lists)
+  (citar-library-paths `(,(expand-file-name "PDF/" my-galaxy)))
+  (citar-notes-paths `(,(expand-file-name "denote/references" my-galaxy)))
+  (citar-library-file-extensions '("pdf" "jpg" "epub"))
+  (citar-symbol-separator "​") ;; Zero width space
+  (citar-file-additional-files-separator "-")
+  (citar-at-point-function 'embark-act))
 
 (with-eval-after-load 'org
   (with-eval-after-load 'oc

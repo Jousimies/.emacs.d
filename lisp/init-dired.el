@@ -31,7 +31,7 @@
 ;;; Code:
 (use-package dired
   :ensure nil
-  :if (and (eq system-type 'darwin)
+  :if (and IS-MAC
 		   (executable-find "gls"))
   :custom
   (dired-use-ls-dired nil)

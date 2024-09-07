@@ -80,18 +80,22 @@
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
-;; re-use vertico-mode instead of `icomplete-fido-mode'.
-;; Due to icomplete has compatible problem with citar, a references manager.
 ;; use `M-RET' to exit minibuffer input.
-(use-package vertico
-  :hook ((on-first-buffer . vertico-mode)
-		 (rfn-eshadow-update-overlay . vertico-directory-tidy)
-         (vertico-mode . vertico-multiform-mode))
-  :bind (:map vertico-map
-			  ("C-<backspace>" . vertico-directory-up)))
+;; fido-mode do not work well with rime-regexp
+(use-package icomplete
+  :ensure nil
+  :hook ((on-first-input . icomplete-mode)
+         (completion-list-mode . (lambda ()
+                                   (setq-local truncate-lines t)))))
+;; (use-package vertico
+;;   :hook ((on-first-buffer . vertico-mode)
+;; 		 (rfn-eshadow-update-overlay . vertico-directory-tidy)
+;;          (vertico-mode . vertico-multiform-mode))
+;;   :bind (:map vertico-map
+;; 			  ("C-<backspace>" . vertico-directory-up)))
 
-(with-eval-after-load 'vertico-multiform
-  (add-to-list 'vertico-multiform-categories '(embark-keybinding grid)))
+;; (with-eval-after-load 'vertico-multiform
+;;   (add-to-list 'vertico-multiform-categories '(embark-keybinding grid)))
 
 (use-package nerd-icons-completion
   :hook (minibuffer-setup . nerd-icons-completion-mode))
@@ -109,7 +113,7 @@
 (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
 (use-package consult
-  :hook (completion-list-mode . consult-preview-at-point-mode)
+  ;; :hook (completion-list-mode . consult-preview-at-point-mode)
   :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-line)

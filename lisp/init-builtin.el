@@ -65,6 +65,7 @@
         (end (point))
         (buffername (buffer-name (buffer-base-buffer))))
     (when (not (or (string-prefix-p "inbox" buffername)
+                   (string-prefix-p "work_log" buffername)
                    (string-match-p "^[0-9]" buffername)))
       (save-excursion
         (when (< (point-min) begin)
@@ -167,7 +168,7 @@
 (setopt display-line-numbers-widen t
 		display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-;; (add-hook 'org-mode-hook #'display-line-numbers-mode)
+(add-hook 'org-mode-hook #'display-line-numbers-mode)
 
 (face-spec-set 'fill-column-indicator
                '((default :height 0.1))
@@ -175,9 +176,13 @@
 (setq-default fill-column 90)
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
-(setopt show-paren-style 'parenthesis
-		show-paren-context-when-offscreen 'overlay)
-(add-hook 'on-first-buffer-hook #'show-paren-mode)
+(use-package paren
+  :hook (on-first-buffer . show-paren-mode)
+  :custom
+  (show-paren-style 'parenthesis)
+  (show-paren-context-when-offscreen 'overlay)
+  (show-paren-highlight-openparen t)
+  (show-paren-when-point-inside-paren t))
 
 (add-hook 'on-first-input-hook (lambda ()
 								 (blink-cursor-mode -1)))

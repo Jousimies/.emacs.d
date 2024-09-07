@@ -55,6 +55,7 @@
   (mu4e-confirm-quit nil)
   (mu4e-attachment-dir "~/Downloads/")
   (mu4e-use-fancy-chars t)
+  (mu4e-search-include-related t)
   (mu4e-headers-precise-alignment t)
   (mu4e-headers-include-related t)
   (mu4e-headers-auto-update t)
@@ -91,7 +92,7 @@
                                   (mu4e-sent-folder . "/outlook/Sent")
                                   (mu4e-trash-folder . "/outlook/Deleted")
                                   (mu4e-maildir-shortcuts . ((:name "Archive" :maildir "/outlook/Archive" :key ?a)
-                                                             (:name "Deleted" :maildir "/outlook/Deleted" :key ?d)
+                                                             (:name "Deleted" :maildir "/outlook/Deleted" :key ?d :hide t)
                                                              (:name "Draft" :maildir "/outlook/Draft" :key ?D)
                                                              (:name "Sent" :maildir "/outlook/Sent" :key ?s)
                                                              (:name "Junk" :maildir "/outlook/Junk" :key ?j)
@@ -113,7 +114,7 @@
                                   (mu4e-trash-folder . "/seu/&XfJSIJZk-")
                                   (mu4e-maildir-shortcuts . ((:name "Inbox" :maildir "/seu/Inbox" :key ?i)
                                                              (:name "Junk" :maildir "/seu/&V4NXPpCuTvY-" :key ?j)
-                                                             (:name "Deleted" :maildir "seu/&XfJSIJZk-" :key ?d)
+                                                             (:name "Deleted" :maildir "seu/&XfJSIJZk-" :key ?d :hide t)
                                                              (:name "Draft" :maildir "/seu/&g0l6P3ux-" :key ?D)
                                                              (:name "Sent" :maildir "/seu/&XfJT0ZAB-" :key ?s)))
                                   ))))
@@ -192,20 +193,19 @@
   (org-msg-greeting-fmt "\nHi%s,\n\n")
   (org-msg-recipient-names `(,user-mail-address . ,user-full-name))
   (org-msg-greeting-name-limit 3)
-  (org-msg-default-alternatives '((new		. (text html))
-                                  (reply-to-html	. (text html))
-                                  (reply-to-text	. (text))))
+  (org-msg-default-alternatives '((new . (utf-8 html))
+                                  (reply-to-text . (utf-8))
+                                  (reply-to-html . (utf-8 html))))
+  (org-msg-attached-file-reference
+   "see[ \t\n]\\(?:the[ \t\n]\\)?\\(?:\\w+[ \t\n]\\)\\{0,3\\}\\(?:attached\\|enclosed\\)\\|\
+(\\(?:attached\\|enclosed\\))\\|\
+\\(?:attached\\|enclosed\\)[ \t\n]\\(?:for\\|is\\)[ \t\n]")
   (org-msg-convert-citation t)
 
   (org-msg-signature (concat "Best Regards,\n\n#+begin_signature\n*"
                              user-full-name
                              "*\n\n" (format-time-string "%Y-%m-%d")
                              "\n#+end_signature")))
-
-(use-package consult-mu
-  :load-path "packages/consult-mu/"
-  :after consult mu4e
-  :bind ("s-f m" . consult-mu))
 
 (provide 'init-mail)
 ;;; init-mail.el ends here.

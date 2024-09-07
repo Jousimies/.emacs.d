@@ -35,16 +35,16 @@
               101)))
 
 ;; https://www.emacswiki.org/emacs/ExecPath
-(defun set-exec-path-from-shell-PATH ()
-  "This is particularly useful under Mac OS X and macOS."
-  (interactive)
-  (let ((path-from-shell (replace-regexp-in-string
-                          "[ \t\n]*$" "" (shell-command-to-string
-                                          "$SHELL --login -c 'echo $PATH'"))))
-    (setenv "PATH" path-from-shell)
-    (setq exec-path (split-string path-from-shell path-separator))))
-
 (when (featurep 'ns)
+  (defun set-exec-path-from-shell-PATH ()
+    "This is particularly useful under Mac OS X and macOS."
+    (interactive)
+    (let ((path-from-shell (replace-regexp-in-string
+                            "[ \t\n]*$" "" (shell-command-to-string
+                                            "$SHELL --login -c 'echo $PATH'"))))
+      (setenv "PATH" path-from-shell)
+      (setq exec-path (split-string path-from-shell path-separator))))
+
   (set-exec-path-from-shell-PATH))
 
 ;; Prevent flash of messages at startup

@@ -78,7 +78,8 @@
   (upcase (file-name-nondirectory (directory-file-name (file-name-directory (buffer-file-name))))))
 
 (defvar-local my/modeline-denote
-	'(:eval (when (buffer-file-name)
+	'(:eval (when (and (eq major-mode 'org-mode)
+                       (buffer-file-name))
 			  (when (denote-file-is-note-p (buffer-file-name))
 				(propertize (concat " " (get-last-directory) " ") 'face `(:inverse-video t))))))
 

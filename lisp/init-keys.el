@@ -28,6 +28,9 @@
 ;; https://github.com/positron-solutions/transient-showcase
 
 ;;; Code:
+;; Unbind key
+(unbind-key "s-o" 'global-map)
+
 (require 'transient)
 
 (defun my/copy-file-info (info-type)
@@ -243,12 +246,13 @@
    ["OSX Dictionary"
 	("o" "Input" osx-dictionary-search-input :transient nil)
 	("x" "Pointer" osx-dictionary-search-pointer :transient nil)]
-   ["Dictionary Overlay"
-	("t" "Toggle" dictionary-overlay-toggle :transient nil)
-	("g" "Refresh" dictionary-overlay-refresh-buffer :transient nil)
-	("R" "Render buffer" dictionary-overlay-render-buffer :transient nil)
-	("k" "Known Word" dictionary-overlay-mark-word-known :transient nil)
-	("K" "Unknow Word" dictionary-overlay-mark-word-unknown :transient nil)]])
+   ;; ["Dictionary Overlay"
+   ;;  ("t" "Toggle" dictionary-overlay-toggle :transient nil)
+   ;;  ("g" "Refresh" dictionary-overlay-refresh-buffer :transient nil)
+   ;;  ("R" "Render buffer" dictionary-overlay-render-buffer :transient nil)
+   ;;  ("k" "Known Word" dictionary-overlay-mark-word-known :transient nil)
+   ;;  ("K" "Unknow Word" dictionary-overlay-mark-word-unknown :transient nil)]
+   ])
 
 (transient-define-prefix my/pass-menu ()
   "Pass"
@@ -296,33 +300,31 @@
    [("s" "Scholar" my/search-scholar :transient nil)]
    ])
 
-(defvar-keymap my/org-prefix-map
-  :doc "keymap for org."
-  "i" #'org-clock-in
-  "o" #'org-clock-out
-  "g" #'org-clock-goto
-  "I" #'org-toggle-inline-images
-  "l" #'org-toggle-link-display
-  "t" #'my/org-chatu
-  "n" #'org-narrow-to-subtree
-  "w" #'widen
-  "u" #'update-org-attach-property
-  "s-i" #'my/org-insert-local-image)
+(transient-define-prefix my/org-menu ()
+  "References"
+  [["Clock"
+	("i" "In" org-clock-in :transient nil)
+	("o" "Out" org-clock-out :transient nil)
+    ("x" "Last" org-clock-in-last :transient nil)
+    ("j" "Goto" org-clock-goto :transient nil)]
+   ["Toggle"
+	("i" "Inline image" org-toggle-inline-images :transient nil)
+	("l" "Link dispaly" org-toggle-link-display :transient nil)
+	("u" "Update Attach property" update-org-attach-property :transient nil)]])
 
+(when IS-MAC
+  (keymap-set global-map "s-f" my/file-prefix-map)
 
-;; defvar-keymap
-;; (keymap-set global-map "M-o" my/window-prefix-map)
-(keymap-set global-map "s-o" my/org-prefix-map)
-(keymap-set global-map "s-f" my/file-prefix-map)
+  ;; transient
+  (with-eval-after-load 'org
+    (global-set-key (kbd "s-o") #'my/org-menu))
 
-;; transient
-(global-set-key (kbd "C-c a") #'my/application-menu)
+  (global-set-key (kbd "s-b") #'my/bibtex-menu)
+  (global-set-key (kbd "s-e") #'my/edit-menu)
+  (global-set-key (kbd "s-n") #'my/note-menu)
+  (global-set-key (kbd "s-l") #'my/links-menu))
+
 (global-set-key (kbd "<f11>") #'my/application-menu)
-(global-set-key (kbd "s-b") #'my/bibtex-menu)
-(global-set-key (kbd "s-e") #'my/edit-menu)
-(global-set-key (kbd "s-n") #'my/note-menu)
-(global-set-key (kbd "s-l") #'my/links-menu)
-
 (global-set-key (kbd "<f12>") #'my/agenda-menu)
 (global-set-key (kbd "C-c t") #'my/dict-menu)
 (global-set-key (kbd "C-<f8>") #'my/mpv-menu)

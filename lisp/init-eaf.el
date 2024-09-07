@@ -23,6 +23,8 @@
 ;;
 
 ;;; Code:
+
+;; 有点性能问题，导致移动时有卡卡的感觉。
 (use-package holo-layer
   :load-path "~/.emacs.d/packages/holo-layer/"
   :commands holo-layer-enable
@@ -33,12 +35,10 @@
 
 ;; 在最新的 Emacs 上存在 Bug
 ;; (use-package popweb-latex
-;;   :load-path "~/.emacs.d/packages/popweb/" "~/.emacs.d/packages/popweb/extension/latex/" "~/.emacs.d/packages/popweb/extension/dict/"
+;;   :load-path "~/.emacs.d/packages/popweb/" "~/.emacs.d/packages/popweb/extension/latex/"
 ;;   :hook (LaTeX-mode . popweb-latex-mode)
 ;;   :custom
-;;   (popweb-python-command "~/.env/bin/python3")
-;;   :config
-;;   (require 'popweb-dict))
+;;   (popweb-python-command "~/.env/bin/python3"))
 
 ;; 在最新的 Emacs 上不可用
 ;; (use-package eaf

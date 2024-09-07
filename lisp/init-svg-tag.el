@@ -85,8 +85,8 @@
 
 		  ;; Citation likes [cite:@svenkinnunen1960]
 		  ;; 与 Tags 一样，同样无法处理多种情况
-		  ("\\[cite:@[A-Za-z0-9.]+\\]" . ((lambda (tag) (svg-tag-make tag :face 'org-cite-key :inverse t
-																      :margin 0 :beg 7 :end -1))))
+		  ;; ("\\[cite:@[A-Za-z0-9.]+\\]" . ((lambda (tag) (svg-tag-make tag :face 'org-cite-key :inverse t
+		  ;;   													      :margin 0 :beg 7 :end -1))))
 
 		  ;; https://github.com/rougier/svg-tag-mode/blob/main/examples/example-2.el
 		  ;; Active date (with or without day name, with or without time)

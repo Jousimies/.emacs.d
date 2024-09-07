@@ -17,6 +17,7 @@
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote))
 
 (with-eval-after-load 'transient
+  (transient-bind-q-to-quit)
   (setq transient-history-file (expand-file-name "transient/history.el" cache-directory)
 		transient-levels-file (expand-file-name "transient/levels.el" cache-directory)
 		transient-values-file (expand-file-name "transient/values.el" cache-directory)))

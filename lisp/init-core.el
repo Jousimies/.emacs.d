@@ -23,7 +23,6 @@
 ;;
 
 ;;; Code:
-
 (setopt ;; initial-major-mode 'fundamental-mode
         inhibit-startup-screen t
         ;; (setq ring-bell-function 'ignore)

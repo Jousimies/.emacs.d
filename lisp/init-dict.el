@@ -10,14 +10,16 @@
 
 ;;; Code:
 
-(use-package dictionary
-  :config
-  (add-to-list 'display-buffer-alist '("^\\*Dictionary\\*"
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (window-width . 70))))
+;; The buitin dictonary, works not well.
+;; (use-package dictionary
+;;   :config
+;;   (add-to-list 'display-buffer-alist '("^\\*Dictionary\\*"
+;;                                        (display-buffer-in-side-window)
+;;                                        (side . right)
+;;                                        (window-width . 70))))
 
-(use-package osx-dictionary)
+;; The result not display well.
+;; (use-package osx-dictionary)
 
 (use-package sdcv
   :load-path "packages/sdcv/"
@@ -86,15 +88,15 @@
 
 (global-set-key (kbd "M-s-t") 'my/translate)
 
-(use-package dictionary-overlay
-  :load-path "packages/dictionary-overlay/" "packages/websocket-bridge/" "packages/emacs-websocket/"
-  :commands dictionary-overlay-toggle dictionary-overlay-render-buffer dictionary-overlay-mark-word-unknown dictionary-overlay-mark-word-known
-  :config
-  (setq dictionary-overlay-translators '("local" "darwin" "sdcv" "web"))
-  (setq dictionary-overlay-user-data-directory
-        (expand-file-name "dictionary-overlay" cache-directory))
-  (setq dictionary-overlay-python "/opt/homebrew/bin/python3.10")
-  (dictionary-overlay-start))
+;; (use-package dictionary-overlay
+;;   :load-path "packages/dictionary-overlay/" "packages/websocket-bridge/" "packages/emacs-websocket/"
+;;   :commands dictionary-overlay-toggle dictionary-overlay-render-buffer dictionary-overlay-mark-word-unknown dictionary-overlay-mark-word-known
+;;   :config
+;;   (setq dictionary-overlay-translators '("local" "darwin" "sdcv" "web"))
+;;   (setq dictionary-overlay-user-data-directory
+;;         (expand-file-name "dictionary-overlay" cache-directory))
+;;   (setq dictionary-overlay-python "/opt/homebrew/bin/python3.10")
+;;   (dictionary-overlay-start))
 
 ;; Emacs 内置的 ispell 和 flyspell 没有 jinx 性能好
 (use-package jinx

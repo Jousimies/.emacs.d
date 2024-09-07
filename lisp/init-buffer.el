@@ -23,13 +23,11 @@
 ;;
 
 ;;; Code:
-
-(global-set-key (kbd "C-x C-b") #'ibuffer)
-
-(add-hook 'ibuffer-mode-hook #'ibuffer-auto-mode)
-
-(with-eval-after-load 'ibuffer
-  (setopt ibuffer-default-sorting-mode 'major-mode))
+(use-package ibuffer
+  :bind ("C-x C-b" . ibuffer)
+  :hook (ibuffer-mode . ibuffer-auto-mode)
+  :custom
+  (ibuffer-default-sorting-mode 'major-mode))
 
 (use-package nerd-icons-ibuffer
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
@@ -53,8 +51,6 @@
 	(advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)))
 
 (use-package perspective
-  :bind (("M-s-n" . persp-switch)
-         ("M-s-w" . persp-kill))
   :custom
   (persp-mode-prefix-key (kbd "C-c z"))
   (tab-bar-format '(tab-bar-format-menu-bar
@@ -64,7 +60,8 @@
     				tab-bar-format-align-right
     				my/tab-bar-format-right))
   (persp-state-default-file (expand-file-name "persp" cache-directory))
-  :hook ((emacs-startup . persp-mode)
+  :hook (;; (emacs-startup . persp-mode)
+         (on-first-buffer . persp-mode)
          (kill-emacs . persp-state-save))
   :config
   (with-eval-after-load 'tab-bar
@@ -134,7 +131,8 @@
           "^\\*typst-ts-compilation\\*$"
           "\\*TeX Help\\*"
           "^\\*denote-backlinks to "
-          "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Org Note\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"))
+          "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Org Note\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"
+          "\\*DeepSeek\\*"))
   :config
   (setq popper-mode-line '(:eval (propertize "POP" 'face `(:inverse-video t))))
   ;; Enable indicator in minibuffer
@@ -168,6 +166,7 @@
 (with-eval-after-load 'ibuffer
   (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper))
 
+;; Use avy quick jump to a location within screen
 (use-package winum
   :hook (window-setup . winum-mode)
   :preface
