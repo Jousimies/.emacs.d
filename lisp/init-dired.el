@@ -69,6 +69,28 @@
 		(move-marker m nil)
 		(org-fold-show-context)))))
 
+(use-package dired-x
+  :ensure nil
+  :hook ((dired-mode . dired-omit-mode)
+		 (dired-mode . dired-hide-details-mode))
+  :bind (:map dired-mode-map
+			  ("s-." . dired-omit-mode)
+			  ("C-c i" . image-dired)
+			  ("s-/ l" . org-store-link))
+  :custom
+  (dired-omit-verbose nil)
+  (dired-omit-files "^\\.[^.].*"))
+
+(use-package dired-aux
+  :ensure nil
+  :after dired
+  :custom
+  (dired-isearch-filenames 'dwim)
+  (dired-create-destination-dirs 'ask)
+  (dired-vc-rename-file t)
+  (dired-do-revert-buffer (lambda (dir) (not (file-remote-p dir))))
+  (dired-create-destination-dirs-on-trailing-dirsep t))
+
 ;; dired-do-shell-command, open file with default application.
 (let ((cmd (cond ((and (eq system-type 'darwin) (display-graphic-p)) "open")
                  ((and (eq system-type 'gnu/linux) (display-graphic-p)) "xdg-open")
@@ -111,8 +133,6 @@
            (call-process "open"
                          nil 0 nil
                          (expand-file-name (dired-get-filename))))
-          ((member ext video-file-extensions)
-		   (my/dired-open-with-mpv))
 		  ((member ext html-file)
 		   (my/eww-html-file))
           (t (dired-find-file)))))
@@ -120,27 +140,8 @@
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "<return>") 'open-with-default-app))
 
-(use-package dired-x
-  :ensure nil
-  :hook ((dired-mode . dired-omit-mode)
-		 (dired-mode . dired-hide-details-mode))
-  :bind (:map dired-mode-map
-			  ("s-." . dired-omit-mode)
-			  ("C-c i" . image-dired)
-			  ("s-/ l" . org-store-link))
-  :custom
-  (dired-omit-verbose nil)
-  (dired-omit-files "^\\.[^.].*"))
-
-(use-package dired-aux
-  :ensure nil
-  :after dired
-  :custom
-  (dired-isearch-filenames 'dwim)
-  (dired-create-destination-dirs 'ask)
-  (dired-vc-rename-file t)
-  (dired-do-revert-buffer (lambda (dir) (not (file-remote-p dir))))
-  (dired-create-destination-dirs-on-trailing-dirsep t))
+(use-package ready-player
+  :hook (find-file . ready-player-mode))
 
 ;; Preview file in Dired.
 (when (eq system-type 'darwin)
