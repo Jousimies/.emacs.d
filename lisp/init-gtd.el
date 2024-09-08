@@ -40,12 +40,6 @@
   (appt-warning-time-regexp "appt \\([0-9]+\\)")
   (appt-message-warning-time 6))
 
-(use-package org-agenda
-  :ensure nil
-  :hook (org-agenda-finalize . org-agenda-to-appt)
-  :custom
-  (org-agenda-window-setup 'other-tab))
-
 (use-package diary-lib
   :ensure nil
   :hook ((diary-list-entries . diary-sort-entries)
@@ -70,7 +64,8 @@
   (org-agenda nil "b"))
 
 (with-eval-after-load 'org-agenda
-  (setq org-agenda-window-setup 'current-window)
+  (setq org-agenda-window-setup 'other-tab)
+  (add-hook 'org-agenda-finalize-hook #'org-agenda-to-appt)
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-agenda-skip-deadline-if-done t)
   (setq org-agenda-todo-ignore-scheduled 'future)
@@ -174,10 +169,7 @@
 
 (use-package org-timer
   :ensure nil
-  :hook ((org-timer-done . my/pomodoro-sound)
-         (org-timer-done . org-clock-out)
-         (org-clock-in . my/pomodoro-start)
-         (org-clock-out . org-timer-stop))
+  :hook (org-timer-done . my/pomodoro-sound)
   :custom
   (org-timer-default-timer "25")
   :config
@@ -251,6 +243,7 @@
 
 (defun org2calendar-handle-last-clock-entry ()
   "处理当前 org-clock-history 中的 CLOCK 记录。"
+  (interactive)
   (with-current-buffer (marker-buffer (car org-clock-history))
     (goto-char (car org-clock-history))
     (org-back-to-heading)

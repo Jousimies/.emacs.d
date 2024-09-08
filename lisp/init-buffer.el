@@ -34,7 +34,7 @@
 
 (use-package bufferlo
   :bind (([remap switch-to-buffer] . bufferlo-switch-to-buffer))
-  :hook (on-first-buffer . bufferlo-mode))
+  :hook (after-init . bufferlo-mode))
 
 (use-package helpful
   :bind (([remap describe-function] . helpful-callable)
@@ -60,8 +60,7 @@
     				tab-bar-format-align-right
     				my/tab-bar-format-right))
   (persp-state-default-file (expand-file-name "persp" cache-directory))
-  :hook (;; (emacs-startup . persp-mode)
-         (on-first-buffer . persp-mode)
+  :hook ((emacs-startup . persp-mode)
          (kill-emacs . persp-state-save))
   :config
   (with-eval-after-load 'tab-bar
@@ -77,7 +76,7 @@
          :map popper-mode-map
          ("M-<tab>" . popper-cycle)
          ("M-`" . popper-toggle-type))
-  :hook ((on-first-buffer . popper-mode)
+  :hook ((emacs-startup . popper-mode)
 		 (popper-mode . popper-echo-mode))
   :init
   (setq popper-reference-buffers

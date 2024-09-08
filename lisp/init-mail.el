@@ -33,7 +33,6 @@
 (defvar mu4e-private (auth-source-pick-first-password :host "mail" :user "mail")
   "My private mail address.")
 
-
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
   :commands mu4e
@@ -164,27 +163,26 @@
   (setq mu4e-headers-signed-mark    '("s" . " "))
   (setq mu4e-headers-list-mark      '("s" . "󰕲 "))
   (setq mu4e-headers-personal-mark  '("p" . "󰸐 "))
-  (setq mu4e-modeline-unread-items  '("U:" . " "))
-  (setq mu4e-modeline-new-items     '("N:" . " "))
-  (setq mu4e-modeline-all-clear     '("C: " . "󰉥 ")))
+  (setq mu4e-modeline-unread-items  '("U:" . "[U]"))
+  (setq mu4e-modeline-new-items     '("N:" . "[N]"))
+  (setq mu4e-modeline-all-read      '("R:" . "[R]"))
+  (setq mu4e-modeline-all-clear     '("C:" . "[C]")))
 
-(run-with-idle-timer 4 nil (lambda ()
+(run-with-idle-timer 120 nil (lambda ()
                              (mu4e 'background)))
 
 ;; Send mail
+;; (require 'smtpmail-async)
+;; (setq send-mail-function 'async-sendmail-send-it
+;;       message-send-mail-function 'async-smtpmail-send-it)
 (use-package sendmail
   :ensure nil
   :after message
   :custom
   (sendmail-program (executable-find "msmtp"))
   (message-sendmail-envelope-from 'header)
-  :config
-  (setq send-mail-function 'message-send-mail-with-sendmail
-        message-send-mail-function 'message-send-mail-with-sendmail)
-  ;; (require 'smtpmail-async)
-  ;; (setq send-mail-function 'async-sendmail-send-it
-  ;;       message-send-mail-function 'async-smtpmail-send-it)
-  )
+  (send-mail-function 'message-send-mail-with-sendmail)
+  (message-send-mail-function 'message-send-mail-with-sendmail))
 
 (use-package org-msg
   :hook (mu4e-compose-pre . org-msg-mode)

@@ -26,18 +26,12 @@
 
 ;; pass mode 存在一些问题， edit 时会卡死 Emacs 。
 
-(use-package password-store
-  :load-path "packages/password-store/contrib/emacs/"
-  :commands (password-store-copy
-			 password-store-edit
-			 password-store-url
-			 password-store-clear
-			 password-store-insert
-			 password-store-remove
-			 password-store-rename
-			 password-store-generate
-			 password-store-copy-field
-			 password-store-generate-no-symbols))
+;; (use-package password-store
+;;   :defer t)
+
+(use-package password-store-menu
+  :defer t
+  :custom (password-store-menu-key nil))
 
 
 (provide 'init-pass)

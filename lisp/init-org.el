@@ -70,14 +70,20 @@
   (advice-add 'org-babel-execute-src-block :before 'my/org-babel-execute-src-block))
 
 ;; org-capture
+(global-set-key (kbd "<f11>") #'org-capture)
 (with-eval-after-load 'org-capture
   (setq org-capture-templates
         `(("i" "Inbox"
            entry (file ,(concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n%U\n" :time-prompt t :tree-type week)
-		  ("l" "Inbox with link"
+          ("l" "Inbox with link"
            entry (file ,(concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
+          ("a" "Anki")
+          ("aj" "结构设计"
+           plain (file "~/Nextcloud/L.Personal.Galaxy/denote/term/20240908T111454--结构设计的相关概念__Anki.org")
+           "%?" :time-prompt t :tree-type week :hook (lambda ()
+                                                       (yas-expand-snippet (yas-lookup-snippet "anki-basic" 'org-mode))))
 		  ("w" "Work Logs")
           ("wc" "With Clock"
            entry
@@ -127,7 +133,8 @@
 	   (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))
 	  (message "ORG_ATTACH_FILES property updated."))))
 
-(with-eval-after-load 'org-attach
+(with-eval-after-load 'org
+  (require 'org-attach)
   (setopt org-attach-expert t
 		  org-attach-id-dir (expand-file-name "attach" my-galaxy)
 		  org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format
@@ -230,8 +237,35 @@
   (org-hide-leading-stars t)
   (org-superstar-headline-bullets-list '("󰼏" "󰼐" "󰼑" "󰼒" "󰼓" "󰼔" "󰼕")))
 
+;; 2024-09-14 还是放弃使用 org-modern，并没有太好用
+;; org-modern can replace org-superstar
+;; (use-package org-modern
+;;   :hook (org-mode . global-org-modern-mode)
+;;   :custom
+;;   ;; (org-modern-checkbox nil)
+;;   (org-modern-star 'replace)
+;;   (org-modern-replace-stars "󰼏󰼐󰼑󰼒󰼓󰼔󰼕")
+;;   (org-modern-table nil)
+;;   ;; (org-modern-footnote nil)
+;;   ;; (org-modern-internal-target nil)
+;;   ;; (org-modern-radio-target nil)
+;;   ;; (org-modern-progress nil)
+;;   ;; (org-modern-tag nil)
+;;   (org-modern-block-fringe nil)
+;;   (org-modern-block-name nil)
+;;   ;; (org-modern-timestamp nil)
+;;   (org-modern-horizontal-rule nil)
+;;   (org-modern-list '((?+ . "+")
+;;                      (?- . "-")
+;;                      (?* . "*")))
+;;   (org-modern-checkbox '((?X . "󰄸")
+;;                          (?- . "󱅶")
+;;                          (?\s . "󰄶"))))
+
 ;; Third party packages related to org-mode
 (use-package imenu-list
+  :hook (imenu-list-major-mode . (lambda ()
+                                   (setq-local truncate-lines t)))
   :custom
   (imenu-list-position 'left)
   (imenu-list-mode-line-format nil))
@@ -274,8 +308,9 @@
 
 (use-package plantuml
   :load-path "packages/plantuml-emacs/"
-  :commands plantuml-org-to-mindmap-open plantuml-org-to-wbs-open
-  :config
+  :commands plantuml-org-to-mindmap-open plantuml-org-to-wbs-open)
+
+(with-eval-after-load 'plantuml
   (setq plantuml-jar-path
         (concat (string-trim
                  (shell-command-to-string "readlink -f $(brew --prefix plantuml)"))
@@ -349,70 +384,20 @@
          (name selected))
     (insert (format "#+chatu: :drawio \"%s\" :crop :nopdf\n" name))))
 
-;; ox-latex
-(use-package ox-latex
-  :ensure nil
-  :commands (org-latex-export-as-latex
-			 org-latex-convert-region-to-latex
-			 org-latex-export-as-latex
-			 org-latex-export-to-latex)
-  :custom
-  (org-latex-src-block-backend 'minted)
-  (org-latex-minted-options '(("breaklines" "true")
-                              ("breakanywhere" "true")))
-  (org-latex-prefer-user-labels t)
-  (org-latex-pdf-process
-   '("xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-     "bibtex -shell-escape %b"
-     "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-     "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-     "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl"))
-  (org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
-                                   "out" "toc" "nav" "snm" "vrb" "dvi"
-                                   "fdb_latexmk" "blg" "brf" "fls"
-                                   "entoc" "ps" "spl" "bbl"))
-  :config
-  (setq org-latex-classes nil)
-  (add-to-list 'org-latex-classes
-               '("book"
-                 "\\documentclass[UTF8,twoside,a4paper,12pt,openright]{ctexrep}
-                   [NO-DEFAULT-PACKAGES]
-                   [NO-PACKAGES]
-                   [EXTRA]"
-                 ("\\chapter{%s}" . "\\chapter*{%s}")
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+;; 没啥必要,纯文本的挺好
+;; (use-package org-tag-beautify
+;;   :hook (org-mode . org-tag-beautify-mode))
 
-  (add-to-list 'org-latex-classes '("article-cn" "\\documentclass{ctexart}
-                                      [NO-DEFAULT-PACKAGES]
-                                      [NO-PACKAGES]
-                                      [EXTRA]"
-                                    ("\\section{%s}" . "\\section*{%s}")
-                                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+;; The contacts app in Phone is far better
+;; (use-package org-contacts
+;;   :custom
+;;   (org-contacts-files `(,(expand-file-name "people/contacts.org" my-galaxy))))
 
-  (add-to-list 'org-latex-classes '("article" "\\documentclass[11pt]{article}
-                                      [NO-DEFAULT-PACKAGES]
-                                      [NO-PACKAGES]
-                                      [EXTRA]"
-                                    ("\\section{%s}" . "\\section*{%s}")
-                                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes '("beamer" "\\documentclass[presentation]{beamer}
-                                      [DEFAULT-PACKAGES]
-                                      [PACKAGES]
-                                      [EXTRA]"
-                                    ("\\section{%s}" . "\\section*{%s}")
-                                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
-
+;; edraw in Emacs
+(add-to-list 'load-path "~/.emacs.d/packages/el-easydraw/")
+(with-eval-after-load 'org
+  (require 'edraw-org)
+  (edraw-org-setup-default))
 
 (provide 'init-org)
 ;;; init-org.el ends here.

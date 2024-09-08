@@ -25,7 +25,7 @@
 ;;; Code:
 (use-package autorevert
   :ensure nil
-  :hook (on-first-file . global-auto-revert-mode)
+  :hook (find-file . global-auto-revert-mode)
   :bind ([remap revert-buffer] . revert-buffer-quick))
 
 (with-eval-after-load 'register
@@ -38,7 +38,7 @@
 
 (use-package recentf
   :ensure nil
-  :hook (on-first-buffer . recentf-mode)
+  :hook (emacs-startup . recentf-mode)
   :custom
   (recentf-save-file (expand-file-name "recentf" cache-directory))
   (recentf-auto-cleanup 300)
@@ -47,7 +47,7 @@
 
 (use-package savehist
   :ensure nil
-  :hook (on-first-buffer . savehist-mode)
+  :hook (after-init . savehist-mode)
   :custom
   (savehist-file (expand-file-name "history" cache-directory))
   (savehist-additional-variables '(kill-ring
@@ -56,12 +56,12 @@
 
 (use-package saveplace
   :ensure nil
-  :hook (on-first-buffer . save-place-mode)
+  :hook (after-init . save-place-mode)
   :custom
   (save-place-file (expand-file-name "places" cache-directory)))
 
 (use-package undo-fu-session
-  :hook (on-first-buffer . undo-fu-session-global-mode)
+  :hook (after-init . undo-fu-session-global-mode)
   :custom
   (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory)))
 
@@ -108,7 +108,7 @@
 
 (use-package electric
   :ensure nil
-  :hook ((on-first-buffer . (lambda ()
+  :hook ((after-init . (lambda ()
                               (progn
                                 (electric-pair-mode 1)
                                 (electric-quote-mode 1)
@@ -120,11 +120,11 @@
 						 (electric-indent-local-mode -1))))))
 
 (use-package delsel
-  :hook (on-first-buffer . delete-selection-mode))
+  :hook (after-init . delete-selection-mode))
 
 (use-package rime-regexp
   :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"
-  :hook (minibuffer-mode . rime-regexp-mode)
+  :hook (emacs-startup . rime-regexp-mode)
   :config
   (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
   (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
@@ -161,6 +161,7 @@
               ("x" . kill-region)
               ("w" . count-words-region)
               ("i" . surround-insert)
+              ("c" . surrond-change)
 			  ("d" . surround-delete)
               ("s" . my/search-menu)
               ("m" . apply-macro-to-region-lines)
@@ -181,8 +182,11 @@
               ("M-i" . symbol-overlay-put)
               ("M-I" . symbol-overlay-remove-all)))
 
-(use-package rainbow-mode
-  :hook (prog-mode . rainbow-mode))
+;; (use-package rainbow-mode
+;;   :hook (prog-mode . rainbow-mode))
+
+(use-package colorful-mode
+  :hook (prog-mode text-mode))
 
 ;; Call everywhere from spotlight.
 ;; Use Automator create an application

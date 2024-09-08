@@ -134,7 +134,7 @@
     (load-theme theme t)))
 
 (use-package gptel
-  :bind ("<f10>" . gptel)
+  :bind ("<f1>" . gptel)
   :config
   (setq gptel-model "deepseek-chat"
         gptel-backend

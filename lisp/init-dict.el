@@ -86,8 +86,6 @@
       (gt-do-translate)
     (sdcv-search-pointer+)))
 
-(global-set-key (kbd "M-s-t") 'my/translate)
-
 ;; (use-package dictionary-overlay
 ;;   :load-path "packages/dictionary-overlay/" "packages/websocket-bridge/" "packages/emacs-websocket/"
 ;;   :commands dictionary-overlay-toggle dictionary-overlay-render-buffer dictionary-overlay-mark-word-unknown dictionary-overlay-mark-word-known
@@ -100,7 +98,7 @@
 
 ;; Emacs 内置的 ispell 和 flyspell 没有 jinx 性能好
 (use-package jinx
-  :hook (org-mode . jinx-mode)
+  :hook (emacs-startup . global-jinx-mode)
   :bind ("M-#" . jinx-correct)
   :config
   (add-to-list 'jinx-exclude-regexps '(t "\\cc")))

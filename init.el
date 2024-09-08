@@ -27,10 +27,6 @@
 ;; Load configuration
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
-;; Hooks for faster startup
-(add-to-list 'load-path "~/.emacs.d/packages/on.el/")
-(require 'on)
-
 ;; package.el
 (require 'init-package)
 
@@ -50,7 +46,7 @@
 (require 'init-tab)
 (require 'init-modeline)
 (require 'init-buffer)
-(require 'init-svg-tag)
+;; (require 'init-svg-tag)
 
 ;; Plateform related configuration
 (when (featurep 'ns)
@@ -82,7 +78,7 @@
 (require 'init-mail)
 (require 'init-elfeed)
 (require 'init-pass)
-
+(require 'init-media)
 ;; Programming
 (require 'init-lsp)
 (require 'init-prog)

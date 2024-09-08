@@ -29,9 +29,15 @@
 (setopt tab-always-indent 'complete
 		tab-first-completion 'word-or-paren-or-punct)
 
-(setq-default tab-width 4
-			  indent-tabs-mode nil)
+;; (setq-default tab-width 4
+;; 	      indent-tabs-mode nil)
+(add-hook 'prog-mode-hook (lambda ()
+			    (setq-local tab-width 4
+					indent-tabs-mode nil)))
 
+(add-hook 'org-mode-hook (lambda ()
+			   (setq-local tab-width 8
+				           indent-tabs-mode t)))
 (use-package simple
   :ensure nil
   :custom
@@ -45,23 +51,16 @@
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
 (setq set-message-functions '(inhibit-message))
 
+;; `basic' works better for some contexts
+;; Input a space, `orderless' kick in as soon
+;; Order by `completion-category-overrides'
 (use-package minibuffer
   :ensure nil
   :hook ((minibuffer-mode . minibuffer-electric-default-mode)
 		 (minibuffer-mode . cursor-intangible-mode)
 		 (minibuffer-mode . minibuffer-depth-indicate-mode))
   :custom
-  (completion-styles '(basic substring initials flex orderless))
-  (completion-category-defaults nil)
-  (completion-category-overrides
-   '((file (styles . (basic partial-completion orderless)))
-     (bookmark (styles . (basic substring)))
-     (library (styles . (basic substring)))
-     (embark-keybinding (styles . (basic substring)))
-     (imenu (styles . (basic substring orderless)))
-     (consult-location (styles . (basic substring orderless)))
-     (kill-ring (styles . (emacs22 orderless)))
-     (eglot (styles . (emacs22 substring orderless)))))
+  (completion-pcm-leading-wildcard t)
   (minibuffer-completion-auto-choose t)
   (minibuffer-visible-completions t)
   (completions-sort 'historical)
@@ -75,27 +74,21 @@
 
 (use-package orderless
   :custom
-  (orderless-matching-styles '(orderless-prefixes orderless-regexp))
   (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion)))))
+  (completion-category-overrides '((file (styles basic partial-completion))))
+  (orderless-matching-styles '(orderless-prefixes orderless-regexp)))
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
 ;; use `M-RET' to exit minibuffer input.
-;; fido-mode do not work well with rime-regexp
-(use-package icomplete
-  :ensure nil
-  :hook ((on-first-input . icomplete-mode)
-         (completion-list-mode . (lambda ()
-                                   (setq-local truncate-lines t)))))
-;; (use-package vertico
-;;   :hook ((on-first-buffer . vertico-mode)
-;; 		 (rfn-eshadow-update-overlay . vertico-directory-tidy)
-;;          (vertico-mode . vertico-multiform-mode))
-;;   :bind (:map vertico-map
-;; 			  ("C-<backspace>" . vertico-directory-up)))
+(use-package vertico
+  :hook ((emacs-startup . vertico-mode)
+		 (rfn-eshadow-update-overlay . vertico-directory-tidy)
+         (vertico-mode . vertico-multiform-mode))
+  :bind (:map vertico-map
+			  ("C-<backspace>" . vertico-directory-up)))
 
-;; (with-eval-after-load 'vertico-multiform
-;;   (add-to-list 'vertico-multiform-categories '(embark-keybinding grid)))
+(with-eval-after-load 'vertico-multiform
+  (add-to-list 'vertico-multiform-categories '(embark-keybinding grid)))
 
 (use-package nerd-icons-completion
   :hook (minibuffer-setup . nerd-icons-completion-mode))
@@ -182,7 +175,7 @@
   :after embark)
 
 (use-package corfu
-  :hook ((on-first-buffer . global-corfu-mode)
+  :hook ((after-init . global-corfu-mode)
 		 (corfu-mode . corfu-echo-mode)
          (corfu-mode . corfu-history-mode)
 		 (corfu-mode . corfu-popupinfo-mode))
@@ -210,7 +203,7 @@
   (add-hook 'completion-at-point-functions #'cape-dict))
 
 (use-package which-key
-  :hook (on-first-input . which-key-mode)
+  :hook (after-init . which-key-mode)
   :custom
   (which-key-idle-delay 0.1))
 

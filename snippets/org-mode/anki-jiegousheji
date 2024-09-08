@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: anki-basic
+# key: <aj
+# --
+* $1
+  :PROPERTIES:
+  :ANKI_NOTE_TYPE: Basic
+  :ANKI_DECK: 结构设计
+  :END:
+  $2

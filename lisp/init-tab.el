@@ -23,9 +23,8 @@
 ;;
 
 ;;; Code:
-
 (use-package tab-bar
-  :hook (on-first-buffer . tab-bar-mode)
+  :hook (emacs-startup . tab-bar-mode)
   :bind (("C-c b t" . tab-switch)
          ("s-t" . tab-new)
          ("s-w" . tab-close))

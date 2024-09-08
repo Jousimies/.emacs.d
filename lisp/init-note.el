@@ -16,8 +16,8 @@
   (denote-prompts '(title keywords subdirectory signature))
   (denote-directory (expand-file-name "denote" my-galaxy))
   (denote-file-name-slug-functions '((title . denote-sluggify-title)
-										  (signature . denote-sluggify-signature)
-										  (keyword . identity)))
+									 (signature . denote-sluggify-signature)
+									 (keyword . identity)))
   (denote-dired-directories
    (list denote-directory
          (thread-last denote-directory (expand-file-name "books"))
@@ -26,10 +26,13 @@
          (thread-last denote-directory (expand-file-name "term"))
          (thread-last denote-directory (expand-file-name "references"))))
   (denote-rename-buffer-format "%b %t") ;;
-  (denote-buffer-has-backlinks-string "󰌷"))
+  (denote-rename-buffer-backlinks-indicator "󰌷")
+  (denote-sort-dired-default-sort-component 'signature))
 
 (defun my/modus-themes-denote-faces (&rest _)
-  (ef-themes-with-colors
+  ;; (unless (featurep 'ef-themes)
+  ;;   (require 'ef-themes))
+  (modus-themes-with-colors
     (custom-set-faces
      `(denote-faces-year ((,c :foreground ,cyan)))
      `(denote-faces-month ((,c :foreground ,magenta-warmer)))
@@ -41,48 +44,47 @@
 
 (add-hook 'ns-system-appearance-change-functions #'my/modus-themes-denote-faces)
 
-;; A simple HACK to let denote support orderless
-;; https://github.com/protesilaos/denote/issues/253
-;; #+BEGIN: denote-files :regexp "ol: _tag1 _tag2 !boring"
-;; #+END
-;; (defun denote-orderless--is-orderless-filter (str)
-;;   "Check whether `str' is an orderless filter and return the filter if it is, otherwise return nil."
-;;   (let ((prefix "ol: "))
-;;     (when (s-prefix? "ol: " str)
-;;       (s-chop-left (length prefix) str))))
+(use-package citar-denote
+  :after (:any citar denote)
+  :hook (find-file . citar-denote-mode)
+  :custom
+  (citar-denote-use-bib-keywords t)
+  (citar-denote-subdir t))
 
-;; (defun denote-orderless-directory-files (oldfun &optional filter omit-current text-only)
-;;   "Use orderless to filter files."
-;;   (if-let ((ol-filter (denote-orderless--is-orderless-filter filter)))
-;;       (let ((files (denote--directory-get-files)))
-;;         (when (and omit-current buffer-file-name (denote-file-has-identifier-p buffer-file-name))
-;;           (setq files (delete buffer-file-name files)))
-;;         (when ol-filter
-;;           (setq files (orderless-filter ol-filter files)))
-;;         (when text-only
-;;           (setq files (seq-filter #'denote-file-is-note-p files)))
-;;         files)
-;;     (funcall oldfun filter omit-current text-only)))
+(use-package denote-fz
+  :load-path "packages/denote-folgezettel/"
+  :commands (denote-fz-insert-child
+			 denote-fz-insert-sibling
+			 denote-fz-insert-child-here
+			 denote-fz-insert-sibling-here
+			 denote-fz-dired-mode))
 
-;; (advice-add 'denote-directory-files :around #'denote-orderless-directory-files)
-;; (with-eval-after-load 'org
-;;   (defun zyd-expand-and-complete-with-denote ()
-;; 	(interactive)
-;; 	(let ((limit (- (point) 2)))
-;;       (when (looking-back "((" limit)
-;; 		(progn
-;;           (call-interactively #'denote-link-or-create)
-;;           (let ((end-of-link (point)))
-;; 			(goto-char limit)
-;; 			(delete-char 2)
-;; 			(goto-char end-of-link))))))
+(use-package consult-notes
+  :after (consult)
+  :custom
+  (consult-notes-file-dir-sources
+   `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
+     ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
+     ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
+     ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
+     ("Knowledge"  ?k ,(expand-file-name "denote/knowledge" my-galaxy))
+     ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
+     ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
+     ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))
+     ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy)))))
 
-;;   (defun zyd-try-to-complete-then-cycle (&optional arg)
-;; 	(interactive)
-;; 	(zyd-expand-and-complete-with-denote)
-;; 	(org-cycle arg))
+(use-package denote-explore
+  :custom
+  (denote-explore-network-filename (expand-file-name "mindmap/denote-network.html" my-galaxy))
+  (denote-explore-json-edges-filename (expand-file-name "denote-edges.json" cache-directory))
+  (denote-explore-json-vertices-filename (expand-file-name "denote-vertices.json" cache-directory)))
 
-;;   (define-key org-mode-map (kbd "<tab>") #'zyd-expand-and-complete-with-denote))
+(use-package ibooks-annot
+  :load-path "packages/ibooks-annot.el/"
+  :commands ibooks-annot/extract-annotations-to-note ibooks-annot/open-book-with-ibooks
+  :config
+  (setq pdfannots-script "~/.emacs.d/packages/pdfannots/pdfannots.py -f json")
+  (setq ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
 
 (defun find-file-other-window-no-jump (filename)
   "Find file in other window without jumping to that window."
@@ -101,173 +103,106 @@
     (or (denote-link-return-links)
         (user-error "No links found")))))
 
-(use-package consult-notes
-  :after (consult)
-  :custom
-  (consult-notes-file-dir-sources
-   `(("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
-     ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
-     ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
-     ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
-     ("Knowledge"  ?k ,(expand-file-name "denote/knowledge" my-galaxy))
-     ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
-     ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
-     ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))
-     ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy)))))
+;; Denote sort.
+(defun my/denote-signature-retrieve ()
+  (let* ((file (or (buffer-file-name) (dired-get-filename))))
+	(when file
+	  (denote-retrieve-filename-signature file))))
 
-;; Sometimes I want open the web archive file with eww.
-(defun my/org-move-to-heading-forward-3-char ()
-  (when (re-search-forward "^\\*+.*:Reference:" nil t)
-    ;; Move to the beginning of the heading
-    (org-back-to-heading t)
-    (forward-char 3)))
+(defun my/denote-sort-regexp (regexp)
+  (interactive (list
+				(read-regexp
+				 (concat "Files matching PATTERN" (format " (default: %s)" (my/denote-signature-retrieve)) ": ")
+				 (my/denote-signature-retrieve)
+				 nil)))
+  (denote-sort-dired (concat "==" regexp) 'signature nil))
 
-(defun my/org-get-link-under-point ()
-  "Get the link under the point in Org mode."
-  (my/org-move-to-heading-forward-3-char)
-  (let* ((link (org-element-lineage (org-element-context) '(link) t)))
-	(if link
-		(org-element-property :raw-link link)
-	  (url-get-url-at-point))))
-
-(defun my/open-link-with-eww ()
+(defun my/denote-sort-with-identifer ()
   (interactive)
-  (when-let ((link (my/org-get-link-under-point)))
-	(if (org-file-url-p link)
-		(org-open-at-point)
-	  (eww (concat "file://" (expand-file-name link))))))
+  (denote-sort-dired (denote-files-matching-regexp-prompt) 'identifier nil))
 
-(use-package denote-sort
-  :ensure nil
-  :commands denote-sort-dired
-  :bind (:map dired-mode-map
-			  ("/ c" . my/denote-sort-children)
-			  ("/ s" . my/denote-sort-siblings)
-			  ("/ r" . my/denote-sort-regexp)
-			  ("/ p" . my/denote-sort-parent-with-children))
-  :config
-  (defun my/denote-signature-retrieve ()
-	(let* ((file (or (buffer-file-name) (dired-get-filename))))
-	  (when file
-		(denote-retrieve-filename-signature file))))
+(defun my/denote-sort-with-keywords ()
+  (interactive)
+  (denote-sort-dired (regexp-opt (denote-keywords-prompt)) 'keywords nil))
 
-  (defun my/denote-sort-regexp (regexp)
-	(interactive (list
-				  (read-regexp
-				   (concat "Files matching PATTERN" (format " (default: %s)" (my/denote-signature-retrieve)) ": ")
-				   (my/denote-signature-retrieve)
-				   nil)))
-	(denote-sort-dired (concat "==" regexp) 'signature nil))
+(defun my/denote-sort-period-week ()
+  (interactive)
+  (let ((regexp (call-interactively 'my/denote-period-week-regexp)))
+    (denote-sort-dired regexp 'signature nil)))
 
-  (defun my/denote-sort-with-identifer ()
-	(interactive)
-	(denote-sort-dired (denote-files-matching-regexp-prompt) 'identifier nil))
+(defun my/denote-sort-parent-with-children ()
+  (interactive)
+  (let* ((index (my/denote-signature-retrieve))
+		 (length (length index))
+		 (regexp (substring index 0 (- length 1))))
+	(denote-sort-dired (concat "==" regexp) 'signature nil)))
 
-  (defun my/denote-sort-with-keywords ()
-	(interactive)
-	(denote-sort-dired (regexp-opt (denote-keywords-prompt)) 'keywords nil))
+(defun my/denote-sort-children-regexp ()
+  (let* ((index (my/denote-signature-retrieve)))
+	(format "==%s" index)))
 
-  (defun my/denote-sort-with-days ()
-	(interactive)
-	(let ((regexp (call-interactively 'my/denote-week-ago)))
-      (denote-sort-dired regexp 'signature nil)))
+(defun my/denote-sort-children ()
+  (interactive)
+  (let ((regexp (my/denote-sort-children-regexp)))
+	(denote-sort-dired regexp 'signature nil)))
 
-  (defun my/denote-sort-parent-with-children ()
-	(interactive)
-	(let* ((index (my/denote-signature-retrieve))
-		   (length (length index))
-		   (regexp (substring index 0 (- length 1))))
-	  (denote-sort-dired (concat "==" regexp) 'signature nil)))
+(defun my/denote-sort-siblings-regexp ()
+  (let* ((index (my/denote-signature-retrieve))
+		 (last-char (substring index (1- (length index)))))
+	(if (string-match "[0-9]" last-char)
+		(format "==\\(%s\\|%s[a-z]\\)-" index index)
+	  (format "==\\(%s\\|%s[0-9]+\\)-" index index))))
 
-  (defun my/denote-sort-children-regexp ()
-	(let* ((index (my/denote-signature-retrieve)))
-	  (format "==%s" index)))
+(defun my/denote-sort-siblings ()
+  (interactive)
+  (let ((regexp (my/denote-sort-siblings-regexp)))
+    (denote-sort-dired regexp 'signature nil)))
 
-  (defun my/denote-sort-children ()
-	(interactive)
-	(let ((regexp (my/denote-sort-children-regexp)))
-	  (denote-sort-dired regexp 'signature nil)))
-
-  (defun my/denote-sort-siblings-regexp ()
-	(let* ((index (my/denote-signature-retrieve))
-		   (last-char (substring index (1- (length index)))))
-	  (if (string-match "[0-9]" last-char)
-		  (format "==\\(%s\\|%s[a-z]\\)-" index index)
-		(format "==\\(%s\\|%s[0-9]+\\)-" index index))))
-
-  (defun my/denote-sort-siblings ()
-	(interactive)
-	(let ((regexp (my/denote-sort-siblings-regexp)))
-      (denote-sort-dired regexp 'signature nil))))
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "/ c") #'my/denote-sort-children)
+  (define-key dired-mode-map (kbd "/ s") #'my/denote-sort-siblings)
+  (define-key dired-mode-map (kbd "/ r") #'my/denote-sort-regexp)
+  (define-key dired-mode-map (kbd "/ p") #'my/denote-sort-parent-with-children))
 
 ;; fliter denote create by days ago
 ;;;###autoload
-(defun my/denote-week-ago ()
+(defun my/denote-period-week-regexp ()
   (interactive)
   (let* ((current-time (current-time))
-		 (current-date (format-time-string "%Y-%m-%d" current-time))
 		 (ago-date-time (time-subtract current-time (days-to-time 7)))
+         (current-date (format-time-string "%Y-%m-%d" current-time))
 		 (ago-date (format-time-string "%Y-%m-%d" ago-date-time))
 		 (cur-year (substring current-date 0 4))
 		 (cur-month (substring current-date 5 7))
-		 (cur-day (substring current-date 8 10))
+		 (cur-day (string-to-number (substring current-date 8 10)))
 		 (ago-year (substring ago-date 0 4))
 		 (ago-month (substring ago-date 5 7))
-		 (ago-day (substring ago-date 8 10))
-		 (cur-day-d1 (/ (string-to-number cur-day) 10))
-		 (cur-day-d2 (% (string-to-number cur-day) 10))
-		 (ago-day-d1 (/ (string-to-number ago-day) 10))
-		 (ago-day-d2 (% (string-to-number ago-day) 10)))
-	(if (string= cur-year ago-year)
-		(if (string= cur-month ago-month)
-			(if (= cur-day-d1 ago-day-d1)
-				(format "\\(%s%s%s[%s-%s]\\)"
-						cur-year cur-month cur-day-d1
-						ago-day-d2 cur-day-d2)
-			  (format "%s%s\\(%s[%s-9]\\|%s[0-%s]\\)"
-					  cur-year cur-month ago-day-d1
-					  ago-day-d2 cur-day-d1 cur-day-d2))
-		  (cond ((< cur-day-d1 ago-day-d1)
-				 (format "\\(%s\\)\\(%s%s[%s-9]\\|3[0-1]\\|%s%s[0-%s]\\)"
-						 cur-year ago-month ago-day-d1 ago-day-d2
-						 cur-month cur-day-d1 cur-day-d2))
-				(t
-				 (format "\\(%s\\)\\(%s%s[%s-9]\\|%s%s[0-%s]\\)"
-						 cur-year ago-month ago-day-d1 ago-day-d2
-						 cur-month cur-day-d1 cur-day-d2))))
-	  (if (= ago-day-d1 3)
-		  (format "\\(%s123[%s-1]\\|%s010[0-%s]\\)"
-				  ago-year ago-day-d2
-				  cur-year cur-day-d2)
-		(format "\\(%s12%s[%s-9]\\|%s123[0-1]\\|%s01%s[0-%s]\\)"
-				ago-year ago-day-d1 ago-day-d2
-				ago-year cur-year cur-day-d1 cur-day-d2)))))
+		 (ago-day (string-to-number (substring ago-date 8 10))))
+    (if (string= cur-year ago-year)
+        (if (string= cur-month ago-month)
+            (format "%s%s[%02d-%02d]" cur-year cur-month ago-day cur-day)
+          (format "%s\\(%s[%02d-31]\\|%s[01-%02d]\\)"
+                  cur-year
+                  ago-month ago-day
+                  cur-month cur-day))
+      (format "\\(%s12[%02d-31]\\|%s01[01-%02d]\\)"
+              ago-year ago-day
+              cur-year cur-day))))
 
-(defun my/denote-sort-sigature-lv1 ()
-  (interactive)
-  (let ((regexp (call-interactively 'my/denote-sort-lv-1)))
+(defun my/denote-sort-level-by-signature (level)
+  "Sort signatures based on the LEVEL input.
+If LEVEL is 1, sort based on signature level 1. If LEVEL is 2, sort based on level 2."
+  (interactive "nInput the Level of Signature (1 or 2): ")
+  (let ((regexp (my/denote-level-regexp level)))
     (denote-sort-dired regexp 'signature nil)))
 
-(defun my/denote-sort-sigature-lv2 ()
-  (interactive)
-  (let ((regexp (call-interactively 'my/denote-sort-lv-2)))
-    (denote-sort-dired regexp 'signature nil)))
-
-(defun my/denote-sort-lv-2 (lv)
-  (interactive "nInput the Level of Signature: ")
-  (format "\\(==%s[a-z]-\\)" lv))
-
-(defun my/denote-sort-lv-1 ()
-  (interactive)
-  (format "\\(==[0-9]-\\)"))
-
-(use-package denote-fz
-  :load-path "packages/denote-folgezettel/"
-  :commands (denote-fz-insert-child
-			 denote-fz-insert-sibling
-			 denote-fz-insert-child-here
-			 denote-fz-insert-sibling-here
-			 denote-fz-dired-mode))
+(defun my/denote-level-regexp (level)
+  "Generate a regular expression based on the LEVEL of signature."
+  (cond
+   ((= level 1)
+    "\\(==[0-9]-\\)")
+   (t
+    (format "\\(==%s-\\|==%s[a-z]-\\)" level level))))
 
 (defun my/literature-entry (url title keywords file-path file-new-path)
   "Save a literature entry and add it to the 'literature' denote database."
@@ -324,18 +259,27 @@
       (my/literature-save-from-xwidget)
     (my/literature-save-from-safari)))
 
-(use-package ibooks-annot
-  :load-path "packages/ibooks-annot.el/"
-  :commands ibooks-annot/extract-annotations-to-note ibooks-annot/open-book-with-ibooks
-  :config
-  (setq pdfannots-script "~/.emacs.d/packages/pdfannots/pdfannots.py -f json")
-  (setq ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
+;; Sometimes I want open the web archive file with eww.
+(defun my/org-move-to-heading-forward-3-char ()
+  (when (re-search-forward "^\\*+.*:Reference:" nil t)
+    ;; Move to the beginning of the heading
+    (org-back-to-heading t)
+    (forward-char 3)))
 
-(use-package denote-explore
-  :custom
-  (denote-explore-network-filename (expand-file-name "mindmap/denote-network.html" my-galaxy))
-  (denote-explore-json-edges-filename (expand-file-name "denote-edges.json" cache-directory))
-  (denote-explore-json-vertices-filename (expand-file-name "denote-vertices.json" cache-directory)))
+(defun my/org-get-link-under-point ()
+  "Get the link under the point in Org mode."
+  (my/org-move-to-heading-forward-3-char)
+  (let* ((link (org-element-lineage (org-element-context) '(link) t)))
+	(if link
+		(org-element-property :raw-link link)
+	  (url-get-url-at-point))))
+
+(defun my/open-link-with-eww ()
+  (interactive)
+  (when-let ((link (my/org-get-link-under-point)))
+	(if (org-file-url-p link)
+		(org-open-at-point)
+	  (eww (concat "file://" (expand-file-name link))))))
 
 ;;;###autoload
 (defun my/denote-info ()
@@ -347,13 +291,6 @@
 		 (keywords (length (denote-keywords))))
     (message "%s Denote files (%s Attachments), %s Distinct Keywords."
 			 denote-files attachments keywords)))
-
-(use-package citar-denote
-  :after (:any citar denote)
-  :hook (find-file . citar-denote-mode)
-  :custom
-  (citar-denote-use-bib-keywords t)
-  (citar-denote-subdir t))
 
 ;;;###autoload
 (defun citar-denote-open-files ()
@@ -502,6 +439,50 @@ it can be passed in POS."
                     "")))
     (create-apple-note title content)))
 
+;; A simple HACK to let denote support orderless
+;; https://github.com/protesilaos/denote/issues/253
+;; #+BEGIN: denote-files :regexp "ol: _tag1 _tag2 !boring"
+;; #+END
+;; (defun denote-orderless--is-orderless-filter (str)
+;;   "Check whether `str' is an orderless filter and return the filter if it is, otherwise return nil."
+;;   (let ((prefix "ol: "))
+;;     (when (s-prefix? "ol: " str)
+;;       (s-chop-left (length prefix) str))))
+
+;; (defun denote-orderless-directory-files (oldfun &optional filter omit-current text-only)
+;;   "Use orderless to filter files."
+;;   (if-let ((ol-filter (denote-orderless--is-orderless-filter filter)))
+;;       (let ((files (denote--directory-get-files)))
+;;         (when (and omit-current buffer-file-name (denote-file-has-identifier-p buffer-file-name))
+;;           (setq files (delete buffer-file-name files)))
+;;         (when ol-filter
+;;           (setq files (orderless-filter ol-filter files)))
+;;         (when text-only
+;;           (setq files (seq-filter #'denote-file-is-note-p files)))
+;;         files)
+;;     (funcall oldfun filter omit-current text-only)))
+
+;; (advice-add 'denote-directory-files :around #'denote-orderless-directory-files)
+;; (with-eval-after-load 'org
+;;   (defun zyd-expand-and-complete-with-denote ()
+;; 	(interactive)
+;; 	(let ((limit (- (point) 2)))
+;;       (when (looking-back "((" limit)
+;; 		(progn
+;;           (call-interactively #'denote-link-or-create)
+;;           (let ((end-of-link (point)))
+;; 			(goto-char limit)
+;; 			(delete-char 2)
+;; 			(goto-char end-of-link))))))
+
+;;   (defun zyd-try-to-complete-then-cycle (&optional arg)
+;; 	(interactive)
+;; 	(zyd-expand-and-complete-with-denote)
+;; 	(org-cycle arg))
+
+;;   (define-key org-mode-map (kbd "<tab>") #'zyd-expand-and-complete-with-denote))
+
+(use-package anki-editor)
 
 (provide 'init-note)
 ;;; init-note.el ends here.

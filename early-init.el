@@ -70,25 +70,14 @@
 (push '(vertical-scroll-bars . nil) default-frame-alist)
 
 ;; Themes
-;; `ef-themes' is eye candy.
-(add-to-list 'load-path "~/.emacs.d/packages/ef-themes/")
-(require 'ef-themes)
-(defvar love/dark-themes '(ef-night
-						   ef-rosa
-						   ef-dream
-						   ef-elea-dark
-						   ef-maris-dark)
-  "ef-themes-dark-themes I loved.")
 (when (featurep 'ns)
   (setq ns-use-native-fullscreen nil)
   (defun my/apply-theme (appearance)
-	"Load theme, taking current system APPEARANCE into consideration."
-	(mapc #'disable-theme custom-enabled-themes)
-	(let* ((themes (if (eq appearance 'light)
-                       ef-themes-light-themes
-					 love/dark-themes))
-           (theme (elt themes (random (length themes)))))
-      (load-theme theme t)))
+  "Load theme, taking current system APPEARANCE into consideration."
+  (mapc #'disable-theme custom-enabled-themes)
+  (pcase appearance
+    ('light (load-theme 'modus-operandi t))
+    ('dark (load-theme 'modus-vivendi t))))
   (add-hook 'ns-system-appearance-change-functions #'my/apply-theme))
 
 (setq byte-compile-warnings nil)

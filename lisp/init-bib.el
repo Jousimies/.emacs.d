@@ -31,6 +31,7 @@
          (org-mode . citar-capf-setup)
          (minibuffer-setup . (lambda ()
                                (setq-local truncate-lines t))))
+  :commands citar-create-note
   :custom
   (citar-indicators (list citar-indicator-links
                           citar-indicator-files

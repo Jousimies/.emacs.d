@@ -148,3 +148,9 @@
 [submodule "packages/typst-ts-mode"]
 	path = packages/typst-ts-mode
 	url = https://codeberg.org/meow_king/typst-ts-mode.git
+[submodule "packages/Letters"]
+	path = packages/Letters
+	url = https://github.com/LuminousMyrrh/Letters.git
+[submodule "packages/el-easydraw"]
+	path = packages/el-easydraw
+	url = https://github.com/misohena/el-easydraw.git

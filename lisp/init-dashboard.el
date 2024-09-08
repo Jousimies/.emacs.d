@@ -28,5 +28,8 @@
   (dashboard-setup-startup-hook))
 
 
+;; (load-file "~/.emacs.d/packages/Letters/Letters.el")
+
+
 (provide 'init-dashboard)
 ;;; init-dashboard.el ends here.

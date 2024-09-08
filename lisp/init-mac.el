@@ -53,7 +53,7 @@
          ("M-b" . emt-backward-word)
          ("M-d" . emt-kill-word)
          ("M-h" . emt-backward-kill-word))
-  :hook (on-first-buffer . emt-ensure))
+  :hook (emacs-startup . emt-ensure))
 
 ;; Left Shift bind to `C-\' if alone with karabiner, to toggle IM.
 (use-package macim
@@ -61,10 +61,9 @@
   :bind (("C-\\" . macim-switch)
          :map isearch-mode-map
          ("C-\\" . macim-switch))
-  :hook ((on-first-input . macim-select-ascii)
-         (on-first-buffer . macim-mode)
+  :hook ((after-init . macim-mode)
+         (emacs-startup . macim-select-ascii)
          (isearch-mode . macim-select-ascii)
-		 (on-switch-buffer . macim-context-switch)
          (minibuffer-mode . macim-select-ascii))
   :config
   (defun im-cursor-type ()
@@ -96,6 +95,14 @@
 
   (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes))
 
+;; Copy frome on.el
+(defun on-run-switch-buffer-hooks-h (&optional _)
+  (run-hooks 'on-switch-buffer-hook))
+
+;; The value of window-buffer-change-functions should be a list of functions that take one argument.
+(add-hook 'window-buffer-change-functions #'on-run-switch-buffer-hooks-h)
+
+(add-hook 'on-switch-buffer-hook #'macim-context-switch)
 
 (provide 'init-mac)
 ;;; init-mac.el ends here

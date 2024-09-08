@@ -27,14 +27,14 @@
 ;; files
 (global-set-key (kbd "C-h") #'delete-backward-char)
 (global-set-key (kbd "M-h") #'backward-kill-word)
-(global-set-key (kbd "<f1>") #'help-command)
+(global-set-key (kbd "s-h") #'help-command)
 
 (add-hook 'after-init-hook #'column-number-mode)
 ;; (add-hook 'after-init-hook #'size-indication-mode)
 (add-hook 'org-mode-hook #'visual-line-mode)
 
-(add-hook 'on-first-file-hook (lambda ()
-							    (mouse-avoidance-mode 'jump)))
+(mouse-avoidance-mode 'jump)
+
 (setopt mark-ring-max 128
         kill-do-not-save-duplicates t
         kill-ring-max (* kill-ring-max 2)
@@ -43,6 +43,7 @@
 ;; auto-save
 (setopt auto-save-default nil
         auto-save-visited-interval 1
+        ;; delete-trailing-lines nil
         save-silently t
         large-file-warning-threshold nil
         confirm-kill-processes nil
@@ -59,24 +60,20 @@
 ;; (setq backup-directory-alist '(("." . "~/.emacs.d/cache/backups")))
 (add-hook 'find-file-hook #'auto-save-visited-mode)
 
-(defun auto-save-delete-trailing-whitespace-except-current-line ()
+(defun delete-trailing-whitespace-except-current-line ()
   (interactive)
   (let ((begin (line-beginning-position))
-        (end (point))
-        (buffername (buffer-name (buffer-base-buffer))))
-    (when (not (or (string-prefix-p "inbox" buffername)
-                   (string-prefix-p "work_log" buffername)
-                   (string-match-p "^[0-9]" buffername)))
-      (save-excursion
-        (when (< (point-min) begin)
-          (save-restriction
-            (narrow-to-region (point-min) (1- begin))
-            (delete-trailing-whitespace)))
-        (when (> (point-max) end)
-          (save-restriction
-            (narrow-to-region end (point-max))
-            (delete-trailing-whitespace)))))))
-(add-hook 'before-save-hook #'auto-save-delete-trailing-whitespace-except-current-line)
+        (end (line-end-position)))
+    (save-excursion
+      (when (< (point-min) begin)
+        (save-restriction
+          (narrow-to-region (point-min) (1- begin))
+          (delete-trailing-whitespace)))
+      (when (> (point-max) end)
+        (save-restriction
+          (narrow-to-region (1+ end) (point-max))
+          (delete-trailing-whitespace))))))
+(add-hook 'before-save-hook #'delete-trailing-whitespace-except-current-line)
 
 (defun switch-to-message ()
   "Quick switch to `*Message*' buffer."
@@ -86,16 +83,27 @@
 (global-set-key (kbd "M-g m") #'switch-to-message)
 (global-set-key (kbd "M-g s") #'scratch-buffer)
 
-(add-hook 'on-first-file-hook #'global-so-long-mode)
-(add-hook 'on-first-file-hook #'global-prettify-symbols-mode)
-(add-hook 'on-first-file-hook #'global-word-wrap-whitespace-mode)
+(add-hook 'after-init-hook #'global-so-long-mode)
+(add-hook 'after-init-hook #'global-prettify-symbols-mode)
+(add-hook 'after-init-hook #'global-word-wrap-whitespace-mode)
 
 (add-hook 'tab-bar-mode-hook 'display-battery-mode)
 (add-hook 'tab-bar-mode-hook 'display-time-mode)
 (with-eval-after-load 'time
-  (setopt display-time-default-load-average nil))
+  (setopt display-time-default-load-average nil)
+  (setopt display-time-mail-string "")
+  (setopt display-time-format "%H:%M")
+  (setopt display-time-string-forms
+          '((propertize
+             (format-time-string
+              (or display-time-format
+                  (if display-time-24hr-format "%H:%M" "%-I:%M%p"))
+              now)
+             'face 'display-time-date-and-time
+             'help-echo (format-time-string "%a %b %e, %Y" now))
+            " ")))
 
-(add-hook 'on-first-file-hook #'midnight-mode)
+(add-hook 'find-file-hook #'midnight-mode)
 
 (setopt prettify-symbols-alist '(("lambda" . ?λ)
                                  ("function" . ?𝑓)))
@@ -106,7 +114,7 @@
 (setq bookmark-default-file (expand-file-name "bookmarks" cache-directory))
 
 ;; auto-insert-mode
-(add-hook 'on-first-file-hook #'auto-insert-mode)
+(add-hook 'find-file-hook #'auto-insert-mode)
 (with-eval-after-load 'auto-insert
   (add-to-list 'auto-insert-alist
                '(("\\.el\\'" . "Emacs Lisp header")
@@ -177,21 +185,21 @@
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 (use-package paren
-  :hook (on-first-buffer . show-paren-mode)
+  :hook (find-file . show-paren-mode)
   :custom
   (show-paren-style 'parenthesis)
   (show-paren-context-when-offscreen 'overlay)
   (show-paren-highlight-openparen t)
   (show-paren-when-point-inside-paren t))
 
-(add-hook 'on-first-input-hook (lambda ()
-								 (blink-cursor-mode -1)))
+(blink-cursor-mode -1)
+
 (setopt window-divider-default-bottom-width 1
 		window-divider-default-places 'bottom-only)
 
 (use-package winner
   :ensure nil
-  :hook (on-first-buffer . winner-mode)
+  :hook (find-file . winner-mode)
   :bind (("M-g u" . winner-undo)
          ("M-g r" . winner-redo))
   :custom
@@ -214,7 +222,7 @@
 
 (use-package windmove
   :ensure nil
-  :hook (on-first-buffer . windmove-mode)
+  :hook (window-setup . windmove-mode)
   :bind (("M-g h" . windmove-left)
          ("M-g l" . windmove-right)
          ("M-g k" . windmove-up)
@@ -223,7 +231,7 @@
 (setopt switch-to-buffer-in-dedicated-window 'pop
 		switch-to-buffer-obey-display-actions t)
 
-(add-hook 'on-first-buffer-hook 'pixel-scroll-mode)
+(add-hook 'find-file-hook 'pixel-scroll-mode)
 
 (defun my/scroll-other-windown-down ()
   "Scroll other window down."
@@ -259,7 +267,7 @@
 ;;;; Repeatable key chords (repeat-mode)
 (use-package repeat
   :ensure nil
-  :hook (on-first-buffer . repeat-mode)
+  :hook (emacs-startup . repeat-mode)
   :custom
   (repeat-on-final-keystroke t)
   (repeat-exit-timeout 5)
@@ -272,7 +280,7 @@
 (use-package hl-line
   :ensure nil
   :hook ((prog-mode . hl-line-mode)
-         (org-mode . hl-line-mode))
+         (package-menu-mode . hl-line-mode))
   :custom
   (hl-line-sticky-flag nil))
 

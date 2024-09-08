@@ -59,13 +59,13 @@
                    ;; tot
                    ;; (tot-count (+ true-unmuted-count mentioned-count reactions-count))
                    )
-              (propertize (concat "  "
+              (propertize (concat "[T]"
                                   (when (and true-unmuted-count (not (zerop true-unmuted-count)))
-                                    (concat "●" (number-to-string true-unmuted-count) " "))
+                                    (concat (number-to-string true-unmuted-count) " "))
                                   (when (and mentioned-count (not (zerop mentioned-count)))
-                                    (concat "@" (number-to-string mentioned-count) " "))
+                                    (concat " @" (number-to-string mentioned-count) " "))
                                   (when (and reactions-count (not (zerop reactions-count)))
-                                    (concat "❤" (number-to-string reactions-count) " ")))
+                                    (concat " ❤" (number-to-string reactions-count) " ")))
                           'face `(:inherit ,(if online-p 'success 'warning)))))))
 
   (defun +tab-bar-telega-icon ()

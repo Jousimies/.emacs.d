@@ -16,11 +16,17 @@
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-upstream)
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote))
 
+
+(use-package transient
+  :ensure nil
+  :custom
+  (transient-show-popup 0.5)
+  (transient-history-file (expand-file-name "transient/history.el" cache-directory))
+  (transient-levels-file (expand-file-name "transient/levels.el" cache-directory))
+  (transient-values-file (expand-file-name "transient/values.el" cache-directory)))
+
 (with-eval-after-load 'transient
-  (transient-bind-q-to-quit)
-  (setq transient-history-file (expand-file-name "transient/history.el" cache-directory)
-		transient-levels-file (expand-file-name "transient/levels.el" cache-directory)
-		transient-values-file (expand-file-name "transient/values.el" cache-directory)))
+  (transient-bind-q-to-quit))
 
 (use-package git-timemachine
   :bind ("M-g t" . git-timemachine))

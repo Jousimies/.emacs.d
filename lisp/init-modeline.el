@@ -306,7 +306,8 @@ Specific to the current window's mode line.")
 (setopt mode-line-format '("%e"
                            my/winum
                            "​"
-                           my/modeline-repeat
+                           (:eval (when repeat-mode
+                                    my/modeline-repeat))
                            "​"
                            prot-modeline-narrow
                            ;; "丨"

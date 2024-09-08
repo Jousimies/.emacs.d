@@ -120,7 +120,7 @@
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh
-  :hook (on-first-buffer . gcmh-mode)
+  :hook (after-init . gcmh-mode)
   :custom
   (gc-cons-percentage 0.1)
   (gcmh-verbose nil)

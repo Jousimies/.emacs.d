@@ -33,16 +33,16 @@
                                    ("nongnu" . 1)))
 (setq load-prefer-newer (not noninteractive))
 
-(setq use-package-expand-minimally (not noninteractive))
+;; (setq use-package-expand-minimally (not noninteractive))
 (setq use-package-always-ensure t)
 (setq use-package-always-defer t)
 
 (package-initialize)
 
 ;; Auto Compile
-(use-package auto-compile
-  :hook ((after-init . auto-compile-on-load-mode)
-         (after-init . auto-compile-on-save-mode)))
+;; (use-package auto-compile
+;;   :hook ((after-init . auto-compile-on-load-mode)
+;;          (after-init . auto-compile-on-save-mode)))
 
 
 (provide 'init-package)

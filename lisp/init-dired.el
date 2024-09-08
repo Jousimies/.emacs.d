@@ -140,9 +140,6 @@
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "<return>") 'open-with-default-app))
 
-(use-package ready-player
-  :hook (find-file . ready-player-mode))
-
 ;; Preview file in Dired.
 (when (eq system-type 'darwin)
   (defun my/dired-preview ()
@@ -218,7 +215,7 @@ This function requires ImageMagick's convert utility to be installed and availab
 ;;                    (completing-read "Open in dired: " dirs nil t)))))))
 
 (use-package consult-dir
-  :bind (("C-x C-d" . consult-dir)
+  :bind (([remap dired] . consult-dir)
          :map minibuffer-local-completion-map
          ("C-x C-d" . consult-dir)
          ("C-x C-j" . consult-dir-jump-file)))

@@ -115,36 +115,6 @@
 			  ("C-c C-f" . elfeed-tube-mpv-follow-mode)
 			  ("C-c C-w" . elfeed-tube-mpv-where)))
 
-(use-package mpv
-  :bind (("<f8>" . my/mpv-play-or-pause)
-		 ("<f7>" . mpv-seek-backward)
-		 ("<f9>" . mpv-seek-forward))
-  :config
-  (defun my/mpv-quit-with-save ()
-	(interactive)
-	(mpv-quit t))
-
-  (defun my/mpv-toggle-progress ()
-	(interactive)
-	(mpv-run-command "keypress" "o"))
-
-  (defun my/mpv-toggle-fullscreen ()
-	(interactive)
-	(mpv-run-command "keypress" "f"))
-
-  (defun my/mpv-play-or-pause ()
-	"Toggle between play and pause for mpv process."
-	(interactive)
-	(if (mpv-live-p)
-		(mpv-pause)
-      (if (eq major-mode 'dired-mode)
-		  (mpv-play (dired-get-filename))
-		(let ((file (read-file-name "File: ")))
-		  (mpv-play file)))))
-
-  (setq mpv-default-options '("--http-proxy=http://127.0.0.1:7890"
-							  "--ytdl-raw-options-append=proxy=http://127.0.0.1:7890")))
-
 ;;;###autoload
 (defun my/dired-open-with-mpv ()
   (interactive)
