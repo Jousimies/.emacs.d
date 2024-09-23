@@ -97,8 +97,8 @@
   :doc "Prefix map for new note."
   "a" #'ibooks-annot/extract-annotations-to-note
   "n" #'denote
-  "c" #'denote-fz-insert-child
-  "s" #'denote-fz-insert-sibling
+  "c" #'denote-fz-insert-child-here
+  "s" #'denote-fz-insert-sibling-here
   "b" #'my/new-blog
   "e" #'denote-org-extras-extract-org-subtree
   "m" #'my/new-meeting
