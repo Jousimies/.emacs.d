@@ -147,6 +147,25 @@
                 :user "apikey")
           :models '("deepseek-chat" "deepseek-coder"))))
 
+(defun my/compress-png-with-ffmpeg (input-file width)
+  (interactive
+   (let* ((input-file (read-file-name "Select PNG to resize: "))
+          (current-width (string-to-number
+                          (shell-command-to-string
+                           (format "ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 %s"
+                                   input-file))))
+          (width (read-number (format "Enter new width in pixels: ") current-width)))
+     (list input-file width)))
+  (let* ((file-dir (file-name-directory input-file))
+         (file-name (file-name-base input-file))
+         (output-file (expand-file-name (concat file-name "-scaled.png") file-dir))
+         (command (format "ffmpeg -i %s -vf scale=%d:-1 %s"
+                          input-file
+                          width
+                          output-file)))
+    (shell-command command)
+    (message "Resized %s to width %d pixels and saved to %s" input-file width output-file)))
+
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.
