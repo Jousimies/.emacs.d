@@ -25,13 +25,10 @@
 ;;; Code:
 
 ;; files
-(global-set-key (kbd "C-h") #'delete-backward-char)
-(global-set-key (kbd "M-h") #'backward-kill-word)
-(global-set-key (kbd "s-h") #'help-command)
-
 (add-hook 'after-init-hook #'column-number-mode)
 ;; (add-hook 'after-init-hook #'size-indication-mode)
 (add-hook 'org-mode-hook #'visual-line-mode)
+(add-hook 'eww-mode #'visual-line-mode)
 
 (mouse-avoidance-mode 'jump)
 

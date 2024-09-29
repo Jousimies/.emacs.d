@@ -28,6 +28,8 @@
 ;; https://github.com/positron-solutions/transient-showcase
 
 ;;; Code:
+(require 'transient)
+
 ;; Unbind key
 (unbind-key "s-o" 'global-map)
 (unbind-key "s-a" 'global-map)
@@ -37,21 +39,8 @@
 (unbind-key "C-t" 'global-map)
 (unbind-key "s-q" 'global-map)          ;Never exit Emacs
 
-(require 'transient)
-
-(defun my/copy-file-info (info-type)
-  (interactive (list (completing-read "Copy file info (base/name/path/directory): "
-                                      '("base" "name" "path" "directory"))))
-  (when (buffer-file-name)
-    (let ((file-info
-           (pcase info-type
-             ("base" (file-name-base (buffer-file-name)))
-             ("name" (file-name-nondirectory (buffer-file-name)))
-             ("path" (file-truename (buffer-file-name)))
-             ("directory" (file-name-directory (buffer-file-name)))
-             (other (user-error "Invalid info type")))))
-      (kill-new file-info)
-      (message "Copied %s: %s" info-type file-info))))
+;; (global-set-key (kbd "C-h") #'delete-backward-char) (global-set-key (kbd "s-h") #'help-command)
+;; (global-set-key (kbd "M-h") #'backward-kill-word)
 
 (defvar-keymap my/file-prefix-map
   :doc "Prefix map for file."
@@ -69,29 +58,6 @@
   "c" #'my/copy-file-info
   "i" #'my/denote-info
   "d" #'consult-dir)
-
-(transient-define-prefix my/bibtex-menu ()
-  "References"
-  [["Add"
-	("a" "Zotra: Entry" zotra-add-entry :transient nil)
-	("s" "SciHub" scihub :transient nil)
-	("l" "Local PDF" citar-add-file-to-library :transient nil)]
-   ["Citar"
-	("o" "Open" citar-open :transient nil)
-	("f" "Files" citar-open-files :transient nil)
-	("e" "Entry" citar-open-entry :transient nil)
-	("n" "Note" citar-open-notes :transient nil)]
-   ["Citar Denote"
-	("k" "Add Citekey" citar-denote-add-citekey :transient nil)
-	("K" "Remove Citekey" citar-denote-remove-citekey :transient nil)
-	("F" "Files" citar-denote-open-files :transient nil)
-	("E" "Entry" citar-denote-open-reference-entry :transient nil)]
-   ["Citation"
-	("c" "Find" citar-denote-find-citation :transient nil)
-	("i" "Insert" citar-insert-citation :transient t)]
-   ["Export"
-	("1" "Local Bibtex" citar-export-local-bib-file :transient nil)
-	("2" "Bibtex to Endnote" my/bib2end :transient nil)]])
 
 (defvar-keymap my/new-note-prefix-map
   :doc "Prefix map for new note."
@@ -117,6 +83,29 @@
   "k" #'my/denote-sort-with-keywords
   "p" #'my/denote-sort-parent-with-children
   "d" #'my/denote-sort-period-week)
+
+(transient-define-prefix my/bibtex-menu ()
+  "References"
+  [["Add"
+	("a" "Zotra: Entry" zotra-add-entry :transient nil)
+	("s" "SciHub" scihub :transient nil)
+	("l" "Local PDF" citar-add-file-to-library :transient nil)]
+   ["Citar"
+	("o" "Open" citar-open :transient nil)
+	("f" "Files" citar-open-files :transient nil)
+	("e" "Entry" citar-open-entry :transient nil)
+	("n" "Note" citar-open-notes :transient nil)]
+   ["Citar Denote"
+	("k" "Add Citekey" citar-denote-add-citekey :transient nil)
+	("K" "Remove Citekey" citar-denote-remove-citekey :transient nil)
+	("F" "Files" citar-denote-open-files :transient nil)
+	("E" "Entry" citar-denote-open-reference-entry :transient nil)]
+   ["Citation"
+	("c" "Find" citar-denote-find-citation :transient nil)
+	("i" "Insert" citar-insert-citation :transient t)]
+   ["Export"
+	("1" "Local Bibtex" citar-export-local-bib-file :transient nil)
+	("2" "Bibtex to Endnote" my/bib2end :transient nil)]])
 
 (transient-define-prefix my/links-menu ()
   "Links"
@@ -244,16 +233,14 @@
   (global-set-key (kbd "s-s m") #'my/search-doubanmovie)
   (global-set-key (kbd "s-s b") #'my/search-doubanbook)
   (global-set-key (kbd "s-s y") #'my/search-youtube)
-  (global-set-key (kbd "s-s s") #'my/search-scholar))
+  (global-set-key (kbd "s-s s") #'my/search-scholar)
+  (global-set-key (kbd "s-s S") #'my/search-semanticscholar))
 
 (global-set-key (kbd "<f12>") #'my/agenda-menu)
 (global-set-key (kbd "C-<f8>") #'my/mpv-menu)
 
 (global-set-key (kbd "M-g ,") #'switch-to-minibuffer)
 
-;; functions
-;; (global-set-key (kbd "C-s-k") #'kill-paragraph)
-;; (global-set-key (kbd "s-q") #'restart-emacs)
 (global-set-key (kbd "C-z") #'repeat)
 
 ;; 下面的方法可以使用弹窗。
