@@ -70,7 +70,12 @@
 ;; 不等高会导致 modeline 跳动，可以在 modeline 中插入中文字体“丨”[gun]
 ;; 字体搭配1: Cascadia Next SC
 ;; 字体搭配2: Latin Modern Mono 和 Source Han Serif SC
-(set-face-attribute 'default nil :family "Cascadia Next SC" :height 160)
+;; 字体搭配3: PragmataPro 和 SimHei
+(when IS-MAC
+  (set-face-attribute 'default nil :family "Cascadia Next SC" :height 160))
+
+(when IS-WINDOWS
+  (set-face-attribute 'default nil :family "PragmataPro" :height 160))
 
 ;; Unicode
 ;; `set-fontset-font' 用于指定某些字符集使用特定的字体
@@ -81,10 +86,15 @@
 ;; `cjk-misc': CJK（中日韩）字符集中的其他字符，包含了少量的中文、日文、韩文字符
 ;; `kana': 日文假名字符集，但在处理与中文相关的文档时可能偶尔用到
 ;; `bopomofo': 注音符号字符集，用于台湾地区的汉字注音
-(dolist (charset '(kana han cjk-misc bopomofo))
+(when IS-MAC
+  (dolist (charset '(kana han cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Cascadia Next SC")))
+                      (font-spec :family "Cascadia Next SC"))))
 
+(when IS-WINDOWS
+  (dolist (charset '(kana han cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font) charset
+                      (font-spec :family "SimHei"))))
 ;; Emoji
 ;; According to https://github.com/domtronn/all-the-icons.el
 ;; Use 'prepend for the NS and Mac ports or Emacs will crash.
@@ -99,6 +109,7 @@
 ;; Proxy
 (use-package socks
   :ensure nil
+  :if IS-MAC
   :defer 2
   :custom
   (url-gateway-method 'socks)

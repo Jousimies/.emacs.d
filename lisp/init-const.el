@@ -23,21 +23,43 @@
 ;;
 
 ;;; Code:
+;; plateform
+(defconst IS-MAC     (eq system-type 'darwin))
+(defconst IS-LINUX   (eq system-type 'gnu/linux))
+(defconst IS-WINDOWS (memq system-type '(cygwin windows-nt ms-dos)))
+
 ;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
-(defvar icloud "~/Library/Mobile Documents/"
-  "This folder contains documents in icloud.")
-(defvar nextcloud "~/Nextcloud"
-  "This folder is My cloud.")
-;; L.Personal.Galaxy location may change, but folders in this directory never change.
-(defvar my-galaxy (expand-file-name "L.Personal.Galaxy" nextcloud)
-  "This folder stores all the plain text files of my life.")
-(defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
-  "The source folder of my blog.")
-(defvar my-pictures (expand-file-name "pictures/" my-galaxy)
-  "The folder save pictures.")
-(defvar my-web_archive (expand-file-name "web_archive/" my-galaxy)
-  "The folder save web pages.")
-(defvar cache-directory (expand-file-name ".cache" user-emacs-directory))
+(when IS-MAC
+  (defvar icloud "~/Library/Mobile Documents/"
+    "This folder contains documents in icloud.")
+  (defvar nextcloud "~/Nextcloud"
+    "This folder is My cloud.")
+  ;; L.Personal.Galaxy location may change, but folders in this directory never change.
+  (defvar my-galaxy (expand-file-name "L.Personal.Galaxy" nextcloud)
+    "This folder stores all the plain text files of my life.")
+  (defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
+    "The source folder of my blog.")
+  (defvar my-pictures (expand-file-name "pictures/" my-galaxy)
+    "The folder save pictures.")
+  (defvar my-web_archive (expand-file-name "web_archive/" my-galaxy)
+    "The folder save web pages.")
+  (defvar cache-directory (expand-file-name ".cache" user-emacs-directory)))
+
+(when IS-WINDOWS
+  (defvar icloud "U:/Cloud/"
+    "This folder contains documents in icloud.")
+  (defvar nextcloud "U:/Cloud/"
+    "This folder is My cloud.")
+  ;; L.Personal.Galaxy location may change, but folders in this directory never change.
+  (defvar my-galaxy (expand-file-name nextcloud)
+    "This folder stores all the plain text files of my life.")
+  (defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
+    "The source folder of my blog.")
+  (defvar my-pictures (expand-file-name "pictures/" my-galaxy)
+    "The folder save pictures.")
+  (defvar my-web_archive (expand-file-name "web_archive/" my-galaxy)
+    "The folder save web pages.")
+  (defvar cache-directory (expand-file-name ".cache" user-emacs-directory)))
 
 ;; Proxy
 (defvar my/proxy-ip "127.0.0.1")
@@ -46,10 +68,6 @@
 ;; Tab-bar
 (defvar my/tab-bar-right-string nil)
 
-;; plateform
-(defconst IS-MAC     (eq system-type 'darwin))
-(defconst IS-LINUX   (eq system-type 'gnu/linux))
-(defconst IS-WINDOWS (memq system-type '(cygwin windows-nt ms-dos)))
 
 (provide 'init-const)
 ;;; init-const.el ends here

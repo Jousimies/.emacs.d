@@ -38,6 +38,16 @@
 (unbind-key "C-t" 'global-map)
 (unbind-key "s-q" 'global-map)          ;Never exit Emacs
 
+(when IS-WINDOWS
+  (setq w32-pass-lwindow-to-system nil)
+  (setq w32-pass-rwindow-to-system nil)
+  (setq w32-lwindow-modifier 'super)
+  (setq w32-rwindow-modifier 'super)
+  (setq w32-pass-alt-to-system nil)
+  (w32-register-hot-key [s-])
+  (w32-register-hot-key [c-])
+  (setq w32-recognize-altgr nil))
+
 ;; (global-set-key (kbd "C-h") #'delete-backward-char) (global-set-key (kbd "s-h") #'help-command)
 ;; (global-set-key (kbd "M-h") #'backward-kill-word)
 
@@ -195,57 +205,56 @@
    ["Toggle"
 	("f" "Fullscreen" my/mpv-toggle-fullscreen :transient nil)
 	("o" "Progress" my/mpv-toggle-progress :transient nil)
-	("v" "video" mpv-toggle-video :transient nil)]])
+    ("v" "video" mpv-toggle-video :transient nil)]])
 
-(when IS-MAC
-  (keymap-set global-map "s-f" my/file-prefix-map)
-  (keymap-set global-map "s-/" my/sort-note-prefix-map)
+(keymap-set global-map "s-f" my/file-prefix-map)
+(keymap-set global-map "s-/" my/sort-note-prefix-map)
 
-  (with-eval-after-load 'org
-    (define-key org-mode-map (kbd "s-. m") #'plantuml-org-to-mindmap-open)
-    (define-key org-mode-map (kbd "s-. w") #'plantuml-org-to-wbs-open)
-    (define-key org-mode-map (kbd "s-. d") #'org-export-docx))
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "s-. m") #'plantuml-org-to-mindmap-open)
+  (define-key org-mode-map (kbd "s-. w") #'plantuml-org-to-wbs-open)
+  (define-key org-mode-map (kbd "s-. d") #'org-export-docx))
 
-  ;; transient
-  (global-set-key (kbd "s-b") #'my/bibtex-menu)
-  (global-set-key (kbd "s-l") #'my/links-menu)
-  ;; (global-set-key (kbd "s-m") #'mu4e)
+;; transient
+(global-set-key (kbd "s-b") #'my/bibtex-menu)
+(global-set-key (kbd "s-l") #'my/links-menu)
+;; (global-set-key (kbd "s-m") #'mu4e)
 
-  ;; Notes
-  (global-set-key (kbd "s-n s-n") #'consult-notes)
-  ;; (keymap-set global-map "s-n n" my/new-note-prefix-map)
-  (global-set-key (kbd "s-n a") #'ibooks-annot/extract-annotations-to-note)
-  (global-set-key (kbd "s-n n") #'denote)
-  (global-set-key (kbd "s-n c") #'denote-fz-insert-child-here)
-  (global-set-key (kbd "s-n s") #'denote-fz-insert-sibling-here)
-  (global-set-key (kbd "s-n b") #'my/new-blog)
-  (global-set-key (kbd "s-n e") #'denote-org-extras-extract-org-subtree)
-  (global-set-key (kbd "s-n m") #'my/new-meeting)
-  (global-set-key (kbd "s-n l") #'my/literature-save)
-  (global-set-key (kbd "s-n r") #'citar-create-note)
-  (global-set-key (kbd "s-n k") #'denote-rename-file-keywords)
-  (global-set-key (kbd "s-n t") #'denote-rename-file-title)
-  (global-set-key (kbd "s-n o") #'my/ocr)
+;; Notes
+(global-set-key (kbd "s-n s-n") #'consult-notes)
+;; (keymap-set global-map "s-n n" my/new-note-prefix-map)
+(global-set-key (kbd "s-n a") #'ibooks-annot/extract-annotations-to-note)
+(global-set-key (kbd "s-n n") #'denote)
+(global-set-key (kbd "s-n c") #'denote-fz-insert-child-here)
+(global-set-key (kbd "s-n s") #'denote-fz-insert-sibling-here)
+(global-set-key (kbd "s-n b") #'my/new-blog)
+(global-set-key (kbd "s-n e") #'denote-org-extras-extract-org-subtree)
+(global-set-key (kbd "s-n m") #'my/new-meeting)
+(global-set-key (kbd "s-n l") #'my/literature-save)
+(global-set-key (kbd "s-n r") #'citar-create-note)
+(global-set-key (kbd "s-n k") #'denote-rename-file-keywords)
+(global-set-key (kbd "s-n t") #'denote-rename-file-title)
+(global-set-key (kbd "s-n o") #'my/ocr)
 
-  (global-set-key (kbd "C-t") #'my/dict-menu)
+(global-set-key (kbd "C-t") #'my/dict-menu)
 
-  ;; Specific Application
-  (global-set-key (kbd "C-c g") #'my/bean-generate)
-  (global-set-key (kbd "C-c f") #'my/beancount-fava)
-  (global-set-key (kbd "C-c t") #'telega)
-  ;; (global-set-key (kbd "s-a p") #'password-store-menu)
-  (global-set-key (kbd "C-c e") #'elfeed)
+;; Specific Application
+(global-set-key (kbd "C-c g") #'my/bean-generate)
+(global-set-key (kbd "C-c f") #'my/beancount-fava)
+(global-set-key (kbd "C-c t") #'telega)
+;; (global-set-key (kbd "s-a p") #'password-store-menu)
+(global-set-key (kbd "C-c e") #'elfeed)
 
-  ;; Search related
-  (global-set-key (kbd "s-s r") #'rg)
-  (global-set-key (kbd "s-s g") #'my/search-google)
-  (global-set-key (kbd "s-s w") #'my/search-wikipedia_en)
-  (global-set-key (kbd "s-s z") #'my/search-zhihu)
-  (global-set-key (kbd "s-s m") #'my/search-doubanmovie)
-  (global-set-key (kbd "s-s b") #'my/search-doubanbook)
-  (global-set-key (kbd "s-s y") #'my/search-youtube)
-  (global-set-key (kbd "s-s s") #'my/search-scholar)
-  (global-set-key (kbd "s-s S") #'my/search-semanticscholar))
+;; Search related
+(global-set-key (kbd "s-s r") #'rg)
+(global-set-key (kbd "s-s g") #'my/search-google)
+(global-set-key (kbd "s-s w") #'my/search-wikipedia_en)
+(global-set-key (kbd "s-s z") #'my/search-zhihu)
+(global-set-key (kbd "s-s m") #'my/search-doubanmovie)
+(global-set-key (kbd "s-s b") #'my/search-doubanbook)
+(global-set-key (kbd "s-s y") #'my/search-youtube)
+(global-set-key (kbd "s-s s") #'my/search-scholar)
+(global-set-key (kbd "s-s S") #'my/search-semanticscholar)
 
 (global-set-key (kbd "<f12>") #'my/agenda-menu)
 (global-set-key (kbd "C-<f8>") #'my/mpv-menu)
