@@ -42,7 +42,6 @@
 ;;   :hook (org-mode . org-xlatex-mode))
 
 (use-package cdlatex
-  :ensure nil
   :hook ((org-mode . org-cdlatex-mode)
          (LaTeX-mode . turn-on-cdlatex))
   :custom

@@ -44,6 +44,7 @@
 ;;   :hook ((after-init . auto-compile-on-load-mode)
 ;;          (after-init . auto-compile-on-save-mode)))
 
+(use-package posframe)
 
 (provide 'init-package)
 ;;; init-package.el ends here

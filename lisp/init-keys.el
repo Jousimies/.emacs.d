@@ -32,7 +32,6 @@
 
 ;; Unbind key
 (unbind-key "s-o" 'global-map)
-(unbind-key "s-a" 'global-map)
 (unbind-key "s-s" 'global-map)
 (unbind-key "s-m" 'global-map)
 (unbind-key "s-n" 'global-map)
@@ -59,20 +58,20 @@
   "i" #'my/denote-info
   "d" #'consult-dir)
 
-(defvar-keymap my/new-note-prefix-map
-  :doc "Prefix map for new note."
-  "a" #'ibooks-annot/extract-annotations-to-note
-  "n" #'denote
-  "c" #'denote-fz-insert-child-here
-  "s" #'denote-fz-insert-sibling-here
-  "b" #'my/new-blog
-  "e" #'denote-org-extras-extract-org-subtree
-  "m" #'my/new-meeting
-  "l" #'my/literature-save
-  "r" #'citar-create-note
-  "k" #'denote-rename-file-keywords
-  "t" #'denote-rename-file-title
-  "o" #'my/ocr)
+;; (defvar-keymap my/new-note-prefix-map
+;;   :doc "Prefix map for new note."
+;;   "a" #'ibooks-annot/extract-annotations-to-note
+;;   "n" #'denote
+;;   "c" #'denote-fz-insert-child-here
+;;   "s" #'denote-fz-insert-sibling-here
+;;   "b" #'my/new-blog
+;;   "e" #'denote-org-extras-extract-org-subtree
+;;   "m" #'my/new-meeting
+;;   "l" #'my/literature-save
+;;   "r" #'citar-create-note
+;;   "k" #'denote-rename-file-keywords
+;;   "t" #'denote-rename-file-title
+;;   "o" #'my/ocr)
 
 (defvar-keymap my/sort-note-prefix-map
   :doc "Prefix map for sort note."
@@ -110,7 +109,7 @@
 (transient-define-prefix my/links-menu ()
   "Links"
   ["Denote Backlinks"
-	("b" "Buffer" denote-backlinks :transient nil)]
+   ("b" "Buffer" denote-backlinks :transient nil)]
   [["Org Link"
 	("c" "Copy IDlink" my/copy-idlink :transient nil)
 	("i" "Insert" org-insert-link :transient nil)
@@ -210,20 +209,32 @@
   ;; transient
   (global-set-key (kbd "s-b") #'my/bibtex-menu)
   (global-set-key (kbd "s-l") #'my/links-menu)
-  (global-set-key (kbd "s-p") #'org-gtd-engage)
-  (global-set-key (kbd "s-m") #'mu4e)
+  ;; (global-set-key (kbd "s-m") #'mu4e)
 
   ;; Notes
-  (global-set-key (kbd "s-n") #'consult-notes)
-  (keymap-set global-map "<f10>" my/new-note-prefix-map)
+  (global-set-key (kbd "s-n s-n") #'consult-notes)
+  ;; (keymap-set global-map "s-n n" my/new-note-prefix-map)
+  (global-set-key (kbd "s-n a") #'ibooks-annot/extract-annotations-to-note)
+  (global-set-key (kbd "s-n n") #'denote)
+  (global-set-key (kbd "s-n c") #'denote-fz-insert-child-here)
+  (global-set-key (kbd "s-n s") #'denote-fz-insert-sibling-here)
+  (global-set-key (kbd "s-n b") #'my/new-blog)
+  (global-set-key (kbd "s-n e") #'denote-org-extras-extract-org-subtree)
+  (global-set-key (kbd "s-n m") #'my/new-meeting)
+  (global-set-key (kbd "s-n l") #'my/literature-save)
+  (global-set-key (kbd "s-n r") #'citar-create-note)
+  (global-set-key (kbd "s-n k") #'denote-rename-file-keywords)
+  (global-set-key (kbd "s-n t") #'denote-rename-file-title)
+  (global-set-key (kbd "s-n o") #'my/ocr)
+
   (global-set-key (kbd "C-t") #'my/dict-menu)
 
   ;; Specific Application
-  (global-set-key (kbd "s-a g") #'my/bean-generate)
-  (global-set-key (kbd "s-a f") #'my/beancount-fava)
-  (global-set-key (kbd "s-a t") #'telega)
-  (global-set-key (kbd "s-a p") #'password-store-menu)
-  (global-set-key (kbd "s-a e") #'elfeed)
+  (global-set-key (kbd "C-c g") #'my/bean-generate)
+  (global-set-key (kbd "C-c f") #'my/beancount-fava)
+  (global-set-key (kbd "C-c t") #'telega)
+  ;; (global-set-key (kbd "s-a p") #'password-store-menu)
+  (global-set-key (kbd "C-c e") #'elfeed)
 
   ;; Search related
   (global-set-key (kbd "s-s r") #'rg)
@@ -262,9 +273,9 @@
 ;;
 (use-package casual-calc
   :bind (:map calc-mode-map
-         ("C-o" . casual-calc-tmenu)
-         :map calc-alg-map
-         ("C-o" . casual-calc-tmenu))
+              ("C-o" . casual-calc-tmenu)
+              :map calc-alg-map
+              ("C-o" . casual-calc-tmenu))
   :after (calc))
 
 (provide 'init-keys)

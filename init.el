@@ -77,7 +77,7 @@
 (require 'init-telega)
 ;; (require 'init-mail)
 (require 'init-elfeed)
-(require 'init-pass)
+;; (require 'init-pass)
 (require 'init-media)
 ;; Programming
 (require 'init-lsp)

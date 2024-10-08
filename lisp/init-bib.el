@@ -5,6 +5,7 @@
 ;;; Code:
 
 (defvar my/reference-lists `(,(concat my-galaxy "/bibtexs/References.bib")
+                             ,(concat my-galaxy "/bibtexs/Low-carbon.bib")
                              ,(concat my-galaxy "/bibtexs/Books.bib")))
 
 ;; Builtin package

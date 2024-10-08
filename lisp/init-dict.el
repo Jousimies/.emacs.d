@@ -19,7 +19,7 @@
 ;;                                        (window-width . 70))))
 
 ;; The result not display well.
-;; (use-package osx-dictionary)
+(use-package osx-dictionary)
 
 (use-package sdcv
   :load-path "packages/sdcv/"
