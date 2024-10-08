@@ -166,6 +166,55 @@
     (shell-command command)
     (message "Resized %s to width %d pixels and saved to %s" input-file width output-file)))
 
+;; https://protesilaos.com/codelog/2024-09-19-emacs-command-popup-frame-emacsclient/
+;; https://github.com/LuciusChen/.emacs.d/blob/main/site-lisp/popup-frames.el
+(defun popup-frame-delete (&rest _)
+  "Kill selected frame if it has parameter `popup-frame'."
+  (when (frame-parameter nil 'popup-frame)
+    (delete-frame)))
+
+(defmacro popup-frame-define (command title &optional delete-frame)
+  "Define an interactive function to call COMMAND in a frame with TITLE.
+
+COMMAND is the function to be called when the popup frame is opened.
+TITLE is the title of the popup frame.
+
+If DELETE-FRAME is non-nil, the popup frame will be deleted after
+the command is executed.  Otherwise, the frame will remain open."
+  `(defun ,(intern (format "popup-frame-%s" command)) ()
+     (interactive)
+     (let* ((frame-parameters '((title . ,title)
+                                (window-system . ns)
+                                (popup-frame . t)))
+            (frame (make-frame (if ,delete-frame
+                                   (append frame-parameters '((minibuffer . only)))
+                                 frame-parameters))))
+       (select-frame frame)
+       (set-frame-size (selected-frame) 80 20)
+       (select-frame-set-input-focus frame)
+       (unless ,delete-frame
+         (switch-to-buffer "popup-frame-hidden-buffer"))
+       (condition-case nil
+           (progn
+             (call-interactively ',command)
+             (delete-other-windows))
+         (error (delete-frame frame)))
+       (when ,delete-frame
+         (sit-for 0.2)
+         (delete-frame frame)))))
+
+
+;; This code defines popup frames for specific commands after loading the respective packages.
+;; The naming convention for the commands follows a pattern:
+;; Each command is defined with `popup-frame-define`, and can be invoked using `emacsclient`
+;; by prepending `popup-frame-` to the name of the popup frame.
+;;
+;; For example:
+;; - For `org-capture`, the command is:
+;;   emacsclient -e '(popup-frame-org-capture)'
+(when (require 'org nil 'noerror)
+  (popup-frame-define org-capture "capture-popup")
+  (add-hook 'org-capture-after-finalize-hook #'popup-frame-delete))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.
