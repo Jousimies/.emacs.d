@@ -66,7 +66,8 @@
   "a" #'my/consult-find-attach
   "c" #'my/copy-file-info
   "i" #'my/denote-info
-  "d" #'consult-dir)
+  "d" #'consult-dir
+  "u" #'update-org-attach-property)
 
 ;; (defvar-keymap my/new-note-prefix-map
 ;;   :doc "Prefix map for new note."

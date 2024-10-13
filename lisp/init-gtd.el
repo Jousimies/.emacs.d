@@ -257,5 +257,18 @@
 
 (add-hook 'org-clock-out-hook #'org2calendar-handle-last-clock-entry)
 
+(defun org2calendar-handle-current-clock-entry ()
+  "处理当前条目中的 CLOCK 记录。"
+  (interactive)
+  (with-current-buffer (marker-buffer (car org-clock-history))
+    (org-back-to-heading)
+    (let* ((heading-and-clocklog (org2calendar-get-heading-and-clocklog))
+           (heading (nth 0 heading-and-clocklog))
+           (clock-entries (org2calendar-extract-clock-entries (nth 1 heading-and-clocklog)))
+           (entry (nth 0 clock-entries))
+           (start (plist-get entry :start))
+           (end (plist-get entry :end)))
+      (org2calendar-sync start end heading))))
+
 (provide 'init-gtd)
 ;;; init-gtd.el ends here.

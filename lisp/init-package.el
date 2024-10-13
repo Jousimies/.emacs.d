@@ -36,7 +36,7 @@
 ;; (setq use-package-expand-minimally (not noninteractive))
 (setq use-package-always-ensure t)
 (setq use-package-always-defer t)
-
+(setq package-quickstart t)
 (package-initialize)
 
 ;; Auto Compile

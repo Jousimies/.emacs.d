@@ -154,3 +154,6 @@
 [submodule "packages/el-easydraw"]
 	path = packages/el-easydraw
 	url = https://github.com/misohena/el-easydraw.git
+[submodule "packages/eee.el"]
+	path = packages/eee.el
+	url = https://github.com/eval-exec/eee.el.git

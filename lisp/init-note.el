@@ -319,6 +319,16 @@ When more than one bibliographic item is referenced, select item first."
     (insert "#+TITLE: " title "\n")
     (tempel-insert 'blog)))
 
+(defun my/new-blog (title)
+  (interactive "sTitle: ")
+  (let* ((folders '("posts" "Structure" "TIL"))  ;; 文件夹选项，可以根据需求添加更多文件夹
+         (folder (completing-read "Select folder: " folders))  ;; 提供文件夹选择
+         (filename (format "%s" title)))
+    (find-file (concat website-directory folder "/" filename ".org"))
+    (insert "#+TITLE: " title "\n")
+    (tempel-insert 'blog)))
+
+
 (defun my/new-meeting (meet)
   (interactive "sTitle: ")
   (let ((filename (format "%s-%s" (format-time-string "%Y%m%d") meet))
