@@ -28,11 +28,24 @@
 		  org-lowest-priority ?D
 		  org-priority-default ?C
 		  org-columns-default-format "%50ITEM %TODO %3PRIORITY %TAGS")
-  (set-face-attribute 'org-table nil :family "Sarasa Mono SC")
+  ;; (set-face-attribute 'org-table nil :family "Sarasa Mono SC")
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2)))
 
-(add-hook 'org-mode-hook 'org-cdlatex-mode)
+;; (use-package math-preview
+;;   :custom
+;;   (math-preview-command "/opt/homebrew/bin/math-preview")
+;;   (math-preview-scale 1.1)
+;;   (math-preview-raise 0.2)
+;;   (math-preview-margin '(1 . 0)))
+;; (use-package org-xlatex
+;;   :hook (org-mode . org-xlatex-mode))
+
+(use-package cdlatex
+  :hook ((org-mode . org-cdlatex-mode)
+         (LaTeX-mode . turn-on-cdlatex))
+  :custom
+  (cdlatex-auto-help-delay 0))
 
 (with-eval-after-load 'org-habit
   (setopt org-habit-graph-column 70))
@@ -56,19 +69,31 @@
   (advice-add 'org-babel-execute-src-block :before 'my/org-babel-execute-src-block))
 
 ;; org-capture
+(global-set-key (kbd "<f11>") #'org-capture)
 (with-eval-after-load 'org-capture
   (setq org-capture-templates
         `(("i" "Inbox"
            entry (file ,(concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n%U\n" :time-prompt t :tree-type week)
-		  ("l" "Inbox with link"
+          ("l" "Inbox with link"
            entry (file ,(concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
-		  ("w" "Work Logs"
-           plain
+          ("a" "Anki")
+          ("aj" "结构设计"
+           plain (file "~/Nextcloud/L.Personal.Galaxy/denote/term/20240908T111454--结构设计的相关概念__Anki.org")
+           "%?" :time-prompt t :tree-type week :hook (lambda ()
+                                                       (yas-expand-snippet (yas-lookup-snippet "anki-basic" 'org-mode))))
+		  ("w" "Work Logs")
+          ("wc" "With Clock"
+           entry
            (file+olp+datetree ,(expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))
-		   (file "~/.emacs.d/template/tpl-worklog")
-		   :tree-type week :jump-to-captured t)
+           "* %?\n%u\n"
+           :clock-in t :clock-keep t :jump-to-captured t)
+          ("wp" "Pick date"
+           entry
+           (file+olp+datetree ,(expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))
+           "* %?\n%u\n"
+           :time-prompt t :jump-to-captured t)
 		  ("r" "Review"
            plain
            (file+olp+datetree ,(expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy))
@@ -87,22 +112,28 @@
   (interactive)
   (org-capture t "l"))
 
-(defun my/org-capture-work ()
+(defun my/org-capture-work-clock ()
   (interactive)
-  (org-capture t "w"))
+  (org-capture t "wc"))
 
-;; org-capture
-(with-eval-after-load 'org-attach
-  (defun update-org-attach-property ()
-	"Manually update the ORG_ATTACH_FILES property for the current Org entry."
-	(interactive)
-	(let* ((dir (org-attach-dir t))
-           (files (org-attach-file-list dir)))
-      (when (and dir files)
-		(org-with-wide-buffer
-		 (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))
-		(message "ORG_ATTACH_FILES property updated."))))
+(defun my/org-capture-work-date ()
+  (interactive)
+  (org-capture t "wp"))
 
+;; org-attach
+;;;###autoload
+(defun update-org-attach-property ()
+  "Manually update the ORG_ATTACH_FILES property for the current Org entry."
+  (interactive)
+  (let* ((dir (org-attach-dir t))
+         (files (org-attach-file-list dir)))
+    (when (and dir files)
+	  (org-with-wide-buffer
+	   (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))
+	  (message "ORG_ATTACH_FILES property updated."))))
+
+(with-eval-after-load 'org
+  (require 'org-attach)
   (setopt org-attach-expert t
 		  org-attach-id-dir (expand-file-name "attach" my-galaxy)
 		  org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format
@@ -199,30 +230,46 @@
 
 ;; org-indent-mode hide leading stars, sometimes cursor become invisible.
 (use-package org-superstar
-  :load-path "packages/org-superstar-mode/"
   :hook ((org-mode . org-superstar-mode)
 		 (org-superstar-mode . org-indent-mode))
-  :config
-  (setq org-hide-leading-stars t)
-  (setq org-superstar-headline-bullets-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼")))
+  :custom
+  (org-hide-leading-stars t)
+  (org-superstar-headline-bullets-list '("󰼏" "󰼐" "󰼑" "󰼒" "󰼓" "󰼔" "󰼕")))
+
+;; 2024-09-14 还是放弃使用 org-modern，并没有太好用
+;; org-modern can replace org-superstar
+;; (use-package org-modern
+;;   :hook (org-mode . global-org-modern-mode)
+;;   :custom
+;;   ;; (org-modern-checkbox nil)
+;;   (org-modern-star 'replace)
+;;   (org-modern-replace-stars "󰼏󰼐󰼑󰼒󰼓󰼔󰼕")
+;;   (org-modern-table nil)
+;;   ;; (org-modern-footnote nil)
+;;   ;; (org-modern-internal-target nil)
+;;   ;; (org-modern-radio-target nil)
+;;   ;; (org-modern-progress nil)
+;;   ;; (org-modern-tag nil)
+;;   (org-modern-block-fringe nil)
+;;   (org-modern-block-name nil)
+;;   ;; (org-modern-timestamp nil)
+;;   (org-modern-horizontal-rule nil)
+;;   (org-modern-list '((?+ . "+")
+;;                      (?- . "-")
+;;                      (?* . "*")))
+;;   (org-modern-checkbox '((?X . "󰄸")
+;;                          (?- . "󱅶")
+;;                          (?\s . "󰄶"))))
 
 ;; Third party packages related to org-mode
 (use-package imenu-list
-  :load-path "packages/imenu-list/"
-  :commands imenu-list-minor-mode
-  :config
-  (set-face-attribute 'imenu-list-entry-face-0 nil
-                      :foreground (face-foreground 'ef-themes-heading-1)
-                      :inherit 'bold)
-  (set-face-attribute 'imenu-list-entry-face-1 nil
-                      :foreground (face-foreground 'ef-themes-heading-2)
-                      :inherit 'bold)
-
-  (setq imenu-list-position 'left)
-  (setq-default imenu-list-mode-line-format nil))
+  :hook (imenu-list-major-mode . (lambda ()
+                                   (setq-local truncate-lines t)))
+  :custom
+  (imenu-list-position 'left)
+  (imenu-list-mode-line-format nil))
 
 (use-package olivetti
-  :load-path "packages/olivetti/"
   :bind ("s-M-z" . olivetti-mode)
   :hook ((olivetti-mode-on . (lambda ()
                                (imenu-list-minor-mode 1)))
@@ -230,39 +277,12 @@
                                 (imenu-list-minor-mode -1)))))
 
 (use-package form-feed
-  :load-path "packages/form-feed/"
-  :hook (org-mode . form-feed-mode))
+  :hook ((org-mode . form-feed-mode)
+		 (emacs-news-mode . form-feed-mode)))
 
-;; org-9.7-pre org-latex-preview
-;; (use-package org-latex-preview
-;;   :hook (org-mode . org-latex-preview-auto-mode))
-
-;; Emacs 30 math-preview do now work as expected.
-;; (use-package math-preview
-;;   :load-path "packages/math-preview/"
-;;   :commands math-preview-all math-preview-clear-all
-;;   :hook (find-file . (lambda ()
-;;                        (when (eq major-mode 'org-mode)
-;;                          (auto/math-preview-all))))
-;;   :config
-;;   (setq math-preview-scale 1.1)
-;;   (setq math-preview-raise 0.2)
-;;   (setq math-preview-margin '(1 . 0))
-;;   (add-to-list 'org-options-keywords "NO_MATH_PREVIEW:"))
-
-(use-package org-xlatex
-  :load-path "packages/org-xlatex/"
-  :hook (org-mode . org-xlatex-mode))
-
-;; (defun auto/math-preview-all ()
-;;   "Auto update clock table."
-;;   (interactive)
-;;   (when (derived-mode-p 'org-mode)
-;;     (save-excursion
-;;       (goto-char 0)
-;;       (unless (string-equal (cadar (org-collect-keywords '("NO_MATH_PREVIEW"))) "t")
-;;         (when (re-search-forward "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}" (point-max) t)
-;;           (math-preview-all))))))
+;; (use-package org-xlatex
+;;   :load-path "packages/org-xlatex/"
+;;   :hook (org-mode . org-xlatex-mode))
 
 ;; Yank media
 (with-eval-after-load 'org
@@ -287,8 +307,9 @@
 
 (use-package plantuml
   :load-path "packages/plantuml-emacs/"
-  :commands plantuml-org-to-mindmap-open plantuml-org-to-wbs-open
-  :config
+  :commands plantuml-org-to-mindmap-open plantuml-org-to-wbs-open)
+
+(with-eval-after-load 'plantuml
   (setq plantuml-jar-path
         (concat (string-trim
                  (shell-command-to-string "readlink -f $(brew --prefix plantuml)"))
@@ -362,67 +383,20 @@
          (name selected))
     (insert (format "#+chatu: :drawio \"%s\" :crop :nopdf\n" name))))
 
-;; ox-latex
-(use-package ox-latex
-  :after org
-  :config
-  (setq org-latex-src-block-backend 'minted)
-  (setq org-latex-minted-options '(("breaklines" "true")
-                                   ("breakanywhere" "true")))
-  (setq org-latex-classes nil)
-  (add-to-list 'org-latex-classes
-               '("book"
-                 "\\documentclass[UTF8,twoside,a4paper,12pt,openright]{ctexrep}
-                   [NO-DEFAULT-PACKAGES]
-                   [NO-PACKAGES]
-                   [EXTRA]"
-                 ("\\chapter{%s}" . "\\chapter*{%s}")
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+;; 没啥必要,纯文本的挺好
+;; (use-package org-tag-beautify
+;;   :hook (org-mode . org-tag-beautify-mode))
 
-  (add-to-list 'org-latex-classes '("article-cn" "\\documentclass{ctexart}
-                                      [NO-DEFAULT-PACKAGES]
-                                      [NO-PACKAGES]
-                                      [EXTRA]"
-                                    ("\\section{%s}" . "\\section*{%s}")
-                                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+;; The contacts app in Phone is far better
+;; (use-package org-contacts
+;;   :custom
+;;   (org-contacts-files `(,(expand-file-name "people/contacts.org" my-galaxy))))
 
-  (add-to-list 'org-latex-classes '("article" "\\documentclass[11pt]{article}
-                                      [NO-DEFAULT-PACKAGES]
-                                      [NO-PACKAGES]
-                                      [EXTRA]"
-                                    ("\\section{%s}" . "\\section*{%s}")
-                                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes '("beamer" "\\documentclass[presentation]{beamer}
-                                      [DEFAULT-PACKAGES]
-                                      [PACKAGES]
-                                      [EXTRA]"
-                                    ("\\section{%s}" . "\\section*{%s}")
-                                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-  (setq org-latex-pdf-process
-        '("xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-          "bibtex -shell-escape %b"
-          "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-          "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-          "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl"))
-
-  (setq org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
-                                        "out" "toc" "nav" "snm" "vrb" "dvi"
-                                        "fdb_latexmk" "blg" "brf" "fls"
-                                        "entoc" "ps" "spl" "bbl"))
-
-  (setq org-latex-prefer-user-labels t))
+;; edraw in Emacs
+;; (add-to-list 'load-path "~/.emacs.d/packages/el-easydraw/")
+;; (with-eval-after-load 'org
+;;   (require 'edraw-org)
+;;   (edraw-org-setup-default))
 
 (provide 'init-org)
 ;;; init-org.el ends here.

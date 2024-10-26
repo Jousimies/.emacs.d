@@ -80,9 +80,23 @@
          (prog-mode . hungry-delete-mode)
          (org-mode . hungry-delete-mode)))
 
-(use-package ace-pinyin
-  :load-path ("packages/ace-pinyin/" "packages/avy/" "packages/pinyinlib.el")
-  :bind ([remap goto-char] . ace-pinyin-jump-char-2))
+(use-package avy
+  :load-path "packages/avy/"
+  :bind ([remap goto-char] . my/avy-goto-char-timer)
+  :config
+  (defun my/avy-goto-char-timer (&optional arg)
+    (interactive "P")
+    (unless (featurep 'pinyinlib)
+      (require 'pinyinlib))
+    (let ((avy-all-windows (if arg
+                               (not avy-all-windows)
+                             avy-all-windows)))
+      (avy-with avy-goto-char-timer
+        (setq avy--old-cands (avy--read-candidates
+                              'pinyinlib-build-regexp-string))
+        (avy-process avy--old-cands))))
+
+  (advice-add 'avy-goto-char-timer :override #'my/avy-goto-char-timer))
 
 (use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)
@@ -96,17 +110,20 @@
                                            try-complete-lisp-symbol-partially
                                            try-complete-lisp-symbol)))
 
-(add-hook 'prog-mode-hook 'electric-pair-local-mode)
-(add-hook 'org-mode-hook 'electric-pair-local-mode)
-(add-hook 'org-mode-hook
-          (lambda ()
-            (require 'elec-pair)
-            (setq-local electric-pair-inhibit-predicate
-                        `(lambda (c)
-                           (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
+(use-package electric
+  :hook ((after-init . (lambda ()
+                         (progn
+                           (electric-pair-mode 1)
+                           (electric-quote-mode 1)
+                           (electric-indent-mode 1))))
+		 (org-mode . (lambda ()
+					   (progn
+						 (electric-pair-local-mode -1)
+						 (electric-quote-local-mode -1)
+						 (electric-indent-local-mode -1))))))
 
 (use-package delsel
-  :hook (text-mode . delete-selection-mode))
+  :hook (after-init . delete-selection-mode))
 
 (use-package rime-regexp
   :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"
@@ -126,12 +143,12 @@
   (setq tempel-path `("~/.emacs.d/template/tempel"
                       ,(expand-file-name "config/tempel" my-galaxy))))
 
-;; (use-package yasnippet
-;;   :load-path "packages/yasnippet/"
-;;   :hook (minibuffer-mode . yas-global-mode)
-;;   :config
-;;   (use-package yasnippet-snippets
-;;     :load-path "packages/yasnippet-snippets/"))
+(use-package yasnippet
+  :load-path "packages/yasnippet/"
+  :hook (minibuffer-mode . yas-global-mode)
+  :config
+  (use-package yasnippet-snippets
+    :load-path "packages/yasnippet-snippets/"))
 
 (use-package expand-region
   :load-path "packages/expand-region.el/"
@@ -152,9 +169,9 @@
               ("x" . kill-region)
               ("w" . count-words-region)
               ("i" . surround-insert)
+              ("c" . surrond-change)
 			  ("d" . surround-delete)
-              ("s" . my/search)
-              ("t" . gt-do-translate)
+              ("s" . my/search-menu)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
               (";" . comment-dwim)))
@@ -258,6 +275,9 @@
 ;; 	  parenthesized_expression
 ;; 	  subscript)))
 ;;   (indent-bars-no-stipple-char ?\⎸))
+
+(use-package emacs-everywhere
+  :load-path "packages/emacs-everywhere/")
 
 (provide 'init-edit)
 ;;; init-edit.el ends here

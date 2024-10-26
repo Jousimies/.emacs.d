@@ -11,6 +11,7 @@
                              (setq-local electric-indent-chars nil)))
          (beancount-mode . outline-minor-mode))
   :config
+  (setq beancount-highlight-transaction-at-point t)
   ;; insert whole transaction instead of only insert date.
   (defun my/beancount-insert-transaction (&optional days)
     "Start a new timestamped directive with date shifted by DAYS from today."

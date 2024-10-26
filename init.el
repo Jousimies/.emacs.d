@@ -29,9 +29,11 @@
 ;; For debug.
 (when init-file-debug
   (setq use-package-compute-statistics t)
+  (setq use-package-minimum-reported-time 0)
   (setq use-package-verbose t)
   (require 'init-benchmark))
 
+(require 'init-const)
 (require 'init-core)
 (require 'init-builtin)
 
@@ -40,7 +42,7 @@
 (require 'init-tab)
 (require 'init-modeline)
 (require 'init-buffer)
-(require 'init-svg-tag)
+;; (require 'init-svg-tag)
 ;; Plateform related configuration
 (when (eq system-type 'darwin)
   (require 'init-mac))
@@ -53,11 +55,17 @@
 ;; File manager
 (require 'init-dired)
 
+;; Programming
+(require 'init-lsp)
+(require 'init-prog)
+(require 'init-shell)
+(require 'init-git)
+
 ;; Note Everything based on org-mode
 (require 'init-org)
 (require 'init-note)
 (require 'init-bib)
-(require 'init-latex)
+;; (require 'init-latex)
 (require 'init-gtd)
 (require 'init-finance)
 (require 'init-blog)
@@ -68,15 +76,10 @@
 
 ;; Applications
 (require 'init-telega)
-(require 'init-mail)
+;; (require 'init-mail)
 (require 'init-elfeed)
-(require 'init-pass)
+;; (require 'init-pass)
 
-;; Programming
-(require 'init-lsp)
-(require 'init-prog)
-(require 'init-shell)
-(require 'init-git)
 
 ;; Some useful functions stealed from Internet
 (require 'init-misc)

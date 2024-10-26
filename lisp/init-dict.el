@@ -160,5 +160,20 @@
 
 ;; (advice-add 'lsp-bridge-toggle-sdcv-helper :after #'my/toggle-corfu)
 
+(defvar dict-file nil)
+(setq dict-file "~/.emacs.d/sdcv-dict/words.txt")
+
+;; We open up the dictionary file read-only, so that
+;; dabbrev-completion-all can pull from it
+(with-current-buffer (find-file-noselect dict-file)
+  (set (make-local-variable 'buffer-read-only) t))
+
+(defun dabbrev-completion-all ()
+  "convenience function to do dabbrev-completion using all buffers"
+  (interactive)
+  (dabbrev-completion 16))
+
+(global-set-key (kbd "C-:") 'dabbrev-completion-all)
+
 (provide 'init-dict)
 ;;; init-dict.el ends here.

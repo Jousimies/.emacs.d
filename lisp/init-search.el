@@ -26,46 +26,56 @@
 
 (use-package rg
   :load-path ("packages/rg.el/" "packages/Emacs-wgrep")
-  :bind ("C-c s". rg-menu)
+  :custom
+  (rg-group-result t)
+  (rg-show-columns t)
   :config
   (add-to-list 'display-buffer-alist '("^\\*rg\\*"
                                        (display-buffer-in-side-window)
                                        (side . right)
                                        (window-width . 0.5)))
+  ;; (rg-enable-default-bindings)
   ;; https://github.com/dajva/rg.el/issues/142#issuecomment-1452525225
-  (add-to-list 'rg-finish-functions (lambda (buffer _) (pop-to-buffer buffer)))
-  (rg-enable-default-bindings)
-  (setq rg-group-result t)
-  (setq rg-show-columns t))
+  (add-to-list 'rg-finish-functions (lambda (buffer _) (pop-to-buffer buffer))))
 
-(setq my/browser-engines
-      '((DoubanMovie . "https://search.douban.com/movie/subject_search?search_text=")
-        (DoubanBook . "https://search.douban.com/book/subject_search?search_text=")
-        (Zhihu . "https://www.zhihu.com/search?type=content&q=")
-        (Google . "https://www.google.com/search?q=")
-        (Scholar . "https://scholar.google.com/scholar?hl=zh-CN&as_sdt=0%2C33&q=")
-        (Github . "https://github.com/search?q=")
-        (Youtube . "http://www.youtube.com/results?aq=f&oq=&search_query=")
-		(Bilibili . "https://search.bilibili.com/all?keyword=")
-		(WikiPedia_en . "https://en.wikipedia.org/w/index.php?search=")
-		(Annas-Archvie . "https://annas-archive.org/search?q=")))
+(setopt my/browser-engines
+        '((DoubanMovie . "https://search.douban.com/movie/subject_search?search_text=")
+          (DoubanBook . "https://search.douban.com/book/subject_search?search_text=")
+          (Zhihu . "https://www.zhihu.com/search?type=content&q=")
+          (Google . "https://www.google.com/search?q=")
+          (Scholar . "https://scholar.google.com/scholar?q=")
+          (SemanticScholar . "https://www.semanticscholar.org/search?q=")
+          (Github . "https://github.com/search?q=")
+          (Youtube . "http://www.youtube.com/results?aq=f&oq=&search_query=")
+		  (Bilibili . "https://search.bilibili.com/all?keyword=")
+		  (WikiPedia_en . "https://en.wikipedia.org/w/index.php?search=")
+		  (Annas-Archvie . "https://annas-archive.org/search?q=")))
 
-;;;###autoload
-(defun my/search ()
-  "Search using the specified engine for the text in the currently selected region or user input."
-  (interactive)
-  (let* ((selected-engine (completing-read "Choose a search engine: " (mapcar 'car my/browser-engines) nil t))
-         (selected-url (cdr (assoc (intern selected-engine) my/browser-engines))))
-    (let* ((region (if (region-active-p)
-                       (buffer-substring-no-properties (region-beginning) (region-end))
-                     (read-string "Enter search terms: ")))
-           (encoded-region (url-encode-url region))
-           (search-url (concat selected-url encoded-region)))
-      (browse-url search-url)))
-  (when (region-active-p)
-    (deactivate-mark)))
-;; (global-set-key (kbd "C-c w") #'my/search)
-;; (global-set-key (kbd "s-s") #'my/search)
+(defmacro my/define-search-functions ()
+  "Dynamically define search functions for each search engine in `my/browser-engines`."
+  `(progn
+     ,@(mapcar (lambda (engine)
+                 (let* ((engine-name (car engine))
+                        (function-name (intern (format "my/search-%s" (downcase (symbol-name engine-name))))))
+                   `(defun ,function-name (query)
+                      ,(format "Search for QUERY using the %s engine." engine-name)
+                      (interactive
+                       (list (let ((default-query
+                                    (if (and (eq system-type 'darwin)
+                                             (featurep 'emt))
+                                        (emt-word-at-point-or-forward)
+                                      (thing-at-point 'word t))))
+                               (if (region-active-p)
+                                   (buffer-substring-no-properties (region-beginning) (region-end))
+                                 (read-string (format "[%s] Enter search terms (default: %s): " ,(symbol-name engine-name) default-query))))))
+                      (let ((search-url (concat ,(cdr engine) (url-encode-url query))))
+                        (browse-url search-url))
+                      (when (region-active-p)
+                        (deactivate-mark)))))
+               my/browser-engines)))
+
+(add-hook 'on-first-input-hook (lambda ()
+								 (my/define-search-functions)))
 
 (use-package grab-mac-link
   :load-path "packages/grab-mac-link.el/"
@@ -84,11 +94,11 @@
 
 (use-package simple-httpd
   :load-path "packages/emacs-web-server"
-  :bind ("M-g s" . httpd-serve-directory)
-  :config
-  (setq httpd-host (format-network-address
-					(car (network-interface-info "en0"))
-					t)))
+  :bind ("M-g d" . httpd-serve-directory)
+  :custom
+  (httpd-host (format-network-address
+			   (car (network-interface-info "en0"))
+			   t)))
 
 
 (provide 'init-search)

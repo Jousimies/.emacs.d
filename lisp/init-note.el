@@ -18,24 +18,24 @@
   :bind ((:map dired-mode-map
                ("r" . denote-dired-rename-marked-files-with-keywords)))
   :hook (dired-mode . denote-dired-mode-in-directories)
-  :config
-  (setq denote-rename-no-confirm t)
-  (setq denote-org-store-link-to-heading nil)
-  (setq denote-prompts '(title keywords subdirectory signature))
-  (setq denote-directory (expand-file-name "denote" my-galaxy))
-  (setq denote-file-name-slug-functions '((title . denote-sluggify-title)
+  :custom
+  (denote-rename-no-confirm t)
+  (denote-org-store-link-to-heading nil)
+  (denote-prompts '(title keywords subdirectory signature))
+  (denote-directory (expand-file-name "denote" my-galaxy))
+  (denote-file-name-slug-functions '((title . denote-sluggify-title)
 										  (signature . denote-sluggify-signature)
 										  (keyword . identity)))
-  (setq denote-dired-directories
-        (list denote-directory
-              (thread-last denote-directory (expand-file-name "books"))
-              (thread-last denote-directory (expand-file-name "outline"))
-              (thread-last denote-directory (expand-file-name "literature"))
-              (thread-last denote-directory (expand-file-name "term"))
-              (thread-last denote-directory (expand-file-name "references")))))
+  (denote-dired-directories
+   (list denote-directory
+         (thread-last denote-directory (expand-file-name "books"))
+         (thread-last denote-directory (expand-file-name "outline"))
+         (thread-last denote-directory (expand-file-name "literature"))
+         (thread-last denote-directory (expand-file-name "term"))
+         (thread-last denote-directory (expand-file-name "references")))))
 
-(defun my/ef-themes-denote-faces (&rest _)
-  (ef-themes-with-colors
+(defun my/modus-themes-denote-faces (&rest _)
+  (modus-themes-with-colors
     (custom-set-faces
      `(denote-faces-year ((,c :foreground ,cyan)))
      `(denote-faces-month ((,c :foreground ,magenta-warmer)))
@@ -45,7 +45,7 @@
      `(denote-faces-minute ((,c :foreground ,cyan)))
      `(denote-faces-second ((,c :foreground ,magenta-warmer))))))
 
-(add-hook 'ns-system-appearance-change-functions #'my/ef-themes-denote-faces)
+(add-hook 'ns-system-appearance-change-functions #'my/modus-themes-denote-faces)
 
 (use-package denote-org-extras
   :commands (denote-org-extras-extract-org-subtree
@@ -116,9 +116,9 @@
 (use-package denote-rename-buffer
   :load-path "packages/denote/"
   :hook (org-mode . denote-rename-buffer-mode)
-  :config
-  (setq denote-rename-buffer-format "%b %t") ;;
-  (setq denote-buffer-has-backlinks-string ""))
+  :custom
+  (denote-rename-buffer-format "%b %t") ;;
+  (denote-buffer-has-backlinks-string ""))
 
 (use-package consult-denote
   :load-path "packages/consult-denote/"

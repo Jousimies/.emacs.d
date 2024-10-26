@@ -7,10 +7,10 @@
 (use-package treesit
   :when (treesit-available-p)
   :commands treesit-install-language-grammar
-  :config
-  (setq treesit-language-source-alist
-        '((python "https://github.com/tree-sitter/tree-sitter-python.git")
-          (yaml "https://github.com/ikatyang/tree-sitter-yaml.git"))))
+  :custom
+  (treesit-language-source-alist
+   '((python "https://github.com/tree-sitter/tree-sitter-python.git")
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml.git"))))
 
 (use-package eglot
   :after yasnippet

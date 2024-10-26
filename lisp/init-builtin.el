@@ -24,14 +24,12 @@
 
 ;;; Code:
 
-;; files
-(global-set-key (kbd "C-h") #'delete-backward-char)
-(global-set-key (kbd "M-h") #'backward-kill-word)
-(global-set-key (kbd "<f1>") #'help-command)
-
 (add-hook 'on-first-buffer-hook #'column-number-mode)
 (add-hook 'on-first-file-hook #'size-indication-mode)
 (add-hook 'org-mode-hook #'visual-line-mode)
+(add-hook 'eww-mode #'visual-line-mode)
+
+(mouse-avoidance-mode 'jump)
 
 (setopt mark-ring-max 128
         kill-do-not-save-duplicates t
@@ -39,8 +37,7 @@
         async-shell-command-display-buffer nil)
 
 ;; auto-save
-(setopt
-        auto-save-default nil
+(setopt auto-save-default nil
         auto-save-visited-interval 1
         save-silently t
         large-file-warning-threshold nil
@@ -86,19 +83,39 @@
         message-sendmail-envelope-from 'header
         message-sendmail-extra-arguments '("-a" "outlook"))
 
+(global-set-key (kbd "M-g m") #'switch-to-message)
+(global-set-key (kbd "M-g s") #'scratch-buffer)
+
 (add-hook 'on-first-file-hook #'global-so-long-mode)
 (add-hook 'on-first-file-hook #'global-prettify-symbols-mode)
 (add-hook 'on-first-file-hook #'global-word-wrap-whitespace-mode)
 (add-hook 'after-init-hook 'display-battery-mode)
 (add-hook 'after-init-hook 'display-time-mode)
+
+(with-eval-after-load 'time
+  (setopt display-time-default-load-average nil)
+  (setopt display-time-mail-string "")
+  (setopt display-time-format "%H:%M")
+  (setopt display-time-string-forms
+          '((propertize
+             (format-time-string
+              (or display-time-format
+                  (if display-time-24hr-format "%H:%M" "%-I:%M%p"))
+              now)
+             'face 'display-time-date-and-time
+             'help-echo (format-time-string "%a %b %e, %Y" now))
+            " ")))
+
 (add-hook 'on-first-buffer-hook #'midnight-mode)
 
 (setopt prettify-symbols-alist '(("lambda" . ?λ)
                                ("function" . ?𝑓)))
 
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
+
 ;;Bookmark
 (setq bookmark-default-file (expand-file-name "bookmarks" cache-directory))
+
 ;; auto-insert-mode
 (add-hook 'on-first-file-hook #'auto-insert-mode)
 (with-eval-after-load 'auto-insert
@@ -162,7 +179,7 @@
 (setopt display-line-numbers-widen t
 		display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-;; (add-hook 'org-mode-hook #'display-line-numbers-mode)
+(add-hook 'org-mode-hook #'display-line-numbers-mode)
 
 (face-spec-set 'fill-column-indicator
                  '((default :height 0.1))
@@ -170,33 +187,62 @@
 (setq-default fill-column 90)
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
-(setopt show-paren-style 'parenthesis
-		show-paren-context-when-offscreen 'overlay)
-(add-hook 'on-first-buffer-hook #'show-paren-mode)
+;; (define-fringe-bitmap 'right-curly-arrow  [])
+;; (define-fringe-bitmap 'left-curly-arrow  [])
+;; https://xenodium.com/toggling-emacs-continuation-fringe-indicator/
+(setq-default fringe-indicator-alist
+              (delq (assq 'continuation fringe-indicator-alist) fringe-indicator-alist))
+(defun toggle-continuation-fringe-indicator ()
+  (interactive)
+  (setq-default
+   fringe-indicator-alist
+   (if (assq 'continuation fringe-indicator-alist)
+       (delq (assq 'continuation fringe-indicator-alist) fringe-indicator-alist)
+     (cons '(continuation right-curly-arrow left-curly-arrow) fringe-indicator-alist))))
+
+(use-package paren
+  :hook (find-file . show-paren-mode)
+  :custom
+  (show-paren-style 'parenthesis)
+  (show-paren-context-when-offscreen 'overlay)
+  (show-paren-highlight-openparen t)
+  (show-paren-when-point-inside-paren t))
 
 (add-hook 'on-first-buffer-hook (lambda ()
 								  (blink-cursor-mode -1)))
+
 (setopt window-divider-default-bottom-width 1
 		window-divider-default-places 'bottom-only)
 
-(setopt winner-dont-bind-my-keys t
-		winner-boring-buffers '("*Completions*"
-                                "*Compile-Log*"
-                                "*inferior-lisp*"
-                                "*Fuzzy Completions*"
-                                "*Apropos*"
-                                "*Help*"
-                                "*cvs*"
-                                "*Buffer List*"
-                                "*Ibuffer*"
-                                "*esh command on file*"))
-(add-hook 'on-first-input-hook #'winner-mode)
+(use-package winner
+  :hook (find-file . winner-mode)
+  :bind (("M-g u" . winner-undo)
+         ("M-g r" . winner-redo))
+  :custom
+  (winner-dont-bind-my-keys t)
+  (winner-boring-buffers '("*Completions*"
+                           "*Compile-Log*"
+                           "*inferior-lisp*"
+                           "*Fuzzy Completions*"
+                           "*Apropos*"
+                           "*Help*"
+                           "*cvs*"
+                           "*Buffer List*"
+                           "*Ibuffer*"
+                           "*esh command on file*")))
 
 (add-to-list 'display-buffer-alist '("\\*Outline"
                                        (display-buffer-in-side-window)
                                        (side . right)
                                        (window-width . 0.5)))
-(add-hook 'on-first-buffer-hook #'windmove-mode)
+
+(use-package windmove
+  :ensure nil
+  :hook (window-setup . windmove-mode)
+  :bind (("M-g h" . windmove-left)
+         ("M-g l" . windmove-right)
+         ("M-g k" . windmove-up)
+         ("M-g j" . windmove-down)))
 
 (setopt switch-to-buffer-in-dedicated-window 'pop
 		switch-to-buffer-obey-display-actions t)
@@ -238,6 +284,37 @@
 							'ugrep)
 						   (t
 							'grep)))
+
+;;;; Repeatable key chords (repeat-mode)
+(use-package repeat
+  :hook (emacs-startup . repeat-mode)
+  :custom
+  (repeat-on-final-keystroke t)
+  (repeat-exit-timeout 5)
+  (repeat-exit-key "<escape>")
+  (repeat-keep-prefix nil)
+  (repeat-check-key t)
+  ;; (repeat-echo-function 'ignore)
+  (set-mark-command-repeat-pop t))
+
+(use-package hl-line
+  :hook ((prog-mode . hl-line-mode)
+         (package-menu-mode . hl-line-mode))
+  :custom
+  (hl-line-sticky-flag nil))
+
+(use-package calendar
+  :bind ("C-x c" . calendar)
+  :hook (calendar-today-visible . calendar-mark-today)
+  :custom
+  (calendar-view-diary-initially-flag t)
+  (calendar-mark-diary-entries-flag t)
+  (calendar-date-style 'iso)
+  (calendar-date-display-form calendar-iso-date-display-form)
+  (diary-date-forms diary-iso-date-forms)
+  (calendar-time-display-form '(24-hours ":" minutes
+                                         (when time-zone
+                                           (format "(%s)" time-zone)))))
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here

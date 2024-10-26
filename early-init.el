@@ -63,31 +63,17 @@
 ;; (push '(fullscreen . maximized) initial-frame-alist)
 (push '(fullscreen . fullscreen) initial-frame-alist)
 
-(define-fringe-bitmap 'right-curly-arrow  [])
-(define-fringe-bitmap 'left-curly-arrow  [])
 (blink-cursor-mode -1)
 
-(when (eq system-type 'darwin)
+;; Themes
+(when (featurep 'ns)
   (setq ns-use-native-fullscreen nil)
-  ;; modus-themes 会导致 modeline 的字符计算不准确，因而右侧会超出屏幕范围。
-  ;; ef-themes 没有上述问题。
-  (add-to-list 'load-path "~/.emacs.d/packages/ef-themes/")
-  (require 'ef-themes)
-  (defvar love/dark-themes '(ef-night
-							 ef-rosa
-							 ef-dream
-							 ef-elea-dark
-							 ef-maris-dark)
-	"ef-themes-dark-themes I loved.")
   (defun my/apply-theme (appearance)
-	"Load theme, taking current system APPEARANCE into consideration."
-	(mapc #'disable-theme custom-enabled-themes)
-	(let* ((themes (if (eq appearance 'light)
-                       ef-themes-light-themes
-					 love/dark-themes))
-           (theme (elt themes (random (length themes)))))
-      (load-theme theme t)))
-
+  "Load theme, taking current system APPEARANCE into consideration."
+  (mapc #'disable-theme custom-enabled-themes)
+  (pcase appearance
+    ('light (load-theme 'modus-operandi t))
+    ('dark (load-theme 'modus-vivendi t))))
   (add-hook 'ns-system-appearance-change-functions #'my/apply-theme))
 
 (setq byte-compile-warnings nil)

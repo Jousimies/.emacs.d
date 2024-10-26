@@ -19,26 +19,37 @@
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
+;; 如果有内置的按键，优先使用内置的按键。
+;; 如果内置的按键不好用，则自己定义。
+;; C-x for global keybinding
+;; C-c for local keybinding
 
-;; See here
+;; See here for transient use.
 ;; https://github.com/positron-solutions/transient-showcase
 
 ;;; Code:
 (require 'transient)
 
-(defun my/copy-file-info (info-type)
-  (interactive (list (completing-read "Copy file info (base/name/path/directory): "
-                                      '("base" "name" "path" "directory"))))
-  (when (buffer-file-name)
-    (let ((file-info
-           (pcase info-type
-             ("base" (file-name-base (buffer-file-name)))
-             ("name" (file-name-nondirectory (buffer-file-name)))
-             ("path" (file-truename (buffer-file-name)))
-             ("directory" (file-name-directory (buffer-file-name)))
-             (other (user-error "Invalid info type")))))
-      (kill-new file-info)
-      (message "Copied %s: %s" info-type file-info))))
+;; Unbind key
+(unbind-key "s-o" 'global-map)
+(unbind-key "s-s" 'global-map)
+(unbind-key "s-m" 'global-map)
+(unbind-key "s-n" 'global-map)
+(unbind-key "C-t" 'global-map)
+(unbind-key "s-q" 'global-map)          ;Never exit Emacs
+
+(when IS-WINDOWS
+  (setq w32-pass-lwindow-to-system nil)
+  (setq w32-pass-rwindow-to-system nil)
+  (setq w32-lwindow-modifier 'super)
+  (setq w32-rwindow-modifier 'super)
+  (setq w32-pass-alt-to-system nil)
+  (w32-register-hot-key [s-])
+  (w32-register-hot-key [c-])
+  (setq w32-recognize-altgr nil))
+
+;; (global-set-key (kbd "C-h") #'delete-backward-char) (global-set-key (kbd "s-h") #'help-command)
+;; (global-set-key (kbd "M-h") #'backward-kill-word)
 
 (defvar-keymap my/file-prefix-map
   :doc "Prefix map for file."
@@ -53,41 +64,35 @@
   "F" #'macos-reveal-in-finder
   "s" #'macos-share
   "a" #'my/consult-find-attach
-  "i" #'my/copy-file-info
-  "d" #'consult-dir)
+  "c" #'my/copy-file-info
+  "i" #'my/denote-info
+  "d" #'consult-dir
+  "u" #'update-org-attach-property)
 
-(defvar-keymap my/window-prefix-map
-  :doc "Keymap for windows"
-  "u" #'winner-undo
-  "r" #'winner-redo
-  "h" #'windmove-left
-  "l" #'windmove-right
-  "j" #'windmove-down
-  "k" #'windmove-up
-  "p" #'previous-buffer
-  "n" #'next-buffer
-  "d" #'dired-sidebar-toggle-sidebar
-  "m" #'switch-to-message
-  "s" #'scratch-buffer)
+;; (defvar-keymap my/new-note-prefix-map
+;;   :doc "Prefix map for new note."
+;;   "a" #'ibooks-annot/extract-annotations-to-note
+;;   "n" #'denote
+;;   "c" #'denote-fz-insert-child-here
+;;   "s" #'denote-fz-insert-sibling-here
+;;   "b" #'my/new-blog
+;;   "e" #'denote-org-extras-extract-org-subtree
+;;   "m" #'my/new-meeting
+;;   "l" #'my/literature-save
+;;   "r" #'citar-create-note
+;;   "k" #'denote-rename-file-keywords
+;;   "t" #'denote-rename-file-title
+;;   "o" #'my/ocr)
 
-(transient-define-prefix my/edit-menu ()
-  "Edit"
-  [["Transpose"
-	("C" "Chars" transpose-chars :transient nil)
-	("w" "Words" transpose-words :transient nil)
-	("L" "Lines" transpose-lines :transient nil)
-	("s" "sexps" transpose-sexps :transient nil)]
-   ["Word"
-	("u" "upcase" upcase-word :transient t)
-	("l" "downcase" downcase-word :transient t)
-	("c" "Capitalize" capitalize-word :transient t)
-	("r" "Capitalize Region" capitalize-region :transient t)]
-   ["Surrond"
-	("i" "Insert" surround-insert :transient t)
-	("x" "Change" surround-change :transient nil)
-	("d" "Delete" surround-delete :transient t)
-	("C-=" "Expand" er/expand-region :transient t)
-	]])
+(defvar-keymap my/sort-note-prefix-map
+  :doc "Prefix map for sort note."
+  "s" #'my/denote-sort-siblings
+  "c" #'my/denote-sort-children
+  "r" #'my/denote-sort-regexp
+  "l" #'my/denote-sort-level-by-signature
+  "k" #'my/denote-sort-with-keywords
+  "p" #'my/denote-sort-parent-with-children
+  "d" #'my/denote-sort-period-week)
 
 (transient-define-prefix my/bibtex-menu ()
   "References"
@@ -112,58 +117,10 @@
 	("1" "Local Bibtex" citar-export-local-bib-file :transient nil)
 	("2" "Bibtex to Endnote" my/bib2end :transient nil)]])
 
-(transient-define-prefix my/note-menu ()
-  "Note"
-  [[("s-n" " Consult Notes" consult-notes :transient nil)]
-   [("SPC" "OCR" my/ocr :transient nil)]]
-  [["New Note"
-	;; ("s" "With Signature" denote-signature :transient nil)
-	;; ("S" "Sub Directory" denote-subdirectory :transient nil)
-	("n" "Denote" denote :transient nil)
-	("b" "Blog" my/new-blog :transient nil)
-	("m" "Meeting" my/new-meeting :transient nil)
-	("l" "Literature" my/literature-save :transient nil)
-	("N" "Reference" citar-create-note :transient nil)]
-   ["Folgezettel"
-	("C-c" "Child" denote-fz-insert-child :transient nil)
-	("c" "Child Here" denote-fz-insert-child-here :transient nil)
-	("C-s" "sibling" denote-fz-insert-sibling :transient nil)
-	("s" "Sibling Here" denote-fz-insert-sibling-here :transient nil)]
-   ["Goto"
-	("<down>" "Child" denote-fz-goto-child :transient t)
-	("<up>" "Parent" denote-fz-goto-parent :transient t)
-	("<right>" "Next Sibling" denote-fz-goto-next-sibling :transient t)
-	("<left>" "Previous Sibling" denote-fz-goto-previous-sibling :transient t)]
-   ["Denote Meta"
-	("r" "Rename Note" denote-rename-file-using-front-matter :transient nil)
-	("R" "Rename Keywords" denote-explore-rename-keyword :transient nil)
-	("k" "Add/Remove Keyword" denote-rename-file-keywords :transient nil)]
-   ["Denote Sort"
-	("/s" "Siblings" my/denote-sort-siblings :transient nil)
-	("/c" "Children" my/denote-sort-children :transient nil)
-	("/r" "REGEXP" my/denote-sort-regexp :transient nil)
-	("/i" "With Identifier" my/denote-sort-with-identifer :transient nil)
-	("/k" "With Keywords" my/denote-sort-with-keywords :transient nil)
-	("/d" "Week Ago" my/denote-sort-with-days :transient nil)
-	]
-   ["Denote Explore"
-	("i" "Info" my/denote-info :transient nil)
-	("t" "BarChart" denote-explore-barchart-keywords :transient t)
-	("d" "Duplicate Identifier" denote-explore-identify-duplicate-notes :transient nil)
-	("e" "Extract Subtree" denote-org-extras-extract-org-subtree :transient nil)
-	("a" "Extract iBooks Annotation" ibooks-annot/extract-annotations-to-note :transient nil)]
-   ["Export To"
-	("M" "MindMap" plantuml-org-to-mindmap-open :transient nil)
-	("w" "WBS" plantuml-org-to-mindmap-open :transient nil)
-	("W" "Docx" org-export-docx :transient nil)
-	;; ("t" "Drawio Add" org-drawio-add :transient nil)
-	;; ("o" "Drawio Open" org-drawio-open :transient nil)
-	]])
-
 (transient-define-prefix my/links-menu ()
   "Links"
   ["Denote Backlinks"
-	("b" "Buffer" denote-backlinks :transient nil)]
+   ("b" "Buffer" denote-backlinks :transient nil)]
   [["Org Link"
 	("c" "Copy IDlink" my/copy-idlink :transient nil)
 	("i" "Insert" org-insert-link :transient nil)
@@ -189,15 +146,10 @@
 	("a" "Agenda" org-agenda :transient nil)
 	("b" "Book" my/book-agenda :transient nil)
 	("t" "TODO" my/all-todo-agenda :transient nil)]
-   ["Capture"
-	("i" "Inbox" my/org-capture-inbox :transient nil)
-	("l" "Inbox with link" my/org-capture-inbox-with-link :transient nil)
-	("w" "Work Log" my/org-capture-work :transient nil)
-	("r" "Review" my/org-capture-review :transient nil)]
    ["Process & Engage"
 	("x" "Process Inbox" org-gtd-process-inbox :transient nil)
 	("@" "By Context" org-gtd-engage-grouped-by-context :transient nil)
-	("<f12>" "Engage" org-gtd-engage :transient nil)]
+	("<f12>" "Engage" my/org-gtd-engage :transient nil)]
    ["Clarify"
 	("c" "Item" org-gtd-clarify-item :transient nil)
 	("C" "Item: agenda" org-gtd-clarify-agenda-item :transient nil)]
@@ -205,8 +157,7 @@
 	("o" "Missed Appointments" org-gtd-oops :transient t)
 	("m" "Missed Items" org-gtd-review-missed-items :transient t)
 	("f" "Area of Focus" org-gtd-review-area-of-focus :transient t)
-	("s" "Stucks" my/gtd-stuck-menu :transient t)]
-   ])
+	("s" "Stucks" my/gtd-stuck-menu :transient t)]])
 
 (transient-define-prefix my/gtd-stuck-menu ()
   "GTD Stuck"
@@ -232,42 +183,19 @@
 	("e" "Example sentences" powerthesaurus-lookup-sentences-dwim :transient nil)]
    ["Translate"
 	("w" "Speack" gt-do-speak :transient nil)
-	("l" "Translate" gt-do-translate :transient nil)
+	("l" "Translate" my/translate :transient nil)
 	("W" "Write Good" writegood-mode :transient nil)
-	;; ("h" "LSP Helper" lsp-bridge-toggle-sdcv-helper :transient nil)
-	]
+	("h" "LSP Helper" lsp-bridge-toggle-sdcv-helper :transient nil)]
    ["OSX Dictionary"
 	("o" "Input" osx-dictionary-search-input :transient nil)
 	("x" "Pointer" osx-dictionary-search-pointer :transient nil)]
-   ["Dictionary Overlay"
-	("t" "Toggle" dictionary-overlay-toggle :transient nil)
-	("g" "Refresh" dictionary-overlay-refresh-buffer :transient nil)
-	("R" "Render buffer" dictionary-overlay-render-buffer :transient nil)
-	("k" "Known Word" dictionary-overlay-mark-word-known :transient nil)
-	("K" "Unknow Word" dictionary-overlay-mark-word-unknown :transient nil)]])
-
-(transient-define-prefix my/pass-menu ()
-  "Pass"
-  ["Password"
-   [("c" "Copy" password-store-copy :transient nil)]
-   [("g" "Generate" password-store-generate :transient nil)]
-   [("i" "insert" password-store-insert :transient nil)]
-   [("e" "Edit" password-store-edit :transient nil)]
-   [("r" "Rename" password-store-rename :transient nil)]
-   [("d" "Delete" password-store-remove :transient nil)]])
-
-(transient-define-prefix my/application-menu ()
-  "Application"
-  [["Finance"
-	("g" "Generator" my/bean-generate :transient t)
-	("f" "Fava" my/beancount-fava :transient nil)]]
-  [[("e" "Elfeed" elfeed :transient nil)]
-   [("t" "Telega" telega :transient nil)]
-   [("m" "Email" mu4e :transient nil)]
-   [("p" "Pass" my/pass-menu :transient nil)]
-   [("s" "Search" my/search :transient nil)]
-   [("c" "Calendar" calendar :transient nil)]
-   [("r" "Calculator" calc :transient nil)]])
+   ;; ["Dictionary Overlay"
+   ;;  ("t" "Toggle" dictionary-overlay-toggle :transient nil)
+   ;;  ("g" "Refresh" dictionary-overlay-refresh-buffer :transient nil)
+   ;;  ("R" "Render buffer" dictionary-overlay-render-buffer :transient nil)
+   ;;  ("k" "Known Word" dictionary-overlay-mark-word-known :transient nil)
+   ;;  ("K" "Unknow Word" dictionary-overlay-mark-word-unknown :transient nil)]
+   ])
 
 (transient-define-prefix my/mpv-menu ()
   "References"
@@ -278,40 +206,62 @@
    ["Toggle"
 	("f" "Fullscreen" my/mpv-toggle-fullscreen :transient nil)
 	("o" "Progress" my/mpv-toggle-progress :transient nil)
-	("v" "video" mpv-toggle-video :transient nil)]])
+    ("v" "video" mpv-toggle-video :transient nil)]])
 
-(defvar-keymap my/org-prefix-map
-  :doc "keymap for org."
-  "i" #'org-clock-in
-  "o" #'org-clock-out
-  "g" #'org-clock-goto
-  "I" #'org-toggle-inline-images
-  "l" #'org-toggle-link-display
-  "t" #'my/org-chatu
-  "n" #'org-narrow-to-subtree
-  "w" #'widen
-  "u" #'update-org-attach-property
-  "s-i" #'my/org-insert-local-image)
-
-;; defvar-keymap
-(keymap-set global-map "M-o" my/window-prefix-map)
-(keymap-set global-map "s-o" my/org-prefix-map)
 (keymap-set global-map "s-f" my/file-prefix-map)
+(keymap-set global-map "s-/" my/sort-note-prefix-map)
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "s-. m") #'plantuml-org-to-mindmap-open)
+  (define-key org-mode-map (kbd "s-. w") #'plantuml-org-to-wbs-open)
+  (define-key org-mode-map (kbd "s-. d") #'org-export-docx))
 
 ;; transient
-(global-set-key (kbd "C-c a") #'my/application-menu)
 (global-set-key (kbd "s-b") #'my/bibtex-menu)
-(global-set-key (kbd "s-e") #'my/edit-menu)
-(global-set-key (kbd "s-n") #'my/note-menu)
 (global-set-key (kbd "s-l") #'my/links-menu)
+;; (global-set-key (kbd "s-m") #'mu4e)
+
+;; Notes
+(global-set-key (kbd "s-n s-n") #'consult-notes)
+;; (keymap-set global-map "s-n n" my/new-note-prefix-map)
+(global-set-key (kbd "s-n a") #'ibooks-annot/extract-annotations-to-note)
+(global-set-key (kbd "s-n n") #'denote)
+(global-set-key (kbd "s-n c") #'denote-fz-insert-child-here)
+(global-set-key (kbd "s-n s") #'denote-fz-insert-sibling-here)
+(global-set-key (kbd "s-n b") #'my/new-blog)
+(global-set-key (kbd "s-n e") #'denote-org-extras-extract-org-subtree)
+(global-set-key (kbd "s-n m") #'my/new-meeting)
+(global-set-key (kbd "s-n l") #'my/literature-save)
+(global-set-key (kbd "s-n r") #'citar-create-note)
+(global-set-key (kbd "s-n k") #'denote-rename-file-keywords)
+(global-set-key (kbd "s-n t") #'denote-rename-file-title)
+(global-set-key (kbd "s-n o") #'my/ocr)
+
+(global-set-key (kbd "C-t") #'my/dict-menu)
+
+;; Specific Application
+(global-set-key (kbd "C-c g") #'my/bean-generate)
+(global-set-key (kbd "C-c f") #'my/beancount-fava)
+(global-set-key (kbd "C-c t") #'telega)
+;; (global-set-key (kbd "s-a p") #'password-store-menu)
+(global-set-key (kbd "C-c e") #'elfeed)
+
+;; Search related
+(global-set-key (kbd "s-s r") #'rg)
+(global-set-key (kbd "s-s g") #'my/search-google)
+(global-set-key (kbd "s-s w") #'my/search-wikipedia_en)
+(global-set-key (kbd "s-s z") #'my/search-zhihu)
+(global-set-key (kbd "s-s m") #'my/search-doubanmovie)
+(global-set-key (kbd "s-s b") #'my/search-doubanbook)
+(global-set-key (kbd "s-s y") #'my/search-youtube)
+(global-set-key (kbd "s-s s") #'my/search-scholar)
+(global-set-key (kbd "s-s S") #'my/search-semanticscholar)
 
 (global-set-key (kbd "<f12>") #'my/agenda-menu)
-(global-set-key (kbd "C-c t") #'my/dict-menu)
 (global-set-key (kbd "C-<f8>") #'my/mpv-menu)
 
-;; functions
-(global-set-key (kbd "C-s-k") #'kill-paragraph)
-(global-set-key (kbd "s-q") #'restart-emacs)
+(global-set-key (kbd "M-g ,") #'switch-to-minibuffer)
+
 (global-set-key (kbd "C-z") #'repeat)
 
 ;; 下面的方法可以使用弹窗。
@@ -329,6 +279,14 @@
 ;;      ["Agenda"       (org-gtd-engage)]
 ;;      )))
 ;; (global-set-key [mouse-3] 'freedom-context-menu)
+
+;;
+;; (use-package casual-calc
+;;   :bind (:map calc-mode-map
+;;               ("C-o" . casual-calc-tmenu)
+;;               :map calc-alg-map
+;;               ("C-o" . casual-calc-tmenu))
+;;   :after (calc))
 
 (provide 'init-keys)
 ;;; init-keys.el ends here

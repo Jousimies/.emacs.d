@@ -23,29 +23,24 @@
 ;;
 
 ;;; Code:
+(use-package tab-bar
+  :hook (emacs-startup . tab-bar-mode)
+  :bind (("C-c b t" . tab-switch)
+         ("s-t" . tab-new)
+         ("s-w" . tab-close))
+  :custom
+  (tab-bar-auto-width-max '((160) 20))
+  (tab-bar-new-tab-choice 'scratch-buffer)
+  (tab-bar-close-button-show nil)
+  (tab-bar-new-tab-to 'rightmost)
+  (tab-bar-separator "​")
+  (tab-bar-select-tab-modifiers '(super))
+  (tab-bar-tab-hints t))
 
-(add-hook 'after-init-hook #'tab-bar-mode)
-(global-set-key (kbd "C-c b t") #'tab-switch)
-(global-set-key (kbd "s-t") #'tab-new)
-(global-set-key (kbd "s-w") #'tab-close)
-
-(setopt tab-bar-new-tab-choice 'scratch-buffer
-		tab-bar-close-button-show nil
-		tab-bar-separator "​"
-		tab-bar-select-tab-modifiers '(super)
-		tab-bar-tab-hints t)
-
-(defvar my/tab-bar-right-string)
-(defun my/tab-bar-time-update (&rest rest)
-  (format-time-string "%a %b %d %H:%M "))
-
-;; (setq my/tab-bar-right-string '((:eval (my/tab-bar-time-update))))
 (setq my/tab-bar-right-string '((:eval global-mode-string)))
 
 (defun my/tab-bar-format-right ()
   `((global menu-item ,(format-mode-line my/tab-bar-right-string) ignore)))
-
-;; (add-to-list 'my/tab-bar-right-string 'battery-mode-line-string t)
 
 (setopt tab-bar-format '(tab-bar-format-tabs
 						 tab-bar-separator
@@ -57,11 +52,6 @@
   `((menu-bar menu-item (propertize "  " 'face nil)
               tab-bar-menu-bar :help "Menu Bar")))
 
-(defun my/tab-bar-tab-name-format-comfortable (tab i)
-  (propertize (concat " " (tab-bar-tab-name-format-default tab i) " ")
-              'face (funcall tab-bar-tab-face-function tab)))
-
-(setq tab-bar-tab-name-format-function #'my/tab-bar-tab-name-format-comfortable)
 
 (provide 'init-tab)
 ;;; init-tab.el ends here

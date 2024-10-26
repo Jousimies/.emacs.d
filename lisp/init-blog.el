@@ -27,7 +27,6 @@
 (defvar my/publish-directory "~/Blogs/")
 
 (with-eval-after-load 'ox-publish
-  (setq org-publish-timestamp-directory (expand-file-name "org-timestamps/" cache-directory))
   (setq org-publish-project-alist `(("site"
 									 :base-directory ,website-directory
 									 :base-extension "org"
@@ -92,9 +91,6 @@
   (add-hook 'org-publish-after-publishing-hook 'my/ox-publish-replace-src-path))
 
 (with-eval-after-load 'ox-html
-  (setq org-html-html5-fancy t
-		org-html-doctype "html5"
-		org-html-htmlize-output-type 'css)
   (setq org-export-global-macros
         '(("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@")))
   (setq org-html-preamble t)

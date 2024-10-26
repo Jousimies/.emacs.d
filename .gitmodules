@@ -619,3 +619,6 @@
 [submodule "packages/org-xlatex"]
 	path = packages/org-xlatex
 	url = https://github.com/ksqsf/org-xlatex.git
+[submodule "packages/emacs-everywhere"]
+	path = packages/emacs-everywhere
+	url = https://github.com/tecosaur/emacs-everywhere.git

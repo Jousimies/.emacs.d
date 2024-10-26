@@ -3,31 +3,29 @@
 ;;; Commentary:
 
 ;;; Code:
-
-(add-to-list 'load-path "~/.emacs.d/packages/emacs-dashboard/")
-
-(require 'dashboard)
-
-(dashboard-setup-startup-hook)
-
-(add-hook 'dashboard-mode-hook (lambda ()
-								 (setq-local display-line-numbers nil)))
-
-(with-eval-after-load 'dashboard
-  ;; (define-key dashboard-mode-map "q" nil)
-  (define-key dashboard-mode-map (kbd "n") #'dashboard-next-line)
-  (define-key dashboard-mode-map (kbd "p") #'dashboard-previous-line))
-
-(setq dashboard-icon-type 'nerd-icons)
-(setq dashboard-set-file-icons t)
-(setq dashboard-center-content t)
-(setq dashboard-set-init-info t)
-(setq dashboard-set-footer nil)
-(setq dashboard-banner-logo-title "EXPLORE THE WORLD, FULFILL YOUR BEING.")
-
-(setq dashboard-items '((recents  . 5)
-                        (bookmarks . 5)
-                        (registers . 5)))
+(use-package dashboard
+  :load-path "packages/emacs-dashboard/"
+  :demand t
+  :hook (dashboard-mode . (lambda ()
+							(setq-local display-line-numbers nil)))
+  :bind (:map dashboard-mode-map
+			  ("n" . dashboard-next-line)
+			  ("p" . dashboard-previous-line))
+  :custom
+  (dashboard-startup-banner (expand-file-name "src/bitmap.png" user-emacs-directory))
+  (dashboard-image-banner-max-width 500)
+  (dashboard-icon-type 'nerd-icons)
+  (dashboard-set-file-icons t)
+  (dashboard-center-content t)
+  (dashboard-set-init-info t)
+  (dashboard-week-agenda nil)
+  (dashboard-set-footer nil)
+  (dashboard-items '((recents  . 5)
+                     (bookmarks . 5)
+                     (registers . 5)))
+  (dashboard-banner-logo-title "EXPLORE THE WORLD, FULFILL YOUR BEING.")
+  :config
+  (dashboard-setup-startup-hook))
 
 (provide 'init-dashboard)
 ;;; init-dashboard.el ends here.

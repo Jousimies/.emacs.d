@@ -49,7 +49,6 @@
         history-delete-duplicates t
         bidi-display-reordering nil
         read-buffer-completion-ignore-case t
-        completion-ignore-case t
         delete-by-moving-to-trash t
         minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
         redisplay-skip-fontification-on-input t
@@ -57,34 +56,52 @@
 
 (setq-default initial-scratch-message nil)
 
+;; Language Environment
+(set-language-environment "UTF-8")
+(setq default-input-method nil)
+
 ;; system coding
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
+;; Font setting.
 ;; `set-face-attribute' 设置默认字体
 ;; 对于中英文字体无法做到等宽和等高，两者只能取其一。相对而言，等宽更重要一些。
 ;; 不等高会导致 modeline 跳动，可以在 modeline 中插入中文字体“丨”[gun]
-(set-face-attribute 'default nil :family "Latin Modern Mono" :height 160)
-;; `set-fontset-font' 用于指定某些字符集使用特定的字体
+;; 字体搭配1: Cascadia Next SC
+;; 字体搭配2: Latin Modern Mono 和 Source Han Serif SC
+;; 字体搭配3: PragmataPro 和 SimHei
+(when IS-MAC
+  (set-face-attribute 'default nil :family "Cascadia Next SC" :height 160))
+
+(when IS-WINDOWS
+  (set-face-attribute 'default nil :family "PragmataPro" :height 160))
+
 ;; Unicode
+;; `set-fontset-font' 用于指定某些字符集使用特定的字体
 (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend)
+
 ;; 设置中文字集
 ;; `han': 汉字字符集，主要用于简体中文和繁体中文字符
 ;; `cjk-misc': CJK（中日韩）字符集中的其他字符，包含了少量的中文、日文、韩文字符
 ;; `kana': 日文假名字符集，但在处理与中文相关的文档时可能偶尔用到
 ;; `bopomofo': 注音符号字符集，用于台湾地区的汉字注音
-(dolist (charset '(kana han cjk-misc bopomofo))
+(when IS-MAC
+  (dolist (charset '(kana han cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Source Han Serif SC")))
+                      (font-spec :family "Cascadia Next SC"))))
+
+(when IS-WINDOWS
+  (dolist (charset '(kana han cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font) charset
+                      (font-spec :family "SimHei"))))
+;; Emoji
 ;; According to https://github.com/domtronn/all-the-icons.el
 ;; Use 'prepend for the NS and Mac ports or Emacs will crash.
-;; Emoji
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
-;; Symbola 中包含一些特殊的字体
-;; 需要单独安装 - https://www.wfonts.com/font/symbola
-(set-fontset-font t 'symbol (font-spec :family "Symbola" :size 14) nil 'prepend)
+(set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend)
 
 ;; 除以上方法，也可以使用 `variable-pitch-mode'
 ;; (set-face-attribute 'variable-pitch nil :family "TsangerJinKai02" :height 160)
@@ -107,28 +124,6 @@
   :commands nerd-icons-codicon nerd-icons-faicon nerd-icons-icon-for-file
   :config
   (setq nerd-icons-font-family "Symbols Nerd Font Mono"))
-
-;; Define some variables to facilitate the location of configuration files or related settings for specific systems.
-(defvar icloud "~/Library/Mobile Documents/"
-  "This folder contains documents in icloud.")
-
-(defvar nextcloud "~/Nextcloud"
-  "This folder is My cloud.")
-
-;; L.Personal.Galaxy location may change, but folders in this directory never change.
-(defvar my-galaxy (expand-file-name "L.Personal.Galaxy" nextcloud)
-  "This folder stores all the plain text files of my life.")
-
-(defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
-  "The source folder of my blog.")
-
-(defvar my-pictures (expand-file-name "pictures/" my-galaxy)
-  "The folder save pictures.")
-
-(defvar my-web_archive (expand-file-name "web_archive/" my-galaxy)
-  "The folder save web pages.")
-
-(defvar cache-directory (expand-file-name ".cache" user-emacs-directory))
 
 ;; Adjust alpha background
 (defun lucius/adjust-opacity (frame incr)
@@ -155,9 +150,19 @@
 (global-set-key (kbd "C-<f2>") #'my/increase-alpha-background)
 
 ;; Proxy
-(add-to-list 'process-environment "https_proxy=http://localhost:7890")
-(add-to-list 'process-environment "http_proxy=http://localhost:7890")
-(add-to-list 'process-environment "no_proxy=localhost,127.0.0.0,127.0.0.1,127.0.1.1,local.home")
+(use-package socks
+  :ensure nil
+  :if IS-MAC
+  :defer 2
+  :custom
+  (url-gateway-method 'socks)
+  (socks-noproxy '("localhost"))
+  (socks-server `("Default server" ,my/proxy-ip ,(string-to-number my/proxy-port) 5))
+  (url-proxy-services `(("http" . ,(concat my/proxy-ip ":" my/proxy-port))
+                        ("https" . ,(concat my/proxy-ip ":" my/proxy-port))
+                        ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)")))
+  :config
+  (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port)))
 
 ;; start server, so can use emaclient to edit file outside emacs
 (add-hook 'after-init-hook (lambda ()
@@ -169,12 +174,14 @@
 (use-package gcmh
   :load-path "packages/gcmh"
   :hook (on-first-file . gcmh-mode)
-  :config
-  (advice-add 'after-focus-change-function :after 'garbage-collect)
-  (setq gc-cons-percentage 0.1)
-  (setq gcmh-idle-delay 'auto)
-  (setq gcmh-auto-idle-delay-factor 10)
-  (setq gcmh-high-cons-threshold #x1000000))
+  :custom
+  (gc-cons-percentage 0.1)
+  (gcmh-verbose nil)
+  (gcmh-idle-delay 'auto)
+  (gcmh-auto-idle-delay-factor 10)
+  (gcmh-high-cons-threshold #x1000000))
+
+(advice-add 'after-focus-change-function :after 'garbage-collect)
 
 (provide 'init-core)
 ;;; init-core.el ends here

@@ -27,15 +27,14 @@
 
 ;; (setq mode-line-right-align-edge 'right-margin)
 
-(defcustom prot-modeline-string-truncate-length 50
+(defcustom prot-modeline-string-truncate-length 20
   "String length after which truncation should be done in small windows."
   :type 'natnum)
 
 (defun prot-modeline--string-truncate-p (str)
   "Return non-nil if STR should be truncated."
-  ;; (and (< (window-total-width) split-width-threshold)
-  ;;      (> (length str) prot-modeline-string-truncate-length))
-  (> (length str) prot-modeline-string-truncate-length))
+  (and (< (window-total-width) split-width-threshold)
+       (> (length str) prot-modeline-string-truncate-length)))
 
 (defun prot-modeline-string-truncate (str)
   "Return truncated STR, if appropriate, else return STR.
@@ -79,9 +78,15 @@
   (upcase (file-name-nondirectory (directory-file-name (file-name-directory (buffer-file-name))))))
 
 (defvar-local my/modeline-denote
-	'(:eval (when (buffer-file-name)
+	'(:eval (when (and (eq major-mode 'org-mode)
+                       (buffer-file-name))
 			  (when (denote-file-is-note-p (buffer-file-name))
 				(propertize (concat " " (get-last-directory) " ") 'face `(:inverse-video t))))))
+
+(defvar-local my/modeline-repeat
+    '(:eval (when (and repeat-in-progress
+                       (mode-line-window-selected-p))
+              (propertize repeat-echo-mode-line-string 'face `(:inverse-video t)))))
 
 ;; Readonly Mode
 (defvar-local my/modeline-buffer-readonly
@@ -120,7 +125,7 @@
 (defvar-local my/modeline-region-indicator
     '(:eval (when (and (mode-line-window-selected-p) (use-region-p))
               (propertize
-               (concat "| L" (number-to-string (count-lines (region-beginning) (region-end)))
+               (concat " L" (number-to-string (count-lines (region-beginning) (region-end)))
                        " W" (number-to-string (count-words (region-beginning) (region-end)))
                        " C" (number-to-string (abs (- (mark t) (point)))) " ")))))
 
@@ -132,12 +137,6 @@
     '(:eval (when (and (mode-line-window-selected-p) (or (eq major-mode 'image-mode)
                                                          (eq major-mode 'telega-image-mode)))
               (propertize (my/modeline--image-info) 'face font-lock-string-face))))
-
-;; https://github.com/protesilaos/dotfiles/blob/master/emacs/.emacs.d/prot-lisp/prot-modeline.el
-(defun my/modeline--right-align-rest ()
-  (format-mode-line
-   `(""
-     ,@(cdr (memq 'my/modeline-align-right mode-line-format)))))
 
 (defun my/modeline--right-align-width ()
   (string-pixel-width (my/modeline--right-align-rest)))
@@ -151,20 +150,6 @@
   (let ((height (face-attribute 'mode-line :height nil 'default))
         (m-width (string-pixel-width (propertize "m" 'face 'mode-line))))
     (round height (* m-width (* height m-width 0.001)))))
-
-(defvar-local my/modeline-align-right
-    '(:eval
-      (propertize
-       " "
-       'display
-       `(space
-         :align-to
-         (- right
-            right-fringe
-            right-margin
-            ,(ceiling
-              (my/modeline--right-align-width)
-              (string-pixel-width (propertize "m" 'face 'mode-line))))))))
 
 ;; Date Info
 (defvar-local my/modeline-date
@@ -299,7 +284,6 @@ Specific to the current window's mode line.")
                      my/modeline-input-method
                      my/modeline-kbd-macro
                      my/modeline-region-indicator
-                     my/modeline-align-right
                      my/modeline-file-name
                      my/modeline-buffer-readonly
                      my/modeline-buffer-modified
@@ -313,49 +297,57 @@ Specific to the current window's mode line.")
                      my/modeline-clock-info
                      my/winum
 					 prot-modeline-eglot
-					 my/modeline-denote))
+					 my/modeline-denote
+                     my/modeline-repeat))
   (put construct 'risky-local-variable t))
 
-(setq-default mode-line-format
-              '("%e"
-                my/winum
-				prot-modeline-narrow
-                "丨"					; 丨 is a Chinese character
-                my/modeline-buffer-readonly
-                my/modeline-buffer-modified
-                my/modeline-file-name
-				" "
-				(:eval (with-eval-after-load 'denote
-						 my/modeline-denote))
-                my/modeline-position
-                my/modeline-image-info
-                my/modeline-kbd-macro
-                my/modeline-region-indicator
-				prot-modeline-eglot
-                "       "
-                my/modeline-align-right
-                (:eval (with-eval-after-load 'org-clock
-                         my/modeline-clock-info))
-                my/modeline-timer
-				(:eval (when which-function-mode
-						which-func-format))
-				my/modeline-sys
-				" "
-                my/modeline-major-mode
-				(vc-mode vc-mode)))
+(setopt mode-line-right-align-edge 'right-margin)
+
+(setopt mode-line-format '("%e"
+                           my/winum
+                           "​"
+                           (:eval (when repeat-mode
+                                    my/modeline-repeat))
+                           "​"
+                           prot-modeline-narrow
+                           ;; "丨"
+						   my/modeline-buffer-readonly
+						   my/modeline-buffer-modified
+						   my/modeline-file-name
+						   mode-line-front-space
+						   (:eval (with-eval-after-load 'denote
+									my/modeline-denote))
+						   "   "
+                           "%I"         ;Display buffer size
+						   my/modeline-position
+						   my/modeline-image-info
+						   my/modeline-kbd-macro
+						   my/modeline-region-indicator
+						   prot-modeline-eglot
+						   mode-line-format-right-align
+						   ;; (:eval (with-eval-after-load 'org-clock
+						   ;;  		my/modeline-clock-info))
+						   ;; my/modeline-timer
+						   (:eval (when which-function-mode
+									which-func-format))
+						   my/modeline-sys
+						   " "
+						   my/modeline-major-mode
+						   (project-mode-line project-mode-line-format)
+						   (vc-mode vc-mode)
+						   " "
+						   mode-line-end-spaces))
 
 (use-package keycast
   :load-path "packages/keycast/"
-  :commands keycast-mode-line-mode
+  :custom
+  (keycast-mode-line-format "%2s%k%c%R")
+  (keycast-mode-line-insert-after 'my/modeline-position)
+  (keycast-mode-line-window-predicate 'mode-line-window-selected-p)
+  (keycast-mode-line-remove-tail-elements nil)
   :config
-  (setq keycast-mode-line-format "%2s%k%c%R")
-  (setq keycast-mode-line-insert-after 'my/modeline-position)
-  (setq keycast-mode-line-window-predicate 'mode-line-window-selected-p)
-  (setq keycast-mode-line-remove-tail-elements nil)
-
   (dolist (input '(self-insert-command org-self-insert-command))
     (add-to-list 'keycast-substitute-alist `(,input "." "Typing…")))
-
   (dolist (event '(mouse-event-p mouse-movement-p mwheel-scroll))
     (add-to-list 'keycast-substitute-alist `(,event nil))))
 

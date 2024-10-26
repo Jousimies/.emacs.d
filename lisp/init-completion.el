@@ -24,17 +24,22 @@
 
 ;;; Code:
 (setopt enable-recursive-minibuffers t)
+(setopt read-minibuffer-restore-windows nil)
 
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 (add-hook 'minibuffer-mode-hook #'cursor-intangible-mode)
+(add-hook 'completion-list-mode-hook (lambda ()
+									   (setq-local truncate-lines t)))
+(add-hook 'minibuffer-setup-hook
+          (lambda () (setq-local truncate-lines t)))
 
 (setopt tab-always-indent 'complete
+		tab-first-completion 'word-or-paren-or-punct
 		completions-detailed t
         completions-format 'one-column
         completion-auto-select t
         completion-ignore-case t
         minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
-        read-buffer-completion-ignore-case t
         completion-show-inline-help nil
         completions-max-height 50
         completion-show-help nil
@@ -44,24 +49,31 @@
 
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 
-(use-package nerd-icons-completion
-  :load-path "packages/nerd-icons-completion/"
-  :hook (minibuffer-setup . nerd-icons-completion-mode))
+;; (use-package nerd-icons-completion
+;;   :load-path "packages/nerd-icons-completion/"
+;;   :hook (minibuffer-setup . nerd-icons-completion-mode))
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
 
 ;; re-use vertico-mode instead of `icomplete-fido-mode'.
 ;; Due to icomplete has compatible problem with citar, a references manager.
 ;; use `M-RET' to exit minibuffer input.
-(use-package vertico
-  :load-path "packages/vertico/"
-  :hook (on-first-input . vertico-mode))
 
-(use-package vertico-directory
-  :load-path "packages/vertico/extensions/"
-  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
-  :bind (:map vertico-map
-		 ("C-DEL" . vertico-directory-up)))
+(use-package icomplete
+  :hook (on-first-input . icomplete-mode)
+  :custom
+  (icomplete-in-buffer t))
+
+;; (vertico-mode 0)
+;; (use-package vertico
+;;   :load-path "packages/vertico/"
+;;   :hook (on-first-input . vertico-mode))
+
+;; (use-package vertico-directory
+;;   :load-path "packages/vertico/extensions/"
+;;   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
+;;   :bind (:map vertico-map
+;; 		 ("C-DEL" . vertico-directory-up)))
 
 (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
 (require 'orderless)
@@ -188,84 +200,48 @@
                ("C-c C-e" . embark-export)
                ("C-c C-l" . embark-collect))))
 
-(use-package corfu
-  :load-path "packages/corfu/"
-  :hook (on-first-buffer . global-corfu-mode)
-  :config
-  (setopt corfu-cycle t
-		  corfu-auto t
-		  corfu-auto-prefix 1
-		  corfu-auto-delay 0.0
-		  corfu-preselect 'valid)
+(use-package completion-preview
+  :hook (on-first-input . global-completion-preview-mode)
+  :custom
+  (completion-preview-ignore-case t)
+  (completion-preview-minimum-symbol-length 1))
 
-  (setq-default corfu-quit-no-match 'separator)
-  (defun corfu-enable-in-minibuffer ()
-    "Enable Corfu in the minibuffer if `completion-at-point' is bound."
-    (when (where-is-internal #'completion-at-point (list (current-local-map)))
-      ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
-      (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
-                  corfu-popupinfo-delay nil)
-      (corfu-mode 1)))
-  (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
+;; (use-package corfu
+;;   :load-path "packages/corfu/"
+;;   :hook (on-first-buffer . global-corfu-mode)
+;;   :custom
+;;   (corfu-cycle t)
+;;   (corfu-auto t)
+;;   (corfu-auto-prefix 1)
+;;   (corfu-auto-delay 0.0)
+;;   (corfu-preselect 'valid)
+;;   (corfu-quit-no-match t))
 
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+;; (use-package nerd-icons-corfu
+;;   :load-path "packages/nerd-icons-corfu/")
+;; (with-eval-after-load 'corfu
+;;   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
-(use-package corfu-echo
-  :load-path "packages/corfu/extensions/"
-  :hook (corfu-mode . corfu-echo-mode))
+;; (use-package corfu-echo
+;;   :load-path "packages/corfu/extensions/"
+;;   :hook (corfu-mode . corfu-echo-mode))
 
-(use-package corfu-popupinfo
-  :load-path "packages/corfu/extensions/"
-  :hook (corfu-mode . corfu-popupinfo-mode))
-
-(use-package nerd-icons-corfu
-  :load-path "packages/nerd-icons-corfu/"
-  :after corfu
-  :config
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+;; (use-package corfu-popupinfo
+;;   :load-path "packages/corfu/extensions/"
+;;   :hook (corfu-mode . corfu-popupinfo-mode))
 
 (use-package cape
   :load-path "packages/cape/"
-  :bind (("C-c p p" . completion-at-point) ;; capf
-         ("C-c p t" . complete-tag)        ;; etags
-         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c p h" . cape-history)
-         ("C-c p f" . cape-file)
-         ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-symbol)
-         ("C-c p a" . cape-abbrev)
-         ("C-c p w" . cape-dict)
-         ("C-c p l" . cape-line)
-         ("C-c p \\" . cape-tex)
-         ("C-c p _" . cape-tex)
-         ("C-c p ^" . cape-tex)
-         ("C-c p &" . cape-sgml)
-         ("C-c p r" . cape-rfc1345))
+  :bind ("C-c p" . cape-prefix-map)
   :init
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  ;;(add-to-list 'completion-at-point-functions #'cape-history)
-  ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
-  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
-  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
-  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
-  (add-to-list 'completion-at-point-functions #'cape-dict)
-  ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
-  ;;(add-to-list 'completion-at-point-functions #'cape-line)
-  )
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-dict))
 
 (use-package which-key
-  :load-path "packages/emacs-which-key/"
-  :hook (on-first-input . which-key-mode)
-  :config
-  (define-key help-map "\C-h" 'which-key-C-h-dispatch)
-  (setq which-key-popup-type 'minibuffer)
-  (setq which-key-sort-order #'which-key-prefix-then-key-order)
-  ;; (setq which-key-show-early-on-C-h t)
-  ;; (setq which-key-idle-delay 0)
-  ;; (setq which-key-idle-secondary-delay 0.05)
-  )
+  :hook (after-init . which-key-mode)
+  :custom
+  (which-key-idle-delay 0.1))
 
 
 (provide 'init-completion)

@@ -23,13 +23,11 @@
 ;;
 
 ;;; Code:
-
-(global-set-key (kbd "C-x C-b") #'ibuffer)
-
-(add-hook 'ibuffer-mode-hook #'ibuffer-auto-mode)
-
-(with-eval-after-load 'ibuffer
-  (setopt ibuffer-default-sorting-mode 'major-mode))
+(use-package ibuffer
+  :bind ("C-x C-b" . ibuffer)
+  :hook (ibuffer-mode . ibuffer-auto-mode)
+  :custom
+  (ibuffer-default-sorting-mode 'major-mode))
 
 (use-package nerd-icons-ibuffer
   :load-path "packages/nerd-icons-ibuffer/"
@@ -60,23 +58,23 @@
 
 (use-package perspective
   :load-path "packages/perspective-el/"
-  :bind (("M-s-n" . persp-switch)
-         ("M-s-w" . persp-kill))
   :custom
   (persp-mode-prefix-key (kbd "C-c z"))
+  (tab-bar-format '(tab-bar-format-menu-bar
+                    tab-bar-format-persp
+    				tab-bar-format-tabs
+    				tab-bar-separator
+    				tab-bar-format-align-right
+    				my/tab-bar-format-right))
+  (persp-state-default-file (expand-file-name "persp" cache-directory))
   :hook ((emacs-startup . persp-mode)
          (kill-emacs . persp-state-save))
   :config
-  (setq persp-state-default-file (expand-file-name "persp" cache-directory))
   (with-eval-after-load 'tab-bar
     (defun tab-bar-format-persp ()
       (setq global-mode-string (delete '(:eval (persp-mode-line)) global-mode-string))
       `((global menu-item ,(format-mode-line (persp-mode-line)) ignore)))
-	(setopt tab-bar-format '(tab-bar-format-persp
-							 tab-bar-format-tabs
-							 tab-bar-separator
-							 tab-bar-format-align-right
-							 my/tab-bar-format-right)))
+	)
   (dotimes (i 9)
 	(global-set-key (kbd (concat "M-s-" (number-to-string (1+ i))))
 					`(lambda () (interactive) (persp-switch-by-number ,(1+ i))))))
