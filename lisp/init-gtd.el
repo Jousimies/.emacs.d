@@ -77,7 +77,7 @@
   (org-agenda nil "b"))
 
 (with-eval-after-load 'org-agenda
-  (setq org-agenda-window-setup 'current-window)
+  (setq org-agenda-window-setup 'other-tab)
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-agenda-skip-deadline-if-done t)
   (setq org-agenda-todo-ignore-scheduled 'future)

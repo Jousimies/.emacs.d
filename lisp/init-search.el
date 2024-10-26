@@ -23,20 +23,21 @@
 ;;
 
 ;;; Code:
-
+;; (rg-enable-default-bindings)
+;; https://github.com/dajva/rg.el/issues/142#issuecomment-1452525225
 (use-package rg
   :load-path ("packages/rg.el/" "packages/Emacs-wgrep")
+  :commands rg
   :custom
   (rg-group-result t)
-  (rg-show-columns t)
-  :config
+  (rg-show-columns t))
+
+(with-eval-after-load 'rg
+  (add-to-list 'rg-finish-functions (lambda (buffer _) (pop-to-buffer buffer)))
   (add-to-list 'display-buffer-alist '("^\\*rg\\*"
                                        (display-buffer-in-side-window)
                                        (side . right)
-                                       (window-width . 0.5)))
-  ;; (rg-enable-default-bindings)
-  ;; https://github.com/dajva/rg.el/issues/142#issuecomment-1452525225
-  (add-to-list 'rg-finish-functions (lambda (buffer _) (pop-to-buffer buffer))))
+                                       (window-width . 0.5))))
 
 (setopt my/browser-engines
         '((DoubanMovie . "https://search.douban.com/movie/subject_search?search_text=")

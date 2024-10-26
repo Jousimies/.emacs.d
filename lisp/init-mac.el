@@ -59,12 +59,12 @@
   :hook (on-first-input . emt-ensure))
 
 (use-package macim
-  :load-path "~/.emacs.d/packages/macim.el/"
+  :load-path "packages/macim.el/"
   :bind (("C-\\" . macim-switch)
          :map isearch-mode-map
          ("C-\\" . macim-switch))
-  :hook ((emacs-startup . macim-select-ascii)
-         (emacs-startup . macim-mode)
+  :hook ((on-first-input . macim-select-ascii)
+         (on-first-input . macim-mode)
          (isearch-mode . macim-select-ascii)
 		 (on-switch-buffer . macim-context-switch)
          (minibuffer-mode . macim-select-ascii))

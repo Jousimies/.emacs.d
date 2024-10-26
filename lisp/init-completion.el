@@ -232,11 +232,12 @@
 
 (use-package cape
   :load-path "packages/cape/"
-  :bind ("C-c p" . cape-prefix-map)
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
   (add-hook 'completion-at-point-functions #'cape-dict))
+
+(global-set-key (kbd "C-c p") #'cape-prefix-map)
 
 (use-package which-key
   :hook (after-init . which-key-mode)

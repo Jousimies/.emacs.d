@@ -6,26 +6,25 @@
 
 ;; ox-latex 是 Emacs 中 Org-mode 导出框架中的一个子模块
 ;; minted 需要安装 Pygments, brew install pygments
-(use-package ox-latex
-  :custom
-  (org-latex-compiler "xelatex")
-  (org-latex-prefer-user-labels t)
-  (org-latex-src-block-backend 'minted) ;file name should not contain space.
-  (org-latex-minted-options '(("linenos")
-                              ("numbersep" "5pt")
-                              ("frame"     "none") ; box frame is created by `mdframed' package
-                              ("framesep"  "2mm")
-                              ("breaklines")))
-  (org-latex-pdf-process '("xelatex -shell-escape %f"
+(with-eval-after-load 'ox-latex
+  (setopt org-latex-compiler "xelatex")
+  (setopt org-latex-prefer-user-labels t)
+  (setopt org-latex-src-block-backend 'minted) ;file name should not contain space.
+  ;; (setopt org-latex-minted-options '(("linenos")
+  ;; 									 ("numbersep" "5pt")
+  ;; 									 ("frame"     "none") ; box frame is created by `mdframed' package
+  ;; 									 ("framesep"  "2mm")
+  ;; 									 ("breaklines")))
+  (setopt org-latex-pdf-process '("xelatex -shell-escape %f"
                            "bibtex -shell-escape %b"
                            "xelatex -shell-escape %f"
                            "xelatex -shell-escape %f"
                            "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl"))
-  (org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
+  (setopt org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
                                    "out" "toc" "nav" "snm" "vrb" "dvi"
                                    "fdb_latexmk" "blg" "brf" "fls"
                                    "entoc" "ps" "spl" "bbl"))
-  (org-latex-hyperref-template  (concat "\\hypersetup{\n"
+  (setopt org-latex-hyperref-template  (concat "\\hypersetup{\n"
                                         "pdfauthor={%a},\n"
                                         "pdftitle={%t},\n"
                                         "pdfkeywords={%k},\n"
@@ -37,8 +36,7 @@
                                         "filecolor=gray,\n"
                                         "linkcolor=gray,\n"
                                         "urlcolor=gray\n"
-                                        "}\n")))
-(with-eval-after-load 'ox-latex
+                                        "}\n"))
   (setopt org-latex-classes nil)
   (add-to-list 'org-latex-classes
                '("book"
@@ -88,11 +86,15 @@
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 ;; The builtin tex-mode, But AucTeX is more powerful
-(use-package tex-mode
-  :mode ("\\.tex\\'" . latex-mode))
+;; (use-package tex-mode
+;;   :mode ("\\.tex\\'" . latex-mode))
 
 (use-package tex
   :load-path "packages/auctex/"
+  :init
+  (load "auctex.el" nil t t)
+  (load "preview-latex.el" nil t t)
+  :mode ("\\.tex\\'" . latex-mode)
   :custom
   (TeX-PDF-mode t)
   (TeX-auto-save t)

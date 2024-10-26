@@ -42,6 +42,7 @@
 ;;   :hook (org-mode . org-xlatex-mode))
 
 (use-package cdlatex
+  :load-path "packages/cdlatex/"
   :hook ((org-mode . org-cdlatex-mode)
          (LaTeX-mode . turn-on-cdlatex))
   :custom
@@ -230,6 +231,7 @@
 
 ;; org-indent-mode hide leading stars, sometimes cursor become invisible.
 (use-package org-superstar
+  :load-path "packages/org-superstar-mode/"
   :hook ((org-mode . org-superstar-mode)
 		 (org-superstar-mode . org-indent-mode))
   :custom
@@ -263,6 +265,7 @@
 
 ;; Third party packages related to org-mode
 (use-package imenu-list
+  :load-path "packages/imenu-list/"
   :hook (imenu-list-major-mode . (lambda ()
                                    (setq-local truncate-lines t)))
   :custom
@@ -270,6 +273,7 @@
   (imenu-list-mode-line-format nil))
 
 (use-package olivetti
+  :load-path "packages/olivetti/"
   :bind ("s-M-z" . olivetti-mode)
   :hook ((olivetti-mode-on . (lambda ()
                                (imenu-list-minor-mode 1)))
@@ -277,6 +281,7 @@
                                 (imenu-list-minor-mode -1)))))
 
 (use-package form-feed
+  :load-path "packages/form-feed/"
   :hook ((org-mode . form-feed-mode)
 		 (emacs-news-mode . form-feed-mode)))
 

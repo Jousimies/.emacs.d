@@ -277,7 +277,8 @@
 ;;   (indent-bars-no-stipple-char ?\⎸))
 
 (use-package emacs-everywhere
-  :load-path "packages/emacs-everywhere/")
+  :load-path "packages/emacs-everywhere/"
+  :commands emacs-everywhere)
 
 (provide 'init-edit)
 ;;; init-edit.el ends here

@@ -65,7 +65,7 @@
 (require 'init-org)
 (require 'init-note)
 (require 'init-bib)
-;; (require 'init-latex)
+(require 'init-latex)
 (require 'init-gtd)
 (require 'init-finance)
 (require 'init-blog)
