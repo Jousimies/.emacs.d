@@ -75,11 +75,28 @@
 ;;   :bind (:map vertico-map
 ;; 		 ("C-DEL" . vertico-directory-up)))
 
-(add-to-list 'load-path "~/.emacs.d/packages/orderless/")
-(require 'orderless)
-(with-eval-after-load 'orderless
-  (setq completion-styles '(orderless basic))
-  (setq completion-category-overrides '((file (styles basic partial-completion)))))
+(use-package orderless
+  :load-path "packages/orderless/"
+  :custom
+  (orderless-matching-styles '(orderless-prefixes orderless-regexp)))
+
+;; (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
+;; (require 'orderless)
+;; (setq orderless-matching-styles '(orderless-prefixes orderless-regexp))
+;; ;; (with-eval-after-load 'orderless
+;; ;;   (setq completion-styles '(orderless basic))
+;; ;;   (setq completion-category-overrides '((file (styles basic partial-completion)))))
+(setq completion-styles '(basic substring initials flex orderless))
+(setq completion-category-defaults nil)
+(setq completion-category-overrides
+        '((file (styles . (basic partial-completion orderless)))
+          (bookmark (styles . (basic substring)))
+          (library (styles . (basic substring)))
+          (embark-keybinding (styles . (basic substring)))
+          (imenu (styles . (basic substring orderless)))
+          (consult-location (styles . (basic substring orderless)))
+          (kill-ring (styles . (emacs22 orderless)))
+          (eglot (styles . (emacs22 substring orderless)))))
 
 ;; https://emacs-china.org/t/macos-save-silently-t/24086
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
@@ -242,7 +259,12 @@
 (use-package which-key
   :hook (after-init . which-key-mode)
   :custom
-  (which-key-idle-delay 0.1))
+  (which-key-idle-delay 0.1)
+  :config
+  (which-key-add-key-based-replacements
+	"C-c p" "cape"
+	"C-x t" "tab"
+	"C-c &" "yasnippet"))
 
 
 (provide 'init-completion)

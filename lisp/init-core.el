@@ -122,8 +122,8 @@
 (use-package nerd-icons
   :load-path "packages/nerd-icons.el/"
   :commands nerd-icons-codicon nerd-icons-faicon nerd-icons-icon-for-file
-  :config
-  (setq nerd-icons-font-family "Symbols Nerd Font Mono"))
+  :custom
+  (nerd-icons-font-family "Symbols Nerd Font Mono"))
 
 ;; Adjust alpha background
 (defun lucius/adjust-opacity (frame incr)
@@ -150,25 +150,36 @@
 (global-set-key (kbd "C-<f2>") #'my/increase-alpha-background)
 
 ;; Proxy
-(use-package socks
-  :ensure nil
-  :if IS-MAC
-  :defer 2
-  :custom
-  (url-gateway-method 'socks)
-  (socks-noproxy '("localhost"))
-  (socks-server `("Default server" ,my/proxy-ip ,(string-to-number my/proxy-port) 5))
-  (url-proxy-services `(("http" . ,(concat my/proxy-ip ":" my/proxy-port))
-                        ("https" . ,(concat my/proxy-ip ":" my/proxy-port))
-                        ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)")))
-  :config
-  (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port)))
+(with-eval-after-load 'socks
+  (setopt url-gateway-method 'socks)
+  (setopt socks-noproxy '("localhost"))
+  (setopt socks-server `("Default server" ,my/proxy-ip ,(string-to-number my/proxy-port) 5))
+  (setopt url-proxy-services `(("http" . ,(concat my/proxy-ip ":" my/proxy-port))
+							   ("https" . ,(concat my/proxy-ip ":" my/proxy-port))
+							   ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)"))))
+
+(add-hook 'on-first-input-hook
+		  (lambda ()
+			(setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port))))
+
+;; (use-package socks
+;;   :if IS-MAC
+;;   :defer 2
+;;   :custom
+;;   (url-gateway-method 'socks)
+;;   (socks-noproxy '("localhost"))
+;;   (socks-server `("Default server" ,my/proxy-ip ,(string-to-number my/proxy-port) 5))
+;;   (url-proxy-services `(("http" . ,(concat my/proxy-ip ":" my/proxy-port))
+;;                         ("https" . ,(concat my/proxy-ip ":" my/proxy-port))
+;;                         ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)")))
+;;   :config
+;;   (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port)))
 
 ;; start server, so can use emaclient to edit file outside emacs
-(add-hook 'after-init-hook (lambda ()
-							 (require 'server)
-                             (unless (server-running-p)
-                               (server-start))))
+(add-hook 'on-first-input-hook (lambda ()
+								 (require 'server)
+								 (unless (server-running-p)
+								   (server-start))))
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh
