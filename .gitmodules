@@ -622,3 +622,6 @@
 [submodule "packages/olivetti"]
 	path = packages/olivetti
 	url = https://github.com/rnkn/olivetti.git
+[submodule "packages/org-catch"]
+	path = packages/org-catch
+	url = https://github.com/ergopractice/org-catch.git
