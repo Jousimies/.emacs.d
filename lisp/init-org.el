@@ -79,11 +79,6 @@
           ("l" "Inbox with link"
            entry (file ,(concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
-          ("a" "Anki")
-          ("aj" "结构设计"
-           plain (file "~/Nextcloud/L.Personal.Galaxy/denote/term/20240908T111454--结构设计的相关概念__Anki.org")
-           "%?" :time-prompt t :tree-type week :hook (lambda ()
-                                                       (yas-expand-snippet (yas-lookup-snippet "anki-basic" 'org-mode))))
 		  ("w" "Work Logs")
           ("wc" "With Clock"
            entry
