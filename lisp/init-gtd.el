@@ -241,6 +241,8 @@
   "生成 AppleScript 并异步执行它。"
   (let ((apple-script (my/create-applescript start end summary)))
     (alert (format "Start Sync to Calendar: %s" summary))
+	(unless (featurep 'async)
+	  (require 'async))
     (async-start
      `(lambda ()
         (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
