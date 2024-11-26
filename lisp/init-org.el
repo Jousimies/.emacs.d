@@ -79,17 +79,6 @@
           ("l" "Inbox with link"
            entry (file ,(concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
-		  ("w" "Work Logs")
-          ("wc" "With Clock"
-           entry
-           (file+olp+datetree ,(expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))
-           "* %?\n%u\n"
-           :clock-in t :clock-keep t :jump-to-captured t)
-          ("wp" "Pick date"
-           entry
-           (file+olp+datetree ,(expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))
-           "* %?\n%u\n"
-           :time-prompt t :jump-to-captured t)
 		  ("r" "Review"
            plain
            (file+olp+datetree ,(expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy))
