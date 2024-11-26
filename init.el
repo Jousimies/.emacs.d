@@ -38,7 +38,7 @@
 (require 'init-builtin)
 
 ;; UI
-(require 'init-dashboard)
+;; (require 'init-dashboard)
 (require 'init-tab)
 (require 'init-modeline)
 (require 'init-buffer)
@@ -76,7 +76,7 @@
 
 ;; Applications
 (require 'init-telega)
-;; (require 'init-mail)
+(require 'init-mail)
 (require 'init-elfeed)
 ;; (require 'init-pass)
 

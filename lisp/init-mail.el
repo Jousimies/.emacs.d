@@ -8,10 +8,12 @@
 
 (defvar mu4e-outlook "duan_n@outlook.com"
   "My outlook mail address.")
+
 (use-package auth-source
   :commands auth-source-pick-first-password)
-(defvar mu4e-gmail (auth-source-pick-first-password :host "mu4e" :user "gmail")
-  "My gmail mail address.")
+
+(defvar mu4e-mail-p (auth-source-pick-first-password :host "mail-p" :user "mail")
+  "My private mail address.")
 
 (use-package mu4e
   :load-path "/opt/homebrew/share/emacs/site-lisp/mu4e/"
@@ -69,10 +71,8 @@
   ;; (add-to-list 'my/tab-bar-right-string '((:eval (mu4e--modeline-string))))
   ;; mu4e-folders
   (setq mu4e-maildir-shortcuts
-        '(("/outlook/INBOX" . ?o)
-          ("/outlook/Sent Messages" . ?O)
-          ("/[Gmail]/INBOX" . ?g)
-          ("/[Gmail]/Sent Mail" . ?G)))
+        '(("/mail/INBOX" . ?i)
+          ("/mail/垃圾邮件" . ?l)))
   (setq mu4e-attachment-dir "~/Downloads/")
   ;; mu4e-helpers
   (setq mu4e-use-fancy-chars t)
@@ -126,38 +126,20 @@
   ;; mu4e-context
   (setq mu4e-contexts
         `(,(make-mu4e-context
-            :name "Outlook"
+            :name "Mail"
             :enter-func
-            (lambda () (mu4e-message "Enter outlook context"))
+            (lambda () (mu4e-message "Enter mail context"))
             :leave-func
-            (lambda () (mu4e-message "Leave outlook context"))
+            (lambda () (mu4e-message "Leave mail context"))
             :match-func
             (lambda (msg)
               (when msg
                 (mu4e-message-contact-field-matches msg
                                                     :to 'mu4e-outlook)))
-            :vars `((user-mail-address . ,mu4e-outlook)
-                    (mu4e-drafts-folder . "/outlook/Drafts")
-                    (mu4e-refile-folder . "/outlook/Archive")
-                    (mu4e-sent-folder . "/outlook/Sent Messages")
-                    (mu4e-trash-folder . "/outlook/Deleted Messages")))
-
-          ,(make-mu4e-context
-            :name "gmail"
-            :enter-func
-            (lambda () (mu4e-message "Enter gmail context"))
-            :leave-func
-            (lambda () (mu4e-message "Leave gmail context"))
-            :match-func
-            (lambda (msg)
-              (when msg
-                (mu4e-message-contact-field-matches msg
-                                                    :to 'mu4e-gmail)))
-            :vars `((user-mail-address . ,mu4e-gmail)
-                    (mu4e-drafts-folder . "/gmail/Drafts")
-                    (mu4e-refile-folder . "/gmail/Archive")
-                    (mu4e-sent-folder . "/gmail/Sent")
-                    (mu4e-trash-folder . "/gmail/Trash")))))
+            :vars `((user-mail-address . ,mu4e-mail-p)
+                    (mu4e-drafts-folder . "/mail/草稿箱")
+                    (mu4e-sent-folder . "/mail/已发送")
+                    (mu4e-trash-folder . "/mail/已删除")))))
   (setq mu4e-context-policy 'pick-first))
 
 (run-with-idle-timer 4 nil (lambda ()

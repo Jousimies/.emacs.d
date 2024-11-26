@@ -160,8 +160,8 @@
           (delete-window window)))))
   (advice-add #'keyboard-quit :before #'+popper-close-window-hack))
 
-(use-package popper-echo
-  :hook (popper-mode . popper-echo-mode))
+;; (use-package popper-echo
+;;   :hook (popper-mode . popper-echo-mode))
 
 ;; https://github.com/roife/.emacs.d/blob/323536f51674ef68cad78f72eef31c8b49795518/core/init-ibuffer.el#L8
 (defun +ibuffer-visit-buffer-in-popper ()

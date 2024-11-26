@@ -219,7 +219,7 @@
 ;; transient
 (global-set-key (kbd "s-b") #'my/bibtex-menu)
 (global-set-key (kbd "s-l") #'my/links-menu)
-;; (global-set-key (kbd "s-m") #'mu4e)
+(global-set-key (kbd "s-m") #'mu4e)
 
 ;; Notes
 (global-set-key (kbd "s-n s-n") #'consult-notes)

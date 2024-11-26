@@ -316,5 +316,10 @@
                                          (when time-zone
                                            (format "(%s)" time-zone)))))
 
+;; Tramp
+(with-eval-after-load 'tramp
+ (setq tramp-persistency-file-name (expand-file-name "tramp" cache-directory)))
+
+
 (provide 'init-builtin)
 ;;; init-builtin.el ends here
