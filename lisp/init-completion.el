@@ -219,35 +219,35 @@
                ("C-c C-e" . embark-export)
                ("C-c C-l" . embark-collect))))
 
-(use-package completion-preview
-  :hook (on-first-input . global-completion-preview-mode)
-  :custom
-  (completion-preview-ignore-case t)
-  (completion-preview-minimum-symbol-length 1))
-
-;; (use-package corfu
-;;   :load-path "packages/corfu/"
-;;   :hook (on-first-buffer . global-corfu-mode)
+;; (use-package completion-preview
+;;   :hook (on-first-input . global-completion-preview-mode)
 ;;   :custom
-;;   (corfu-cycle t)
-;;   (corfu-auto t)
-;;   (corfu-auto-prefix 1)
-;;   (corfu-auto-delay 0.0)
-;;   (corfu-preselect 'valid)
-;;   (corfu-quit-no-match t))
+;;   (completion-preview-ignore-case t)
+;;  (completion-preview-minimum-symbol-length 1))
 
-;; (use-package nerd-icons-corfu
-;;   :load-path "packages/nerd-icons-corfu/")
-;; (with-eval-after-load 'corfu
-;;   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+(use-package corfu
+  :load-path "packages/corfu/"
+  :hook (on-first-buffer . global-corfu-mode)
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-prefix 1)
+  (corfu-auto-delay 0.0)
+  (corfu-preselect 'valid)
+  (corfu-quit-no-match t))
 
-;; (use-package corfu-echo
-;;   :load-path "packages/corfu/extensions/"
-;;   :hook (corfu-mode . corfu-echo-mode))
+(use-package nerd-icons-corfu
+  :load-path "packages/nerd-icons-corfu/")
+(with-eval-after-load 'corfu
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
-;; (use-package corfu-popupinfo
-;;   :load-path "packages/corfu/extensions/"
-;;   :hook (corfu-mode . corfu-popupinfo-mode))
+(use-package corfu-echo
+  :load-path "packages/corfu/extensions/"
+  :hook (corfu-mode . corfu-echo-mode))
+
+(use-package corfu-popupinfo
+  :load-path "packages/corfu/extensions/"
+  :hook (corfu-mode . corfu-popupinfo-mode))
 
 (use-package cape
   :load-path "packages/cape/"
