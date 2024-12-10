@@ -5,7 +5,7 @@
 ;; rm -rf build
 ;; mkdir build
 ;; cd build
-;; cmake -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR=/opt/homebrew/opt/openssl/ -DCMAKE_INSTALL_PREFIX:PATH=../tdlib ..
+;; cmake -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR=/opt/homebrew/opt/openssl/ -DCMAKE_INSTALL_PREFIX:PATH=/usr/local ..
 ;; cmake --build . --target install
 
 
