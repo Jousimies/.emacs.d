@@ -196,26 +196,66 @@
   :hook (prog-mode . rainbow-mode))
 
 ;; pulse
-(defun my-pulse-momentary (&rest _)
-  "Pulse the current line."
-  (pulse-momentary-highlight-one-line (point) 'next-error))
+(use-package pulse
+  :custom-face
+  (pulse-highlight-start-face ((t (:inherit region :background unspecified))))
+  (pulse-highlight-face ((t (:inherit region :background unspecified :extend t))))
+  :hook (((dumb-jump-after-jump imenu-after-jump) . +recenter-and-pulse)
+         ((bookmark-after-jump magit-diff-visit-file next-error) . +recenter-and-pulse-line))
+  :init
+  (setq pulse-delay 0.1
+        pulse-iterations 2)
 
-(defun my-recenter (&rest _)
-  "Recenter and pulse the current line."
-  (recenter)
-  (my-pulse-momentary))
+  (defun +pulse-momentary-line (&rest _)
+    "Pulse the current line."
+    (pulse-momentary-highlight-one-line (point)))
 
-(dolist (cmd '(recenter-top-bottom
-               other-window windmove-do-window-select
-               pop-to-mark-command pop-global-mark
-               pager-page-down pager-page-up
-               ace-window
-               my/yank))
-  (advice-add cmd :after #'my-pulse-momentary))
-(add-hook 'bookmark-after-jump-hook #'my-recenter)
-(add-hook 'next-error-hook #'my-recenter)
-(add-hook 'other-window-hook #'my-recenter)
-(add-hook 'imenu-after-jump-hook #'my-recenter)
+  (defun +pulse-momentary (&rest _)
+    "Pulse the region or the current line."
+    (if (fboundp 'xref-pulse-momentarily)
+        (xref-pulse-momentarily)
+      (+pulse-momentary-line)))
+
+  (defun +recenter-and-pulse(&rest _)
+    "Recenter and pulse the region or the current line."
+    (recenter)
+    (+pulse-momentary))
+
+  (defun +recenter-and-pulse-line (&rest _)
+    "Recenter and pulse the current line."
+    (recenter)
+    (+pulse-momentary-line))
+
+  (dolist (cmd '(recenter-top-bottom
+                 other-window switch-to-buffer
+                 aw-select toggle-window-split
+                 windmove-do-window-select
+                 pager-page-down pager-page-up
+                 treemacs-select-window
+                 tab-bar-select-tab))
+    (advice-add cmd :after #'+pulse-momentary-line))
+
+  (dolist (cmd '(pop-to-mark-command
+                 pop-global-mark
+                 goto-last-change))
+    (advice-add cmd :after #'+recenter-and-pulse))
+
+  (dolist (cmd '(symbol-overlay-basic-jump
+                 compile-goto-error))
+    (advice-add cmd :after #'+recenter-and-pulse-line)))
+
+(use-package goggles
+  :load-path "packages/goggles/"
+  :hook ((prog-mode text-mode) . goggles-mode)
+  :config
+  (setq-default goggles-pulse nil))
+
+(use-package auto-dim-other-buffers
+  :load-path "packages/auto-dim-other-buffers.el/"
+  :hook (after-init . auto-dim-other-buffers-mode)
+  :config
+  (setq auto-dim-other-buffers-dim-on-focus-out nil
+        auto-dim-other-buffers-dim-on-switch-to-minibuffer nil))
 
 ;; Make region read-only or writable
 (defun make-region-read-only (beg end)

@@ -625,3 +625,12 @@
 [submodule "packages/org-catch"]
 	path = packages/org-catch
 	url = https://github.com/ergopractice/org-catch.git
+[submodule "packages/org-srs"]
+	path = packages/org-srs
+	url = https://github.com/bohonghuang/org-srs.git
+[submodule "packages/goggles"]
+	path = packages/goggles
+	url = https://github.com/minad/goggles.git
+[submodule "packages/auto-dim-other-buffers.el"]
+	path = packages/auto-dim-other-buffers.el
+	url = https://github.com/mina86/auto-dim-other-buffers.el.git
