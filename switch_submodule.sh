@@ -13,11 +13,9 @@ switch_branch() {
 
   if git branch -r | grep -q "origin/main"; then
     git checkout main
-    git pull origin main
     echo "Switched $submodule_path to main"
   elif git branch -r | grep -q "origin/master"; then
     git checkout master
-    git pull origin master
     echo "Switched $submodule_path to master"
   else
     echo "Neither main nor master branch exists in $submodule_path. Skipping."

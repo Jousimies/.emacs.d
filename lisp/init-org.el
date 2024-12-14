@@ -24,6 +24,7 @@
 		  org-highlight-latex-and-related '(latex script)
 		  org-enforce-todo-dependencies t
 		  org-enforce-todo-checkbox-dependencies t
+		  org-export-allow-bind-keywords t
 		  org-tags-sort-function 'org-string-collate-greaterp
 		  org-lowest-priority ?D
 		  org-priority-default ?C
@@ -254,7 +255,7 @@
                                    (setq-local truncate-lines t)))
   :custom
   (imenu-list-position 'left)
-  (imenu-list-mode-line-format nil))
+  (imenu-list-mode-line-format '("%e" my/winum)))
 
 (use-package olivetti
   :load-path "packages/olivetti/"

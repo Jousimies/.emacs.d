@@ -73,8 +73,7 @@
   (with-eval-after-load 'tab-bar
     (defun tab-bar-format-persp ()
       (setq global-mode-string (delete '(:eval (persp-mode-line)) global-mode-string))
-      `((global menu-item ,(format-mode-line (persp-mode-line)) ignore)))
-	)
+      `((global menu-item ,(format-mode-line (persp-mode-line)) ignore))))
   (dotimes (i 9)
 	(global-set-key (kbd (concat "M-s-" (number-to-string (1+ i))))
 					`(lambda () (interactive) (persp-switch-by-number ,(1+ i))))))
@@ -130,7 +129,6 @@
           "\\*lsp-help\\*$" "\\*lsp session\\*$"
           "\\*quickrun\\*$"
 		  "\\*One-Key\\*$"
-		  "\\*gt-result\\*$"
           "\\*tldr\\*$"
           "\\*vc-.*\\*$"
           "^\\*elfeed-entry\\*$"

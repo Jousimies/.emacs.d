@@ -4,6 +4,8 @@
 
 ;;; Code:
 
+(add-to-list 'load-path "~/.emacs.d/packages/citeproc-el/")
+(add-to-list 'load-path "~/.emacs.d/packages/queue/")
 ;; ox-latex 是 Emacs 中 Org-mode 导出框架中的一个子模块
 ;; minted 需要安装 Pygments, brew install pygments
 (with-eval-after-load 'ox-latex
@@ -128,6 +130,9 @@
   (reftex-toc-follow-mode t)
   (reftex-toc-split-windows-horizontally t)
   (reftex-toc-split-windows-fraction 0.25))
+
+(use-package consult-reftex
+  :load-path "~/.emacs.d/packages/consult-reftex/")
 
 ;; brew install typst
 ;; set `treesit-language-source-alist', see init-lsp.el

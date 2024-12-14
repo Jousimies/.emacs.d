@@ -217,7 +217,7 @@ This function requires ImageMagick's convert utility to be installed and availab
          ("C-x C-j" . consult-dir-jump-file)))
 
 (use-package dired-sidebar
-  :load-path "packages/dired-sidebar/"
+  :load-path "packages/dired-sidebar/" "packages/dired-hacks/"
   :bind ("C-x C-n" . dired-sidebar-toggle-sidebar)
   :custom
   (dired-sidebar-mode-line-format '("%e" my/winum "丨" mode-line-front-space mode-line-buffer-identification " " mode-line-end-spaces)))

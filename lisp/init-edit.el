@@ -110,20 +110,10 @@
                                            try-complete-lisp-symbol-partially
                                            try-complete-lisp-symbol)))
 
-(use-package electric
-  :hook ((after-init . (lambda ()
-                         (progn
-                           (electric-pair-mode 1)
-                           (electric-quote-mode 1)
-                           (electric-indent-mode 1))))
-		 (org-mode . (lambda ()
-					   (progn
-						 (electric-pair-local-mode -1)
-						 (electric-quote-local-mode -1)
-						 (electric-indent-local-mode -1))))))
-
-(use-package delsel
-  :hook (after-init . delete-selection-mode))
+(add-hook 'after-init-hook #'electric-pair-mode)
+(add-hook 'after-init-hook #'electric-quote-mode)
+(add-hook 'after-init-hook #'electric-indent-mode)
+(add-hook 'after-init-hook #'delete-selection-mode)
 
 (use-package rime-regexp
   :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"

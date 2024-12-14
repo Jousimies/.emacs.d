@@ -77,9 +77,10 @@
 (use-package nov
   :load-path ("packages/nov.el/" "packages/esxml/")
   :mode (".epub" . nov-mode)
-  :config
-  (setq nov-unzip-program (executable-find "bsdtar")
-        nov-unzip-args '("-xC" directory "-f" filename)))
+  :custom
+  (nov-unzip-program (executable-find "bsdtar"))
+  (nov-unzip-args '("-xC" directory "-f" filename))
+  (nov-save-place-file (expand-file-name "nov_place" cache-directory)))
 
 ;; https://gist.github.com/krisbalintona/f4554bb8e53c27c246ae5e3c4ff9b342
 ;;;###autoload

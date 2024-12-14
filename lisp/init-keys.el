@@ -183,7 +183,7 @@
 	("e" "Example sentences" powerthesaurus-lookup-sentences-dwim :transient nil)]
    ["Translate"
 	("w" "Speack" gt-do-speak :transient nil)
-	("l" "Translate" my/translate :transient nil)
+	("l" "Translate" gt-do-translate :transient nil)
 	("W" "Write Good" writegood-mode :transient nil)
 	("h" "LSP Helper" lsp-bridge-toggle-sdcv-helper :transient nil)]
    ["OSX Dictionary"
@@ -226,8 +226,8 @@
 ;; (keymap-set global-map "s-n n" my/new-note-prefix-map)
 (global-set-key (kbd "s-n a") #'ibooks-annot/extract-annotations-to-note)
 (global-set-key (kbd "s-n n") #'denote)
-(global-set-key (kbd "s-n c") #'denote-fz-insert-child-here)
-(global-set-key (kbd "s-n s") #'denote-fz-insert-sibling-here)
+(global-set-key (kbd "s-n c") #'denote-fz-insert-dwim)
+(global-set-key (kbd "s-n s") #'denote-fz-insert-at-level-dwim)
 (global-set-key (kbd "s-n b") #'my/new-blog)
 (global-set-key (kbd "s-n e") #'denote-org-extras-extract-org-subtree)
 (global-set-key (kbd "s-n m") #'my/new-meeting)

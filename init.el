@@ -38,7 +38,7 @@
 (require 'init-builtin)
 
 ;; UI
-;; (require 'init-dashboard)
+(require 'init-dashboard)
 (require 'init-tab)
 (require 'init-modeline)
 (require 'init-buffer)

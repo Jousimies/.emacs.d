@@ -150,6 +150,8 @@
 (global-set-key (kbd "C-<f2>") #'my/increase-alpha-background)
 
 ;; Proxy
+(add-hook 'on-first-input-hook (lambda ()
+								 (require 'socks)))
 (with-eval-after-load 'socks
   (setopt url-gateway-method 'socks)
   (setopt socks-noproxy '("localhost"))

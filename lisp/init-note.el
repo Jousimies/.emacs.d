@@ -19,7 +19,7 @@
                ("r" . denote-dired-rename-marked-files-with-keywords)))
   :hook (dired-mode . denote-dired-mode-in-directories)
   :custom
-  (denote-rename-no-confirm t)
+  (denote-rename-confirmations nil)
   (denote-org-store-link-to-heading nil)
   (denote-prompts '(title keywords subdirectory signature))
   (denote-directory (expand-file-name "denote" my-galaxy))
@@ -281,11 +281,7 @@ DAYS is the optional number of days ago, defaulting to 7."
 
 (use-package denote-fz
   :load-path "packages/denote-folgezettel/"
-  :commands (denote-fz-insert-child
-			 denote-fz-insert-sibling
-			 denote-fz-insert-child-here
-			 denote-fz-insert-sibling-here
-			 denote-fz-dired-mode))
+  :hook (org-mode . denote-fz-dired-mode))
 
 (defun my/literature-entry (url title keywords file-path file-new-path)
   "Save a literature entry and add it to the 'literature' denote database."

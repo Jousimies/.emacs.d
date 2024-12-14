@@ -6,7 +6,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/packages/parsebib/")
 
-(setopt my/reference-lists `(,(concat my-galaxy "/bibtexs/References.bib")
+(setopt my/reference-lists `(,(concat my-galaxy "/bibtexs/My Library.bib")
                              ,(concat my-galaxy "/bibtexs/Books.bib")
 							 ,(concat my-galaxy "/bibtexs/Seismic.bib")))
 

@@ -634,3 +634,6 @@
 [submodule "packages/auto-dim-other-buffers.el"]
 	path = packages/auto-dim-other-buffers.el
 	url = https://github.com/mina86/auto-dim-other-buffers.el.git
+[submodule "packages/consult-reftex"]
+	path = packages/consult-reftex
+	url = https://github.com/karthink/consult-reftex.git
