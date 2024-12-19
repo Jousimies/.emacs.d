@@ -54,6 +54,9 @@
         redisplay-skip-fontification-on-input t
         cursor-in-non-selected-windows nil)
 
+(add-hook 'org-mode-hook (lambda()
+						   (setq-local tab-width 8)))
+
 (setq-default initial-scratch-message nil)
 
 ;; Language Environment
@@ -70,7 +73,7 @@
 ;; `set-face-attribute' 设置默认字体
 ;; 对于中英文字体无法做到等宽和等高，两者只能取其一。相对而言，等宽更重要一些。
 ;; 不等高会导致 modeline 跳动，可以在 modeline 中插入中文字体“丨”[gun]
-;; 字体搭配1: Cascadia Next SC
+;; 字体搭配1: Cascadia Next SC / SimSun
 ;; 字体搭配2: Latin Modern Mono 和 Source Han Serif SC
 ;; 字体搭配3: PragmataPro 和 SimHei
 (when IS-MAC
@@ -88,13 +91,14 @@
 ;; `cjk-misc': CJK（中日韩）字符集中的其他字符，包含了少量的中文、日文、韩文字符
 ;; `kana': 日文假名字符集，但在处理与中文相关的文档时可能偶尔用到
 ;; `bopomofo': 注音符号字符集，用于台湾地区的汉字注音
+(setopt use-default-font-for-symbols nil)
 (when IS-MAC
-  (dolist (charset '(kana han cjk-misc bopomofo))
+  (dolist (charset '(kana han cjk-misc bopomofo symbol))
     (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "Cascadia Next SC"))))
+                      (font-spec :family "SimSun"))))
 
 (when IS-WINDOWS
-  (dolist (charset '(kana han cjk-misc bopomofo))
+  (dolist (charset '(kana han cjk-misc bopomofo symbol))
     (set-fontset-font (frame-parameter nil 'font) charset
                       (font-spec :family "SimHei"))))
 ;; Emoji

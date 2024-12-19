@@ -240,12 +240,13 @@
   :config
   (setq-default goggles-pulse nil))
 
-(use-package auto-dim-other-buffers
-  :load-path "packages/auto-dim-other-buffers.el/"
-  :hook (after-init . auto-dim-other-buffers-mode)
-  :config
-  (setq auto-dim-other-buffers-dim-on-focus-out nil
-        auto-dim-other-buffers-dim-on-switch-to-minibuffer nil))
+;; Use mode-line indicate which buffer cursor located
+;; (use-package auto-dim-other-buffers
+;;   :load-path "packages/auto-dim-other-buffers.el/"
+;;   :hook (after-init . auto-dim-other-buffers-mode)
+;;   :config
+;;   (setq auto-dim-other-buffers-dim-on-focus-out nil
+;;         auto-dim-other-buffers-dim-on-switch-to-minibuffer nil))
 
 ;; Make region read-only or writable
 (defun make-region-read-only (beg end)

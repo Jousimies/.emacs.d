@@ -637,3 +637,9 @@
 [submodule "packages/consult-reftex"]
 	path = packages/consult-reftex
 	url = https://github.com/karthink/consult-reftex.git
+[submodule "packages/org-supertag"]
+	path = packages/org-supertag
+	url = https://github.com/yibie/org-supertag.git
+[submodule "packages/image-slicing"]
+	path = packages/image-slicing
+	url = https://github.com/ginqi7/image-slicing.git

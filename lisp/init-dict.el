@@ -118,6 +118,14 @@
                                        (height . 0.3)))
   (setq gt-buffer-render-follow-p t)
   (setq gt-langs '("en" "zh"))
+  (setq gt-buffer-render-window-config
+          '((display-buffer-reuse-window display-buffer-in-direction)
+            (direction . bottom)
+            (window-height . 0.4)))
+  (setq gt-pop-posframe-forecolor (face-foreground 'tooltip nil t)
+        gt-pop-posframe-backcolor (face-background 'tooltip nil t))
+  (when (facep 'posframe-border)
+      (setq gt-pin-posframe-bdcolor (face-background 'posframe-border nil t)))
 
   (setq gt-default-translator (gt-translator :engines (gt-google-engine :cache 'word)
 											 :render (list (gt-posframe-pop-render :if 'word :frame-params (list :border-width 0 :border-color "red"))

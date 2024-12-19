@@ -49,12 +49,11 @@
 
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 
-;; (use-package nerd-icons-completion
-;;   :load-path "packages/nerd-icons-completion/"
-;;   :hook (minibuffer-setup . nerd-icons-completion-mode))
+(use-package nerd-icons-completion
+  :load-path "packages/nerd-icons-completion/"
+  :hook (minibuffer-setup . nerd-icons-completion-mode))
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
-
 ;; re-use vertico-mode instead of `icomplete-fido-mode'.
 ;; Due to icomplete has compatible problem with citar, a references manager.
 ;; use `M-RET' to exit minibuffer input.
@@ -64,7 +63,6 @@
 ;;   :custom
 ;;   (icomplete-in-buffer t))
 
-;; (vertico-mode 0)
 (use-package vertico
   :load-path "packages/vertico/"
   :hook (on-first-input . vertico-mode))
@@ -79,26 +77,17 @@
   :load-path "packages/orderless/"
   :custom
   (orderless-matching-styles '(orderless-prefixes orderless-regexp))
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion)))))
-
-;; (add-to-list 'load-path "~/.emacs.d/packages/orderless/")
-;; (require 'orderless)
-;; (setq orderless-matching-styles '(orderless-prefixes orderless-regexp))
-;; (with-eval-after-load 'orderless
-;;   (setq completion-styles '(orderless basic))
-;;   (setq completion-category-overrides '((file (styles basic partial-completion)))))
-;; (setq completion-styles '(basic substring initials flex orderless))
-;; (setq completion-category-defaults nil)
-;; (setq completion-category-overrides
-;;         '((file (styles . (basic partial-completion orderless)))
-;;           (bookmark (styles . (basic substring)))
-;;           (library (styles . (basic substring)))
-;;           (embark-keybinding (styles . (basic substring)))
-;;           (imenu (styles . (basic substring orderless)))
-;;           (consult-location (styles . (basic substring orderless)))
-;;           (kill-ring (styles . (emacs22 orderless)))
-;;           (eglot (styles . (emacs22 substring orderless)))))
+  (completion-styles '(basic substring initials flex orderless))
+  (completion-category-defaults nil)
+  (completion-category-overrides
+        '((file (styles . (basic partial-completion orderless)))
+          (bookmark (styles . (basic substring)))
+          (library (styles . (basic substring)))
+          (embark-keybinding (styles . (basic substring)))
+          (imenu (styles . (basic substring orderless)))
+          (consult-location (styles . (basic substring orderless)))
+          (kill-ring (styles . (emacs22 orderless)))
+          (eglot (styles . (emacs22 substring orderless))))))
 
 ;; https://emacs-china.org/t/macos-save-silently-t/24086
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
@@ -116,6 +105,7 @@
 
 (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
+(autoload 'list-colors-duplicates "facemenu")
 (use-package consult
   :load-path "packages/consult/"
   :hook (completion-list-mode . consult-preview-at-point-mode)
@@ -133,7 +123,39 @@
          :map minibuffer-mode-map
          ("C-r" . consult-history))
   :config
-  (setq consult-preview-key "C-."))
+  (defvar consult-colors-history nil
+	"History for `consult-colors-emacs' and `consult-colors-web'.")
+
+  (defun consult-colors-emacs (color)
+	"Show a list of all supported colors for a particular frame.
+
+You can insert the name (default), or insert or kill the hexadecimal or RGB
+value of the selected COLOR."
+	(interactive
+	 (list (consult--read (list-colors-duplicates (defined-colors))
+                          :prompt "Emacs color: "
+                          :require-match t
+                          :category 'color
+                          :history '(:input consult-colors-history))))
+	(insert color))
+
+  (defun consult-colors--web-list nil
+	"Return list of CSS colors for `counsult-colors-web'."
+	(require 'shr-color)
+	(sort (mapcar #'downcase (mapcar #'car shr-color-html-colors-alist)) #'string-lessp))
+
+  (defun consult-colors-web (color)
+	"Show a list of all CSS colors.\
+
+You can insert the name (default), or insert or kill the hexadecimal or RGB
+value of the selected COLOR."
+	(interactive
+	 (list (consult--read (consult-colors--web-list)
+                          :prompt "Color: "
+                          :require-match t
+                          :category 'color
+                          :history '(:input consult-colors-history))))
+	(insert color)))
 ;; https://takeonrules.com/2024/06/08/adding-a-consult-function-for-visualizing-xref/
 ;; Adding a Consult Function for Visualizing Xref
 ;; (defvar consult--xref-history nil
@@ -222,23 +244,31 @@
 ;; (use-package completion-preview
 ;;   :hook (on-first-input . global-completion-preview-mode)
 ;;   :custom
+;;   (completion-preview-idle-delay 1)
 ;;   (completion-preview-ignore-case t)
-;;  (completion-preview-minimum-symbol-length 1))
+;;   (completion-preview-minimum-symbol-length 3))
 
 (use-package corfu
   :load-path "packages/corfu/"
   :hook (on-first-buffer . global-corfu-mode)
+  :custom-face
+  (corfu-border ((t (:inherit region :background unspecified))))
+  :bind ("M-/" . completion-at-point)
   :custom
   (corfu-cycle t)
   (corfu-auto t)
   (corfu-auto-prefix 1)
-  (corfu-auto-delay 0.0)
+  (corfu-auto-delay 0.2)
   (corfu-preselect 'valid)
-  (corfu-quit-no-match t))
+  (corfu-quit-no-match 'separator)
+  (text-mode-ispell-word-completion nil)
+  (read-extended-command-predicate #'command-completion-default-include-p)
+  :config
+  (keymap-unset corfu-map "RET"))
 
-(use-package nerd-icons-corfu
-  :load-path "packages/nerd-icons-corfu/")
+(add-to-list 'load-path "~/.emacs.d/packages/nerd-icons-corfu/")
 (with-eval-after-load 'corfu
+  (require 'nerd-icons-corfu)
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package corfu-echo
@@ -249,14 +279,28 @@
   :load-path "packages/corfu/extensions/"
   :hook (corfu-mode . corfu-popupinfo-mode))
 
+;; (use-package cape
+;;   :load-path "packages/cape/"
+;;   :init
+;;   (add-hook 'completion-at-point-functions #'cape-dabbrev)
+;;   (add-hook 'completion-at-point-functions #'cape-file)
+;;   (add-hook 'completion-at-point-functions #'cape-dict))
+;; (global-set-key (kbd "C-c p") #'cape-prefix-map)
 (use-package cape
   :load-path "packages/cape/"
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
-  (add-hook 'completion-at-point-functions #'cape-dict))
+  (add-hook 'completion-at-point-functions #'cape-elisp-block)
+  (add-hook 'completion-at-point-functions #'cape-keyword)
+  (add-hook 'completion-at-point-functions #'cape-abbrev)
 
-(global-set-key (kbd "C-c p") #'cape-prefix-map)
+  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
+
+(use-package cape-keyword
+  :load-path "packages/cape/"
+  :init
+  (add-hook 'completion-at-point-functions #'cape-keyword))
 
 (use-package which-key
   :hook (after-init . which-key-mode)

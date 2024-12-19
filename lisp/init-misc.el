@@ -4,6 +4,9 @@
 
 ;;; Code:
 
+(use-package image-slicing
+  :load-path "~/.emacs.d/packages/image-slicing/"
+  :hook (org-mode . image-slicing-mode))
 
 (defun yt-set-time (time)
   "Set TIME in the YouTube link at point.)

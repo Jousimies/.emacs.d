@@ -206,7 +206,8 @@
   (show-paren-style 'parenthesis)
   (show-paren-context-when-offscreen 'overlay)
   (show-paren-highlight-openparen t)
-  (show-paren-when-point-inside-paren t))
+  (show-paren-when-point-inside-paren t)
+  (show-paren-when-point-in-periphery t))
 
 (add-hook 'on-first-buffer-hook (lambda ()
 								  (blink-cursor-mode -1)))
