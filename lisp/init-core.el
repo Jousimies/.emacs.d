@@ -24,38 +24,35 @@
 
 ;;; Code:
 
-(setopt ;; initial-major-mode 'fundamental-mode
-        inhibit-startup-screen t
-        ;; (setq ring-bell-function 'ignore)
-        ring-bell-function (lambda ()
-                             (invert-face 'mode-line)
-                             (run-with-timer 0.05 nil 'invert-face 'mode-line))
-        tab-width 4
-        use-file-dialog nil
-        use-dialog-box nil
-        use-short-answers t
-        read-process-output-max #x10000
-        create-lockfiles nil
-        recenter-redisplay nil
-        load-prefer-newer t
-        next-screen-context-lines 5
-        frame-inhibit-implied-resize t
-        inhibit-compacting-font-caches t
-        frame-resize-pixelwise t
-        inhibit-quit nil
-        fast-but-imprecise-scrolling t
-        scroll-preserve-screen-position 'always
-        auto-save-list-file-name nil
-        history-delete-duplicates t
-        bidi-display-reordering nil
-        read-buffer-completion-ignore-case t
-        delete-by-moving-to-trash t
-        minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
-        redisplay-skip-fontification-on-input t
-        cursor-in-non-selected-windows nil)
+(setopt inhibit-startup-screen t
+	;; initial-major-mode 'fundamental-mode
 
-(add-hook 'org-mode-hook (lambda()
-						   (setq-local tab-width 8)))
+	;; (setq ring-bell-function 'ignore)
+	ring-bell-function (lambda ()
+			     (invert-face 'mode-line)
+			     (run-with-timer 0.05 nil 'invert-face 'mode-line))
+	use-file-dialog nil
+	use-dialog-box nil
+	use-short-answers t
+	read-process-output-max #x10000
+	create-lockfiles nil
+	recenter-redisplay nil
+	load-prefer-newer t
+	next-screen-context-lines 5
+	frame-inhibit-implied-resize t
+	inhibit-compacting-font-caches t
+	frame-resize-pixelwise t
+	inhibit-quit nil
+	fast-but-imprecise-scrolling t
+	scroll-preserve-screen-position 'always
+	auto-save-list-file-name nil
+	history-delete-duplicates t
+	bidi-display-reordering nil
+	read-buffer-completion-ignore-case t
+	delete-by-moving-to-trash t
+	minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
+	redisplay-skip-fontification-on-input t
+	cursor-in-non-selected-windows nil)
 
 (setq-default initial-scratch-message nil)
 
@@ -155,18 +152,18 @@
 
 ;; Proxy
 (add-hook 'on-first-input-hook (lambda ()
-								 (require 'socks)))
+				 (require 'socks)))
 (with-eval-after-load 'socks
   (setopt url-gateway-method 'socks)
   (setopt socks-noproxy '("localhost"))
   (setopt socks-server `("Default server" ,my/proxy-ip ,(string-to-number my/proxy-port) 5))
   (setopt url-proxy-services `(("http" . ,(concat my/proxy-ip ":" my/proxy-port))
-							   ("https" . ,(concat my/proxy-ip ":" my/proxy-port))
-							   ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)"))))
+			       ("https" . ,(concat my/proxy-ip ":" my/proxy-port))
+			       ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)"))))
 
 (add-hook 'on-first-input-hook
-		  (lambda ()
-			(setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port))))
+	  (lambda ()
+	    (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port))))
 
 ;; (use-package socks
 ;;   :if IS-MAC
@@ -183,9 +180,9 @@
 
 ;; start server, so can use emaclient to edit file outside emacs
 (add-hook 'on-first-input-hook (lambda ()
-								 (require 'server)
-								 (unless (server-running-p)
-								   (server-start))))
+				 (require 'server)
+				 (unless (server-running-p)
+				   (server-start))))
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh

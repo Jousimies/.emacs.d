@@ -29,13 +29,13 @@
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 (add-hook 'minibuffer-mode-hook #'cursor-intangible-mode)
 (add-hook 'completion-list-mode-hook (lambda ()
-									   (setq-local truncate-lines t)))
+				       (setq-local truncate-lines t)))
 (add-hook 'minibuffer-setup-hook
           (lambda () (setq-local truncate-lines t)))
 
 (setopt tab-always-indent 'complete
-		tab-first-completion 'word-or-paren-or-punct
-		completions-detailed t
+	tab-first-completion 'word-or-paren-or-punct
+	completions-detailed t
         completions-format 'one-column
         completion-auto-select t
         completion-ignore-case t
@@ -71,37 +71,37 @@
   :load-path "packages/vertico/extensions/"
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
   :bind (:map vertico-map
-		 ("C-DEL" . vertico-directory-up)))
+	      ("C-DEL" . vertico-directory-up)))
 
 (use-package orderless
   :load-path "packages/orderless/"
   :custom
   (orderless-matching-styles '(orderless-prefixes orderless-regexp))
-  (completion-styles '(basic substring initials flex orderless))
+  (completion-styles '(basic substring initials orderless))
   (completion-category-defaults nil)
   (completion-category-overrides
-        '((file (styles . (basic partial-completion orderless)))
-          (bookmark (styles . (basic substring)))
-          (library (styles . (basic substring)))
-          (embark-keybinding (styles . (basic substring)))
-          (imenu (styles . (basic substring orderless)))
-          (consult-location (styles . (basic substring orderless)))
-          (kill-ring (styles . (emacs22 orderless)))
-          (eglot (styles . (emacs22 substring orderless))))))
+   '((file (styles . (basic partial-completion orderless)))
+     (bookmark (styles . (basic substring)))
+     (library (styles . (basic substring)))
+     (embark-keybinding (styles . (basic substring)))
+     (imenu (styles . (basic substring orderless)))
+     (consult-location (styles . (basic substring orderless)))
+     (kill-ring (styles . (emacs22 orderless)))
+     (eglot (styles . (emacs22 substring orderless))))))
 
 ;; https://emacs-china.org/t/macos-save-silently-t/24086
 (setq inhibit-message-regexps '("^Saving" "^Wrote"))
 (setq set-message-functions '(inhibit-message))
 
 (defun crm-indicator (args)
-    (cons (format "[`completing-read-multiple': %s]  %s"
-                  (propertize
-                   (replace-regexp-in-string
-                    "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                    crm-separator)
-                   'face 'error)
-                  (car args))
-          (cdr args)))
+  (cons (format "[`completing-read-multiple': %s]  %s"
+                (propertize
+                 (replace-regexp-in-string
+                  "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                  crm-separator)
+                 'face 'error)
+                (car args))
+        (cdr args)))
 
 (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
@@ -119,43 +119,43 @@
          ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
          ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
          ([remap yank-pop] . consult-yank-pop)
-		 ("M-g l" . consult-goto-line)
+	 ("M-g l" . consult-goto-line)
          :map minibuffer-mode-map
          ("C-r" . consult-history))
   :config
   (defvar consult-colors-history nil
-	"History for `consult-colors-emacs' and `consult-colors-web'.")
+    "History for `consult-colors-emacs' and `consult-colors-web'.")
 
   (defun consult-colors-emacs (color)
-	"Show a list of all supported colors for a particular frame.
+    "Show a list of all supported colors for a particular frame.
 
 You can insert the name (default), or insert or kill the hexadecimal or RGB
 value of the selected COLOR."
-	(interactive
-	 (list (consult--read (list-colors-duplicates (defined-colors))
+    (interactive
+     (list (consult--read (list-colors-duplicates (defined-colors))
                           :prompt "Emacs color: "
                           :require-match t
                           :category 'color
                           :history '(:input consult-colors-history))))
-	(insert color))
+    (insert color))
 
   (defun consult-colors--web-list nil
-	"Return list of CSS colors for `counsult-colors-web'."
-	(require 'shr-color)
-	(sort (mapcar #'downcase (mapcar #'car shr-color-html-colors-alist)) #'string-lessp))
+    "Return list of CSS colors for `counsult-colors-web'."
+    (require 'shr-color)
+    (sort (mapcar #'downcase (mapcar #'car shr-color-html-colors-alist)) #'string-lessp))
 
   (defun consult-colors-web (color)
-	"Show a list of all CSS colors.\
+    "Show a list of all CSS colors.\
 
 You can insert the name (default), or insert or kill the hexadecimal or RGB
 value of the selected COLOR."
-	(interactive
-	 (list (consult--read (consult-colors--web-list)
+    (interactive
+     (list (consult--read (consult-colors--web-list)
                           :prompt "Color: "
                           :require-match t
                           :category 'color
                           :history '(:input consult-colors-history))))
-	(insert color)))
+    (insert color)))
 ;; https://takeonrules.com/2024/06/08/adding-a-consult-function-for-visualizing-xref/
 ;; Adding a Consult Function for Visualizing Xref
 ;; (defvar consult--xref-history nil
@@ -184,7 +184,7 @@ value of the selected COLOR."
 (defun my/consult-find-attach ()
   (interactive)
   (let* ((dir (expand-file-name "attach" my-galaxy)))
-	(consult-find dir)))
+    (consult-find dir)))
 
 (use-package consult-imenu
   :bind ([remap imenu] . consult-imenu))
@@ -192,7 +192,7 @@ value of the selected COLOR."
 (use-package consult-org
   :after org
   :bind (:map org-mode-map
-			  ("M-g h" . consult-org-heading)))
+	      ("M-g h" . consult-org-heading)))
 ;; (use-package consult-omni
 ;;   :load-path "packages/consult-omni/" "packages/consult-omni/sources"
 ;;   :after consult
@@ -279,13 +279,6 @@ value of the selected COLOR."
   :load-path "packages/corfu/extensions/"
   :hook (corfu-mode . corfu-popupinfo-mode))
 
-;; (use-package cape
-;;   :load-path "packages/cape/"
-;;   :init
-;;   (add-hook 'completion-at-point-functions #'cape-dabbrev)
-;;   (add-hook 'completion-at-point-functions #'cape-file)
-;;   (add-hook 'completion-at-point-functions #'cape-dict))
-;; (global-set-key (kbd "C-c p") #'cape-prefix-map)
 (use-package cape
   :load-path "packages/cape/"
   :init
@@ -308,9 +301,9 @@ value of the selected COLOR."
   (which-key-idle-delay 0.1)
   :config
   (which-key-add-key-based-replacements
-	"C-c p" "cape"
-	"C-x t" "tab"
-	"C-c &" "yasnippet"))
+    "C-c p" "cape"
+    "C-x t" "tab"
+    "C-c &" "yasnippet"))
 
 
 (provide 'init-completion)

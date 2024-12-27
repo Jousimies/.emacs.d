@@ -6,7 +6,7 @@
 
 (use-package magit
   :load-path ("packages/magit/lisp" "packages/with-editor/lisp")
-  :bind ("C-x g" . magit)
+  :defer t
   :config
   (setq magit-git-executable "/usr/bin/git")
   (magit-add-section-hook 'magit-status-sections-hook
@@ -16,6 +16,9 @@
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpulled-from-pushremote)
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-upstream)
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote))
+
+(use-package magit-status
+  :bind ("C-x g" . magit-status-quick))
 
 (with-eval-after-load 'transient
   (setq transient-history-file (expand-file-name "transient/history.el" cache-directory)

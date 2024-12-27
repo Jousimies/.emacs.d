@@ -193,7 +193,7 @@ Explain your reasoning.  if you don’t know, say you don’t know.  Be willing 
   (mapc #'disable-theme custom-enabled-themes)
   (let* ((themes (if (eq ns-system-appearance 'light)
                      ef-themes-light-themes
-				   love/dark-themes))
+		   love/dark-themes))
          (theme (elt themes (random (length themes)))))
     (load-theme theme t)))
 

@@ -23,6 +23,7 @@
 ;;
 
 ;;; Code:
+(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
 
 ;; markdown
 (use-package markdown-mode

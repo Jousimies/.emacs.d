@@ -257,13 +257,19 @@
   (imenu-list-position 'left)
   (imenu-list-mode-line-format '("%e" my/winum)))
 
-(use-package olivetti
-  :load-path "packages/olivetti/"
-  :bind ("s-M-z" . olivetti-mode)
-  :hook ((olivetti-mode-on . (lambda ()
-                               (imenu-list-minor-mode 1)))
-         (olivetti-mode-off . (lambda ()
-                                (imenu-list-minor-mode -1)))))
+(defun my/toggle-visual-fill-center-imenu ()
+  (interactive)
+  (unless (featurep 'visual-fill-column)
+    (require 'visual-fill-column))
+  (setq visual-fill-column-center-text t)
+  (if (or visual-fill-column-mode imenu-list-minor-mode)
+      (progn
+	(visual-fill-column-mode -1)
+	(imenu-list-minor-mode -1))
+    (progn
+      (visual-fill-column-mode)
+      (imenu-list-minor-mode))))
+(global-set-key (kbd "s-M-z") #'my/toggle-visual-fill-center-imenu)
 
 (use-package form-feed
   :load-path "packages/form-feed/"
@@ -387,6 +393,10 @@
 ;; (with-eval-after-load 'org
 ;;   (require 'edraw-org)
 ;;   (edraw-org-setup-default))
+;; (use-package org-supertag
+;;   :load-path "~/.emacs.d/packages/org-supertag/" "~/.emacs.d/packages/ht.el/"
+;;   :hook (org-mode . org-supertag-setup))
+
 
 (provide 'init-org)
 ;;; init-org.el ends here.

@@ -8,7 +8,7 @@
 
 (setopt my/reference-lists `(,(concat my-galaxy "/bibtexs/My Library.bib")
                              ,(concat my-galaxy "/bibtexs/Books.bib")
-							 ,(concat my-galaxy "/bibtexs/Seismic.bib")))
+			     ,(concat my-galaxy "/bibtexs/Seismic.bib")))
 
 (with-eval-after-load 'oc
   (setq org-cite-global-bibliography my/reference-lists))
@@ -30,9 +30,9 @@
   :commands citar-open-files citar-open citar-create-note citar-insert-citation
   :custom
   (citar-templates '((main . "${=type=:12}|${date year issued:4}| ${title:80}")
-					 (suffix . " |${=key= id:15} |${tags keywords:*} |${author editor:20%sn}") ;
-					 (preview . "${author editor:%etal} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.")
-					 (note . "Notes on ${author editor:%etal}, ${title}")))
+		     (suffix . " |${=key= id:15} |${tags keywords:*} |${author editor:20%sn}") ;
+		     (preview . "${author editor:%etal} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.")
+		     (note . "Notes on ${author editor:%etal}, ${title}")))
   (citar-indicators (list citar-indicator-links
                           citar-indicator-files
                           citar-indicator-notes
@@ -84,12 +84,12 @@
 
 (with-eval-after-load 'org
   (with-eval-after-load 'oc
-	(define-key org-mode-map [remap org-cite-insert] #'citar-insert-citation)
-	(require 'citar-org)
-	(with-eval-after-load 'citar
-	  (setq org-cite-insert-processor 'citar)
-	  (setq org-cite-follow-processor 'citar)
-	  (setq org-cite-activate-processor 'citar))))
+    (define-key org-mode-map [remap org-cite-insert] #'citar-insert-citation)
+    (require 'citar-org)
+    (with-eval-after-load 'citar
+      (setq org-cite-insert-processor 'citar)
+      (setq org-cite-follow-processor 'citar)
+      (setq org-cite-activate-processor 'citar))))
 
 (use-package citar-embark
   :after citar
@@ -122,8 +122,8 @@
   :commands scihub
   :config
   (setq scihub-download-directory "~/Downloads/"
-		scihub-open-after-download t
-		scihub-fetch-domain 'scihub-fetch-domains-lovescihub))
+	scihub-open-after-download t
+	scihub-fetch-domain 'scihub-fetch-domains-lovescihub))
 
 ;; Need install bibutils.
 ;; https://sourceforge.net/p/bibutils/home/Bibutils/
@@ -132,9 +132,9 @@
   "Convert BibTeX file to EndNote file."
   (interactive
    (list (read-file-name "BibTeX File: "
-						 (expand-file-name "bibtexs/" my-galaxy) nil nil ".bib")
+			 (expand-file-name "bibtexs/" my-galaxy) nil nil ".bib")
          (read-file-name "Output EndNote File: "
-						 (expand-file-name "bibtexs/" my-galaxy) nil nil ".end")))
+			 (expand-file-name "bibtexs/" my-galaxy) nil nil ".end")))
   (let* ((xml-file (make-temp-file "bib2xml" nil ".xml"))
          (bib2xml-cmd (format "bib2xml %s > %s" bib-file xml-file))
          (xml2end-cmd (format "xml2end %s > %s" xml-file end-file)))

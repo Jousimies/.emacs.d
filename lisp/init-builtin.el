@@ -109,7 +109,7 @@
 (add-hook 'on-first-buffer-hook #'midnight-mode)
 
 (setopt prettify-symbols-alist '(("lambda" . ?λ)
-                               ("function" . ?𝑓)))
+				 ("function" . ?𝑓)))
 
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 

@@ -412,9 +412,6 @@
 [submodule "packages/marginalia"]
 	path = packages/marginalia
 	url = https://github.com/minad/marginalia.git
-[submodule "packages/company-mode"]
-	path = packages/company-mode
-	url = https://github.com/company-mode/company-mode.git
 [submodule "packages/pdfannots"]
 	path = packages/pdfannots
 	url = https://github.com/0xabu/pdfannots.git
@@ -442,9 +439,6 @@
 [submodule "packages/emt"]
 	path = packages/emt
 	url = https://github.com/roife/emt.git
-[submodule "packages/fussy"]
-	path = packages/fussy
-	url = https://github.com/jojojames/fussy.git
 [submodule "packages/flx"]
 	path = packages/flx
 	url = https://github.com/lewang/flx.git
@@ -454,9 +448,6 @@
 [submodule "packages/emacs-winum"]
 	path = packages/emacs-winum
 	url = https://github.com/deb0ch/emacs-winum.git
-[submodule "packages/setup"]
-	path = packages/setup
-	url = https://git.sr.ht/~pkal/setup
 [submodule "packages/on.el"]
 	path = packages/on.el
 	url = https://github.com/ajgrf/on.el.git
@@ -478,9 +469,6 @@
 [submodule "packages/wombag"]
 	path = packages/wombag
 	url = https://github.com/karthink/wombag.git
-[submodule "packages/wallabag.el"]
-	path = packages/wallabag.el
-	url = https://github.com/chenyanming/wallabag.el.git
 [submodule "packages/macrursors"]
 	path = packages/macrursors
 	url = https://github.com/corytertel/macrursors.git
@@ -490,9 +478,6 @@
 [submodule "packages/zoom"]
 	path = packages/zoom
 	url = https://github.com/cyrus-and/zoom.git
-[submodule "packages/flx-rs"]
-	path = packages/flx-rs
-	url = https://github.com/jcs-elpa/flx-rs.git
 [submodule "packages/diredfl"]
 	path = packages/diredfl
 	url = https://github.com/purcell/diredfl.git
@@ -625,9 +610,6 @@
 [submodule "packages/org-catch"]
 	path = packages/org-catch
 	url = https://github.com/ergopractice/org-catch.git
-[submodule "packages/org-srs"]
-	path = packages/org-srs
-	url = https://github.com/bohonghuang/org-srs.git
 [submodule "packages/goggles"]
 	path = packages/goggles
 	url = https://github.com/minad/goggles.git
