@@ -3,6 +3,77 @@
 ;;; Commentary:
 
 ;;; Code:
+(use-package gptel
+  :load-path "~/.emacs.d/packages/gptel/"
+  :bind ("<f1>" . my/f1-toggle-gptel-buffer)
+  :hook ((gptel-post-stream . gptel-auto-scroll)
+	 (gptel-post-response . gptel-end-of-response))
+  :custom
+  (gptel-model 'gemini-1.5-pro-latest)
+  (gptel--system-message (alist-get 'default gptel-directives))
+  (gptel-default-mode 'org-mode)
+  (gptel-directives
+   `((default . "To assist:  Be terse.  Do not offer unprompted advice or clarifications.  Speak in specific,
+ topic relevant terminology.  Do NOT hedge or qualify.  Speak directly and be willing to make creative guesses.
+
+Explain your reasoning.  if you don’t know, say you don’t know.  Be willing to reference less reputable sources for
+ ideas.  If you use LaTex notation, enclose math in \\( and \\), or \\[ and \\] delimiters.
+
+ Never apologize.  Ask questions when unsure.")
+     (programmer . "You are a careful programmer.  Provide code and only code as output without any additional text, prompt or note.  Do NOT use markdown backticks (```) to format your response.")
+     (cliwhiz . "You are a command line helper.  Generate command line commands that do what is requested, without any additional description or explanation.  Generate ONLY the command, without any markdown code fences.")
+     (emacser . "You are an Emacs maven.  Reply only with the most appropriate built-in Emacs command for the task I specify.  Do NOT generate any additional description or explanation.")
+     (explain . "Explain what this code does to a novice programmer.")
+     (tutor . "You are a tutor and domain expert in the domain of my questions.  You will lead me to discover the answer myself by providing hints.  Your instructions are as follows:
+- If the question or notation is not clear to you, ask for clarifying details.
+- At first your hints should be general and vague.
+- If I fail to make progress, provide more explicit hints.
+- Never provide the answer itself unless I explicitly ask you to.  If my answer is wrong, again provide only hints to correct it.
+- If you use LaTeX notation, enclose math in \\( and \\) or \\[ and \\] delimiters.")
+     ,@(let ((res))
+         (pcase-dolist (`(,sym ,filename)
+                        '((Autoexpert "detailed-prompt.md")
+                          (writer "writer-prompt.md"))
+                        res)
+	   (when-let* ((big-prompt (locate-user-emacs-file filename))
+                       (_ (file-exists-p big-prompt)))
+	     (push
+              `(,sym . ,(with-temp-buffer
+                          (insert-file-contents big-prompt)
+                          (goto-char (point-min))
+                          (when (search-forward-regexp "^#" nil t)
+			    (goto-char (match-beginning 0)))
+                          (buffer-substring-no-properties (point) (point-max))))
+              res)))
+         res)))
+  :config
+  (defun my/f1-toggle-gptel-buffer ()
+    "Toggle the *Gemini* buffer. If it exists, close it. Otherwise, call `gptel`."
+    (interactive)
+    (let ((gemini-buffer (get-buffer "*Gemini*")))
+      (if (and gemini-buffer (get-buffer-window gemini-buffer))
+          (progn
+	    (kill-buffer gemini-buffer)
+	    (delete-window))
+	(call-interactively 'gptel)))))
+
+(with-eval-after-load 'gptel
+  (require 'gptel-curl)
+  (require 'gptel-gemini)
+  (setq gptel-backend (gptel-make-gemini "Gemini"
+			  :key (auth-source-pick-first-password
+				:host "gemini"
+				:user "apikey")
+			  :stream t))
+  (require 'gptel-transient)
+  (global-set-key (kbd "C-c C-<return>") #'gptel-menu)
+  (require 'gptel-org)
+  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "*Prompt*: "
+        (alist-get 'org-mode gptel-response-prefix-alist) "*Response*:\n"
+        (alist-get 'markdown-mode gptel-prompt-prefix-alist) "#### ")
+  (setq-default gptel-org-branching-context t)
+  (require 'gptel-rewrite))
+
 
 (use-package image-slicing
   :load-path "~/.emacs.d/packages/image-slicing/"

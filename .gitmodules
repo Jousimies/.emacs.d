@@ -643,3 +643,6 @@
 [submodule "packages/image-slicing"]
 	path = packages/image-slicing
 	url = https://github.com/ginqi7/image-slicing.git
+[submodule "packages/gptel"]
+	path = packages/gptel
+	url = https://github.com/karthink/gptel.git
