@@ -4,7 +4,7 @@
 
 ;;; Code:
 (use-package dashboard
-  :load-path "packages/emacs-dashboard/"
+  :straight t
   :demand t
   :hook (dashboard-mode . (lambda ()
 							(setq-local display-line-numbers nil)))

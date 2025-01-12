@@ -5,7 +5,7 @@
 ;;; Code:
 
 (use-package beancount
-  :load-path "packages/beancount-mode/"
+  :straight t
   :mode ("\\.bean\\'" . beancount-mode)
   :hook ((beancount-mode . (lambda ()
                              (setq-local electric-indent-chars nil)))

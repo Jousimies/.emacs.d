@@ -30,14 +30,6 @@
 ;;; Code:
 (require 'transient)
 
-;; Unbind key
-(unbind-key "s-o" 'global-map)
-(unbind-key "s-s" 'global-map)
-(unbind-key "s-m" 'global-map)
-(unbind-key "s-n" 'global-map)
-(unbind-key "C-t" 'global-map)
-(unbind-key "s-q" 'global-map)          ;Never exit Emacs
-
 (when IS-WINDOWS
   (setq w32-pass-lwindow-to-system nil)
   (setq w32-pass-rwindow-to-system nil)
@@ -242,20 +234,19 @@
 ;; Specific Application
 (global-set-key (kbd "C-c g") #'my/bean-generate)
 (global-set-key (kbd "C-c f") #'my/beancount-fava)
-(global-set-key (kbd "C-c t") #'telega)
 ;; (global-set-key (kbd "s-a p") #'password-store-menu)
-(global-set-key (kbd "C-c e") #'elfeed)
+
 
 ;; Search related
-(global-set-key (kbd "s-s r") #'rg)
-(global-set-key (kbd "s-s g") #'my/search-google)
-(global-set-key (kbd "s-s w") #'my/search-wikipedia_en)
-(global-set-key (kbd "s-s z") #'my/search-zhihu)
-(global-set-key (kbd "s-s m") #'my/search-doubanmovie)
-(global-set-key (kbd "s-s b") #'my/search-doubanbook)
-(global-set-key (kbd "s-s y") #'my/search-youtube)
-(global-set-key (kbd "s-s s") #'my/search-scholar)
-(global-set-key (kbd "s-s S") #'my/search-semanticscholar)
+;; (global-set-key (kbd "s-s r") #'rg)
+;; (global-set-key (kbd "s-s g") #'my/search-google)
+;; (global-set-key (kbd "s-s w") #'my/search-wikipedia_en)
+;; (global-set-key (kbd "s-s z") #'my/search-zhihu)
+;; (global-set-key (kbd "s-s m") #'my/search-doubanmovie)
+;; (global-set-key (kbd "s-s b") #'my/search-doubanbook)
+;; (global-set-key (kbd "s-s y") #'my/search-youtube)
+;; (global-set-key (kbd "s-s s") #'my/search-scholar)
+;; (global-set-key (kbd "s-s S") #'my/search-semanticscholar)
 
 (global-set-key (kbd "<f12>") #'my/agenda-menu)
 (global-set-key (kbd "C-<f8>") #'my/mpv-menu)

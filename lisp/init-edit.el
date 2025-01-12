@@ -24,8 +24,10 @@
 
 ;;; Code:
 
+;; auto-revert
 (add-hook 'on-first-file-hook #'global-auto-revert-mode)
 
+;; register
 (with-eval-after-load 'register
   (setopt register-preview-delay 0)
   (set-register ?a (cons 'file (concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/gtd_archive_" (format-time-string "%Y"))))
@@ -34,27 +36,31 @@
   (set-register ?r (cons 'file (expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy)))
   (set-register ?l (cons 'file (expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))))
 
-(add-hook 'on-first-input-hook #'recentf-mode)
+;; recentf
+(add-hook 'after-init-hook #'recentf-mode)
 (with-eval-after-load 'recentf
   (setopt recentf-save-file (expand-file-name "recentf" cache-directory)
-		  recentf-auto-cleanup 300
-		  recentf-max-saved-items 1000
-		  recentf-exclude '("~/.telega")))
+	  recentf-auto-cleanup 300
+	  recentf-max-saved-items 1000
+	  recentf-exclude '("~/.telega")))
 
+;; savehist
 (add-hook 'on-first-file-hook #'savehist-mode)
 (with-eval-after-load 'savehist
   (setopt savehist-file (expand-file-name "history" cache-directory)
-		history-length 1000
-        savehist-additional-variables '(kill-ring
-                                        search-ring
-                                        regexp-search-ring)
-        history-delete-duplicates t))
+	  history-length 1000
+          savehist-additional-variables '(kill-ring
+                                          search-ring
+                                          regexp-search-ring)
+          history-delete-duplicates t))
 
+;; save-place-mode
 (add-hook 'on-first-file-hook #'save-place-mode)
 (setopt save-place-file (expand-file-name "places" cache-directory))
 
+;; undo-fu-session
 (use-package undo-fu-session
-  :load-path "packages/undo-fu-session/"
+  :straight t
   :hook (on-first-file . undo-fu-session-global-mode)
   :config
   (setq undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory))
@@ -67,13 +73,13 @@
   (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name))
 
 (use-package vundo
-  :load-path "packages/vundo/"
+  :straight t
   :bind ("s-z" . vundo)
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package hungry-delete
-  :load-path "packages/hungry-delete/"
+  :straight t
   :custom
   (hungry-delete-chars-to-skip " \t\n\r\f\v")
   :hook ((text-mode . hungry-delete-mode)
@@ -81,7 +87,7 @@
          (org-mode . hungry-delete-mode)))
 
 (use-package avy
-  :load-path "packages/avy/"
+  :straight t
   :bind ([remap goto-char] . my/avy-goto-char-timer)
   :config
   (defun my/avy-goto-char-timer (&optional arg)
@@ -92,9 +98,9 @@
                                (not avy-all-windows)
                              avy-all-windows)))
       (avy-with avy-goto-char-timer
-        (setq avy--old-cands (avy--read-candidates
-                              'pinyinlib-build-regexp-string))
-        (avy-process avy--old-cands))))
+		(setq avy--old-cands (avy--read-candidates
+				      'pinyinlib-build-regexp-string))
+		(avy-process avy--old-cands))))
 
   (advice-add 'avy-goto-char-timer :override #'my/avy-goto-char-timer))
 
@@ -116,7 +122,7 @@
 (add-hook 'after-init-hook #'delete-selection-mode)
 
 (use-package rime-regexp
-  :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"
+  :straight (rime-regexp :host github :repo "colawithsauce/rime-regexp.el")
   :hook (minibuffer-mode . rime-regexp-mode)
   :config
   (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
@@ -124,35 +130,35 @@
   (setq rime-user-data-dir "~/Library/Rime/"))
 
 (use-package tempel
-  :load-path "packages/tempel/"
+  :straight t
   :bind (("M-+" . tempel-complete)
          ("M-*" . tempel-insert)
-		 (:map tempel-map
-			   ("<down>" . tempel-next)))
+	 (:map tempel-map
+	       ("<down>" . tempel-next)))
   :config
   (setq tempel-path `("~/.emacs.d/template/tempel"
                       ,(expand-file-name "config/tempel" my-galaxy))))
 
 (use-package yasnippet
-  :load-path "packages/yasnippet/"
+  :straight t
   :hook (minibuffer-mode . yas-global-mode)
   :config
   (use-package yasnippet-snippets
-    :load-path "packages/yasnippet-snippets/"))
+    :straight t))
 
 (use-package expand-region
-  :load-path "packages/expand-region.el/"
+  :straight t
   :bind ("C-=" . er/expand-region)
   :config
   (add-to-list 'expand-region-exclude-text-mode-expansions 'org-mode)
   (add-to-list 'expand-region-exclude-text-mode-expansions 'LaTeX-mode))
 
 (use-package surround
-  :load-path "packages/surround/"
-  :commands surround-delete surround-change surround-insert)
+  :straight t
+  :defer t)
 
 (use-package selected
-  :load-path "packages/selected.el/"
+  :straight t
   :hook (post-select-region . selected-minor-mode)
   :bind (:map selected-keymap
               ("q" . selected-off)
@@ -160,7 +166,7 @@
               ("w" . count-words-region)
               ("i" . surround-insert)
               ("c" . surrond-change)
-			  ("d" . surround-delete)
+	      ("d" . surround-delete)
               ("s" . my/search-menu)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
@@ -174,7 +180,7 @@
 (global-set-key (kbd "s-c") #'my/copy-region)
 
 (use-package symbol-overlay
-  :load-path "packages/symbol-overlay/"
+  :straight t
   :hook ((prog-mode . symbol-overlay-mode)
          (html-mode . symbol-overlay-mode))
   :bind (:map symbol-overlay-mode-map
@@ -182,7 +188,7 @@
               ("M-I" . symbol-overlay-remove-all)))
 
 (use-package rainbow-mode
-  :load-path "packages/rainbow-mode/"
+  :straight t
   :hook (prog-mode . rainbow-mode))
 
 ;; pulse
@@ -235,31 +241,21 @@
     (advice-add cmd :after #'+recenter-and-pulse-line)))
 
 (use-package goggles
-  :load-path "packages/goggles/"
-  :hook ((prog-mode text-mode) . goggles-mode)
-  :config
-  (setq-default goggles-pulse nil))
-
-;; Use mode-line indicate which buffer cursor located
-;; (use-package auto-dim-other-buffers
-;;   :load-path "packages/auto-dim-other-buffers.el/"
-;;   :hook (after-init . auto-dim-other-buffers-mode)
-;;   :config
-;;   (setq auto-dim-other-buffers-dim-on-focus-out nil
-;;         auto-dim-other-buffers-dim-on-switch-to-minibuffer nil))
+  :straight t
+  :hook ((prog-mode text-mode) . goggles-mode))
 
 ;; Make region read-only or writable
 (defun make-region-read-only (beg end)
   (interactive "r")
   (let ((inhibit-read-only t))
-	(with-silent-modifications
-	  (add-text-properties beg end '(read-only t)))))
+    (with-silent-modifications
+      (add-text-properties beg end '(read-only t)))))
 
 (defun make-region-writable (beg end)
   (interactive "r")
   (let ((inhibit-read-only t))
-	(with-silent-modifications
-	  (remove-text-properties beg end '(read-only t)))))
+    (with-silent-modifications
+      (remove-text-properties beg end '(read-only t)))))
 
 ;; https://github.com/takeokunn/.emacs.d/blob/main/index.org
 (defun my/move-line (arg)
@@ -283,33 +279,9 @@
 (global-set-key (kbd "M-P") #'my/move-line-up)
 (global-set-key (kbd "M-N") #'my/move-line-down)
 
-;; (use-package indent-bars
-;;   :load-path "packages/indent-bars/"
-;;   :hook (prog-mode . indent-bars-mode)
-;;   :config
-;;   (require 'indent-bars-ts)
-;;   :custom-face
-;;   (indent-bars-face ((t (:height 1.08))))
-;;   :custom
-;;   (indent-bars-treesit-support t)
-;;   (indent-bars-no-descend-string t)
-;;   (indent-bars-treesit-ignore-blank-lines-types '("module"))
-;;   (indent-bars-prefer-character t)
-;;   (indent-bars-treesit-wrap
-;;    '((python
-;; 	  argument_list
-;; 	  parameters ; for python, as an example
-;; 	  list
-;; 	  list_comprehension
-;; 	  dictionary
-;; 	  dictionary_comprehension
-;; 	  parenthesized_expression
-;; 	  subscript)))
-;;   (indent-bars-no-stipple-char ?\⎸))
-
 (use-package emacs-everywhere
-  :load-path "packages/emacs-everywhere/"
-  :commands emacs-everywhere)
+  :straight t
+  :commands emacs-everywhere-mode)
 
 (provide 'init-edit)
 ;;; init-edit.el ends here

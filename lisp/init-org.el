@@ -3,32 +3,33 @@
 ;;; Commentary:
 
 ;;; Code:
+(use-package org :straight (:type built-in) :defer t)
 
 (with-eval-after-load 'org
   (setopt org-ellipsis " ⇲"
-		  org-modules '(org-habit)
-		  org-imenu-depth 4
-		  org-return-follows-link t
-		  org-display-remote-inline-images 'download
-		  org-log-into-drawer t
-		  org-fast-tag-selection-single-key 'expert
-		  org-adapt-indentation nil
-		  org-fontify-quote-and-verse-blocks t
-		  org-support-shift-select t
-		  org-treat-S-cursor-todo-selection-as-state-change nil
-		  org-hide-leading-stars nil
-		  org-startup-with-inline-images t
-		  ;; org-startup-folded 'content
-		  org-image-actual-width nil
-		  org-use-speed-commands t
-		  org-highlight-latex-and-related '(latex script)
-		  org-enforce-todo-dependencies t
-		  org-enforce-todo-checkbox-dependencies t
-		  org-export-allow-bind-keywords t
-		  org-tags-sort-function 'org-string-collate-greaterp
-		  org-lowest-priority ?D
-		  org-priority-default ?C
-		  org-columns-default-format "%50ITEM %TODO %3PRIORITY %TAGS")
+	  org-modules '(org-habit)
+	  org-imenu-depth 4
+	  org-return-follows-link t
+	  org-display-remote-inline-images 'download
+	  org-log-into-drawer t
+	  org-fast-tag-selection-single-key 'expert
+	  org-adapt-indentation nil
+	  org-fontify-quote-and-verse-blocks t
+	  org-support-shift-select t
+	  org-treat-S-cursor-todo-selection-as-state-change nil
+	  org-hide-leading-stars nil
+	  org-startup-with-inline-images t
+	  ;; org-startup-folded 'content
+	  org-image-actual-width nil
+	  org-use-speed-commands t
+	  org-highlight-latex-and-related '(latex script)
+	  org-enforce-todo-dependencies t
+	  org-enforce-todo-checkbox-dependencies t
+	  org-export-allow-bind-keywords t
+	  org-tags-sort-function 'org-string-collate-greaterp
+	  org-lowest-priority ?D
+	  org-priority-default ?C
+	  org-columns-default-format "%50ITEM %TODO %3PRIORITY %TAGS")
   ;; (set-face-attribute 'org-table nil :family "Sarasa Mono SC")
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2)))
@@ -43,7 +44,7 @@
 ;;   :hook (org-mode . org-xlatex-mode))
 
 (use-package cdlatex
-  :load-path "packages/cdlatex/"
+  :straight t
   :hook ((org-mode . org-cdlatex-mode)
          (LaTeX-mode . turn-on-cdlatex))
   :custom
@@ -80,7 +81,7 @@
           ("l" "Inbox with link"
            entry (file ,(concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
-		  ("r" "Review"
+	  ("r" "Review"
            plain
            (file+olp+datetree ,(expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy))
            (file "~/.emacs.d/template/review-weekly")
@@ -114,16 +115,16 @@
   (let* ((dir (org-attach-dir t))
          (files (org-attach-file-list dir)))
     (when (and dir files)
-	  (org-with-wide-buffer
-	   (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))
-	  (message "ORG_ATTACH_FILES property updated."))))
+      (org-with-wide-buffer
+       (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))
+      (message "ORG_ATTACH_FILES property updated."))))
 
 (with-eval-after-load 'org
   (require 'org-attach)
   (setopt org-attach-expert t
-		  org-attach-id-dir (expand-file-name "attach" my-galaxy)
-		  org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format
-												org-attach-id-uuid-folder-format))
+	  org-attach-id-dir (expand-file-name "attach" my-galaxy)
+	  org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format
+						org-attach-id-uuid-folder-format))
   (defun org-attach-save-file-list-to-property (dir)
     "Save list of attachments to ORG_ATTACH_FILES property."
     (when-let* ((files (org-attach-file-list dir)))
@@ -133,8 +134,8 @@
 ;; org-id
 (with-eval-after-load 'org-id
   (setopt org-id-method 'ts
-		  org-id-locations-file (expand-file-name ".org-id-locations" cache-directory)
-		  org-id-link-to-org-use-id 'create-if-interactive))
+	  org-id-locations-file (expand-file-name ".org-id-locations" cache-directory)
+	  org-id-link-to-org-use-id 'create-if-interactive))
 
 (defun update-org-ids-in-directory (directory)
   "Update Org IDs in all Org files in DIRECTORY."
@@ -198,83 +199,58 @@
   (org-clock-persistence-insinuate)
   (setq org-clock-persist-file (expand-file-name "org-clock-save.el" cache-directory))
   (setopt org-clock-history-length 23
-		  org-clock-in-resume t
-		  org-clock-into-drawer "LOGCLOCK"
-		  org-clock-out-remove-zero-time-clocks t
-		  org-clock-out-when-done t
-		  org-clock-persist 'history
-		  org-clock-clocktable-default-properties '(:maxlevel 5 :link t :tags t)
-		  org-clock-persist-query-resume nil
-		  org-clock-report-include-clocking-task t
-		  org-clock-sound "/System/Library/Sounds/Ping.aiff")
+	  org-clock-in-resume t
+	  org-clock-into-drawer "LOGCLOCK"
+	  org-clock-out-remove-zero-time-clocks t
+	  org-clock-out-when-done t
+	  org-clock-persist 'history
+	  org-clock-clocktable-default-properties '(:maxlevel 5 :link t :tags t)
+	  org-clock-persist-query-resume nil
+	  org-clock-report-include-clocking-task t
+	  org-clock-sound "/System/Library/Sounds/Ping.aiff")
   (add-hook 'org-after-todo-state-change-hook (lambda ()
                                                 (if (org-clocking-p)
                                                     (org-clock-out)))))
 
-;; org indent mode
-;; (add-hook 'org-mode-hook #'org-indent-mode)
+;; ;; org indent mode
+;; ;; (add-hook 'org-mode-hook #'org-indent-mode)
 
 ;; org-indent-mode hide leading stars, sometimes cursor become invisible.
 (use-package org-superstar
-  :load-path "packages/org-superstar-mode/"
+  :straight t
   :hook ((org-mode . org-superstar-mode)
-		 (org-superstar-mode . org-indent-mode))
+	 (org-superstar-mode . org-indent-mode))
   :custom
   (org-hide-leading-stars t)
   (org-superstar-headline-bullets-list '("󰼏" "󰼐" "󰼑" "󰼒" "󰼓" "󰼔" "󰼕")))
 
-;; 2024-09-14 还是放弃使用 org-modern，并没有太好用
-;; org-modern can replace org-superstar
-;; (use-package org-modern
-;;   :hook (org-mode . global-org-modern-mode)
-;;   :custom
-;;   ;; (org-modern-checkbox nil)
-;;   (org-modern-star 'replace)
-;;   (org-modern-replace-stars "󰼏󰼐󰼑󰼒󰼓󰼔󰼕")
-;;   (org-modern-table nil)
-;;   ;; (org-modern-footnote nil)
-;;   ;; (org-modern-internal-target nil)
-;;   ;; (org-modern-radio-target nil)
-;;   ;; (org-modern-progress nil)
-;;   ;; (org-modern-tag nil)
-;;   (org-modern-block-fringe nil)
-;;   (org-modern-block-name nil)
-;;   ;; (org-modern-timestamp nil)
-;;   (org-modern-horizontal-rule nil)
-;;   (org-modern-list '((?+ . "+")
-;;                      (?- . "-")
-;;                      (?* . "*")))
-;;   (org-modern-checkbox '((?X . "󰄸")
-;;                          (?- . "󱅶")
-;;                          (?\s . "󰄶"))))
-
 ;; Third party packages related to org-mode
 (use-package imenu-list
-  :load-path "packages/imenu-list/"
+  :straight t
+  :bind ("s-M-z" . my/toggle-visual-fill-center-imenu)
   :hook (imenu-list-major-mode . (lambda ()
                                    (setq-local truncate-lines t)))
   :custom
   (imenu-list-position 'left)
-  (imenu-list-mode-line-format '("%e" my/winum)))
-
-(defun my/toggle-visual-fill-center-imenu ()
-  (interactive)
-  (unless (featurep 'visual-fill-column)
-    (require 'visual-fill-column))
-  (setq visual-fill-column-center-text t)
-  (if (or visual-fill-column-mode imenu-list-minor-mode)
+  (imenu-list-mode-line-format '("%e" my/winum))
+  :config
+  (defun my/toggle-visual-fill-center-imenu ()
+    (interactive)
+    (unless (featurep 'visual-fill-column)
+      (require 'visual-fill-column))
+    (setq visual-fill-column-center-text t)
+    (if (or visual-fill-column-mode imenu-list-minor-mode)
+	(progn
+	  (visual-fill-column-mode -1)
+	  (imenu-list-minor-mode -1))
       (progn
-	(visual-fill-column-mode -1)
-	(imenu-list-minor-mode -1))
-    (progn
-      (visual-fill-column-mode)
-      (imenu-list-minor-mode))))
-(global-set-key (kbd "s-M-z") #'my/toggle-visual-fill-center-imenu)
+	(visual-fill-column-mode)
+	(imenu-list-minor-mode)))))
 
 (use-package form-feed
-  :load-path "packages/form-feed/"
+  :straight t
   :hook ((org-mode . form-feed-mode)
-		 (emacs-news-mode . form-feed-mode)))
+	 (emacs-news-mode . form-feed-mode)))
 
 ;; (use-package org-xlatex
 ;;   :load-path "packages/org-xlatex/"
@@ -287,7 +263,7 @@
 (use-package yank-media
   :after org
   :bind (:map org-mode-map
-			  ("C-c C-v" . yank-media)))
+	      ("C-c C-v" . yank-media)))
 
 ;; Instead of using `C-c C-x C-v' to toggle display inline image.
 ;; pixel-scroll-precision-mode enabled.
@@ -301,9 +277,9 @@
 ;;   (add-to-list 'load-path "~/.emacs.d/packages/ht.el/")
 ;;   (require 'ox-pandoc))
 
-(use-package plantuml
-  :load-path "packages/plantuml-emacs/"
-  :commands plantuml-org-to-mindmap-open plantuml-org-to-wbs-open)
+;; (use-package plantuml
+;;   :straight (plantuml :host github :repo "ginqi7/plantuml-emacs" :files (:defaults "*.el"))
+;;   :commands plantuml-org-to-mindmap-open plantuml-org-to-wbs-open)
 
 (with-eval-after-load 'plantuml
   (setq plantuml-jar-path
@@ -314,9 +290,9 @@
 (defun org-export-docx (input csl)
   (interactive "FInput file (Default is Buffer File):\nFCSL file (Default is chinese-gb7714-2005-numeric):")
   (let* ((base (or (file-name-sans-extension input) (buffer-file-name)))
-		 (csl (or (expand-file-name "csl/chinese-gb7714-2005-numeric.csl" user-emacs-directory)))
-		 (output (concat base ".docx")))
-	(shell-command (format "pandoc %s -o %s --citeproc --csl %s" input output csl))))
+	 (csl (or (expand-file-name "csl/chinese-gb7714-2005-numeric.csl" user-emacs-directory)))
+	 (output (concat base ".docx")))
+    (shell-command (format "pandoc %s -o %s --citeproc --csl %s" input output csl))))
 
 ;; https://www.reddit.com/r/emacs/comments/yjobc2/comment/iur16c7/
 (defun nf/parse-headline (x)
@@ -334,7 +310,7 @@
     (org-insert-link buffer-file-name (concat "*" choice) desc)))
 
 (use-package advance-words-count
-  :load-path "packages/advance-words-count.el/"
+  :straight (advance-words-count :host github :repo "LdBeth/advance-words-count.el")
   :bind ("M-=" . advance-words-count))
 
 (defun my/insert-specified-datetree ()
@@ -345,8 +321,8 @@
          (month (nth 4 date))
          (day (nth 3 date)))
     (org-datetree-find-date-create (list month day year))
-	(open-line 1)
-	(forward-line 1)))
+    (open-line 1)
+    (forward-line 1)))
 
 ;; org-drawio
 ;; (use-package org-drawio
@@ -361,23 +337,23 @@
 ;; 		   (org-drawio-crop t)))
 
 ;; chatu
-(use-package chatu
-  :load-path "packages/chatu/"
-  :hook (org-mode . chatu-mode)
-  :commands (chatu-add
-             chatu-open)
-  :custom ((chatu-input-dir (abbreviate-file-name (expand-file-name "mindmap" my-galaxy)))
-           (chatu-output-dir (abbreviate-file-name (expand-file-name "pictures" my-galaxy)))))
+;; (use-package chatu
+;;   :load-path "packages/chatu/"
+;;   :hook (org-mode . chatu-mode)
+;;   :commands (chatu-add
+;;              chatu-open)
+;;   :custom ((chatu-input-dir (abbreviate-file-name (expand-file-name "mindmap" my-galaxy)))
+;;            (chatu-output-dir (abbreviate-file-name (expand-file-name "pictures" my-galaxy)))))
 
-;;;###autoload
-(defun my/org-chatu ()
-  "Insert drawio image into org file with completion for knowledge name."
-  (interactive)
-  (let* ((folder (abbreviate-file-name (expand-file-name "mindmap" my-galaxy)))
-         (files (directory-files folder nil "\\.drawio\\'"))
-         (selected (completing-read "Choose Mindmap: " files))
-         (name selected))
-    (insert (format "#+chatu: :drawio \"%s\" :crop :nopdf\n" name))))
+
+;; (defun my/org-chatu ()
+;;   "Insert drawio image into org file with completion for knowledge name."
+;;   (interactive)
+;;   (let* ((folder (abbreviate-file-name (expand-file-name "mindmap" my-galaxy)))
+;;          (files (directory-files folder nil "\\.drawio\\'"))
+;;          (selected (completing-read "Choose Mindmap: " files))
+;;          (name selected))
+;;     (insert (format "#+chatu: :drawio \"%s\" :crop :nopdf\n" name))))
 
 ;; 没啥必要,纯文本的挺好
 ;; (use-package org-tag-beautify

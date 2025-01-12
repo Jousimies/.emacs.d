@@ -4,8 +4,6 @@
 
 ;;; Code:
 
-(add-to-list 'load-path "~/.emacs.d/packages/parsebib/")
-
 (setopt my/reference-lists `(,(concat my-galaxy "/bibtexs/My Library.bib")
                              ,(concat my-galaxy "/bibtexs/Books.bib")
 			     ,(concat my-galaxy "/bibtexs/Seismic.bib")))
@@ -26,8 +24,9 @@
   (bibtex-autokey-titleword-length 5))
 
 (use-package citar
-  :load-path "packages/citar/"
-  :commands citar-open-files citar-open citar-create-note citar-insert-citation
+  :straight t
+  :hook ((LaTeX-mode . citar-capf-setup)
+         (org-mode . citar-capf-setup))
   :custom
   (citar-templates '((main . "${=type=:12}|${date year issued:4}| ${title:80}")
 		     (suffix . " |${=key= id:15} |${tags keywords:*} |${author editor:20%sn}") ;
@@ -44,6 +43,10 @@
   (citar-symbol-separator "​")
   (citar-file-additional-files-separator "-")
   (citar-at-point-function 'embark-act))
+
+(use-package citar-embark
+  :straight t
+  :hook (org-mode . citar-embark-mode))
 ;; (setq citar-indicator-files (citar-indicator-create
 ;; 							   :symbol (nerd-icons-faicon "nf-fa-file_pdf_o"
 ;; 														  :face 'nerd-icons-green
@@ -72,13 +75,6 @@
 ;; 							   :padding "  "
 ;; 							   :tag "is:cited"))
 
-(use-package citar-latex
-  :after tex)
-
-(use-package citar-capf
-  :hook ((LaTeX-mode . citar-capf-setup)
-         (org-mode . citar-capf-setup)))
-
 (with-eval-after-load 'citar-org
   (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point))
 
@@ -91,10 +87,6 @@
       (setq org-cite-follow-processor 'citar)
       (setq org-cite-activate-processor 'citar))))
 
-(use-package citar-embark
-  :after citar
-  :hook (org-mode . citar-embark-mode))
-
 ;; Another zotero package
 ;; https://gitlab.com/fvdbeek/emacs-zotero
 
@@ -102,7 +94,7 @@
 ;; Create and yank bibtex entry from a DOI
 ;; I use zotra to get bibtex entry.
 (use-package zotra
-  :load-path "packages/zotra/"
+  :straight t
   :commands zotra-add-entry
   :config
   (setq zotra-backend 'zotra-server)
@@ -110,15 +102,15 @@
 
 ;; Another package for browsing and fetching references.
 (use-package biblio
-  :load-path "packages/biblio.el/"
-  :commands biblio-lookup biblio-crossref-lookup)
+  :straight t
+  :commands biblio-crossref-lookup)
 
 ;; There are encoding errors.
 ;; (use-package biblio-gbooks
 ;;   :load-path "packages/biblio-gbooks/")
 
 (use-package scihub
-  :load-path "packages/scihub.el/"
+  :straight t
   :commands scihub
   :config
   (setq scihub-download-directory "~/Downloads/"

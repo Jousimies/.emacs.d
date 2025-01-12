@@ -50,7 +50,7 @@
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 
 (use-package nerd-icons-completion
-  :load-path "packages/nerd-icons-completion/"
+  :straight t
   :hook (minibuffer-setup . nerd-icons-completion-mode))
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
@@ -64,17 +64,15 @@
 ;;   (icomplete-in-buffer t))
 
 (use-package vertico
-  :load-path "packages/vertico/"
-  :hook (on-first-input . vertico-mode))
-
-(use-package vertico-directory
-  :load-path "packages/vertico/extensions/"
-  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
+  :straight t
+  :hook ((on-first-input . vertico-mode)
+	 (rfn-eshadow-update-overlay . vertico-directory-tidy))
   :bind (:map vertico-map
 	      ("C-DEL" . vertico-directory-up)))
 
 (use-package orderless
-  :load-path "packages/orderless/"
+  :straight t
+  :after minibuffer
   :custom
   (orderless-matching-styles '(orderless-prefixes orderless-regexp))
   (completion-styles '(basic substring initials orderless))
@@ -106,8 +104,9 @@
 (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
 (autoload 'list-colors-duplicates "facemenu")
+
 (use-package consult
-  :load-path "packages/consult/"
+  :straight t
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
@@ -228,11 +227,11 @@ value of the selected COLOR."
 ;; 									 )))
 
 (use-package marginalia
-  :load-path "packages/marginalia/"
+  :straight t
   :hook (minibuffer-setup . marginalia-mode))
 
 (use-package embark
-  :load-path "packages/embark/"
+  :straight t
   :bind (([remap describe-bindings] . embark-bindings)
          ("C-;" . embark-act)
          ("M-." . embark-dwim)
@@ -240,6 +239,10 @@ value of the selected COLOR."
                ("C-;" . embark-act)
                ("C-c C-e" . embark-export)
                ("C-c C-l" . embark-collect))))
+
+(use-package embark-consult
+  :straight t
+  :after embark)
 
 ;; (use-package completion-preview
 ;;   :hook (on-first-input . global-completion-preview-mode)
@@ -249,8 +252,10 @@ value of the selected COLOR."
 ;;   (completion-preview-minimum-symbol-length 3))
 
 (use-package corfu
-  :load-path "packages/corfu/"
-  :hook (on-first-buffer . global-corfu-mode)
+  :straight t
+  :hook ((on-first-buffer . global-corfu-mode)
+	 (corfu-mode . corfu-echo-mode)
+	 (corfu-mode . corfu-popupinfo-mode))
   :custom-face
   (corfu-border ((t (:inherit region :background unspecified))))
   :bind ("M-/" . completion-at-point)
@@ -266,21 +271,13 @@ value of the selected COLOR."
   :config
   (keymap-unset corfu-map "RET"))
 
-(add-to-list 'load-path "~/.emacs.d/packages/nerd-icons-corfu/")
-(with-eval-after-load 'corfu
-  (require 'nerd-icons-corfu)
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
-
-(use-package corfu-echo
-  :load-path "packages/corfu/extensions/"
-  :hook (corfu-mode . corfu-echo-mode))
-
-(use-package corfu-popupinfo
-  :load-path "packages/corfu/extensions/"
-  :hook (corfu-mode . corfu-popupinfo-mode))
+;; (add-to-list 'load-path "~/.emacs.d/packages/nerd-icons-corfu/")
+;; (with-eval-after-load 'corfu
+;;   (require 'nerd-icons-corfu)
+;;   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package cape
-  :load-path "packages/cape/"
+  :straight t
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
@@ -288,18 +285,12 @@ value of the selected COLOR."
   (add-hook 'completion-at-point-functions #'cape-keyword)
   (add-hook 'completion-at-point-functions #'cape-abbrev)
 
-  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
-
-(use-package cape-keyword
-  :load-path "packages/cape/"
-  :init
+  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
   (add-hook 'completion-at-point-functions #'cape-keyword))
 
-(use-package which-key
-  :hook (after-init . which-key-mode)
-  :custom
-  (which-key-idle-delay 0.1)
-  :config
+(add-hook 'after-init-hook #'which-key-mode)
+(with-eval-after-load 'which-key
+  (setopt which-key-idle-delay 0.1)
   (which-key-add-key-based-replacements
     "C-c p" "cape"
     "C-x t" "tab"

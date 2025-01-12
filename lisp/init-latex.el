@@ -4,8 +4,6 @@
 
 ;;; Code:
 
-(add-to-list 'load-path "~/.emacs.d/packages/citeproc-el/")
-(add-to-list 'load-path "~/.emacs.d/packages/queue/")
 ;; ox-latex 是 Emacs 中 Org-mode 导出框架中的一个子模块
 ;; minted 需要安装 Pygments, brew install pygments
 (with-eval-after-load 'ox-latex
@@ -91,11 +89,12 @@
 ;; (use-package tex-mode
 ;;   :mode ("\\.tex\\'" . latex-mode))
 
-(use-package tex
-  :load-path "packages/auctex/"
-  :init
-  (load "auctex.el" nil t t)
-  (load "preview-latex.el" nil t t)
+(use-package latex
+  :after tex
+  :straight (auctex)
+  ;; :init
+  ;; (load "auctex.el" nil t t)
+  ;; (load "preview-latex.el" nil t t)
   :mode ("\\.tex\\'" . latex-mode)
   :custom
   (TeX-PDF-mode t)
@@ -120,7 +119,7 @@
   (define-key LaTeX-mode-map (kbd "C-c h .") #'TeX-doc))
 
 (use-package auctex-latexmk
-  :load-path "packages/auctex-latexmk/"
+  :straight t
   :hook (LaTeX-mode . auctex-latexmk-setup))
 
 (use-package reftex
@@ -132,17 +131,18 @@
   (reftex-toc-split-windows-fraction 0.25))
 
 (use-package consult-reftex
-  :load-path "~/.emacs.d/packages/consult-reftex/")
+  :straight (consult-reftex :host github :repo "karthink/consult-reftex")
+  :after latex)
 
 ;; brew install typst
 ;; set `treesit-language-source-alist', see init-lsp.el
 ;; lsp, see https://myriad-dreamin.github.io/tinymist/frontend/emacs.html
-(use-package typst-ts-mode
-  :load-path "packages/typst-ts-mode/"
-  :mode ("\\.typ\\'" . typst-ts-mode)
-  :custom
-  (typst-ts-mode-executable-location "/opt/homebrew/bin/typst")
-  (typst-ts-mode-watch-options "--open"))
+;; (use-package typst-ts-mode
+;;   :straight t
+;;   :mode ("\\.typ\\'" . typst-ts-mode)
+;;   :custom
+;;   (typst-ts-mode-executable-location "/opt/homebrew/bin/typst")
+;;   (typst-ts-mode-watch-options "--open"))
 
 (provide 'init-latex)
 ;;; init-latex.el ends here.

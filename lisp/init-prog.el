@@ -27,7 +27,7 @@
 
 ;; markdown
 (use-package markdown-mode
-  :load-path "packages/markdown-mode/"
+  :straight t
   :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
          ("README\\.md\\'" . gfm-mode))
   :init (setq markdown-command "multimarkdown")
@@ -36,7 +36,7 @@
 
 ;; swift
 (use-package swift-mode
-  :load-path "packages/swift-mode/"
+  :straight t
   :mode ("\\.swift\\'" . swift-mode))
 
 ;; yaml
@@ -45,11 +45,11 @@
 
 ;; csv
 (use-package csv-mode
-  :load-path "packages/csv-mode/"
+  :straight t
   :mode ("\\.csv\\'" . csv-mode))
 
 (use-package rainbow-csv
-  :load-path "packages/rainbow-csv/"
+  :straight (rainbow-csv :host github :repo "emacs-vs/rainbow-csv" :files (:defaults "*.el"))
   :hook ((csv-mode . rainbow-csv-mode)
 		 (tsv-mode . rainbow-csv-mode)))
 

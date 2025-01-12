@@ -26,12 +26,32 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
+;; Straight
+(setq straight-check-for-modifications nil                   ; skip modification
+      straight-vc-git-default-clone-depth '(1 single-branch) ; shadow clone
+      comp-deferred-compilation-deny-list ()                 ; config native comp
+      warning-suppress-log-types '((comp))                   ; Don't display comp warnings
+      straight-disable-native-compile (not (and (fboundp 'native-comp-available-p)
+                                                (native-comp-available-p))))
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
 ;; For debug.
 (when init-file-debug
   (setq use-package-compute-statistics t)
   (setq use-package-minimum-reported-time 0)
-  (setq use-package-verbose t)
-  (require 'init-benchmark))
+  (setq use-package-verbose t))
 
 (require 'init-const)
 (require 'init-core)
@@ -43,6 +63,7 @@
 (require 'init-modeline)
 (require 'init-buffer)
 ;; (require 'init-svg-tag)
+
 ;; Plateform related configuration
 (when (eq system-type 'darwin)
   (require 'init-mac))
@@ -80,7 +101,6 @@
 (require 'init-elfeed)
 ;; (require 'init-pass)
 
-
 ;; Some useful functions stealed from Internet
 (require 'init-misc)
 
@@ -88,7 +108,7 @@
 (require 'init-keys)
 
 ;; Load custom.el, but It's empty.
-(load (setq custom-file (locate-user-emacs-file "custom.el")) t)
+ (load (setq custom-file (locate-user-emacs-file "custom.el")) t)
 
 (provide 'init)
 ;;; init.el ends here

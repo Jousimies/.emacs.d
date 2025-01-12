@@ -23,6 +23,13 @@
 ;;
 
 ;;; Code:
+;; Unbind key
+(unbind-key "s-o" 'global-map)
+(unbind-key "s-s" 'global-map)
+(unbind-key "s-m" 'global-map)
+(unbind-key "s-n" 'global-map)
+(unbind-key "C-t" 'global-map)
+(unbind-key "s-q" 'global-map)          ;Never exit Emacs
 
 (setopt inhibit-startup-screen t
 	;; initial-major-mode 'fundamental-mode
@@ -110,18 +117,12 @@
 ;; (add-hook 'text-mode-hook #'variable-pitch-mode)
 
 ;; load-path
-(add-to-list 'load-path "~/.emacs.d/packages/compat/")
-(add-to-list 'load-path "~/.emacs.d/packages/dash.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/f.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/s.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/posframe/")
-(add-to-list 'load-path "~/.emacs.d/packages/emacs-async/")
-(add-to-list 'load-path "~/.emacs.d/packages/on.el/")
-(require 'on)
+(use-package on
+  :straight t)
 
-;; icons
+;; nerd-icons
 (use-package nerd-icons
-  :load-path "packages/nerd-icons.el/"
+  :straight t
   :commands nerd-icons-codicon nerd-icons-faicon nerd-icons-icon-for-file
   :custom
   (nerd-icons-font-family "Symbols Nerd Font Mono"))
@@ -165,19 +166,6 @@
 	  (lambda ()
 	    (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port))))
 
-;; (use-package socks
-;;   :if IS-MAC
-;;   :defer 2
-;;   :custom
-;;   (url-gateway-method 'socks)
-;;   (socks-noproxy '("localhost"))
-;;   (socks-server `("Default server" ,my/proxy-ip ,(string-to-number my/proxy-port) 5))
-;;   (url-proxy-services `(("http" . ,(concat my/proxy-ip ":" my/proxy-port))
-;;                         ("https" . ,(concat my/proxy-ip ":" my/proxy-port))
-;;                         ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)")))
-;;   :config
-;;   (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port)))
-
 ;; start server, so can use emaclient to edit file outside emacs
 (add-hook 'on-first-input-hook (lambda ()
 				 (require 'server)
@@ -186,7 +174,7 @@
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh
-  :load-path "packages/gcmh"
+  :straight t
   :hook (on-first-file . gcmh-mode)
   :custom
   (gc-cons-percentage 0.1)

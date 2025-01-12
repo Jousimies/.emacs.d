@@ -13,6 +13,9 @@
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 1.0)
 
+(setq package-enable-at-startup nil
+      package-quickstart nil
+      load-prefer-newer t)
 ;; Emacs startup performance
 ;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
 (setq auto-mode-case-fold nil)

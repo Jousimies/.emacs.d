@@ -52,7 +52,7 @@
 
 ;; File Name, truncate it if its length greater than prot-modeline-string-truncate-length.
 (defun my/modeline--buffer-name ()
-  (when-let ((name (buffer-name)))
+  (when-let* ((name (buffer-name)))
     (prot-modeline-string-truncate name)))
 
 (defun my/modeline-buffer-name ()
@@ -60,7 +60,7 @@
     (format "%s" name)))
 
 (defun my/modeline--file-name ()
-  (when-let ((name (buffer-file-name)))
+  (when-let* ((name (buffer-file-name)))
     (prot-modeline-string-truncate (file-name-nondirectory name))))
 
 (defun my/modeline-file-name ()
@@ -78,10 +78,10 @@
   (upcase (file-name-nondirectory (directory-file-name (file-name-directory (buffer-file-name))))))
 
 (defvar-local my/modeline-denote
-	'(:eval (when (and (eq major-mode 'org-mode)
+    '(:eval (when (and (eq major-mode 'org-mode)
                        (buffer-file-name))
-			  (when (denote-file-is-note-p (buffer-file-name))
-				(propertize (concat " " (get-last-directory) " ") 'face `(:inverse-video t))))))
+	      (when (denote-file-is-note-p (buffer-file-name))
+		(propertize (concat " " (get-last-directory) " ") 'face `(:inverse-video t))))))
 
 (defvar-local my/modeline-repeat
     '(:eval (when (and repeat-in-progress
@@ -183,7 +183,7 @@
     '(:eval (when (mode-line-window-selected-p)
               (if (derived-mode-p 'pdf-view-mode)
                   (propertize (my/modeline--pdf-page) 'face font-lock-string-face)
-				(propertize (format " %%l:%%c/%d " (line-number-at-pos (point-max))) 'face nil)))))
+		(propertize (format " %%l:%%c/%d " (line-number-at-pos (point-max))) 'face nil)))))
 
 ;; Pomodoro
 (defvar org-timer-countdown-timer nil)
@@ -191,11 +191,11 @@
 (defun my/modeline--timer ()
   (if org-timer-countdown-timer
       (concat " " (org-timer-value-string))
-	pomm-current-mode-line-string))
+    pomm-current-mode-line-string))
 
 (defvar-local my/modeline-timer
     '(:eval (when (and (mode-line-window-selected-p) (or org-timer-countdown-timer
-														 pomm-current-mode-line-string))
+							 pomm-current-mode-line-string))
               (propertize (my/modeline--timer) 'face `(:inherit font-lock-constant-face)))))
 
 (defvar-local my/modeline-time
@@ -216,8 +216,8 @@
 ;; VSC Info
 (defun my/modeline--vsc-state ()
   (let* ((backend (vc-backend buffer-file-name))
-		 (state (vc-state buffer-file-name backend)))
-	(cond ((eq state 'up-to-date) "√")
+	 (state (vc-state buffer-file-name backend)))
+    (cond ((eq state 'up-to-date) "√")
           ((eq state 'edited) "*")
           ((eq state 'added) "@")
           ((eq state 'needs-update) "￬")
@@ -232,9 +232,9 @@
           (t " "))))
 
 (defvar-local my/modeline-vsc-info
-	'(:eval (when (vc-backend (buffer-file-name))
-			  (propertize (substring-no-properties vc-mode 1)
-						  'face `(:inherit font-lock-builtin-face)))))
+    '(:eval (when (vc-backend (buffer-file-name))
+	      (propertize (substring-no-properties vc-mode 1)
+			  'face `(:inherit font-lock-builtin-face)))))
 
 ;; Battery status
 (defun my/modeline--battery-data ()
@@ -280,7 +280,7 @@ Specific to the current window's mode line.")
 
 (dolist (construct '(my/modeline-major-mode
                      my/modeline-buffer-indentification
-					 prot-modeline-narrow
+		     prot-modeline-narrow
                      my/modeline-input-method
                      my/modeline-kbd-macro
                      my/modeline-region-indicator
@@ -296,8 +296,8 @@ Specific to the current window's mode line.")
                      my/modeline-image-info
                      my/modeline-clock-info
                      my/winum
-					 prot-modeline-eglot
-					 my/modeline-denote
+		     prot-modeline-eglot
+		     my/modeline-denote
                      my/modeline-repeat))
   (put construct 'risky-local-variable t))
 
@@ -311,35 +311,36 @@ Specific to the current window's mode line.")
                            "​"
                            prot-modeline-narrow
                            ;; "丨"
-						   my/modeline-buffer-readonly
-						   my/modeline-buffer-modified
-						   my/modeline-file-name
-						   mode-line-front-space
-						   (:eval (with-eval-after-load 'denote
-									my/modeline-denote))
-						   "   "
+			   my/modeline-buffer-readonly
+			   my/modeline-buffer-modified
+			   my/modeline-file-name
+			   mode-line-front-space
+			   (:eval (with-eval-after-load 'denote
+				    my/modeline-denote))
+			   "   "
                            "%I"         ;Display buffer size
-						   my/modeline-position
-						   my/modeline-image-info
-						   my/modeline-kbd-macro
-						   my/modeline-region-indicator
-						   prot-modeline-eglot
-						   mode-line-format-right-align
-						   ;; (:eval (with-eval-after-load 'org-clock
-						   ;;  		my/modeline-clock-info))
-						   ;; my/modeline-timer
-						   (:eval (when which-function-mode
-									which-func-format))
-						   my/modeline-sys
-						   " "
-						   my/modeline-major-mode
-						   (project-mode-line project-mode-line-format)
-						   (vc-mode vc-mode)
-						   " "
-						   mode-line-end-spaces))
+			   my/modeline-position
+			   my/modeline-image-info
+			   my/modeline-kbd-macro
+			   my/modeline-region-indicator
+			   prot-modeline-eglot
+			   mode-line-format-right-align
+			   ;; (:eval (with-eval-after-load 'org-clock
+			   ;;  		my/modeline-clock-info))
+			   ;; my/modeline-timer
+			   (:eval (when which-function-mode
+				    which-func-format))
+			   my/modeline-sys
+			   " "
+			   my/modeline-major-mode
+			   (project-mode-line project-mode-line-format)
+			   (vc-mode vc-mode)
+			   " "
+			   mode-line-end-spaces))
 
 (use-package keycast
-  :load-path "packages/keycast/"
+  :straight t
+  :defer t
   :custom
   (keycast-mode-line-format "%2s%k%c%R")
   (keycast-mode-line-insert-after 'my/modeline-position)

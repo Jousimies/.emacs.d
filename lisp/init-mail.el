@@ -145,11 +145,10 @@
 (run-with-idle-timer 4 nil (lambda ()
                              (mu4e 'background)))
 
-(use-package consult-mu
-  :load-path "packages/consult-mu/"
-  :after consult mu4e
-  ;; :bind ("s-f m" . consult-mu)
-  :commands consult-mu)
+;; (use-package consult-mu
+;;   :straight t
+;;   :after consult mu4e
+;;   :commands consult-mu)
 
 (provide 'init-mail)
 ;;; init-mail.el ends here.

@@ -5,8 +5,8 @@
 ;;; Code:
 
 (use-package magit
-  :load-path ("packages/magit/lisp" "packages/with-editor/lisp")
-  :defer t
+  :straight t
+  :bind ("C-x g" . magit-status-quick)
   :config
   (setq magit-git-executable "/usr/bin/git")
   (magit-add-section-hook 'magit-status-sections-hook
@@ -17,20 +17,17 @@
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-upstream)
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote))
 
-(use-package magit-status
-  :bind ("C-x g" . magit-status-quick))
-
 (with-eval-after-load 'transient
   (setq transient-history-file (expand-file-name "transient/history.el" cache-directory)
-		transient-levels-file (expand-file-name "transient/levels.el" cache-directory)
-		transient-values-file (expand-file-name "transient/values.el" cache-directory)))
+	transient-levels-file (expand-file-name "transient/levels.el" cache-directory)
+	transient-values-file (expand-file-name "transient/values.el" cache-directory)))
 
 (use-package git-timemachine
-  :load-path "packages/git-timemachine/"
+  :straight t
   :bind ("M-g t" . git-timemachine))
 
 (use-package browse-at-remote
-  :load-path "packages/browse-at-remote/"
+  :straight t
   :bind ("M-g b" . browse-at-remote))
 
 ;; (use-package blamer

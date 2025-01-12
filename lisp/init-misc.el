@@ -4,7 +4,7 @@
 
 ;;; Code:
 (use-package gptel
-  :load-path "~/.emacs.d/packages/gptel/"
+  :straight t
   :bind ("<f1>" . my/f1-toggle-gptel-buffer)
   :hook ((gptel-post-stream . gptel-auto-scroll)
 	 (gptel-post-response . gptel-end-of-response))
@@ -75,9 +75,9 @@ Explain your reasoning.  if you don’t know, say you don’t know.  Be willing 
   (require 'gptel-rewrite))
 
 
-(use-package image-slicing
-  :load-path "~/.emacs.d/packages/image-slicing/"
-  :hook (org-mode . image-slicing-mode))
+;; (use-package image-slicing
+;;   :load-path "~/.emacs.d/packages/image-slicing/"
+;;   :hook (org-mode . image-slicing-mode))
 
 (defun yt-set-time (time)
   "Set TIME in the YouTube link at point.)
@@ -127,7 +127,7 @@ Explain your reasoning.  if you don’t know, say you don’t know.  Be willing 
     (error "Not on a Youtube link")))
 
 (use-package snow
-  :load-path "~/.emacs.d/packages/snow.el/"
+  :straight t
   :commands snow)
 
 ;; (use-package focus

@@ -88,69 +88,71 @@
 
 ;; elfeed
 (use-package elfeed
-  :load-path "packages/elfeed/"
-  :commands elfeed
+  :straight t
+  :bind ("C-c e" . elfeed)
   :bind ((:map elfeed-search-mode-map
-			   ("U" . elfeed-update)))
+	       ("U" . elfeed-update)))
   :config
+  (unless (featurep 'mpv)
+    (require 'mpv))
   (setq elfeed-use-curl nil)
   (setq elfeed-show-entry-switch #'elfeed-display-buffer)
   (setq elfeed-search-print-entry-function #'lucius/elfeed-search-print-entry--better-default)
   (use-package elfeed-org
-    :load-path "packages/elfeed-org/"
+    :straight t
     :config
-	(elfeed-org)
+    (elfeed-org)
     (setq rmh-elfeed-org-files `(,(concat my-galaxy "/denote/20230330T120149==0g2c--RSS-Sources__elfeed_Emacs.org")))))
 
 (use-package elfeed-tube
-  :load-path "packages/elfeed-tube/" "packages/emacs-aio/"
+  :straight t
   :after elfeed
   :bind ((:map elfeed-show-mode-map
-			   ("C-c C-f" . elfeed-tube-mpv-follow-mode)
-			   ("C-c C-w" . elfeed-tube-mpv-where)
-			   ("F" . elfeed-tube-fetch)
-			   ("m" . elfeed-tube-mpv)
-			   ([remap save-buffer] . elfeed-tube-save))
-		 (:map elfeed-search-mode-map
-			   ("F" . elfeed-tube-fetch)
-			   ([remap save-buffer] . elfeed-tube-save)))
+	       ("C-c C-f" . elfeed-tube-mpv-follow-mode)
+	       ("C-c C-w" . elfeed-tube-mpv-where)
+	       ("F" . elfeed-tube-fetch)
+	       ("m" . elfeed-tube-mpv)
+	       ([remap save-buffer] . elfeed-tube-save))
+	 (:map elfeed-search-mode-map
+	       ("F" . elfeed-tube-fetch)
+	       ([remap save-buffer] . elfeed-tube-save)))
   :config
   (elfeed-tube-setup))
 
 (use-package elfeed-tube-mpv
-  :commands elfeed-tube-mpv-follow-mode elfeed-tube-mpv-where elfeed-tube-mpv)
+  :straight t
+  :after elfeed)
 
 (use-package mpv
-  :defer 1
-  :load-path "packages/mpv.el/"
+  :straight t
   :bind (("<f8>" . my/mpv-play-or-pause)
-		 ("<f7>" . mpv-seek-backward)
-		 ("<f9>" . mpv-seek-forward))
+	 ("<f7>" . mpv-seek-backward)
+	 ("<f9>" . mpv-seek-forward))
   :config
   (defun my/mpv-quit-with-save ()
-	(interactive)
-	(mpv-quit t))
+    (interactive)
+    (mpv-quit t))
 
   (defun my/mpv-toggle-progress ()
-	(interactive)
-	(mpv-run-command "keypress" "o"))
+    (interactive)
+    (mpv-run-command "keypress" "o"))
 
   (defun my/mpv-toggle-fullscreen ()
-	(interactive)
-	(mpv-run-command "keypress" "f"))
+    (interactive)
+    (mpv-run-command "keypress" "f"))
 
   (defun my/mpv-play-or-pause ()
-	"Toggle between play and pause for mpv process."
-	(interactive)
-	(if (mpv-live-p)
-		(mpv-pause)
+    "Toggle between play and pause for mpv process."
+    (interactive)
+    (if (mpv-live-p)
+	(mpv-pause)
       (if (eq major-mode 'dired-mode)
-		  (mpv-play (dired-get-filename))
-		(let ((file (read-file-name "File: ")))
-		  (mpv-play file)))))
+	  (mpv-play (dired-get-filename))
+	(let ((file (read-file-name "File: ")))
+	  (mpv-play file)))))
 
   (setq mpv-default-options '("--http-proxy=http://127.0.0.1:7890"
-							  "--ytdl-raw-options-append=proxy=http://127.0.0.1:7890")))
+			      "--ytdl-raw-options-append=proxy=http://127.0.0.1:7890")))
 
 ;;;###autoload
 (defun my/dired-open-with-mpv ()

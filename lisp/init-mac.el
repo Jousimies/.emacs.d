@@ -26,9 +26,9 @@
 
 
 (setopt trash-directory "~/.Trash"
-		ns-use-proxy-icon nil
-		ns-pop-up-frames nil
-		ns-use-srgb-colorspace nil)
+	ns-use-proxy-icon nil
+	ns-pop-up-frames nil
+	ns-use-srgb-colorspace nil)
 
 (use-package color-picker
   :commands color-picker)
@@ -43,15 +43,15 @@
 ;; 	(mac-plugin-set-shadow-opacity 1.0))
 
 (use-package macos
-  :load-path "packages/EmacsMacOSModule/"
+  :straight (macos :host github :repo "xenodium/EmacsMacOSModule")
   :commands macos-reveal-in-finder macos-share
   :config
   (setq macos-module-install-dir (expand-file-name "modules" user-emacs-directory)
-		macos-module-path (expand-file-name "libEmacsMacOSModule.dylib" macos-module-install-dir))
+	macos-module-path (expand-file-name "libEmacsMacOSModule.dylib" macos-module-install-dir))
   (load-file macos-module-path))
 
 (use-package emt
-  :load-path "packages/emt"
+  :straight (emt :host github :repo "roife/emt")
   :bind (("M-f" . emt-forward-word)
          ("M-b" . emt-backward-word)
          ("M-d" . emt-kill-word)
@@ -66,7 +66,7 @@
   (interactive)
   (mac-select-input-source "im.rime.inputmethod.Squirrel.Hans")
   (setq cursor-type 'bar)
-  (set-cursor-color "red")
+  (set-cursor-color "DarkOrange")
   (setq current-system-input-method t))
 
 (defun ime-select-abc ()
@@ -79,12 +79,8 @@
 (defun ime-switch ()
   (interactive)
   (if current-system-input-method
-      (progn
-		(ime-select-abc)
-		(force-mode-line-update))
-	(progn
-      (ime-select-rime)
-      (force-mode-line-update))))
+      (ime-select-abc)
+    (ime-select-rime)))
 
 (add-hook 'on-switch-buffer-hook 'ime-select-abc)
 

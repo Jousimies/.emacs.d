@@ -5,34 +5,33 @@
 ;;; Code:
 
 (use-package denote
-  :load-path "packages/denote/"
-  :commands (denote
-			 denote-signature
-			 denote-subdirectory
-			 denote-org-capture-with-prompts
-			 denote-link
-			 denote-backlinks
-			 denote-rename-file-using-front-matter
-			 denote-keywords-add
-			 denote-keywords-remove)
-  :bind ((:map dired-mode-map
-               ("r" . denote-dired-rename-marked-files-with-keywords)))
-  :hook (dired-mode . denote-dired-mode-in-directories)
+  :straight t
+  :bind (:map dired-mode-map
+              ("r" . denote-dired-rename-marked-files-with-keywords)
+	      ("/ c" . my/denote-sort-children)
+	      ("/ s" . my/denote-sort-siblings)
+	      ("/ r" . my/denote-sort-regexp)
+	      ("/ p" . my/denote-sort-parent-with-children))
+  :hook ((dired-mode . denote-dired-mode-in-directories)
+	 (org-mode . denote-rename-buffer-mode))
   :custom
   (denote-rename-confirmations nil)
   (denote-org-store-link-to-heading nil)
   (denote-prompts '(title keywords subdirectory signature))
   (denote-directory (expand-file-name "denote" my-galaxy))
   (denote-file-name-slug-functions '((title . denote-sluggify-title)
-										  (signature . denote-sluggify-signature)
-										  (keyword . identity)))
+				     (signature . denote-sluggify-signature)
+				     (keyword . identity)))
   (denote-dired-directories
    (list denote-directory
          (thread-last denote-directory (expand-file-name "books"))
          (thread-last denote-directory (expand-file-name "outline"))
          (thread-last denote-directory (expand-file-name "literature"))
          (thread-last denote-directory (expand-file-name "term"))
-         (thread-last denote-directory (expand-file-name "references")))))
+         (thread-last denote-directory (expand-file-name "references"))))
+
+  (denote-rename-buffer-format "%b %t") ;;
+  (denote-rename-buffer-backlinks-indicator ""))
 
 (defun my/modus-themes-denote-faces (&rest _)
   (modus-themes-with-colors
@@ -46,12 +45,6 @@
      `(denote-faces-second ((,c :foreground ,magenta-warmer))))))
 
 (add-hook 'ns-system-appearance-change-functions #'my/modus-themes-denote-faces)
-
-(use-package denote-org-extras
-  :commands (denote-org-extras-extract-org-subtree
-			 denote-org-extras-link-to-heading
-			 denote-org-extras-dblock-insert-backlinks
-			 denote-org-extras-dblock-insert-links))
 
 ;; A simple HACK to let denote support orderless
 ;; https://github.com/protesilaos/denote/issues/253
@@ -113,28 +106,21 @@
     (or (denote-link-return-links)
         (user-error "No links found")))))
 
-(use-package denote-rename-buffer
-  :load-path "packages/denote/"
-  :hook (org-mode . denote-rename-buffer-mode)
-  :custom
-  (denote-rename-buffer-format "%b %t") ;;
-  (denote-rename-buffer-backlinks-indicator ""))
-
 (use-package consult-denote
-  :load-path "packages/consult-denote/"
+  :straight t
   :hook (org-mode . consult-denote-mode))
 
 (use-package consult-notes
-  :load-path "packages/consult-notes/"
+  :straight t
   :commands consult-notes
   :config
   (defun my/consult-notes--file-dir-annotate (name dir cand)
-	"Annotate file CAND with its directory DIR, size, and modification time."
-	(let* ((file  (concat (file-name-as-directory dir) cand))
+    "Annotate file CAND with its directory DIR, size, and modification time."
+    (let* ((file  (concat (file-name-as-directory dir) cand))
            (dirs  (abbreviate-file-name dir))
            (attrs (file-attributes file))
            (fsize (file-size-human-readable (file-attribute-size attrs)))
-	       (ftime (consult-notes--time (file-attribute-modification-time attrs))))
+	   (ftime (consult-notes--time (file-attribute-modification-time attrs))))
       (put-text-property 0 (length name)  'face 'consult-notes-name name)
       (put-text-property 0 (length fsize) 'face 'consult-notes-size fsize)
       (put-text-property 0 (length ftime) 'face 'consult-notes-time ftime)
@@ -155,79 +141,71 @@
 (defun my/org-get-link-under-point ()
   "Get the link under the point in Org mode."
   (let* ((link (org-element-lineage (org-element-context) '(link) t)))
-	(if link
-		(org-element-property :raw-link link)
-	  (url-get-url-at-point))))
+    (if link
+	(org-element-property :raw-link link)
+      (url-get-url-at-point))))
 
 (defun my/open-link-with-eww ()
   (interactive)
-  (when-let ((link (my/org-get-link-under-point)))
-	(if (org-file-url-p link)
-		(org-open-at-point)
-	  (eww (concat "file://" (expand-file-name link))))))
+  (when-let* ((link (my/org-get-link-under-point)))
+    (if (org-file-url-p link)
+	(org-open-at-point)
+      (eww (concat "file://" (expand-file-name link))))))
 
-(use-package denote-sort
-  :commands denote-sort-dired
-  :bind (:map dired-mode-map
-			  ("/ c" . my/denote-sort-children)
-			  ("/ s" . my/denote-sort-siblings)
-			  ("/ r" . my/denote-sort-regexp)
-			  ("/ p" . my/denote-sort-parent-with-children))
-  :config
-  (defun my/denote-signature-retrieve ()
-	(let* ((file (or (buffer-file-name) (dired-get-filename))))
-	  (when file
-		(denote-retrieve-filename-signature file))))
+(defun my/denote-signature-retrieve ()
+  (let* ((file (or (buffer-file-name) (dired-get-filename))))
+    (when file
+      (denote-retrieve-filename-signature file))))
 
-  (defun my/denote-sort-regexp (regexp)
-	(interactive (list
-				  (read-regexp
-				   (concat "Files matching PATTERN" (format " (default: %s)" (my/denote-signature-retrieve)) ": ")
-				   (my/denote-signature-retrieve)
-				   nil)))
-	(denote-sort-dired (concat "==" regexp) 'signature nil nil))
+(defun my/denote-sort-regexp (regexp)
+  (interactive (list
+		(read-regexp
+		 (concat "Files matching PATTERN" (format " (default: %s)" (my/denote-signature-retrieve)) ": ")
+		 (my/denote-signature-retrieve)
+		 nil)))
+  (denote-sort-dired (concat "==" regexp) 'signature nil nil))
 
-  (defun my/denote-sort-with-identifer ()
-	(interactive)
-	(denote-sort-dired (denote-files-matching-regexp-prompt) 'identifier nil nil))
+(defun my/denote-sort-with-identifer ()
+  (interactive)
+  (denote-sort-dired (denote-files-matching-regexp-prompt) 'identifier nil nil))
 
-  (defun my/denote-sort-with-keywords ()
-	(interactive)
-	(denote-sort-dired (regexp-opt (denote-keywords-prompt)) 'keywords nil nil))
+(defun my/denote-sort-with-keywords ()
+  (interactive)
+  (denote-sort-dired (regexp-opt (denote-keywords-prompt)) 'keywords nil nil))
 
-  (defun my/denote-sort-with-days ()
-	"Sort files by the past week's period using denote."
-	(interactive)
-	(let ((regexp (call-interactively 'my/denote-period-week)))
-      (denote-sort-dired regexp 'signature nil nil)))
+(defun my/denote-sort-with-days ()
+  "Sort files by the past week's period using denote."
+  (interactive)
+  (let ((regexp (call-interactively 'my/denote-period-week)))
+    (denote-sort-dired regexp 'signature nil nil)))
 
-  (defun my/denote-sort-parent-with-children ()
-	(interactive)
-	(let* ((index (my/denote-signature-retrieve))
-		   (length (length index))
-		   (regexp (substring index 0 (- length 1))))
-	  (denote-sort-dired (concat "==" regexp) 'signature nil nil)))
+(defun my/denote-sort-parent-with-children ()
+  (interactive)
+  (let* ((index (my/denote-signature-retrieve))
+	 (length (length index))
+	 (regexp (substring index 0 (- length 1))))
+    (denote-sort-dired (concat "==" regexp) 'signature nil nil)))
 
-  (defun my/denote-sort-children-regexp ()
-	(let* ((index (my/denote-signature-retrieve)))
-	  (format "==%s" index)))
+(defun my/denote-sort-children-regexp ()
+  (let* ((index (my/denote-signature-retrieve)))
+    (format "==%s" index)))
 
-  (defun my/denote-sort-children ()
-	(interactive)
-	(let ((regexp (my/denote-sort-children-regexp)))
-	  (denote-sort-dired regexp 'signature nil nil)))
+(defun my/denote-sort-children ()
+  (interactive)
+  (let ((regexp (my/denote-sort-children-regexp)))
+    (denote-sort-dired regexp 'signature nil nil)))
 
-  (defun my/denote-sort-siblings-regexp ()
-	(let* ((index (my/denote-signature-retrieve))
-		   (last-char (substring index (1- (length index)))))
-	  (if (string-match "[0-9]" last-char)
-		  (format "==\\(%s\\|%s[a-z]\\)-" index index)
-		(format "==\\(%s\\|%s[0-9]+\\)-" index index))))
+(defun my/denote-sort-siblings-regexp ()
+  (let* ((index (my/denote-signature-retrieve))
+	 (last-char (substring index (1- (length index)))))
+    (if (string-match "[0-9]" last-char)
+	(format "==\\(%s\\|%s[a-z]\\)-" index index)
+      (format "==\\(%s\\|%s[0-9]+\\)-" index index))))
 
-  (defun my/denote-sort-siblings ()
-	(interactive)
-	(let ((regexp (my/denote-sort-siblings-regexp)))
-      (denote-sort-dired regexp 'signature nil nil))))
+(defun my/denote-sort-siblings ()
+  (interactive)
+  (let ((regexp (my/denote-sort-siblings-regexp)))
+    (denote-sort-dired regexp 'signature nil nil)))
 
 ;; fliter denote create by days ago
 (defun my/denote-period (&optional days)
@@ -280,7 +258,7 @@ DAYS is the optional number of days ago, defaulting to 7."
   (format "\\(==[0-9]-\\)"))
 
 (use-package denote-fz
-  :load-path "packages/denote-folgezettel/"
+  :straight (denote-fz :host github :repo "MirkoHernandez/denote-folgezettel")
   :hook (org-mode . denote-fz-dired-mode))
 
 (defun my/literature-entry (url title keywords file-path file-new-path)
@@ -339,19 +317,19 @@ DAYS is the optional number of days ago, defaulting to 7."
     (my/literature-save-from-safari)))
 
 (use-package ibooks-annot
-  :load-path "packages/ibooks-annot.el/"
+  :straight (ibooks-annot :host github :repo "Jousimies/ibooks-annot.el")
   :commands ibooks-annot/extract-annotations-to-note ibooks-annot/open-book-with-ibooks
   :config
   (setq pdfannots-script "~/.emacs.d/packages/pdfannots/pdfannots.py -f json")
   (setq ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
 
 (use-package denote-explore
-  :load-path "packages/denote-explore/"
+  :straight t
   :commands (denote-explore-count-notes
-			 denote-explore-count-keywords
-			 denote-explore-keywords-barchart
-			 denote-explore-identify-duplicate-identifiers
-			 denote-explore-rename-keyword)
+	     denote-explore-count-keywords
+	     denote-explore-keywords-barchart
+	     denote-explore-identify-duplicate-identifiers
+	     denote-explore-rename-keyword)
   :config
   (setq denote-explore-network-filename (expand-file-name "mindmap/denote-network.html" my-galaxy))
   (setq denote-explore-json-edges-filename (expand-file-name "denote-edges.json" cache-directory))
@@ -362,21 +340,21 @@ DAYS is the optional number of days ago, defaulting to 7."
   "Count number of Denote text files,keywords and attachments."
   (interactive)
   (let* ((all-files (length (denote-directory-files)))
-		 (denote-files (length (denote-directory-files nil nil t)))
-		 (attachments (- all-files denote-files))
-		 (keywords (length (denote-keywords))))
+	 (denote-files (length (denote-directory-files nil nil t)))
+	 (attachments (- all-files denote-files))
+	 (keywords (length (denote-keywords))))
     (message "%s Denote files (%s Attachments), %s Distinct Keywords."
-			 denote-files attachments keywords)))
+	     denote-files attachments keywords)))
 
 (use-package citar-denote
-  :load-path "packages/citar-denote/"
+  :straight t
   :after citar
   :commands (citar-denote-dwim
-			 citar-denote-open-reference-entry
-			 citar-denote-find-reference
-			 citar-denote-find-citation
-			 citar-denote-add-citekey
-			 citar-denote-remove-citekey)
+	     citar-denote-open-reference-entry
+	     citar-denote-find-reference
+	     citar-denote-find-citation
+	     citar-denote-add-citekey
+	     citar-denote-remove-citekey)
   ;; :hook (on-first-input . citar-denote-mode)
   :config
   (citar-denote-mode)
@@ -459,7 +437,7 @@ When ANYWHERE is non-nil, search beyond the preamble.
 If the position of the file PROPERTY has already been computed,
 it can be passed in POS."
 
-  (when-let ((pos (or pos
+  (when-let* ((pos (or pos
                       (my/org-find-time-file-property property))))
     (save-excursion
       (goto-char pos)
@@ -490,7 +468,7 @@ it can be passed in POS."
 (defun my/gtd-and-archive-list ()
   "Append all file names in `org-gtd-directory' to a list."
   (unless (featurep 'org-gtd)
-	(require 'org-gtd))
+    (require 'org-gtd))
   (let ((file-list '()))
     (dolist (file (directory-files org-gtd-directory t))
       (when (and (file-regular-p file) (not (member (file-name-nondirectory file) '("." ".."))))

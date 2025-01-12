@@ -28,32 +28,32 @@
 
 (with-eval-after-load 'ox-publish
   (setq org-publish-project-alist `(("site"
-									 :base-directory ,website-directory
-									 :base-extension "org"
-									 :recursive nil
-									 :publishing-directory ,my/publish-directory
-									 :publishing-function org-html-publish-to-html)
+				     :base-directory ,website-directory
+				     :base-extension "org"
+				     :recursive nil
+				     :publishing-directory ,my/publish-directory
+				     :publishing-function org-html-publish-to-html)
 
-									("posts"
-									 :base-directory ,(expand-file-name "posts" website-directory)
-									 :base-extension "org"
-									 :publishing-directory ,(expand-file-name "posts" my/publish-directory)
-									 :publishing-function org-html-publish-to-html
-									 :with-author t
-									 :auto-sitemap t
-									 :sitemap-filename "index.org"
-									 :sitemap-title "posts"
-									 :sitemap-sort-files anti-chronologically
-									 :sitemap-format-entry taingram--sitemap-dated-entry-format)
+				    ("posts"
+				     :base-directory ,(expand-file-name "posts" website-directory)
+				     :base-extension "org"
+				     :publishing-directory ,(expand-file-name "posts" my/publish-directory)
+				     :publishing-function org-html-publish-to-html
+				     :with-author t
+				     :auto-sitemap t
+				     :sitemap-filename "index.org"
+				     :sitemap-title "posts"
+				     :sitemap-sort-files anti-chronologically
+				     :sitemap-format-entry taingram--sitemap-dated-entry-format)
 
-									("static"
-									 :base-directory ,website-directory
-									 :base-extension "css\\|js\\|txt\\|jpg\\|gif\\|png"
-									 :recursive t
-									 :publishing-directory  ,my/publish-directory
-									 :publishing-function org-publish-attachment)
+				    ("static"
+				     :base-directory ,website-directory
+				     :base-extension "css\\|js\\|txt\\|jpg\\|gif\\|png"
+				     :recursive t
+				     :publishing-directory  ,my/publish-directory
+				     :publishing-function org-publish-attachment)
 
-									("personal-website" :components ("site" "posts" "static"))))
+				    ("personal-website" :components ("site" "posts" "static"))))
 
   ;; https://git.sr.ht/~taingram/taingram.org/tree/master/item/publish.el
   (defun taingram--sitemap-dated-entry-format (entry style project)
@@ -95,7 +95,7 @@
         '(("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@")))
   (setq org-html-preamble t)
   (setq org-html-preamble-format
-		'(("en" "<a href=\"/index.html\" class=\"button\">Home</a>
+	'(("en" "<a href=\"/index.html\" class=\"button\">Home</a>
                <a href=\"/posts/index.html\" class=\"button\">Posts</a>
                <a href=\"/about.html\" class=\"button\">About</a>
                <hr>")))

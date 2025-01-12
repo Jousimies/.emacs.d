@@ -13,8 +13,8 @@
 
 
 (use-package telega
-  :load-path ("packages/telega.el/" "packages/telega.el/contrib/"  "packages/rainbow-identifiers" "packages/visual-fill-column")
-  :commands telega
+  :straight t
+  :bind ("C-c t" . telega)
   :init
   (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
                                        (display-buffer-in-side-window)
@@ -36,6 +36,7 @@
   ;; (setq telega-filters-custom nil)
   ;; (setq telega-filter-custom-show-folders nil
   ;; 		telega-symbol-folder "  ")
+  (setq telega-mnz-use-language-detection t)
   (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))
   ;; (setq telega-avatar-workaround-gaps-for '(return t))
   (setq telega-chat-fill-column 78)
@@ -43,7 +44,7 @@
   (setq telega-completing-read-function completing-read-function)
   (setq telega-proxies
         (list
-         '(:server "127.0.0.1" :port 7891 :enable t
+         '(:server "127.0.0.1" :port 7890 :enable t
                    :type (:@type "proxyTypeSocks5"))))
   ;; https://github.com/roife/.emacs.d/blob/d53e35de36a0ff25cb538baf6afcbdc9e39858af/core/init-tabbar.el
   (defvar +tab-bar-telega-indicator-cache nil)
@@ -87,12 +88,6 @@
 
   (add-hook 'telega-connection-state-hook #'+tab-bar-telega-icon-update)
   (add-hook 'telega-kill-hook #'+tab-bar-telega-icon-update))
-
-(use-package telega-mnz
-  :load-path "~/.emacs.d/packages/telega.el/contrib/"
-  :hook (telega-load . global-telega-mnz-mode)
-  :config
-  (setq telega-mnz-use-language-detection t))
 
 (provide 'init-telega)
 ;;; init-telega.el ends here.

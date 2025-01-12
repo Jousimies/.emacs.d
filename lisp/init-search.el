@@ -26,8 +26,8 @@
 ;; (rg-enable-default-bindings)
 ;; https://github.com/dajva/rg.el/issues/142#issuecomment-1452525225
 (use-package rg
-  :load-path ("packages/rg.el/" "packages/Emacs-wgrep")
-  :commands rg
+  :straight t
+  :bind ("s-s r" . rg)
   :custom
   (rg-group-result t)
   (rg-show-columns t))
@@ -48,9 +48,9 @@
           (SemanticScholar . "https://www.semanticscholar.org/search?q=")
           (Github . "https://github.com/search?q=")
           (Youtube . "http://www.youtube.com/results?aq=f&oq=&search_query=")
-		  (Bilibili . "https://search.bilibili.com/all?keyword=")
-		  (WikiPedia_en . "https://en.wikipedia.org/w/index.php?search=")
-		  (Annas-Archvie . "https://annas-archive.org/search?q=")))
+	  (Bilibili . "https://search.bilibili.com/all?keyword=")
+	  (WikiPedia_en . "https://en.wikipedia.org/w/index.php?search=")
+	  (Annas-Archvie . "https://annas-archive.org/search?q=")))
 
 (defmacro my/define-search-functions ()
   "Dynamically define search functions for each search engine in `my/browser-engines`."
@@ -79,7 +79,7 @@
 								 (my/define-search-functions)))
 
 (use-package grab-mac-link
-  :load-path "packages/grab-mac-link.el/"
+  :straight t
   :commands grab-mac-link-dwim grab-mac-link-safari-1)
 
 ;;;###autoload
@@ -94,7 +94,7 @@
       (format-network-address (car (network-interface-info dev)) t)))
 
 (use-package simple-httpd
-  :load-path "packages/emacs-web-server"
+  :straight t
   :bind ("M-g d" . httpd-serve-directory)
   :custom
   (httpd-host (format-network-address
