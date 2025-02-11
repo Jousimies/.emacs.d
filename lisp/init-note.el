@@ -522,5 +522,47 @@ it can be passed in POS."
 ;;          :scroll-bar-width 8
 ;;          :fringe-width 8)))
 
+(defvar folder-structure
+  '((:name "00_项目信息" :subfolders ())
+    (:name "01_设计依据" :subfolders ())
+    (:name "02_初步设计" :subfolders ("01-各专业提资" "02-结构初设图纸" "02-结构初设图纸PDF"))
+    (:name "03_施工图设计" :subfolders ("01-各专业提资" "02-结构施工图纸" "02-结构施工图纸PDF" "03-计算书" "04-设计变更"))
+    (:name "04_计算模型" :subfolders ("01-初设模型" "02-施工图设计模型"))
+    (:name "05_施工图审图" :subfolders ("01-审图意见" "02-审图修改"))
+    (:name "06_施工配合" :subfolders ())
+    (:name "07_竣工验收" :subfolders ())
+    (:name "08_参考资料" :subfolders ())
+    (:name "09_归档文件" :subfolders ("01-最终图纸" "02-最终图纸PDF" "03-最终计算书" "04-项目总结")))
+  "预定义的文件夹树结构。")
+
+(defun create-folder (path)
+  "创建指定路径的文件夹。"
+  (unless (file-exists-p path)
+    (make-directory path t)
+    (message "创建文件夹: %s" path)))
+
+(defun create-subfolders (parent-path subfolders)
+  "在父文件夹路径下创建子文件夹。"
+  (dolist (folder subfolders)
+    (let ((subfolder-path (expand-file-name folder parent-path)))
+      (create-folder subfolder-path))))
+
+(defun create-folder-structure (base-path)
+  "在指定路径下生成文件夹树结构。"
+  (dolist (folder folder-structure)
+    (let* ((folder-name (plist-get folder :name))
+          (subfolders (plist-get folder :subfolders))
+          (parent-path (expand-file-name folder-name base-path)))
+      (create-folder parent-path)
+      (create-subfolders parent-path subfolders))))
+
+(defun generate-folder-tree ()
+  "生成文件夹树。"
+  (interactive)
+  (let ((base-path (read-directory-name "请输入文件夹树的根目录: ")))
+    (create-folder-structure base-path)
+    (message "文件夹树生成完成！")))
+
+
 (provide 'init-note)
 ;;; init-note.el ends here.
