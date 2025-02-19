@@ -305,6 +305,9 @@ value of the selected COLOR."
     "C-x t" "tab"
     "C-c &" "yasnippet"))
 
+(use-package stillness-mode
+  :load-path "packages/stillness-mode.el/"
+  :hook (after-init . stillness-mode))
 
 (provide 'init-completion)
 ;;; init-completion.el ends here

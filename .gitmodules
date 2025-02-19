@@ -634,3 +634,6 @@
 [submodule "packages/org-reminders"]
 	path = packages/org-reminders
 	url = https://github.com/ginqi7/org-reminders.git
+[submodule "packages/stillness-mode.el"]
+	path = packages/stillness-mode.el
+	url = https://github.com/neeasade/stillness-mode.el.git
