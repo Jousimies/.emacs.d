@@ -86,78 +86,79 @@
 
 (defvar-keymap my/sort-note-prefix-map
   :doc "Prefix map for sort note."
-  "s" #'my/denote-sort-siblings
-  "c" #'my/denote-sort-children
-  "r" #'my/denote-sort-regexp
-  "l" #'my/denote-sort-level-by-signature
+  "s" #'denote-sequence-find-dired-siblings
+  "c" #'denote-sequence-find-dired-children
+  "C" #'denote-sequence-find-dired-all-children
+  "a" #'denote-sequence-dired
+  "p" #'denote-sequence-find-dired-parent
+  "P" #'denote-sequence-find-dired-all-parents
   "k" #'my/denote-sort-with-keywords
-  "p" #'my/denote-sort-parent-with-children
   "d" #'my/denote-sort-period-week)
 
 (transient-define-prefix my/bibtex-menu ()
   "References"
   [["Add"
-	("a" "Zotra: Entry" zotra-add-entry :transient nil)
-	("s" "SciHub" scihub :transient nil)
-	("l" "Local PDF" citar-add-file-to-library :transient nil)]
+    ("a" "Zotra: Entry" zotra-add-entry :transient nil)
+    ("s" "SciHub" scihub :transient nil)
+    ("l" "Local PDF" citar-add-file-to-library :transient nil)]
    ["Citar"
-	("o" "Open" citar-open :transient nil)
-	("f" "Files" citar-open-files :transient nil)
-	("e" "Entry" citar-open-entry :transient nil)
-	("n" "Note" citar-open-notes :transient nil)]
+    ("o" "Open" citar-open :transient nil)
+    ("f" "Files" citar-open-files :transient nil)
+    ("e" "Entry" citar-open-entry :transient nil)
+    ("n" "Note" citar-open-notes :transient nil)]
    ["Citar Denote"
-	("k" "Add Citekey" citar-denote-add-citekey :transient nil)
-	("K" "Remove Citekey" citar-denote-remove-citekey :transient nil)
-	("F" "Files" citar-denote-open-files :transient nil)
-	("E" "Entry" citar-denote-open-reference-entry :transient nil)]
+    ("k" "Add Citekey" citar-denote-add-citekey :transient nil)
+    ("K" "Remove Citekey" citar-denote-remove-citekey :transient nil)
+    ("F" "Files" citar-denote-open-files :transient nil)
+    ("E" "Entry" citar-denote-open-reference-entry :transient nil)]
    ["Citation"
-	("c" "Find" citar-denote-find-citation :transient nil)
-	("i" "Insert" citar-insert-citation :transient t)]
+    ("c" "Find" citar-denote-find-citation :transient nil)
+    ("i" "Insert" citar-insert-citation :transient t)]
    ["Export"
-	("1" "Local Bibtex" citar-export-local-bib-file :transient nil)
-	("2" "Bibtex to Endnote" my/bib2end :transient nil)]])
+    ("1" "Local Bibtex" citar-export-local-bib-file :transient nil)
+    ("2" "Bibtex to Endnote" my/bib2end :transient nil)]])
 
 (transient-define-prefix my/links-menu ()
   "Links"
   ["Denote Backlinks"
    ("b" "Buffer" denote-backlinks :transient nil)]
   [["Org Link"
-	("c" "Copy IDlink" my/copy-idlink :transient nil)
-	("i" "Insert" org-insert-link :transient nil)
-	("s" "Store" org-store-link :transient nil)
-	("t" "Display" org-toggle-link-display :transient nil)]
+    ("c" "Copy IDlink" my/copy-idlink :transient nil)
+    ("i" "Insert" org-insert-link :transient nil)
+    ("s" "Store" org-store-link :transient nil)
+    ("t" "Display" org-toggle-link-display :transient nil)]
    ["Denote Insert"
-	("l" "Link" denote-link :transient nil)
-	("h" "Heading" denote-org-extras-link-to-heading :transient nil)
-	("%" "Links: With Regexp" denote-add-links :transient nil)
-	("d" "Links: DBlock" denote-org-extras-dblock-insert-links :transient nil)
-	("D" "Backlinks: DBlock" denote-org-extras-dblock-insert-backlinks :transient nil)]
+    ("l" "Link" denote-link :transient nil)
+    ("h" "Heading" denote-org-extras-link-to-heading :transient nil)
+    ("%" "Links: With Regexp" denote-add-links :transient nil)
+    ("d" "Links: DBlock" denote-org-extras-dblock-insert-links :transient nil)
+    ("D" "Backlinks: DBlock" denote-org-extras-dblock-insert-backlinks :transient nil)]
    ["Denote Links Roam"
-	("e" "Explore Links" my/denote-find-link-other-window :transient t)
-	("fb" "Find Backlinks" denote-find-backlink :transient nil)
-	("fr" "References" citar-denote-find-reference :transient nil)]
+    ("e" "Explore Links" my/denote-find-link-other-window :transient t)
+    ("fb" "Find Backlinks" denote-find-backlink :transient nil)
+    ("fr" "References" citar-denote-find-reference :transient nil)]
    ["Misc"
-	("g" "Grab: Safari" my/link-grab :transient nil)
-	("x" "Remove" jf/org-link-remove-link :transient nil)]])
+    ("g" "Grab: Safari" my/link-grab :transient nil)
+    ("x" "Remove" jf/org-link-remove-link :transient nil)]])
 
 (transient-define-prefix my/agenda-menu ()
   "GTD"
   [["Agenda"
-	("a" "Agenda" org-agenda :transient nil)
-	("b" "Book" my/book-agenda :transient nil)
-	("t" "TODO" my/all-todo-agenda :transient nil)]
+    ("a" "Agenda" org-agenda :transient nil)
+    ("b" "Book" my/book-agenda :transient nil)
+    ("t" "TODO" my/all-todo-agenda :transient nil)]
    ["Process & Engage"
-	("x" "Process Inbox" org-gtd-process-inbox :transient nil)
-	("@" "By Context" org-gtd-engage-grouped-by-context :transient nil)
-	("<f12>" "Engage" my/org-gtd-engage :transient nil)]
+    ("x" "Process Inbox" org-gtd-process-inbox :transient nil)
+    ("@" "By Context" org-gtd-engage-grouped-by-context :transient nil)
+    ("<f12>" "Engage" my/org-gtd-engage :transient nil)]
    ["Clarify"
-	("c" "Item" org-gtd-clarify-item :transient nil)
-	("C" "Item: agenda" org-gtd-clarify-agenda-item :transient nil)]
+    ("c" "Item" org-gtd-clarify-item :transient nil)
+    ("C" "Item: agenda" org-gtd-clarify-agenda-item :transient nil)]
    ["Review"
-	("o" "Missed Appointments" org-gtd-oops :transient t)
-	("m" "Missed Items" org-gtd-review-missed-items :transient t)
-	("f" "Area of Focus" org-gtd-review-area-of-focus :transient t)
-	("s" "Stucks" my/gtd-stuck-menu :transient t)]])
+    ("o" "Missed Appointments" org-gtd-oops :transient t)
+    ("m" "Missed Items" org-gtd-review-missed-items :transient t)
+    ("f" "Area of Focus" org-gtd-review-area-of-focus :transient t)
+    ("s" "Stucks" my/gtd-stuck-menu :transient t)]])
 
 (transient-define-prefix my/gtd-stuck-menu ()
   "GTD Stuck"
@@ -171,24 +172,24 @@
 (transient-define-prefix my/dict-menu ()
   "Dictionary"
   [["SDCV"
-	("i" "Input: POP" sdcv-search-input+ :transient nil)
-	("I" "Input: Buffer" sdcv-search-input :transient nil)
-	("p" "Point: POP" sdcv-search-pointer+ :transient nil)
-	("P" "Point: Buffer" sdcv-search-pointer+ :transient nil)]
+    ("i" "Input: POP" sdcv-search-input+ :transient nil)
+    ("I" "Input: Buffer" sdcv-search-input :transient nil)
+    ("p" "Point: POP" sdcv-search-pointer+ :transient nil)
+    ("P" "Point: Buffer" sdcv-search-pointer+ :transient nil)]
    ["Thesaurus"
-	("s" "Synonyms" powerthesaurus-lookup-synonyms-dwim :transient nil)
-	("a" "Antonyms" powerthesaurus-lookup-antonyms-dwim :transient nil)
-	("r" "Related words" powerthesaurus-lookup-related-dwim :transient nil)
-	("d" "Definitions" powerthesaurus-lookup-definitions-dwim :transient nil)
-	("e" "Example sentences" powerthesaurus-lookup-sentences-dwim :transient nil)]
+    ("s" "Synonyms" powerthesaurus-lookup-synonyms-dwim :transient nil)
+    ("a" "Antonyms" powerthesaurus-lookup-antonyms-dwim :transient nil)
+    ("r" "Related words" powerthesaurus-lookup-related-dwim :transient nil)
+    ("d" "Definitions" powerthesaurus-lookup-definitions-dwim :transient nil)
+    ("e" "Example sentences" powerthesaurus-lookup-sentences-dwim :transient nil)]
    ["Translate"
-	("w" "Speack" gt-do-speak :transient nil)
-	("l" "Translate" gt-do-translate :transient nil)
-	("W" "Write Good" writegood-mode :transient nil)
-	("h" "LSP Helper" lsp-bridge-toggle-sdcv-helper :transient nil)]
+    ("w" "Speack" gt-do-speak :transient nil)
+    ("l" "Translate" gt-do-translate :transient nil)
+    ("W" "Write Good" writegood-mode :transient nil)
+    ("h" "LSP Helper" lsp-bridge-toggle-sdcv-helper :transient nil)]
    ["OSX Dictionary"
-	("o" "Input" osx-dictionary-search-input :transient nil)
-	("x" "Pointer" osx-dictionary-search-pointer :transient nil)]
+    ("o" "Input" osx-dictionary-search-input :transient nil)
+    ("x" "Pointer" osx-dictionary-search-pointer :transient nil)]
    ;; ["Dictionary Overlay"
    ;;  ("t" "Toggle" dictionary-overlay-toggle :transient nil)
    ;;  ("g" "Refresh" dictionary-overlay-refresh-buffer :transient nil)
@@ -200,12 +201,12 @@
 (transient-define-prefix my/mpv-menu ()
   "References"
   [["Controls"
-	("[" "Speed decrease" mpv-speed-decrease :transient nil)
-	("]" "Speed increase" mpv-speed-increase :transient nil)
-	("<f8>" "Quit&Save" my/mpv-quit-with-save :transient nil)]
+    ("[" "Speed decrease" mpv-speed-decrease :transient nil)
+    ("]" "Speed increase" mpv-speed-increase :transient nil)
+    ("<f8>" "Quit&Save" my/mpv-quit-with-save :transient nil)]
    ["Toggle"
-	("f" "Fullscreen" my/mpv-toggle-fullscreen :transient nil)
-	("o" "Progress" my/mpv-toggle-progress :transient nil)
+    ("f" "Fullscreen" my/mpv-toggle-fullscreen :transient nil)
+    ("o" "Progress" my/mpv-toggle-progress :transient nil)
     ("v" "video" mpv-toggle-video :transient nil)]])
 
 (keymap-set global-map "s-f" my/file-prefix-map)
@@ -226,8 +227,10 @@
 ;; (keymap-set global-map "s-n n" my/new-note-prefix-map)
 (global-set-key (kbd "s-n a") #'ibooks-annot/extract-annotations-to-note)
 (global-set-key (kbd "s-n n") #'denote)
-(global-set-key (kbd "s-n c") #'denote-fz-insert-dwim)
-(global-set-key (kbd "s-n s") #'denote-fz-insert-at-level-dwim)
+;; (global-set-key (kbd "s-n c") #'denote-fz-insert-dwim)
+(global-set-key (kbd "s-n c") #'denote-sequence-new-child-of-current)
+;; (global-set-key (kbd "s-n s") #'denote-fz-insert-at-level-dwim)
+(global-set-key (kbd "s-n s") #'denote-sequence-new-sibling-of-current)
 (global-set-key (kbd "s-n b") #'my/new-blog)
 (global-set-key (kbd "s-n e") #'denote-org-extras-extract-org-subtree)
 (global-set-key (kbd "s-n m") #'my/new-meeting)
