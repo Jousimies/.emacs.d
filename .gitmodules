@@ -631,3 +631,6 @@
 [submodule "packages/llama"]
 	path = packages/llama
 	url = https://github.com/tarsius/llama.git
+[submodule "packages/org-reminders"]
+	path = packages/org-reminders
+	url = https://github.com/ginqi7/org-reminders.git
