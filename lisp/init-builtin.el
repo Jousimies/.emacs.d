@@ -46,37 +46,37 @@
         make-backup-files nil
         view-read-only t
         kill-read-only-ok t
-		isearch-lazy-count t
-		help-window-select 'other
-		help-window-keep-selected t
-		multisession-directory (expand-file-name "multisession" cache-directory)
-		auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-" cache-directory))
+	isearch-lazy-count t
+	help-window-select 'other
+	help-window-keep-selected t
+	multisession-directory (expand-file-name "multisession" cache-directory)
+	auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-" cache-directory))
 
 ;; (setq backup-directory-alist '(("." . "~/.emacs.d/cache/backups")))
 (add-hook 'on-first-file-hook #'auto-save-visited-mode)
 
 (defun auto-save-delete-trailing-whitespace-except-current-line ()
-    (interactive)
-    (let ((begin (line-beginning-position))
-          (end (point))
-          (buffername (buffer-name (buffer-base-buffer))))
-      (when (not (or (string-prefix-p "inbox" buffername)
-                     (string-match-p "^[0-9]" buffername)))
-        (save-excursion
-          (when (< (point-min) begin)
-            (save-restriction
-              (narrow-to-region (point-min) (1- begin))
-              (delete-trailing-whitespace)))
-          (when (> (point-max) end)
-            (save-restriction
-              (narrow-to-region end (point-max))
-              (delete-trailing-whitespace)))))))
+  (interactive)
+  (let ((begin (line-beginning-position))
+        (end (point))
+        (buffername (buffer-name (buffer-base-buffer))))
+    (when (not (or (string-prefix-p "inbox" buffername)
+                   (string-match-p "^[0-9]" buffername)))
+      (save-excursion
+        (when (< (point-min) begin)
+          (save-restriction
+            (narrow-to-region (point-min) (1- begin))
+            (delete-trailing-whitespace)))
+        (when (> (point-max) end)
+          (save-restriction
+            (narrow-to-region end (point-max))
+            (delete-trailing-whitespace)))))))
 (add-hook 'before-save-hook #'auto-save-delete-trailing-whitespace-except-current-line)
 
 (defun switch-to-message ()
-    "Quick switch to `*Message*' buffer."
-    (interactive)
-    (switch-to-buffer "*Messages*"))
+  "Quick switch to `*Message*' buffer."
+  (interactive)
+  (switch-to-buffer "*Messages*"))
 
 (setopt message-kill-buffer-on-exit t
         message-kill-buffer-query nil
@@ -177,13 +177,13 @@
 \;;; " (file-name-nondirectory (buffer-file-name)) " ends here\n")))
 
 (setopt display-line-numbers-widen t
-		display-line-numbers-type 'relative)
+	display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'org-mode-hook #'display-line-numbers-mode)
 
 (face-spec-set 'fill-column-indicator
-                 '((default :height 0.1))
-                 'face-override-spec)
+               '((default :height 0.1))
+               'face-override-spec)
 (setq-default fill-column 90)
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
@@ -210,10 +210,10 @@
   (show-paren-when-point-in-periphery t))
 
 (add-hook 'on-first-buffer-hook (lambda ()
-								  (blink-cursor-mode -1)))
+				  (blink-cursor-mode -1)))
 
 (setopt window-divider-default-bottom-width 1
-		window-divider-default-places 'bottom-only)
+	window-divider-default-places 'bottom-only)
 
 (use-package winner
   :hook (find-file . winner-mode)
@@ -233,9 +233,9 @@
                            "*esh command on file*")))
 
 (add-to-list 'display-buffer-alist '("\\*Outline"
-                                       (display-buffer-in-side-window)
-                                       (side . right)
-                                       (window-width . 0.5)))
+                                     (display-buffer-in-side-window)
+                                     (side . right)
+                                     (window-width . 0.5)))
 
 (use-package windmove
   :ensure nil
@@ -246,7 +246,7 @@
          ("M-g j" . windmove-down)))
 
 (setopt switch-to-buffer-in-dedicated-window 'pop
-		switch-to-buffer-obey-display-actions t)
+	switch-to-buffer-obey-display-actions t)
 
 (add-hook 'after-init-hook 'pixel-scroll-mode)
 
@@ -278,13 +278,13 @@
 ;; xref
 ;; Prefer ripgrep, then ugrep, and fall back to regular grep.
 (setopt xref-search-program (cond
-						   ((or (executable-find "ripgrep")
-								(executable-find "rg"))
-							'ripgrep)
-						   ((executable-find "ugrep")
-							'ugrep)
-						   (t
-							'grep)))
+			     ((or (executable-find "ripgrep")
+				  (executable-find "rg"))
+			      'ripgrep)
+			     ((executable-find "ugrep")
+			      'ugrep)
+			     (t
+			      'grep)))
 
 ;;;; Repeatable key chords (repeat-mode)
 (use-package repeat
@@ -319,7 +319,7 @@
 
 ;; Tramp
 (with-eval-after-load 'tramp
- (setq tramp-persistency-file-name (expand-file-name "tramp" cache-directory)))
+  (setq tramp-persistency-file-name (expand-file-name "tramp" cache-directory)))
 
 
 (provide 'init-builtin)

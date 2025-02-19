@@ -44,7 +44,7 @@
 (require 'init-buffer)
 ;; (require 'init-svg-tag)
 ;; Plateform related configuration
-(when (eq system-type 'darwin)
+(when IS-MAC
   (require 'init-mac))
 
 ;; Better Editor

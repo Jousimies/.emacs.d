@@ -37,18 +37,18 @@
 (add-hook 'on-first-input-hook #'recentf-mode)
 (with-eval-after-load 'recentf
   (setopt recentf-save-file (expand-file-name "recentf" cache-directory)
-		  recentf-auto-cleanup 300
-		  recentf-max-saved-items 1000
-		  recentf-exclude '("~/.telega")))
+	  recentf-auto-cleanup 300
+	  recentf-max-saved-items 1000
+	  recentf-exclude '("~/.telega")))
 
 (add-hook 'on-first-file-hook #'savehist-mode)
 (with-eval-after-load 'savehist
   (setopt savehist-file (expand-file-name "history" cache-directory)
-		history-length 1000
-        savehist-additional-variables '(kill-ring
-                                        search-ring
-                                        regexp-search-ring)
-        history-delete-duplicates t))
+	  history-length 1000
+          savehist-additional-variables '(kill-ring
+                                          search-ring
+                                          regexp-search-ring)
+          history-delete-duplicates t))
 
 (add-hook 'on-first-file-hook #'save-place-mode)
 (setopt save-place-file (expand-file-name "places" cache-directory))
@@ -92,9 +92,9 @@
                                (not avy-all-windows)
                              avy-all-windows)))
       (avy-with avy-goto-char-timer
-        (setq avy--old-cands (avy--read-candidates
-                              'pinyinlib-build-regexp-string))
-        (avy-process avy--old-cands))))
+		(setq avy--old-cands (avy--read-candidates
+				      'pinyinlib-build-regexp-string))
+		(avy-process avy--old-cands))))
 
   (advice-add 'avy-goto-char-timer :override #'my/avy-goto-char-timer))
 
@@ -117,6 +117,7 @@
 
 (use-package rime-regexp
   :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"
+  :if IS-MAC
   :hook (minibuffer-mode . rime-regexp-mode)
   :config
   (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
@@ -127,8 +128,8 @@
   :load-path "packages/tempel/"
   :bind (("M-+" . tempel-complete)
          ("M-*" . tempel-insert)
-		 (:map tempel-map
-			   ("<down>" . tempel-next)))
+	 (:map tempel-map
+	       ("<down>" . tempel-next)))
   :config
   (setq tempel-path `("~/.emacs.d/template/tempel"
                       ,(expand-file-name "config/tempel" my-galaxy))))
@@ -160,7 +161,7 @@
               ("w" . count-words-region)
               ("i" . surround-insert)
               ("c" . surrond-change)
-			  ("d" . surround-delete)
+	      ("d" . surround-delete)
               ("s" . my/search-menu)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
@@ -252,14 +253,14 @@
 (defun make-region-read-only (beg end)
   (interactive "r")
   (let ((inhibit-read-only t))
-	(with-silent-modifications
-	  (add-text-properties beg end '(read-only t)))))
+    (with-silent-modifications
+      (add-text-properties beg end '(read-only t)))))
 
 (defun make-region-writable (beg end)
   (interactive "r")
   (let ((inhibit-read-only t))
-	(with-silent-modifications
-	  (remove-text-properties beg end '(read-only t)))))
+    (with-silent-modifications
+      (remove-text-properties beg end '(read-only t)))))
 
 ;; https://github.com/takeokunn/.emacs.d/blob/main/index.org
 (defun my/move-line (arg)
