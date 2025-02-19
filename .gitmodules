@@ -628,3 +628,6 @@
 [submodule "packages/gptel"]
 	path = packages/gptel
 	url = https://github.com/karthink/gptel.git
+[submodule "packages/llama"]
+	path = packages/llama
+	url = https://github.com/tarsius/llama.git

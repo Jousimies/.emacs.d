@@ -5,7 +5,7 @@
 ;;; Code:
 
 (use-package magit
-  :load-path ("packages/magit/lisp" "packages/with-editor/lisp")
+  :load-path ("packages/magit/lisp" "packages/with-editor/lisp" "packages/llama/")
   :defer t
   :config
   (setq magit-git-executable "/usr/bin/git")
