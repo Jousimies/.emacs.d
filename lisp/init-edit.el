@@ -312,5 +312,13 @@
   :load-path "packages/emacs-everywhere/"
   :commands emacs-everywhere)
 
+(use-package ultra-scroll
+  :load-path "packages/ultra-scroll/"
+  :init
+  (setq scroll-conservatively 101 ; important!
+        scroll-margin 0)
+  :config
+  (ultra-scroll-mode 1))
+
 (provide 'init-edit)
 ;;; init-edit.el ends here
