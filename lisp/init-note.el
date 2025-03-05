@@ -541,5 +541,10 @@ it can be passed in POS."
 ;;          :scroll-bar-width 8
 ;;          :fringe-width 8)))
 
+(use-package denote-search
+  :load-path "packages/denote-search/"
+  :bind ("s-s n" . denote-search))
+
+
 (provide 'init-note)
 ;;; init-note.el ends here.
