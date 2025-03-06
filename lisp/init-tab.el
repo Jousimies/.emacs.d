@@ -37,15 +37,18 @@
   (tab-bar-select-tab-modifiers '(super))
   (tab-bar-tab-hints t))
 
+(unless is-fullscreen
+  (setopt tab-bar-show nil))
+
 (setq my/tab-bar-right-string '((:eval global-mode-string)))
 
 (defun my/tab-bar-format-right ()
   `((global menu-item ,(format-mode-line my/tab-bar-right-string) ignore)))
 
 (setopt tab-bar-format '(tab-bar-format-tabs
-						 tab-bar-separator
-						 tab-bar-format-align-right
-						 my/tab-bar-format-right))
+			 tab-bar-separator
+			 tab-bar-format-align-right
+			 my/tab-bar-format-right))
 
 (defun tab-bar-format-menu-bar ()
   "Produce the Menu button for the tab bar that shows the menu bar."

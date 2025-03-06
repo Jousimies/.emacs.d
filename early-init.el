@@ -58,16 +58,20 @@
 (push '(undecorated . t) default-frame-alist)
 (push '(width . 100) default-frame-alist)
 (push '(vertical-scroll-bars . nil) default-frame-alist)
-;; (push '(left-fringe . 0) default-frame-alist)
-;; (push '(right-fringe . 0) default-frame-alist)
-;; (push '(fullscreen . maximized) initial-frame-alist)
-(push '(fullscreen . fullscreen) initial-frame-alist)
+(push '(left-fringe . 0) default-frame-alist)
+(push '(right-fringe . 0) default-frame-alist)
 
-(blink-cursor-mode -1)
+;; Use fullscreen or maximized
+(setopt is-fullscreen nil)		;maximized
+
+(if is-fullscreen
+    (push '(fullscreen . fullscreen) initial-frame-alist)
+  (push '(fullscreen . maximized) initial-frame-alist))
 
 ;; Themes
+(when is-fullscreen
+  (setq ns-use-native-fullscreen nil))
 (when (featurep 'ns)
-  (setq ns-use-native-fullscreen nil)
   (defun my/apply-theme (appearance)
 	"Load theme, taking current system APPEARANCE into consideration."
 	(mapc #'disable-theme custom-enabled-themes)
@@ -77,6 +81,8 @@
   (add-hook 'ns-system-appearance-change-functions #'my/apply-theme))
 
 (setq byte-compile-warnings nil)
+
+(blink-cursor-mode -1)
 
 (fset 'display-startup-echo-area-message 'ignore)
 

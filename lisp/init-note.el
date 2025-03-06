@@ -122,6 +122,7 @@
 
 (use-package denote-sequence
   :load-path "packages/denote/"
+  :after denote
   :custom
   (denote-sequence-scheme 'alphanumeric))
 
@@ -163,6 +164,11 @@ RELATIVE-TYPE can be 'all-parents, 'parent, 'all-children, or 'children."
   "Find children of current file."
   (interactive)
   (my/denote-sequence-find-dired 'children))
+
+(defun denote-sequence-find-dired-siblings ()
+  "Find siblings of current file."
+  (interactive)
+  (my/denote-sequence-find-dired 'siblings))
 
 (use-package consult-denote
   :load-path "packages/consult-denote/"
@@ -215,6 +221,11 @@ RELATIVE-TYPE can be 'all-parents, 'parent, 'all-children, or 'children."
   :bind (:map dired-mode-map
 	      ("/ r" . my/denote-sort-regexp))
   :config
+
+  (defun my/denote-signature-retrieve ()
+    (let* ((file (or (buffer-file-name) (dired-get-filename))))
+      (when file
+	(denote-retrieve-filename-signature file))))
 
   (defun my/denote-sort-regexp (regexp)
     (interactive (list
@@ -543,7 +554,7 @@ it can be passed in POS."
 
 (use-package denote-search
   :load-path "packages/denote-search/"
-  :bind ("s-s n" . denote-search))
+  :commands denote-search)
 
 
 (provide 'init-note)

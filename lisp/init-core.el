@@ -110,13 +110,15 @@
 ;; (add-hook 'text-mode-hook #'variable-pitch-mode)
 
 ;; load-path
-(add-to-list 'load-path "~/.emacs.d/packages/compat/")
-(add-to-list 'load-path "~/.emacs.d/packages/dash.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/f.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/s.el/")
-(add-to-list 'load-path "~/.emacs.d/packages/posframe/")
-(add-to-list 'load-path "~/.emacs.d/packages/emacs-async/")
-(add-to-list 'load-path "~/.emacs.d/packages/on.el/")
+(mapc (lambda (path)
+        (add-to-list 'load-path (expand-file-name path "~/.emacs.d/packages/")))
+      '("compat/"
+        "dash.el/"
+        "f.el/"
+        "s.el/"
+        "posframe/"
+        "emacs-async/"
+        "on.el/"))
 (require 'on)
 
 ;; icons

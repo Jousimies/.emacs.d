@@ -43,9 +43,6 @@
 (require 'init-modeline)
 (require 'init-buffer)
 ;; (require 'init-svg-tag)
-;; Plateform related configuration
-(when IS-MAC
-  (require 'init-mac))
 
 ;; Better Editor
 (require 'init-edit)
@@ -76,10 +73,14 @@
 
 ;; Applications
 (require 'init-telega)
-(require 'init-mail)
 (require 'init-elfeed)
 ;; (require 'init-pass)
 
+;; Plateform related configuration
+(when IS-MAC
+  (require 'init-mac)
+  ;; (require 'init-mail)
+  )
 
 ;; Some useful functions stealed from Internet
 (require 'init-misc)
@@ -89,6 +90,16 @@
 
 ;; Load custom.el, but It's empty.
 (load (setq custom-file (locate-user-emacs-file "custom.el")) t)
+
+(add-hook 'window-setup-hook
+          (lambda ()
+            (garbage-collect)
+            (let ((curtime (current-time)))
+              (message "Times: init:%.06f total:%.06f gc-done:%d"
+                       (float-time (time-subtract after-init-time before-init-time))
+                       (float-time (time-subtract curtime before-init-time))
+                       gcs-done)))
+          90)
 
 (provide 'init)
 ;;; init.el ends here

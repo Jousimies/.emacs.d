@@ -89,10 +89,12 @@
 (add-hook 'on-first-file-hook #'global-so-long-mode)
 (add-hook 'on-first-file-hook #'global-prettify-symbols-mode)
 (add-hook 'on-first-file-hook #'global-word-wrap-whitespace-mode)
-(add-hook 'after-init-hook 'display-battery-mode)
-(add-hook 'after-init-hook 'display-time-mode)
 
-(with-eval-after-load 'time
+(when is-fullscreen
+  (add-hook 'after-init-hook 'display-battery-mode)
+  (display-time-mode))
+
+(when display-time-mode
   (setopt display-time-default-load-average nil)
   (setopt display-time-mail-string "")
   (setopt display-time-format "%H:%M")

@@ -45,11 +45,11 @@
          ([remap describe-key] . helpful-key))
   :config
   (add-to-list 'display-buffer-alist '("\\*helpful"
-                                         (display-buffer-in-side-window)
-                                         (side . right)
-                                         (window-width . 0.5)
-                                         (window-parameters
-                                          (mode-line-format . none)))))
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 0.5)
+                                       (window-parameters
+                                        (mode-line-format . none)))))
 
 (add-to-list 'load-path "~/.emacs.d/packages/elisp-refs/")
 (add-to-list 'load-path "~/.emacs.d/packages/elisp-demos/")
@@ -60,12 +60,13 @@
   :load-path "packages/perspective-el/"
   :custom
   (persp-mode-prefix-key (kbd "C-c z"))
-  (tab-bar-format '(tab-bar-format-menu-bar
+  (tab-bar-format '((when is-fullscreen
+		      tab-bar-format-menu-bar)
                     tab-bar-format-persp
-    				tab-bar-format-tabs
-    				tab-bar-separator
-    				tab-bar-format-align-right
-    				my/tab-bar-format-right))
+    		    tab-bar-format-tabs
+    		    tab-bar-separator
+    		    tab-bar-format-align-right
+    		    my/tab-bar-format-right))
   (persp-state-default-file (expand-file-name "persp" cache-directory))
   :hook ((emacs-startup . persp-mode)
          (kill-emacs . persp-state-save))
@@ -75,8 +76,8 @@
       (setq global-mode-string (delete '(:eval (persp-mode-line)) global-mode-string))
       `((global menu-item ,(format-mode-line (persp-mode-line)) ignore))))
   (dotimes (i 9)
-	(global-set-key (kbd (concat "M-s-" (number-to-string (1+ i))))
-					`(lambda () (interactive) (persp-switch-by-number ,(1+ i))))))
+    (global-set-key (kbd (concat "M-s-" (number-to-string (1+ i))))
+		    `(lambda () (interactive) (persp-switch-by-number ,(1+ i))))))
 
 (use-package popper
   :load-path "packages/popper/"
@@ -128,7 +129,7 @@
           "\\*gud-debug\\*$"
           "\\*lsp-help\\*$" "\\*lsp session\\*$"
           "\\*quickrun\\*$"
-		  "\\*One-Key\\*$"
+	  "\\*One-Key\\*$"
           "\\*tldr\\*$"
           "\\*vc-.*\\*$"
           "^\\*elfeed-entry\\*$"
@@ -163,12 +164,12 @@
 
 ;; https://github.com/roife/.emacs.d/blob/323536f51674ef68cad78f72eef31c8b49795518/core/init-ibuffer.el#L8
 (defun +ibuffer-visit-buffer-in-popper ()
-    (interactive)
-    (if (window-parameter nil 'window-side)
-        (let ((win (selected-window)))
-          (ibuffer-visit-buffer-other-window)
-          (delete-window win))
-      (ibuffer-visit-buffer)))
+  (interactive)
+  (if (window-parameter nil 'window-side)
+      (let ((win (selected-window)))
+        (ibuffer-visit-buffer-other-window)
+        (delete-window win))
+    (ibuffer-visit-buffer)))
 
 (with-eval-after-load 'ibuffer
   (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper))

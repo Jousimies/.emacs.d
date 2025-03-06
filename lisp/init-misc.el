@@ -9,7 +9,6 @@
   :hook ((gptel-post-stream . gptel-auto-scroll)
 	 (gptel-post-response . gptel-end-of-response))
   :custom
-  (gptel-model 'gemini-1.5-pro-latest)
   (gptel--system-message (alist-get 'default gptel-directives))
   (gptel-default-mode 'org-mode)
   (gptel-directives
@@ -59,12 +58,16 @@ Explain your reasoning.  if you don’t know, say you don’t know.  Be willing 
 
 (with-eval-after-load 'gptel
   (require 'gptel-curl)
-  (require 'gptel-gemini)
-  (setq gptel-backend (gptel-make-gemini "Gemini"
-			  :key (auth-source-pick-first-password
-				:host "gemini"
-				:user "apikey")
-			  :stream t))
+  (setq gptel-model 'deepseek-chat)
+  (setq gptel-backend
+	(gptel-make-openai "DeepSeek"     ;Any name you want
+          :host "api.deepseek.com"
+          :endpoint "/chat/completions"
+          :stream t
+          :key (auth-source-pick-first-password
+		:host "deepseek"
+		:user "apikey")
+          :models '(deepseek-chat deepseek-coder)))
   (require 'gptel-transient)
   (global-set-key (kbd "C-c C-<return>") #'gptel-menu)
   (require 'gptel-org)
@@ -73,7 +76,6 @@ Explain your reasoning.  if you don’t know, say you don’t know.  Be willing 
         (alist-get 'markdown-mode gptel-prompt-prefix-alist) "#### ")
   (setq-default gptel-org-branching-context t)
   (require 'gptel-rewrite))
-
 
 (use-package image-slicing
   :load-path "~/.emacs.d/packages/image-slicing/"
@@ -196,6 +198,11 @@ Explain your reasoning.  if you don’t know, say you don’t know.  Be willing 
 		   love/dark-themes))
          (theme (elt themes (random (length themes)))))
     (load-theme theme t)))
+
+;; (use-package holo-layer
+;;   :load-path "~/.emacs.d/packages/holo-layer/"
+;;   :custom
+;;   (holo-layer-python-command "~/.env/bin/python3"))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.

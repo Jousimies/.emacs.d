@@ -48,9 +48,9 @@
           (SemanticScholar . "https://www.semanticscholar.org/search?q=")
           (Github . "https://github.com/search?q=")
           (Youtube . "http://www.youtube.com/results?aq=f&oq=&search_query=")
-		  (Bilibili . "https://search.bilibili.com/all?keyword=")
-		  (WikiPedia_en . "https://en.wikipedia.org/w/index.php?search=")
-		  (Annas-Archvie . "https://annas-archive.org/search?q=")))
+	  (Bilibili . "https://search.bilibili.com/all?keyword=")
+	  (WikiPedia_en . "https://en.wikipedia.org/w/index.php?search=")
+	  (Annas-Archvie . "https://annas-archive.org/search?q=")))
 
 (defmacro my/define-search-functions ()
   "Dynamically define search functions for each search engine in `my/browser-engines`."
@@ -76,7 +76,7 @@
                my/browser-engines)))
 
 (add-hook 'on-first-input-hook (lambda ()
-								 (my/define-search-functions)))
+				 (my/define-search-functions)))
 
 (use-package grab-mac-link
   :load-path "packages/grab-mac-link.el/"
@@ -89,17 +89,17 @@
 
 ;; https://gist.github.com/tkhoa2711/ef99938c8752ca3e52c2
 (defun get-ip-address (&optional dev)
-	"Get the IP-address for device DEV (default: eth0) of the current machine."
-	(let ((dev (if dev dev "en0")))
-      (format-network-address (car (network-interface-info dev)) t)))
+  "Get the IP-address for device DEV (default: eth0) of the current machine."
+  (let ((dev (if dev dev "en0")))
+    (format-network-address (car (network-interface-info dev)) t)))
 
 (use-package simple-httpd
   :load-path "packages/emacs-web-server"
   :bind ("M-g d" . httpd-serve-directory)
   :custom
   (httpd-host (format-network-address
-			   (car (network-interface-info "en0"))
-			   t)))
+	       (car (network-interface-info "en0"))
+	       t)))
 
 
 (provide 'init-search)

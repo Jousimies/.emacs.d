@@ -254,6 +254,7 @@
 (global-set-key (kbd "s-s g") #'my/search-google)
 (global-set-key (kbd "s-s w") #'my/search-wikipedia_en)
 (global-set-key (kbd "s-s z") #'my/search-zhihu)
+(global-set-key (kbd "s-s n") #'denote-search)
 (global-set-key (kbd "s-s m") #'my/search-doubanmovie)
 (global-set-key (kbd "s-s b") #'my/search-doubanbook)
 (global-set-key (kbd "s-s y") #'my/search-youtube)

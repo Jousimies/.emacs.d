@@ -317,8 +317,7 @@
   :init
   (setq scroll-conservatively 101 ; important!
         scroll-margin 0)
-  :config
-  (ultra-scroll-mode 1))
+  :hook (on-first-input . ultra-scroll-mode))
 
 (provide 'init-edit)
 ;;; init-edit.el ends here
