@@ -204,5 +204,25 @@ Explain your reasoning.  if you don’t know, say you don’t know.  Be willing 
 ;;   :custom
 ;;   (holo-layer-python-command "~/.env/bin/python3"))
 
+(use-package eee
+  :load-path "~/.emacs.d/packages/eee.el/"
+  :bind-keymap
+  ("s-e" . ee-keymap)
+  :custom
+  (ee-terminal-command "/opt/homebrew/bin/wezterm"))
+
+(defun switch-to-wezterm ()
+    "Switch to WezTerm terminal."
+    (interactive)
+    (do-applescript "
+    tell application \"WezTerm\"
+      activate
+    end tell"))
+
+(advice-add 'ee-run :after
+            (lambda (&rest _)
+              (sleep-for 0.1)
+              (switch-to-wezterm)))
+
 (provide 'init-misc)
 ;;; init-misc.el ends here.

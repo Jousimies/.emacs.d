@@ -643,3 +643,6 @@
 [submodule "packages/ultra-scroll"]
 	path = packages/ultra-scroll
 	url = https://github.com/jdtsmith/ultra-scroll.git
+[submodule "packages/eee.el"]
+	path = packages/eee.el
+	url = https://github.com/eval-exec/eee.el.git

@@ -32,7 +32,7 @@
          ("README\\.md\\'" . gfm-mode))
   :init (setq markdown-command "multimarkdown")
   :bind (:map markdown-mode-map
-			  ("C-c C-e" . markdown-do)))
+	      ("C-c C-e" . markdown-do)))
 
 ;; swift
 (use-package swift-mode
@@ -51,7 +51,7 @@
 (use-package rainbow-csv
   :load-path "packages/rainbow-csv/"
   :hook ((csv-mode . rainbow-csv-mode)
-		 (tsv-mode . rainbow-csv-mode)))
+	 (tsv-mode . rainbow-csv-mode)))
 
 ;; (use-package demap
 ;;   :load-path "~/.emacs.d/packages/demap.el/"
