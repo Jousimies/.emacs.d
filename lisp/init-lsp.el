@@ -4,13 +4,16 @@
 
 ;;; Code:
 
+;; Mac 上需要先安装 tree-sitter 然后再编译 Emacs
+;; brew install tree-sitter
 (use-package treesit
   :when (treesit-available-p)
   :commands treesit-install-language-grammar
   :custom
   (treesit-language-source-alist
    '((python "https://github.com/tree-sitter/tree-sitter-python.git")
-     (yaml "https://github.com/ikatyang/tree-sitter-yaml.git"))))
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml.git")
+     (lua "https://github.com/euclidianAce/ltreesitter.git"))))
 
 (use-package eglot
   :after yasnippet
