@@ -153,19 +153,19 @@
 (global-set-key (kbd "C-<f2>") #'my/increase-alpha-background)
 
 ;; Proxy
-(add-hook 'on-first-input-hook (lambda ()
-				 (require 'socks)))
-(with-eval-after-load 'socks
-  (setopt url-gateway-method 'socks)
-  (setopt socks-noproxy '("localhost"))
-  (setopt socks-server `("Default server" ,my/proxy-ip ,(string-to-number my/proxy-port) 5))
-  (setopt url-proxy-services `(("http" . ,(concat my/proxy-ip ":" my/proxy-port))
-			       ("https" . ,(concat my/proxy-ip ":" my/proxy-port))
-			       ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)"))))
+;; (add-hook 'on-first-input-hook (lambda ()
+;; 				 (require 'socks)))
+;; (with-eval-after-load 'socks
+;;   (setopt url-gateway-method 'socks)
+;;   (setopt socks-noproxy '("localhost"))
+;;   (setopt socks-server `("Default server" ,my/proxy-ip ,(string-to-number my/proxy-port) 5))
+;;   (setopt url-proxy-services `(("http" . ,(concat my/proxy-ip ":" my/proxy-port))
+;; 			       ("https" . ,(concat my/proxy-ip ":" my/proxy-port))
+;; 			       ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)"))))
 
-(add-hook 'on-first-input-hook
-	  (lambda ()
-	    (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port))))
+;; (add-hook 'on-first-input-hook
+;; 	  (lambda ()
+;; 	    (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port))))
 
 ;; (use-package socks
 ;;   :if IS-MAC
