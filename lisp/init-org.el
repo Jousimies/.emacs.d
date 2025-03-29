@@ -6,29 +6,30 @@
 
 (with-eval-after-load 'org
   (setopt org-ellipsis " ⇲"
-		  org-modules '(org-habit)
-		  org-imenu-depth 4
-		  org-return-follows-link t
-		  org-display-remote-inline-images 'download
-		  org-log-into-drawer t
-		  org-fast-tag-selection-single-key 'expert
-		  org-adapt-indentation nil
-		  org-fontify-quote-and-verse-blocks t
-		  org-support-shift-select t
-		  org-treat-S-cursor-todo-selection-as-state-change nil
-		  org-hide-leading-stars nil
-		  org-startup-with-inline-images t
-		  ;; org-startup-folded 'content
-		  org-image-actual-width nil
-		  org-use-speed-commands t
-		  org-highlight-latex-and-related '(latex script)
-		  org-enforce-todo-dependencies t
-		  org-enforce-todo-checkbox-dependencies t
-		  org-export-allow-bind-keywords t
-		  org-tags-sort-function 'org-string-collate-greaterp
-		  org-lowest-priority ?D
-		  org-priority-default ?C
-		  org-columns-default-format "%50ITEM %TODO %3PRIORITY %TAGS")
+	  org-modules '(org-habit)
+	  org-imenu-depth 4
+	  org-return-follows-link t
+	  org-display-remote-inline-images 'download
+	  org-log-into-drawer t
+	  org-fast-tag-selection-single-key 'expert
+	  org-adapt-indentation nil
+	  org-fontify-quote-and-verse-blocks t
+	  org-support-shift-select t
+	  org-treat-S-cursor-todo-selection-as-state-change nil
+	  org-hide-leading-stars nil
+	  org-startup-with-inline-images t
+	  ;; org-startup-folded 'content
+	  org-image-actual-width nil
+	  org-use-speed-commands t
+	  org-highlight-latex-and-related '(latex script)
+	  org-enforce-todo-dependencies t
+	  org-enforce-todo-checkbox-dependencies t
+	  org-export-allow-bind-keywords t
+	  org-tags-sort-function 'org-string-collate-greaterp
+	  org-lowest-priority ?D
+	  org-priority-default ?C
+	  org-columns-default-format "%50ITEM %TODO %3PRIORITY %TAGS"
+	  org-persist-directory (expand-file-name "org-persist" cache-directory))
   ;; (set-face-attribute 'org-table nil :family "Sarasa Mono SC")
   (setopt org-preview-latex-default-process 'dvisvgm)
   (setopt org-format-latex-options (plist-put org-format-latex-options :scale 2))
@@ -82,7 +83,7 @@
           ("l" "Inbox with link"
            entry (file ,(concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
-		  ("r" "Review"
+	  ("r" "Review"
            plain
            (file+olp+datetree ,(expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy))
            (file "~/.emacs.d/template/review-weekly")
@@ -116,16 +117,16 @@
   (let* ((dir (org-attach-dir t))
          (files (org-attach-file-list dir)))
     (when (and dir files)
-	  (org-with-wide-buffer
-	   (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))
-	  (message "ORG_ATTACH_FILES property updated."))))
+      (org-with-wide-buffer
+       (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))
+      (message "ORG_ATTACH_FILES property updated."))))
 
 (with-eval-after-load 'org
   (require 'org-attach)
   (setopt org-attach-expert t
-		  org-attach-id-dir (expand-file-name "attach" my-galaxy)
-		  org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format
-												org-attach-id-uuid-folder-format))
+	  org-attach-id-dir (expand-file-name "attach" my-galaxy)
+	  org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format
+						org-attach-id-uuid-folder-format))
   (defun org-attach-save-file-list-to-property (dir)
     "Save list of attachments to ORG_ATTACH_FILES property."
     (when-let* ((files (org-attach-file-list dir)))
@@ -135,8 +136,8 @@
 ;; org-id
 (with-eval-after-load 'org-id
   (setopt org-id-method 'ts
-		  org-id-locations-file (expand-file-name ".org-id-locations" cache-directory)
-		  org-id-link-to-org-use-id 'create-if-interactive))
+	  org-id-locations-file (expand-file-name ".org-id-locations" cache-directory)
+	  org-id-link-to-org-use-id 'create-if-interactive))
 
 (defun update-org-ids-in-directory (directory)
   "Update Org IDs in all Org files in DIRECTORY."
@@ -200,15 +201,15 @@
   (org-clock-persistence-insinuate)
   (setq org-clock-persist-file (expand-file-name "org-clock-save.el" cache-directory))
   (setopt org-clock-history-length 23
-		  org-clock-in-resume t
-		  org-clock-into-drawer "LOGCLOCK"
-		  org-clock-out-remove-zero-time-clocks t
-		  org-clock-out-when-done t
-		  org-clock-persist 'history
-		  org-clock-clocktable-default-properties '(:maxlevel 5 :link t :tags t)
-		  org-clock-persist-query-resume nil
-		  org-clock-report-include-clocking-task t
-		  org-clock-sound "/System/Library/Sounds/Ping.aiff")
+	  org-clock-in-resume t
+	  org-clock-into-drawer "LOGCLOCK"
+	  org-clock-out-remove-zero-time-clocks t
+	  org-clock-out-when-done t
+	  org-clock-persist 'history
+	  org-clock-clocktable-default-properties '(:maxlevel 5 :link t :tags t)
+	  org-clock-persist-query-resume nil
+	  org-clock-report-include-clocking-task t
+	  org-clock-sound "/System/Library/Sounds/Ping.aiff")
   (add-hook 'org-after-todo-state-change-hook (lambda ()
                                                 (if (org-clocking-p)
                                                     (org-clock-out)))))
@@ -220,7 +221,7 @@
 (use-package org-superstar
   :load-path "packages/org-superstar-mode/"
   :hook ((org-mode . org-superstar-mode)
-		 (org-superstar-mode . org-indent-mode))
+	 (org-superstar-mode . org-indent-mode))
   :custom
   (org-hide-leading-stars t)
   (org-superstar-headline-bullets-list '("󰼏" "󰼐" "󰼑" "󰼒" "󰼓" "󰼔" "󰼕")))
@@ -276,7 +277,7 @@
 (use-package form-feed
   :load-path "packages/form-feed/"
   :hook ((org-mode . form-feed-mode)
-		 (emacs-news-mode . form-feed-mode)))
+	 (emacs-news-mode . form-feed-mode)))
 
 ;; (use-package org-xlatex
 ;;   :load-path "packages/org-xlatex/"
@@ -289,7 +290,7 @@
 (use-package yank-media
   :after org
   :bind (:map org-mode-map
-			  ("C-c C-v" . yank-media)))
+	      ("C-c C-v" . yank-media)))
 
 ;; Instead of using `C-c C-x C-v' to toggle display inline image.
 ;; pixel-scroll-precision-mode enabled.
@@ -316,9 +317,9 @@
 (defun org-export-docx (input csl)
   (interactive "FInput file (Default is Buffer File):\nFCSL file (Default is chinese-gb7714-2005-numeric):")
   (let* ((base (or (file-name-sans-extension input) (buffer-file-name)))
-		 (csl (or (expand-file-name "csl/chinese-gb7714-2005-numeric.csl" user-emacs-directory)))
-		 (output (concat base ".docx")))
-	(shell-command (format "pandoc %s -o %s --citeproc --csl %s" input output csl))))
+	 (csl (or (expand-file-name "csl/chinese-gb7714-2005-numeric.csl" user-emacs-directory)))
+	 (output (concat base ".docx")))
+    (shell-command (format "pandoc %s -o %s --citeproc --csl %s" input output csl))))
 
 ;; https://www.reddit.com/r/emacs/comments/yjobc2/comment/iur16c7/
 (defun nf/parse-headline (x)
@@ -347,8 +348,8 @@
          (month (nth 4 date))
          (day (nth 3 date)))
     (org-datetree-find-date-create (list month day year))
-	(open-line 1)
-	(forward-line 1)))
+    (open-line 1)
+    (forward-line 1)))
 
 ;; org-drawio
 ;; (use-package org-drawio

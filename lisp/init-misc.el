@@ -211,6 +211,14 @@ Explain your reasoning.  if you don’t know, say you don’t know.  Be willing 
   :custom
   (ee-terminal-command "/opt/homebrew/bin/wezterm"))
 
+(defun start-wezterm-at-current-directory ()
+  "Start Wezterm at the current buffer's directory."
+  (interactive)
+  (let ((default-directory (or default-directory "~"))) ; 默认目录为当前 buffer 的目录
+    (start-process "wezterm" nil "wezterm" "start" "--cwd" default-directory)))
+
+(global-set-key (kbd "<f5>") 'start-wezterm-at-current-directory)
+
 (defun switch-to-wezterm ()
     "Switch to WezTerm terminal."
     (interactive)
@@ -218,6 +226,11 @@ Explain your reasoning.  if you don’t know, say you don’t know.  Be willing 
     tell application \"WezTerm\"
       activate
     end tell"))
+
+(advice-add 'start-wezterm-at-current-directory :after
+            (lambda (&rest _)
+              (sleep-for 0.1)
+              (switch-to-wezterm)))
 
 (advice-add 'ee-run :after
             (lambda (&rest _)

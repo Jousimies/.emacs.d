@@ -4,20 +4,14 @@
 
 ;;; Code:
 
+
+
 (use-package denote
   :load-path "packages/denote/"
-  :commands (denote
-	     denote-signature
-	     denote-subdirectory
-	     denote-org-capture-with-prompts
-	     denote-link
-	     denote-backlinks
-	     denote-rename-file-using-front-matter
-	     denote-keywords-add
-	     denote-keywords-remove)
   :bind ((:map dired-mode-map
                ("r" . denote-dired-rename-marked-files-with-keywords)))
-  :hook (dired-mode . denote-dired-mode-in-directories)
+  :hook ((dired-mode . denote-dired-mode-in-directories)
+	 (org-mode . denote-rename-buffer-mode))
   :custom
   (denote-rename-confirmations nil)
   (denote-org-store-link-to-heading nil)
@@ -32,7 +26,9 @@
          (thread-last denote-directory (expand-file-name "outline"))
          (thread-last denote-directory (expand-file-name "literature"))
          (thread-last denote-directory (expand-file-name "term"))
-         (thread-last denote-directory (expand-file-name "references")))))
+         (thread-last denote-directory (expand-file-name "references"))))
+  (denote-rename-buffer-format "%b %t")
+  (denote-rename-buffer-backlinks-indicator ""))
 
 (defun my/modus-themes-denote-faces (&rest _)
   (modus-themes-with-colors
@@ -47,11 +43,15 @@
 
 (add-hook 'ns-system-appearance-change-functions #'my/modus-themes-denote-faces)
 
-(use-package denote-org-extras
-  :commands (denote-org-extras-extract-org-subtree
-	     denote-org-extras-link-to-heading
-	     denote-org-extras-dblock-insert-backlinks
-	     denote-org-extras-dblock-insert-links))
+(use-package denote-org
+  :load-path "packages/denote-org/"
+  :after denote)
+
+(use-package denote-sequence
+  :load-path "packages/denote-sequence/"
+  :after denote
+  :custom
+  (denote-sequence-scheme 'alphanumeric))
 
 ;; A simple HACK to let denote support orderless
 ;; https://github.com/protesilaos/denote/issues/253
@@ -112,19 +112,6 @@
    (denote-link--find-file-prompt
     (or (denote-link-return-links)
         (user-error "No links found")))))
-
-(use-package denote-rename-buffer
-  :load-path "packages/denote/"
-  :hook (org-mode . denote-rename-buffer-mode)
-  :custom
-  (denote-rename-buffer-format "%b %t") ;;
-  (denote-rename-buffer-backlinks-indicator ""))
-
-(use-package denote-sequence
-  :load-path "packages/denote/"
-  :after denote
-  :custom
-  (denote-sequence-scheme 'alphanumeric))
 
 ;;;###autoload
 (defun my/denote-sequence-find-dired (type)

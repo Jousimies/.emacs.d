@@ -52,7 +52,8 @@
 	delete-by-moving-to-trash t
 	minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
 	redisplay-skip-fontification-on-input t
-	cursor-in-non-selected-windows nil)
+	cursor-in-non-selected-windows nil
+	user-mail-address "duan_n@outlook.com")
 
 (setq-default initial-scratch-message nil)
 

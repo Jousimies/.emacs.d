@@ -95,7 +95,7 @@
   :load-path "packages/auctex/"
   :init
   (load "auctex.el" nil t t)
-  (load "preview-latex.el" nil t t)
+  ;; (load "preview-latex.el" nil t t)
   :mode ("\\.tex\\'" . latex-mode)
   :custom
   (TeX-PDF-mode t)

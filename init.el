@@ -55,7 +55,7 @@
 ;; Programming
 (require 'init-lsp)
 (require 'init-prog)
-(require 'init-shell)
+;; (require 'init-shell)
 (require 'init-git)
 
 ;; Note Everything based on org-mode

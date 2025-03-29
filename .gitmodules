@@ -646,3 +646,12 @@
 [submodule "packages/eee.el"]
 	path = packages/eee.el
 	url = https://github.com/eval-exec/eee.el.git
+[submodule "packages/denote-sequence"]
+	path = packages/denote-sequence
+	url = https://github.com/protesilaos/denote-sequence.git
+[submodule "packages/denote-org"]
+	path = packages/denote-org
+	url = https://github.com/protesilaos/denote-org.git
+[submodule "packages/denote-journal"]
+	path = packages/denote-journal
+	url = https://github.com/protesilaos/denote-journal.git
