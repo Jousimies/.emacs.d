@@ -58,37 +58,52 @@
          ("M-h" . emt-backward-kill-word))
   :hook (on-first-input . emt-ensure))
 
-;; use patch instead of macism.
-;; https://github.com/LuciusChen/.emacs.d/blob/main/patches/ns-mac-input-source.patch
-(defvar current-system-input-method nil)
-
-(defun ime-select-rime ()
-  (interactive)
-  (mac-select-input-source "im.rime.inputmethod.Squirrel.Hans")
-  (setq cursor-type 'bar)
-  (set-cursor-color "red")
-  (setq current-system-input-method t))
-
-(defun ime-select-abc ()
-  (interactive)
-  (mac-select-input-source "com.apple.keylayout.ABC")
-  (setq cursor-type 'box)
-  (set-cursor-color (foreground-color-at-point))
-  (setq current-system-input-method nil))
-
-(defun ime-switch ()
-  (interactive)
-  (if current-system-input-method
-      (progn
-		(ime-select-abc)
-		(force-mode-line-update))
+(use-package macim
+  :load-path "packages/macim.el/"
+  :bind (("C-\\" . macim-switch)
+         :map isearch-mode-map
+         ("C-\\" . macim-switch))
+  :hook ((on-first-input . macim-select-ascii)
+         (on-first-input . macim-mode)
+         (isearch-mode . macim-select-ascii)
+	 (on-switch-buffer . macim-context-switch)
+         (minibuffer-mode . macim-select-ascii))
+  :config
+  (defun im-cursor-color ()
+    (interactive)
+    (if current-system-input-method
 	(progn
-      (ime-select-rime)
-      (force-mode-line-update))))
+	  (setq cursor-type 'bar)
+	  (set-cursor-color "red"))
+      (progn
+	(setq cursor-type 'box)
+	(set-cursor-color (foreground-color-at-point)))))
 
-(add-hook 'on-switch-buffer-hook 'ime-select-abc)
+  (advice-add 'macim-switch :after #'im-cursor-color)
+  (advice-add 'macim-context-switch :after #'im-cursor-color)
 
-(global-set-key (kbd "C-\\") 'ime-switch)
+  (setq macim-other "im.rime.inputmethod.Squirrel.Hans")
+  (defun macim-switch ()
+    (interactive)
+    (if current-system-input-method
+        (progn
+	  (macim-select-ascii)
+	  (force-mode-line-update))
+      (progn
+        (macim-select-other)
+        (force-mode-line-update))))
+  (defvar my/macim-context-ignore-modes '("telega-root-mode"
+					  "telega-image-mode"
+					  "mu4e-headers-mode"
+					  "mu4e-view-mode"
+					  "elfeed-show-mode"
+					  "elfeed-search-mode"))
+  (defun +macim-context-ignore-modes ()
+    (let ((mode (symbol-name major-mode)))
+      (when (member mode my/macim-context-ignore-modes))
+      'ascii))
+
+  (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes))
 
 (provide 'init-mac)
 ;;; init-mac.el ends here
