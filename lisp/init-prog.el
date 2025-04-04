@@ -63,5 +63,10 @@
 (use-package visual-basic-mode
   :mode ("\\.vb\\|.bas\\'" . visual-basic-mode))
 
+(use-package lua-mode
+  :load-path "packages/lua-mode/"
+  :mode "\\.lua$"
+  :interpreter "lua")
+
 (provide 'init-prog)
 ;;; init-prog.el ends here

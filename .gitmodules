@@ -655,3 +655,6 @@
 [submodule "packages/denote-journal"]
 	path = packages/denote-journal
 	url = https://github.com/protesilaos/denote-journal.git
+[submodule "packages/lua-mode"]
+	path = packages/lua-mode
+	url = https://github.com/immerrr/lua-mode.git
