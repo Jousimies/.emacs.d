@@ -12,8 +12,7 @@
   :custom
   (treesit-language-source-alist
    '((python "https://github.com/tree-sitter/tree-sitter-python.git")
-     (yaml "https://github.com/ikatyang/tree-sitter-yaml.git")
-     (lua "https://github.com/euclidianAce/ltreesitter.git"))))
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml.git"))))
 
 (use-package eglot
   :after yasnippet

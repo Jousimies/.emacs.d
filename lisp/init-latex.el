@@ -1,7 +1,7 @@
 ;; init-latex.el --- Latex editor. -*- lexical-binding: t; no-byte-compile: t -*-
 
 ;;; Commentary:
-
+; 对于 auctex 14 只需要在终端运行一次 make 即可。
 ;;; Code:
 
 (add-to-list 'load-path "~/.emacs.d/packages/citeproc-el/")
@@ -13,32 +13,32 @@
   (setopt org-latex-prefer-user-labels t)
   (setopt org-latex-src-block-backend 'minted) ;file name should not contain space.
   ;; (setopt org-latex-minted-options '(("linenos")
-  ;; 									 ("numbersep" "5pt")
-  ;; 									 ("frame"     "none") ; box frame is created by `mdframed' package
-  ;; 									 ("framesep"  "2mm")
-  ;; 									 ("breaklines")))
+  ;; 				     ("numbersep" "5pt")
+  ;; 				     ("frame"     "none") ; box frame is created by `mdframed' package
+  ;; 				     ("framesep"  "2mm")
+  ;; 				     ("breaklines")))
   (setopt org-latex-pdf-process '("xelatex -shell-escape %f"
-                           "bibtex -shell-escape %b"
-                           "xelatex -shell-escape %f"
-                           "xelatex -shell-escape %f"
-                           "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl"))
+				  "bibtex -shell-escape %b"
+				  "xelatex -shell-escape %f"
+				  "xelatex -shell-escape %f"
+				  "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl"))
   (setopt org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
-                                   "out" "toc" "nav" "snm" "vrb" "dvi"
-                                   "fdb_latexmk" "blg" "brf" "fls"
-                                   "entoc" "ps" "spl" "bbl"))
+					  "out" "toc" "nav" "snm" "vrb" "dvi"
+					  "fdb_latexmk" "blg" "brf" "fls"
+					  "entoc" "ps" "spl" "bbl"))
   (setopt org-latex-hyperref-template  (concat "\\hypersetup{\n"
-                                        "pdfauthor={%a},\n"
-                                        "pdftitle={%t},\n"
-                                        "pdfkeywords={%k},\n"
-                                        "pdfsubject={%d},\n"
-                                        "pdfcreator={%c},\n"
-                                        "pdflang={%L},\n"
-                                        "colorlinks,\n"
-                                        "citecolor=gray,\n"
-                                        "filecolor=gray,\n"
-                                        "linkcolor=gray,\n"
-                                        "urlcolor=gray\n"
-                                        "}\n"))
+                                               "pdfauthor={%a},\n"
+                                               "pdftitle={%t},\n"
+                                               "pdfkeywords={%k},\n"
+                                               "pdfsubject={%d},\n"
+                                               "pdfcreator={%c},\n"
+                                               "pdflang={%L},\n"
+                                               "colorlinks,\n"
+                                               "citecolor=gray,\n"
+                                               "filecolor=gray,\n"
+                                               "linkcolor=gray,\n"
+                                               "urlcolor=gray\n"
+                                               "}\n"))
   (setopt org-latex-classes nil)
   (add-to-list 'org-latex-classes
                '("book"
@@ -94,8 +94,7 @@
 (use-package tex
   :load-path "packages/auctex/"
   :init
-  (load "auctex.el" nil t t)
-  ;; (load "preview-latex.el" nil t t)
+  (load "auctex-autoloads.el" nil t t)
   :mode ("\\.tex\\'" . latex-mode)
   :custom
   (TeX-PDF-mode t)

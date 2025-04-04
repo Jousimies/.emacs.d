@@ -13,14 +13,14 @@
   :config
   (setq beancount-highlight-transaction-at-point t)
   ;; insert whole transaction instead of only insert date.
-  (defun my/beancount-insert-transaction (&optional days)
-    "Start a new timestamped directive with date shifted by DAYS from today."
-    (interactive "P")
-    (unless (bolp) (newline))
-    (insert (beancount--shift-current-date days) " * \"\" \"\"")
-    (backward-char 4))
+  ;; (defun my/beancount-insert-transaction (&optional days)
+  ;;   "Start a new timestamped directive with date shifted by DAYS from today."
+  ;;   (interactive "P")
+  ;;   (unless (bolp) (newline))
+  ;;   (insert (beancount--shift-current-date days) " * \"\" \"\"")
+  ;;   (backward-char 4))
 
-  (advice-add 'beancount-insert-date :override 'my/beancount-insert-transaction)
+  ;; (advice-add 'beancount-insert-date :override 'my/beancount-insert-transaction)
 
   ;; Auto open browser after beancount-fava started.
   (defun my/browser-beancount-fava ()
