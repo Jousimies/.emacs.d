@@ -26,9 +26,9 @@
 
 
 (setopt trash-directory "~/.Trash"
-		ns-use-proxy-icon nil
-		ns-pop-up-frames nil
-		ns-use-srgb-colorspace nil)
+	ns-use-proxy-icon nil
+	ns-pop-up-frames nil
+	ns-use-srgb-colorspace nil)
 
 (use-package color-picker
   :commands color-picker)
@@ -47,7 +47,7 @@
   :commands macos-reveal-in-finder macos-share
   :config
   (setq macos-module-install-dir (expand-file-name "modules" user-emacs-directory)
-		macos-module-path (expand-file-name "libEmacsMacOSModule.dylib" macos-module-install-dir))
+	macos-module-path (expand-file-name "libEmacsMacOSModule.dylib" macos-module-install-dir))
   (load-file macos-module-path))
 
 (use-package emt

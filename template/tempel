@@ -106,8 +106,9 @@ org-mode
      "* What should/could be done next?" n>
      "# 下一步可以做什么？这是非常关键的一个问题。" n>)
 (blog
- "#+DESCRIPTION: " p n>
+ "#+TITLE: " p n>
  "#+DATE: " n>
+ "#+OPTIONS: toc:nil" n>
  "#+AUTHOR: Jousimies" n)
 
 (hugo

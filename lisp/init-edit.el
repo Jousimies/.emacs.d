@@ -81,7 +81,7 @@
          (org-mode . hungry-delete-mode)))
 
 (use-package avy
-  :load-path "packages/avy/"
+  :load-path "packages/avy/" "packages/pinyinlib.el/"
   :bind ([remap goto-char] . my/avy-goto-char-timer)
   :config
   (defun my/avy-goto-char-timer (&optional arg)
@@ -130,6 +130,22 @@
          ("M-*" . tempel-insert)
 	 (:map tempel-map
 	       ("<down>" . tempel-next)))
+  :init
+  (defun tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
+
+  (add-hook 'conf-mode-hook 'tempel-setup-capf)
+  (add-hook 'prog-mode-hook 'tempel-setup-capf)
+  (add-hook 'text-mode-hook 'tempel-setup-capf)
   :config
   (setq tempel-path `("~/.emacs.d/template/tempel"
                       ,(expand-file-name "config/tempel" my-galaxy))))
