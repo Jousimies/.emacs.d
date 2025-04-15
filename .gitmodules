@@ -658,3 +658,9 @@
 [submodule "packages/lua-mode"]
 	path = packages/lua-mode
 	url = https://github.com/immerrr/lua-mode.git
+[submodule "packages/ledger-mode"]
+	path = packages/ledger-mode
+	url = https://github.com/ledger/ledger-mode.git
+[submodule "packages/gnuplot"]
+	path = packages/gnuplot
+	url = https://github.com/emacs-gnuplot/gnuplot.git
