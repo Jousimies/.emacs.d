@@ -150,9 +150,6 @@
   (interactive)
   (lucius/adjust-opacity (selected-frame) -5))
 
-(global-set-key (kbd "C-<f1>") #'my/decrease-alpha-background)
-(global-set-key (kbd "C-<f2>") #'my/increase-alpha-background)
-
 ;; Proxy
 ;; (add-hook 'on-first-input-hook (lambda ()
 ;; 				 (require 'socks)))

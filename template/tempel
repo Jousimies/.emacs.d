@@ -696,3 +696,8 @@ End Sub")
    styleHeadingNoNum
    SetApplyFigStyle
 End Sub")
+
+beancount-mode
+
+(balance
+ (format-time-string "%Y-%m-%d") " balance " p p " CNY")

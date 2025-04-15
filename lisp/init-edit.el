@@ -130,7 +130,7 @@
          ("M-*" . tempel-insert)
 	 (:map tempel-map
 	       ("<down>" . tempel-next)))
-  :init
+  :config
   (defun tempel-setup-capf ()
     ;; Add the Tempel Capf to `completion-at-point-functions'.
     ;; `tempel-expand' only triggers on exact matches. Alternatively use
@@ -146,7 +146,6 @@
   (add-hook 'conf-mode-hook 'tempel-setup-capf)
   (add-hook 'prog-mode-hook 'tempel-setup-capf)
   (add-hook 'text-mode-hook 'tempel-setup-capf)
-  :config
   (setq tempel-path `("~/.emacs.d/template/tempel"
                       ,(expand-file-name "config/tempel" my-galaxy))))
 

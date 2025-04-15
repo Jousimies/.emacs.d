@@ -48,8 +48,12 @@
   (w32-register-hot-key [c-])
   (setq w32-recognize-altgr nil))
 
-;; (global-set-key (kbd "C-h") #'delete-backward-char) (global-set-key (kbd "s-h") #'help-command)
+;; (global-set-key (kbd "C-h") #'delete-backward-char)
+;; (global-set-key (kbd "s-h") #'help-command)
 ;; (global-set-key (kbd "M-h") #'backward-kill-word)
+
+(global-set-key (kbd "s-<f1>") #'my/decrease-alpha-background)
+(global-set-key (kbd "s-<f2>") #'my/increase-alpha-background)
 
 (defvar-keymap my/file-prefix-map
   :doc "Prefix map for file."

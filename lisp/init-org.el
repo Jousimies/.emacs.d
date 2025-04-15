@@ -4,6 +4,8 @@
 
 ;;; Code:
 
+(add-to-list 'load-path "~/.emacs.d/packages/emacs-htmlize/")
+
 (with-eval-after-load 'org
   (setopt org-ellipsis " ⇲"
 	  org-modules '(org-habit)
