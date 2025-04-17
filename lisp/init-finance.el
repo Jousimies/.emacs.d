@@ -6,7 +6,49 @@
 
 (use-package ledger-mode
   :load-path "packages/ledger-mode/"
-  :mode ("\\.ledger\\'" . ledger-mode))
+  :mode ("\\.ledger\\'" . ledger-mode)
+  :custom
+  (ledger-accounts-file "~/Finance/main.txt")
+  (ledger-reports '(("1-资产与负债表" "%(binary) -f %(ledger-file) bal ^Assets: ^Liabilities: -X CNY")
+		    ("2-收入与支出表" "%(binary) -f %(ledger-file) bal ^Income: ^Expenses:")
+		    ("3-预算表（本月）" "%(binary) -f %(ledger-file) budget --period \"this month\"")
+		    ("4-投资回报" "%(binary) -f %(ledger-file) bal ^Assets:Investment -X CNY")
+		    ("5-现金流动性" "%(binary) -f %(ledger-file) bal ^Assets:Bank")
+		    ("6-交易日志（本月）" "%(binary) -f %(ledger-file) reg")
+		    ("7-account" "%(binary) -f %(ledger-file) reg %(account)")
+		    ("8-payee" "%(binary) -f %(ledger-file) reg @%(payee)"))))
+
+(defun finance-sync-and-push ()
+  "Pull repository, copy files from iCloud Finance to ~/Finance, and auto git push if changes exist."
+  (interactive)
+  (let* ((icloud-dir "~/Library/Mobile Documents/com~apple~CloudDocs/Finance/")
+         (target-dir "~/Finance/")
+         (files '("main.txt" "budget.ledger" "fund.ledger"))
+         (commit-message (format-time-string "Finance update %Y-%m-%d %H:%M:%S")))
+    ;; Ensure target directory exists
+    (unless (file-exists-p target-dir)
+      (make-directory target-dir t))
+    ;; Pull repository first
+    (shell-command (concat "cd " target-dir " && git pull origin main"))
+    ;; Copy files
+    (dolist (file files)
+      (let ((src (expand-file-name file icloud-dir))
+            (dst (expand-file-name file target-dir)))
+        (when (file-exists-p src)
+          (copy-file src dst t)
+          (message "Copied %s to %s" file target-dir))))
+    ;; Save all buffers
+    (save-some-buffers t)
+    ;; Check for changes using git status
+    (let ((git-status (shell-command-to-string (concat "cd " target-dir " && git status --porcelain"))))
+      (if (string-empty-p git-status)
+          (message "No changes detected in Finance repository.")
+        ;; Perform git operations if changes exist
+        (shell-command (concat "cd " target-dir " && git add ."))
+        (shell-command (concat "cd " target-dir " && git commit -m \"" commit-message "\""))
+        (shell-command (concat "cd " target-dir " && git push origin main"))
+        (message "Finance files copied and pushed!")))))
+
 
 ;; (use-package beancount
 ;;   :load-path "packages/beancount-mode/"
