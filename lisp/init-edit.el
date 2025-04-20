@@ -151,10 +151,11 @@
 
 (use-package yasnippet
   :load-path "packages/yasnippet/"
-  :hook (minibuffer-mode . yas-global-mode)
-  :config
-  (use-package yasnippet-snippets
-    :load-path "packages/yasnippet-snippets/"))
+  :hook (minibuffer-mode . yas-global-mode))
+
+(use-package yasnippet-snippets
+  :after yasnippet
+  :load-path "packages/yasnippet-snippets/")
 
 (use-package expand-region
   :load-path "packages/expand-region.el/"

@@ -130,8 +130,8 @@
   (reftex-toc-split-windows-horizontally t)
   (reftex-toc-split-windows-fraction 0.25))
 
-(use-package consult-reftex
-  :load-path "~/.emacs.d/packages/consult-reftex/")
+;; (use-package consult-reftex
+;;   :load-path "~/.emacs.d/packages/consult-reftex/")
 
 ;; brew install typst
 ;; set `treesit-language-source-alist', see init-lsp.el
