@@ -304,8 +304,10 @@ Specific to the current window's mode line.")
 (setopt mode-line-right-align-edge 'right-margin)
 
 (setopt mode-line-format '("%e"
+			   (:eval (when persp-mode
+				    (tab-bar-format-persp)))
+			   " "
                            my/winum
-                           "​"
                            (:eval (when repeat-mode
                                     my/modeline-repeat))
                            "​"
@@ -340,13 +342,14 @@ Specific to the current window's mode line.")
 
 (use-package keycast
   :load-path "packages/keycast/"
+  :commands keycast-mode-line-mode
   :custom
   (keycast-mode-line-format "%2s%k%c%R")
   (keycast-mode-line-insert-after 'my/modeline-position)
   (keycast-mode-line-window-predicate 'mode-line-window-selected-p)
   (keycast-mode-line-remove-tail-elements nil))
 
-(when keycast-mode-line-mode
+(with-eval-after-load 'keycast-mode-line-mode
   (dolist (input '(self-insert-command org-self-insert-command))
     (add-to-list 'keycast-substitute-alist `(,input "." "Typing…")))
   (dolist (event '(mouse-event-p mouse-movement-p mwheel-scroll))

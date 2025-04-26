@@ -80,6 +80,7 @@
       ('dark (load-theme 'modus-vivendi-deuteranopia t))))
   (add-hook 'ns-system-appearance-change-functions #'my/apply-theme))
 
+(setq-default mode-line-format nil)
 (setq byte-compile-warnings nil)
 
 (blink-cursor-mode -1)

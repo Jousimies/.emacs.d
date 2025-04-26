@@ -71,7 +71,10 @@
   :load-path "packages/vertico/extensions/"
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
   :bind (:map vertico-map
-	      ("C-DEL" . vertico-directory-up)))
+	      ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+	      ("C-h" . vertico-directory-up)
+              ("M-DEL" . vertico-directory-delete-word)))
 
 (use-package orderless
   :load-path "packages/orderless/"
@@ -122,6 +125,8 @@
 	 ("M-g l" . consult-goto-line)
          :map minibuffer-mode-map
          ("C-r" . consult-history))
+  :custom
+  (consult-narrow-key "<")
   :config
   (defvar consult-colors-history nil
     "History for `consult-colors-emacs' and `consult-colors-web'.")
@@ -260,7 +265,15 @@ value of the selected COLOR."
   (corfu-auto-prefix 1)
   (corfu-auto-delay 0.2)
   (corfu-preselect 'valid)
-  (corfu-quit-no-match 'separator)
+  (corfu-max-width 120)
+  (corfu-on-exact-match nil)
+  (corfu-quit-no-match t)
+  (global-corfu-modes '((not erc-mode
+			     circe-mode
+			     help-mode
+			     gud-mode
+			     vterm-mode)
+			t))
   (text-mode-ispell-word-completion nil)
   (read-extended-command-predicate #'command-completion-default-include-p)
   :config
@@ -277,16 +290,18 @@ value of the selected COLOR."
 
 (use-package corfu-popupinfo
   :load-path "packages/corfu/extensions/"
-  :hook (corfu-mode . corfu-popupinfo-mode))
+  :hook (corfu-mode . corfu-popupinfo-mode)
+  :custom
+  (corfu-popupinfo-delay '(0.4 . 0.2)))
 
 (use-package cape
   :load-path "packages/cape/"
   :init
-  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  ;; (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
   (add-hook 'completion-at-point-functions #'cape-elisp-block)
   (add-hook 'completion-at-point-functions #'cape-keyword)
-  (add-hook 'completion-at-point-functions #'cape-abbrev)
+  ;; (add-hook 'completion-at-point-functions #'cape-abbrev)
 
   (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
 

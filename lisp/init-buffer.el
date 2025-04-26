@@ -58,18 +58,21 @@
 
 (use-package perspective
   :load-path "packages/perspective-el/"
+  :bind (("M-s-<left>" . persp-prev)
+	 ("M-s-<right>" . persp-next))
   :custom
   (persp-mode-prefix-key (kbd "C-c z"))
-  (tab-bar-format '((when is-fullscreen
-		      tab-bar-format-menu-bar)
-                    tab-bar-format-persp
-    		    tab-bar-format-tabs
-    		    tab-bar-separator
-    		    tab-bar-format-align-right
-    		    my/tab-bar-format-right))
+  ;; (tab-bar-format '((when is-fullscreen
+  ;; 		      tab-bar-format-menu-bar)
+  ;;                   tab-bar-format-persp
+  ;;   		    tab-bar-format-tabs
+  ;;   		    tab-bar-separator
+  ;;   		    tab-bar-format-align-right
+  ;;   		    my/tab-bar-format-right))
   (persp-state-default-file (expand-file-name "persp" cache-directory))
   :hook ((emacs-startup . persp-mode)
-         (kill-emacs . persp-state-save))
+         ;; (kill-emacs . persp-state-save)
+	 )
   :config
   (with-eval-after-load 'tab-bar
     (defun tab-bar-format-persp ()

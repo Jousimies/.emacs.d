@@ -77,8 +77,8 @@
 (when IS-MAC
   (set-face-attribute 'default nil :family "Cascadia Next SC" :height 160))
 
-(when IS-WINDOWS
-  (set-face-attribute 'default nil :family "PragmataPro" :height 160))
+;; (when IS-WINDOWS
+;;   (set-face-attribute 'default nil :family "PragmataPro" :height 160))
 
 ;; Unicode
 ;; `set-fontset-font' 用于指定某些字符集使用特定的字体
@@ -89,16 +89,16 @@
 ;; `cjk-misc': CJK（中日韩）字符集中的其他字符，包含了少量的中文、日文、韩文字符
 ;; `kana': 日文假名字符集，但在处理与中文相关的文档时可能偶尔用到
 ;; `bopomofo': 注音符号字符集，用于台湾地区的汉字注音
-(setopt use-default-font-for-symbols nil)
-(when IS-MAC
-  (dolist (charset '(kana han cjk-misc bopomofo symbol))
-    (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "SimSun"))))
+;; (setopt use-default-font-for-symbols nil)
+;; (when IS-MAC
+;;   (dolist (charset '(kana han cjk-misc bopomofo symbol))
+;;     (set-fontset-font (frame-parameter nil 'font) charset
+;;                       (font-spec :family "SimSun"))))
 
-(when IS-WINDOWS
-  (dolist (charset '(kana han cjk-misc bopomofo symbol))
-    (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "SimHei"))))
+;; (when IS-WINDOWS
+;;   (dolist (charset '(kana han cjk-misc bopomofo symbol))
+;;     (set-fontset-font (frame-parameter nil 'font) charset
+;;                       (font-spec :family "SimHei"))))
 ;; Emoji
 ;; According to https://github.com/domtronn/all-the-icons.el
 ;; Use 'prepend for the NS and Mac ports or Emacs will crash.

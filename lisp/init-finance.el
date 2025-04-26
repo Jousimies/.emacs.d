@@ -6,20 +6,24 @@
 
 (use-package ledger-mode
   :load-path "packages/ledger-mode/"
+  :bind (:map ledger-mode-map
+	      ("s-r" . ledger-report))
   :mode ("\\.ledger\\'" . ledger-mode)
-  :config
-  (setq ledger-accounts-file "~/Finance/main.txt")
-  (setq ledger-reports '(("1-资产与负债表" "%(binary) -f %(ledger-file) bal ^Assets: ^Liabilities: -X CNY")
-			 ("2-收入与支出表" "%(binary) -f %(ledger-file) bal ^Income: ^Expenses:")
-			 ("3-预算表（本月）" "%(binary) -f %(ledger-file) budget --period \"this month\"")
-			 ("4-投资回报" "%(binary) -f %(ledger-file) bal ^Assets:Investment -X CNY")
-			 ("5-现金流动性" "%(binary) -f %(ledger-file) bal ^Assets:Bank")
-			 ("6-交易日志（本月）" "%(binary) -f %(ledger-file) reg")
-			 ("t1-今日支出总额" "%(binary) -f %(ledger-file) reg ^Expenses: --period today")
-			 ("t2-本周支出总额" "%(binary) -f %(ledger-file) reg ^Expenses: --period \"this week\"")
-			 ("t3-上周支出总额" "%(binary) -f %(ledger-file) reg ^Expenses: --period \"last week\"")
-			 ("7-account" "%(binary) -f %(ledger-file) reg %(account)")
-			 ("8-payee" "%(binary) -f %(ledger-file) reg @%(payee)"))))
+  :custom
+  (ledger-accounts-file "~/Finance/main.txt")
+  (ledger-reports '(("1-资产与负债表" "%(binary) -f %(ledger-file) bal ^Assets: ^Liabilities: -X CNY")
+		    ("2-收入与支出表" "%(binary) -f %(ledger-file) bal ^Income: ^Expenses:")
+		    ("3-预算表（本月）" "%(binary) -f %(ledger-file) budget --period \"this month\"")
+		    ("4-投资回报" "%(binary) -f %(ledger-file) bal ^Assets:Investment -X CNY")
+		    ("5-现金流动性" "%(binary) -f %(ledger-file) bal ^Assets:Bank")
+		    ("6-交易日志（本月）" "%(binary) -f %(ledger-file) reg")
+		    ("t1-今日支出总额" "%(binary) -f %(ledger-file) reg ^Expenses: --period today")
+		    ("t2-本周支出总额" "%(binary) -f %(ledger-file) reg ^Expenses: --period \"this week\"")
+		    ("t3-上周支出总额" "%(binary) -f %(ledger-file) reg ^Expenses: --period \"last week\"")
+		    ("account" "%(binary) -f %(ledger-file) reg %(account)")
+		    ("bal" "%(binary) -f %(ledger-file) bal")
+		    ("reg" "%(binary) -f %(ledger-file) reg")
+		    ("payee" "%(binary) -f %(ledger-file) reg @%(payee)"))))
 
 (defun finance-sync-and-push ()
   "Pull repository, copy files from iCloud Finance to ~/Finance, and auto git push if changes exist."

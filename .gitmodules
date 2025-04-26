@@ -664,3 +664,6 @@
 [submodule "packages/gnuplot"]
 	path = packages/gnuplot
 	url = https://github.com/emacs-gnuplot/gnuplot.git
+[submodule "packages/activities.el"]
+	path = packages/activities.el
+	url = https://github.com/alphapapa/activities.el.git

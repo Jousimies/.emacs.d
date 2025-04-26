@@ -150,6 +150,7 @@
 
 (use-package dired-preview
   :load-path "packages/dired-preview/"
+  :commands dired-preview-mode
   :custom
   (dired-preview-delay 0.0)
   (dired-preview-max-size (expt 2 20))

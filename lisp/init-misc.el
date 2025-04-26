@@ -5,7 +5,6 @@
 ;;; Code:
 (use-package gptel
   :load-path "~/.emacs.d/packages/gptel/"
-  :bind ("<f1>" . my/f1-toggle-gptel-buffer)
   :hook ((gptel-post-stream . gptel-auto-scroll)
 	 (gptel-post-response . gptel-end-of-response))
   :custom

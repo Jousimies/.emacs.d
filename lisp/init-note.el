@@ -11,7 +11,8 @@
   :bind ((:map dired-mode-map
                ("r" . denote-dired-rename-marked-files-with-keywords)))
   :hook ((dired-mode . denote-dired-mode-in-directories)
-	 (org-mode . denote-rename-buffer-mode))
+	 ;; (org-mode . denote-rename-buffer-mode)
+	 )
   :custom
   (denote-rename-confirmations nil)
   (denote-org-store-link-to-heading nil)

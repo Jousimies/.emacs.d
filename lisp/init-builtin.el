@@ -253,6 +253,12 @@
 (add-hook 'after-init-hook 'pixel-scroll-mode)
 
 ;; desktop
+;; desktop 和 persp 合用会导致 Unprintable entity 问题
+;; (use-package desktop
+;;   :hook (on-first-buffer . desktop-save-mode)
+;;   :custom
+;;   (desktop-path `(,cache-directory)))
+
 ;; (add-hook 'on-first-buffer-hook #'desktop-save-mode)
 ;; (setq desktop-path `(,cache-directory))
 ;; (add-hook 'after-init-hook #'desktop-read)
@@ -322,6 +328,13 @@
 ;; Tramp
 (with-eval-after-load 'tramp
   (setq tramp-persistency-file-name (expand-file-name "tramp" cache-directory)))
+
+;; ispell and flyspell
+;; (use-package flyspell
+;;   :hook (text-mode . flyspell-mode)
+;;   :custom
+;;   (flyspell-issue-message-flag nil)
+;;   (ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together")))
 
 
 (provide 'init-builtin)

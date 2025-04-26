@@ -71,6 +71,7 @@
   "c" #'my/copy-file-info
   "i" #'my/denote-info
   "d" #'consult-dir
+  "z" #'persp-state-load
   "u" #'update-org-attach-property)
 
 ;; (defvar-keymap my/new-note-prefix-map
@@ -191,9 +192,9 @@
     ("l" "Translate" gt-do-translate :transient nil)
     ("W" "Write Good" writegood-mode :transient nil)
     ("h" "LSP Helper" lsp-bridge-toggle-sdcv-helper :transient nil)]
-   ["OSX Dictionary"
-    ("o" "Input" osx-dictionary-search-input :transient nil)
-    ("x" "Pointer" osx-dictionary-search-pointer :transient nil)]
+   ;; ["OSX Dictionary"
+   ;;  ("o" "Input" osx-dictionary-search-input :transient nil)
+   ;;  ("x" "Pointer" osx-dictionary-search-pointer :transient nil)]
    ;; ["Dictionary Overlay"
    ;;  ("t" "Toggle" dictionary-overlay-toggle :transient nil)
    ;;  ("g" "Refresh" dictionary-overlay-refresh-buffer :transient nil)
