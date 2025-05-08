@@ -6,8 +6,10 @@
 
 (use-package ledger-mode
   :load-path "packages/ledger-mode/"
-  :bind (:map ledger-mode-map
-	      ("s-r" . ledger-report))
+  :bind ((:map ledger-mode-map
+	       ("s-r" . ledger-report))
+	 (:map ledger-report-mode-map
+	       ("s-r" . ledger-report)))
   :mode ("\\.ledger\\'" . ledger-mode)
   :custom
   (ledger-accounts-file "~/Finance/main.txt")
@@ -28,7 +30,7 @@
 (defun finance-sync-and-push ()
   "Pull repository, copy files from iCloud Finance to ~/Finance, and auto git push if changes exist."
   (interactive)
-  (let* ((icloud-dir "~/Library/Mobile Documents/com~apple~CloudDocs/Finance/")
+  (let* ((icloud-dir (expand-file-name "com~apple~CloudDocs/Finance" icloud))
          (target-dir "~/Finance/")
          (files '("main.txt" "budget.ledger" "fund.ledger"))
          (commit-message (format-time-string "Finance update %Y-%m-%d %H:%M:%S")))

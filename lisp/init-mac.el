@@ -60,7 +60,8 @@
 
 (use-package macim
   :load-path "packages/macim.el/"
-  :hook (on-first-input . macim-mode)
+  :hook ((on-first-input . macim-mode)
+	 (on-switch-buffer . macim-context-switch))
   :config
   (setq macim-other "im.rime.inputmethod.Squirrel.Hans"))
 

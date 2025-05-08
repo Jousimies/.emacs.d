@@ -49,6 +49,8 @@
 	isearch-lazy-count t
 	help-window-select 'other
 	help-window-keep-selected t
+	ad-redefinition-action 'accept
+	truncate-string-ellipsis "…"
 	multisession-directory (expand-file-name "multisession" cache-directory)
 	auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-" cache-directory))
 
@@ -193,7 +195,9 @@
 ;; (define-fringe-bitmap 'left-curly-arrow  [])
 ;; https://xenodium.com/toggling-emacs-continuation-fringe-indicator/
 (setq-default fringe-indicator-alist
-              (delq (assq 'continuation fringe-indicator-alist) fringe-indicator-alist))
+              (delq (assq 'continuation fringe-indicator-alist)
+		    fringe-indicator-alist))
+
 (defun toggle-continuation-fringe-indicator ()
   (interactive)
   (setq-default
@@ -254,10 +258,13 @@
 
 ;; desktop
 ;; desktop 和 persp 合用会导致 Unprintable entity 问题
-;; (use-package desktop
-;;   :hook (on-first-buffer . desktop-save-mode)
-;;   :custom
-;;   (desktop-path `(,cache-directory)))
+(use-package desktop
+  :hook ((on-first-buffer . desktop-save-mode)
+	 ;; (emacs-startup . (lambda ()
+	 ;; 		      (desktop-read)))
+	 )
+  :custom
+  (desktop-path `(,cache-directory)))
 
 ;; (add-hook 'on-first-buffer-hook #'desktop-save-mode)
 ;; (setq desktop-path `(,cache-directory))
@@ -296,7 +303,7 @@
 
 ;;;; Repeatable key chords (repeat-mode)
 (use-package repeat
-  :hook (emacs-startup . repeat-mode)
+  :hook (on-first-input . repeat-mode)
   :custom
   (repeat-on-final-keystroke t)
   (repeat-exit-timeout 5)
@@ -336,6 +343,44 @@
 ;;   (flyspell-issue-message-flag nil)
 ;;   (ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together")))
 
+
+(with-eval-after-load 'calendar
+  (setq calendar-view-diary-initially-flag t)
+  (setq calendar-mark-diary-entries-flag t)
+
+  (setq calendar-date-style 'iso)
+  (setq calendar-date-display-form calendar-iso-date-display-form)
+  (setq diary-date-forms diary-iso-date-forms)
+  (setq calendar-time-display-form
+        '(24-hours ":" minutes
+                   (when time-zone
+                     (format "(%s)" time-zone))))
+  (add-hook 'calendar-today-visible-hook #'calendar-mark-today))
+
+(use-package appt
+  :hook (diary-mode . appt-activate)
+  :custom
+  (appt-display-diary nil)
+  (appt-disp-window-function #'appt-disp-window)
+  (appt-display-mode-line t)
+  (appt-display-interval 3)
+  (appt-audible nil)
+  (appt-warning-time-regexp "appt \\([0-9]+\\)")
+  (appt-message-warning-time 6))
+
+(use-package diary-lib
+  :hook ((diary-list-entries . diary-sort-entries)
+	 (diary-mode . goto-address-mode))
+  :custom
+  (diary-display-function #'diary-fancy-display)
+  (diary-header-line-format nil)
+  (diary-list-include-blanks nil)
+  (diary-abbreviated-year-flag nil)
+  (diary-number-of-entries 7)
+  (diary-comment-start ");;")
+  (diary-comment-end "")
+  (diary-nonmarking-symbol "!")
+  (diary-file (expand-file-name "logs/diary.org" my-galaxy)))
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here

@@ -25,6 +25,17 @@
 ;;; Code:
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
+;; load-path
+(mapc (lambda (path)
+        (add-to-list 'load-path (expand-file-name path "~/.emacs.d/packages/")))
+      '("compat/"
+        "dash.el/"
+        "f.el/"
+        "s.el/"
+        "posframe/"
+        "emacs-async/"
+        "on.el/"))
+(require 'on)
 
 ;; For debug.
 (when init-file-debug
@@ -63,9 +74,9 @@
 (require 'init-note)
 (require 'init-bib)
 (require 'init-latex)
-(require 'init-gtd)
+;; (require 'init-gtd)
 (require 'init-finance)
-(require 'init-blog)
+;; (require 'init-blog)
 
 ;; Reading with Emacs
 (require 'init-reader)
@@ -83,13 +94,13 @@
   )
 
 ;; Some useful functions stealed from Internet
-(require 'init-misc)
+;; (require 'init-misc)
 
 ;; Keybindings
 (require 'init-keys)
 
 ;; Load custom.el, but It's empty.
-(load (setq custom-file (locate-user-emacs-file "custom.el")) t)
+;; (load (setq custom-file (locate-user-emacs-file "custom.el")) t)
 
 (add-hook 'window-setup-hook
           (lambda ()

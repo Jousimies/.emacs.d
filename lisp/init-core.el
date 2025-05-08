@@ -23,9 +23,15 @@
 ;;
 
 ;;; Code:
+(unbind-key "s-o" 'global-map)
+(unbind-key "s-s" 'global-map)
+(unbind-key "s-m" 'global-map)
+(unbind-key "s-n" 'global-map)
+(unbind-key "C-t" 'global-map)
+(unbind-key "s-q" 'global-map)
 
 (setopt inhibit-startup-screen t
-	;; initial-major-mode 'fundamental-mode
+	initial-major-mode 'fundamental-mode
 
 	;; (setq ring-bell-function 'ignore)
 	ring-bell-function (lambda ()
@@ -110,18 +116,6 @@
 ;; (set-face-attribute 'fixed-pitch nil :family "SF Mono" :height 160)
 ;; (add-hook 'text-mode-hook #'variable-pitch-mode)
 
-;; load-path
-(mapc (lambda (path)
-        (add-to-list 'load-path (expand-file-name path "~/.emacs.d/packages/")))
-      '("compat/"
-        "dash.el/"
-        "f.el/"
-        "s.el/"
-        "posframe/"
-        "emacs-async/"
-        "on.el/"))
-(require 'on)
-
 ;; icons
 (use-package nerd-icons
   :load-path "packages/nerd-icons.el/"
@@ -145,10 +139,13 @@
 (defun my/increase-alpha-background ()
   (interactive)
   (lucius/adjust-opacity (selected-frame) 5))
+(global-set-key (kbd "s-<f2>") #'my/increase-alpha-background)
 
 (defun my/decrease-alpha-background ()
   (interactive)
   (lucius/adjust-opacity (selected-frame) -5))
+(global-set-key (kbd "s-<f1>") #'my/decrease-alpha-background)
+
 
 ;; Proxy
 ;; (add-hook 'on-first-input-hook (lambda ()

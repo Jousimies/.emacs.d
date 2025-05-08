@@ -29,6 +29,11 @@
   :custom
   (ibuffer-default-sorting-mode 'major-mode))
 
+(global-set-key (kbd "M-g p") 'previous-buffer)
+
+
+(global-set-key (kbd "M-g n") 'next-buffer)
+
 (use-package nerd-icons-ibuffer
   :load-path "packages/nerd-icons-ibuffer/"
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
@@ -56,31 +61,27 @@
 (autoload #'elisp-demos-advice-helpful-update "elisp-demos" nil t)
 (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
 
-(use-package perspective
-  :load-path "packages/perspective-el/"
-  :bind (("M-s-<left>" . persp-prev)
-	 ("M-s-<right>" . persp-next))
-  :custom
-  (persp-mode-prefix-key (kbd "C-c z"))
-  ;; (tab-bar-format '((when is-fullscreen
-  ;; 		      tab-bar-format-menu-bar)
-  ;;                   tab-bar-format-persp
-  ;;   		    tab-bar-format-tabs
-  ;;   		    tab-bar-separator
-  ;;   		    tab-bar-format-align-right
-  ;;   		    my/tab-bar-format-right))
-  (persp-state-default-file (expand-file-name "persp" cache-directory))
-  :hook ((emacs-startup . persp-mode)
-         ;; (kill-emacs . persp-state-save)
-	 )
-  :config
-  (with-eval-after-load 'tab-bar
-    (defun tab-bar-format-persp ()
-      (setq global-mode-string (delete '(:eval (persp-mode-line)) global-mode-string))
-      `((global menu-item ,(format-mode-line (persp-mode-line)) ignore))))
-  (dotimes (i 9)
-    (global-set-key (kbd (concat "M-s-" (number-to-string (1+ i))))
-		    `(lambda () (interactive) (persp-switch-by-number ,(1+ i))))))
+;; (use-package perspective
+;;   :load-path "packages/perspective-el/"
+;;   :bind (("M-s-<left>" . persp-prev)
+;; 	 ("M-s-<right>" . persp-next))
+;;   :custom
+;;   (persp-mode-prefix-key (kbd "C-c z"))
+;;   ;; (tab-bar-format '(tab-bar-format-persp
+;;   ;;   		    tab-bar-format-tabs
+;;   ;;   		    tab-bar-separator
+;;   ;;   		    tab-bar-format-align-right
+;;   ;;   		    my/tab-bar-format-right))
+;;   (persp-state-default-file (expand-file-name "persp" cache-directory))
+;;   :hook (emacs-startup . persp-mode)
+;;   :config
+;;   (with-eval-after-load 'tab-bar
+;;     (defun tab-bar-format-persp ()
+;;       (setq global-mode-string (delete '(:eval (persp-mode-line)) global-mode-string))
+;;       `((global menu-item ,(format-mode-line (persp-mode-line)) ignore))))
+;;   (dotimes (i 9)
+;;     (global-set-key (kbd (concat "M-s-" (number-to-string (1+ i))))
+;; 		    `(lambda () (interactive) (persp-switch-by-number ,(1+ i))))))
 
 (use-package popper
   :load-path "packages/popper/"
@@ -177,11 +178,14 @@
 (with-eval-after-load 'ibuffer
   (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper))
 
+
 (use-package winum
   :load-path "packages/emacs-winum/"
-  :hook (window-setup . winum-mode)
-  :preface
-  (defun my/winum-select (num)
+  :hook (on-first-buffer . winum-mode)
+  :custom
+  (winum-auto-setup-mode-line nil))
+
+(defun my/winum-select (num)
     (lambda (&optional arg) (interactive "P")
       (if arg
           (winum-select-window-by-number (- 0 num))
@@ -189,15 +193,14 @@
             (winum-select-window-by-number (winum-get-number (get-mru-window t)))
           (winum-select-window-by-number num)))))
 
-  (setq winum-keymap
+(setq winum-keymap
         (let ((map (make-sparse-keymap)))
           (define-key map (kbd "C-0") 'winum-select-window-0-or-10)
           (dolist (num '(1 2 3 4 5 6 7 8 9) nil)
             (define-key map (kbd (concat "C-" (int-to-string num)))
                         (my/winum-select num)))
           map))
-  :config
-  (setq winum-auto-setup-mode-line nil))
+
 
 (provide 'init-buffer)
 ;;; init-buffer.el ends here

@@ -185,11 +185,12 @@ value of the selected COLOR."
 ;;     :add-history (thing-at-point 'symbol)
 ;;     :state (consult--jump-state)))
 
-;;;###autoload
-(defun my/consult-find-attach ()
-  (interactive)
-  (let* ((dir (expand-file-name "attach" my-galaxy)))
-    (consult-find dir)))
+
+(with-eval-after-load 'consult
+  (defun my/consult-find-attach ()
+    (interactive)
+    (let* ((dir (expand-file-name "attach" my-galaxy)))
+      (consult-find dir))))
 
 (use-package consult-imenu
   :bind ([remap imenu] . consult-imenu))
@@ -294,35 +295,42 @@ value of the selected COLOR."
   :custom
   (corfu-popupinfo-delay '(0.4 . 0.2)))
 
-(use-package cape
-  :load-path "packages/cape/"
-  :init
-  ;; (add-hook 'completion-at-point-functions #'cape-dabbrev)
-  (add-hook 'completion-at-point-functions #'cape-file)
-  (add-hook 'completion-at-point-functions #'cape-elisp-block)
-  (add-hook 'completion-at-point-functions #'cape-keyword)
-  ;; (add-hook 'completion-at-point-functions #'cape-abbrev)
+;; (progn
+;;   (eval-and-compile (add-to-list 'load-path "/Users/dn/.emacs.d/packages/cape/"))
+;;   (defvar use-package--warning136
+;;     #'(lambda (keyword err)
+;; 	(let ((msg (format "%s/%s: %s" 'cape keyword (error-message-string err))))
+;; 	  (display-warning 'use-package msg :error))))
+;;   (condition-case-unless-debug err
+;;       (progn
+;; 	(unless (fboundp 'cape-file) (autoload #'cape-file "cape" nil t))
+;; 	(unless (fboundp 'cape-elisp-block) (autoload #'cape-elisp-block "cape" nil t)))
+;;     (error (funcall use-package--warning136 :catch err))))
+;; (progn
+;;   (defvar use-package--warning135
+;;     #'(lambda (keyword err)
+;; 	(let ((msg (format "%s/%s: %s" 'cape-keyword keyword (error-message-string err))))
+;; 	  (display-warning 'use-package msg :error))))
+;;   (condition-case-unless-debug err
+;;       (unless (fboundp 'cape-keyword) (autoload #'cape-keyword "cape-keyword" nil t))
+;;     (error (funcall use-package--warning135 :catch err))))
 
-  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
-
-(use-package cape-keyword
-  :load-path "packages/cape/"
-  :init
-  (add-hook 'completion-at-point-functions #'cape-keyword))
+(add-to-list 'load-path "~/.emacs.d/packages/cape")
+(autoload #'cape-elisp-block "cape" nil t)
+(autoload #'cape-file "cape" nil t)
+(autoload #'cape-keyword "cape-keyword" nil t)
+(add-hook 'completion-at-point-functions #'cape-file)
+(add-hook 'completion-at-point-functions #'cape-elisp-block)
+(add-hook 'completion-at-point-functions #'cape-keyword)
 
 (use-package which-key
   :hook (after-init . which-key-mode)
   :custom
-  (which-key-idle-delay 0.1)
-  :config
-  (which-key-add-key-based-replacements
-    "C-c p" "cape"
-    "C-x t" "tab"
-    "C-c &" "yasnippet"))
+  (which-key-idle-delay 0.1))
 
 (use-package stillness-mode
   :load-path "packages/stillness-mode.el/"
-  :hook (after-init . stillness-mode))
+  :hook (minibuffer-mode . stillness-mode))
 
 (provide 'init-completion)
 ;;; init-completion.el ends here

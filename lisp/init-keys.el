@@ -30,14 +30,6 @@
 ;;; Code:
 (require 'transient)
 
-;; Unbind key
-(unbind-key "s-o" 'global-map)
-(unbind-key "s-s" 'global-map)
-(unbind-key "s-m" 'global-map)
-(unbind-key "s-n" 'global-map)
-(unbind-key "C-t" 'global-map)
-(unbind-key "s-q" 'global-map)          ;Never exit Emacs
-
 (when IS-WINDOWS
   (setq w32-pass-lwindow-to-system nil)
   (setq w32-pass-rwindow-to-system nil)
@@ -52,9 +44,6 @@
 ;; (global-set-key (kbd "s-h") #'help-command)
 ;; (global-set-key (kbd "M-h") #'backward-kill-word)
 
-(global-set-key (kbd "s-<f1>") #'my/decrease-alpha-background)
-(global-set-key (kbd "s-<f2>") #'my/increase-alpha-background)
-
 (defvar-keymap my/file-prefix-map
   :doc "Prefix map for file."
   "f" #'find-file
@@ -63,7 +52,7 @@
   "j" #'find-file-other-window-no-jump
   "p" #'find-file-at-point
   "t" #'find-file-other-tab
-  "r" #'consult-recent-file
+  "r" #'my/open-recentf
   "e" #'my/open-link-with-eww
   "F" #'macos-reveal-in-finder
   "s" #'macos-share
@@ -228,7 +217,6 @@
 (global-set-key (kbd "s-m") #'mu4e)
 
 ;; Notes
-(global-set-key (kbd "s-n s-n") #'consult-notes)
 ;; (keymap-set global-map "s-n n" my/new-note-prefix-map)
 (global-set-key (kbd "s-n a") #'ibooks-annot/extract-annotations-to-note)
 (global-set-key (kbd "s-n n") #'denote)
@@ -266,7 +254,7 @@
 (global-set-key (kbd "s-s s") #'my/search-scholar)
 (global-set-key (kbd "s-s S") #'my/search-semanticscholar)
 
-(global-set-key (kbd "<f12>") #'my/agenda-menu)
+;; (global-set-key (kbd "<f12>") #'my/agenda-menu)
 (global-set-key (kbd "C-<f8>") #'my/mpv-menu)
 
 (global-set-key (kbd "M-g ,") #'switch-to-minibuffer)

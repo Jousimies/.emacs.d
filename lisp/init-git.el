@@ -45,5 +45,19 @@
 ;;                    :height 140
 ;;                    :italic t))))
 
+(defun blog-git-auto-push ()
+  "Automatically stage, commit, and push changes to the blog repository."
+  (interactive)
+  (let* ((blog-dir "~/blog/") ; 替换为你的博客目录
+         (commit-message (format-time-string "Blog update %Y-%m-%d %H:%M:%S")))
+    (save-some-buffers t) ; 保存所有未保存的缓冲区
+    (shell-command (concat "cd " blog-dir " && git add ."))
+    (shell-command (concat "cd " blog-dir " && git commit -m \"" commit-message "\""))
+    (shell-command (concat "cd " blog-dir " && git push origin main"))
+    (message "Blog changes staged, committed, and pushed!")))
+
+;; 绑定到快捷键，例如 C-c g
+(global-set-key (kbd "C-c b p") 'blog-git-auto-push)
+
 (provide 'init-git)
 ;;; init-git.el ends here.

@@ -31,18 +31,19 @@
   (denote-rename-buffer-format "%b %t")
   (denote-rename-buffer-backlinks-indicator ""))
 
-(defun my/modus-themes-denote-faces (&rest _)
-  (modus-themes-with-colors
-    (custom-set-faces
-     `(denote-faces-year ((,c :foreground ,cyan)))
-     `(denote-faces-month ((,c :foreground ,magenta-warmer)))
-     `(denote-faces-day ((,c :foreground ,cyan)))
-     `(denote-faces-time-delimiter ((,c :foreground ,fg-main)))
-     `(denote-faces-hour ((,c :foreground ,magenta-warmer)))
-     `(denote-faces-minute ((,c :foreground ,cyan)))
-     `(denote-faces-second ((,c :foreground ,magenta-warmer))))))
+(with-eval-after-load 'denote
+  (defun my/modus-themes-denote-faces (&rest _)
+    (modus-themes-with-colors
+      (custom-set-faces
+       `(denote-faces-year ((,c :foreground ,cyan)))
+       `(denote-faces-month ((,c :foreground ,magenta-warmer)))
+       `(denote-faces-day ((,c :foreground ,cyan)))
+       `(denote-faces-time-delimiter ((,c :foreground ,fg-main)))
+       `(denote-faces-hour ((,c :foreground ,magenta-warmer)))
+       `(denote-faces-minute ((,c :foreground ,cyan)))
+       `(denote-faces-second ((,c :foreground ,magenta-warmer))))))
 
-(add-hook 'ns-system-appearance-change-functions #'my/modus-themes-denote-faces)
+  (add-hook 'ns-system-appearance-change-functions #'my/modus-themes-denote-faces))
 
 (use-package denote-org
   :load-path "packages/denote-org/"
@@ -165,7 +166,21 @@ RELATIVE-TYPE can be 'all-parents, 'parent, 'all-children, or 'children."
 (use-package consult-notes
   :load-path "packages/consult-notes/"
   :commands consult-notes
-  :config
+  :custom
+  (consult-notes-file-dir-annotate-function 'my/consult-notes--file-dir-annotate)
+  (consult-notes-file-dir-sources
+   `(;; ("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
+     ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
+     ;; ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
+     ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
+     ;; ("Knowledge"  ?k ,(expand-file-name "denote/knowledge" my-galaxy))
+     ;; ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
+     ;; ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
+     ;; ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))
+     ;; ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy))
+     )))
+
+(with-eval-after-load 'consult-notes
   (defun my/consult-notes--file-dir-annotate (name dir cand)
     "Annotate file CAND with its directory DIR, size, and modification time."
     (let* ((file  (concat (file-name-as-directory dir) cand))
@@ -176,19 +191,9 @@ RELATIVE-TYPE can be 'all-parents, 'parent, 'all-children, or 'children."
       (put-text-property 0 (length name)  'face 'consult-notes-name name)
       (put-text-property 0 (length fsize) 'face 'consult-notes-size fsize)
       (put-text-property 0 (length ftime) 'face 'consult-notes-time ftime)
-      (format "%7s %8s  %12s" name fsize ftime)))
-  (setq consult-notes-file-dir-annotate-function 'my/consult-notes--file-dir-annotate)
-  (setq consult-notes-file-dir-sources
-        `(;; ("Articles"  ?a  ,(concat my-galaxy "/blogs_source/posts"))
-          ("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
-          ;; ("Terminology"  ?t ,(expand-file-name "denote/term" my-galaxy))
-          ;; ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
-          ;; ("Knowledge"  ?k ,(expand-file-name "denote/knowledge" my-galaxy))
-          ;; ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
-          ;; ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
-          ;; ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))
-          ;; ("Journal"  ?j ,(expand-file-name "denote/journal" my-galaxy))
-	  )))
+      (format "%7s %8s  %12s" name fsize ftime))))
+
+(global-set-key (kbd "s-n s-n") #'consult-notes)
 
 ;; Sometimes I want open the web archive file with eww.
 (defun my/org-get-link-under-point ()

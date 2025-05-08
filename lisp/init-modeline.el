@@ -304,9 +304,9 @@ Specific to the current window's mode line.")
 (setopt mode-line-right-align-edge 'right-margin)
 
 (setopt mode-line-format '("%e"
-			   (:eval (when persp-mode
-				    (tab-bar-format-persp)))
-			   " "
+			   ;; (:eval (when (and (mode-line-window-selected-p)
+			   ;; 		     persp-mode)
+			   ;; 	    (tab-bar-format-persp)))
                            my/winum
                            (:eval (when repeat-mode
                                     my/modeline-repeat))

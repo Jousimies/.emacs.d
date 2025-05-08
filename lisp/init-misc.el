@@ -188,56 +188,11 @@ Explain your reasoning.  if you don’t know, say you don’t know.  Be willing 
   (init-lock-loop)
   (advice-remove 'find-file 'file-lock))
 
-;; Sometimes I want swith a theme.
-(defun my/switch-theme ()
-  (interactive)
-  (mapc #'disable-theme custom-enabled-themes)
-  (let* ((themes (if (eq ns-system-appearance 'light)
-                     ef-themes-light-themes
-		   love/dark-themes))
-         (theme (elt themes (random (length themes)))))
-    (load-theme theme t)))
-
 ;; (use-package holo-layer
 ;;   :load-path "~/.emacs.d/packages/holo-layer/"
 ;;   :custom
 ;;   (holo-layer-python-command "~/.env/bin/python3"))
 
-(use-package eee
-  :load-path "~/.emacs.d/packages/eee.el/"
-  :bind-keymap
-  ("s-e" . ee-keymap)
-  :custom
-  (ee-terminal-command "/opt/homebrew/bin/wezterm"))
-
-(defun start-wezterm-at-current-directory ()
-  "Start Wezterm at the current buffer's directory."
-  (interactive)
-  (let ((default-directory (or default-directory "~"))) ; 默认目录为当前 buffer 的目录
-    (start-process "wezterm" nil "wezterm" "start" "--cwd" default-directory)))
-
-(defun switch-to-wezterm ()
-    "Switch to WezTerm terminal."
-    (interactive)
-    (do-applescript "
-    tell application \"WezTerm\"
-      activate
-    end tell"))
-
-(advice-add 'start-wezterm-at-current-directory :after
-            (lambda (&rest _)
-              (sleep-for 0.1)
-              (switch-to-wezterm)))
-
-(advice-add 'start-or-attach-wezterm-at-current-directory :after
-            (lambda (&rest _)
-              (sleep-for 0.1)
-              (switch-to-wezterm)))
-
-(advice-add 'ee-run :after
-            (lambda (&rest _)
-              (sleep-for 0.1)
-              (switch-to-wezterm)))
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.

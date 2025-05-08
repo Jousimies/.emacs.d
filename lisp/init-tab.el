@@ -24,22 +24,16 @@
 
 ;;; Code:
 (use-package tab-bar
-  ;; :hook (emacs-startup . tab-bar-mode)
-  :bind (("C-c b t" . tab-switch)
-         ("s-t" . tab-new)
-         ("s-w" . tab-close))
+  :hook (emacs-startup . tab-bar-mode)
   :custom
   (tab-bar-auto-width nil)
   ;; (tab-bar-auto-width-max '((160) 20))
   (tab-bar-new-tab-choice 'scratch-buffer)
-  (tab-bar-close-button-show nil)
+  (tab-bar-close-button-show t)
   (tab-bar-new-tab-to 'rightmost)
-  (tab-bar-separator "​")
+  (tab-bar-separator " ")
   (tab-bar-select-tab-modifiers '(super))
   (tab-bar-tab-hints t))
-
-;; (unless is-fullscreen
-;;   (setopt tab-bar-show nil))
 
 (setq my/tab-bar-right-string '((:eval global-mode-string)))
 

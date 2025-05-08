@@ -34,7 +34,12 @@
   (set-register ?r (cons 'file (expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy)))
   (set-register ?l (cons 'file (expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))))
 
-(add-hook 'on-first-input-hook #'recentf-mode)
+;; (add-hook 'on-first-input-hook #'recentf-mode)
+(defun my/open-recentf ()
+  (interactive)
+  (unless recentf-mode (recentf-mode 1))
+  (consult-recent-file))
+
 (with-eval-after-load 'recentf
   (setopt recentf-save-file (expand-file-name "recentf" cache-directory)
 	  recentf-auto-cleanup 300
@@ -51,13 +56,17 @@
           history-delete-duplicates t))
 
 (add-hook 'on-first-file-hook #'save-place-mode)
-(setopt save-place-file (expand-file-name "places" cache-directory))
+
+(with-eval-after-load 'saveplace
+ (setopt save-place-file (expand-file-name "places" cache-directory)))
 
 (use-package undo-fu-session
   :load-path "packages/undo-fu-session/"
   :hook (on-first-file . undo-fu-session-global-mode)
-  :config
-  (setq undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory))
+  :custom
+  (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory)))
+
+(with-eval-after-load 'undo-fu-session
   (defun my/undo-fu-session--make-file-name (filename)
     "Take the path FILENAME and return a name base on this."
     (concat
@@ -69,8 +78,8 @@
 (use-package vundo
   :load-path "packages/vundo/"
   :bind ("s-z" . vundo)
-  :config
-  (setq vundo-glyph-alist vundo-unicode-symbols))
+  :custom
+  (vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package hungry-delete
   :load-path "packages/hungry-delete/"
@@ -82,8 +91,8 @@
 
 (use-package avy
   :load-path "packages/avy/" "packages/pinyinlib.el/"
-  :bind ([remap goto-char] . my/avy-goto-char-timer)
-  :config
+  :bind ([remap goto-char] . my/avy-goto-char-timer))
+(with-eval-after-load 'avy
   (defun my/avy-goto-char-timer (&optional arg)
     (interactive "P")
     (unless (featurep 'pinyinlib)
@@ -100,15 +109,15 @@
 
 (use-package hippie-exp
   :bind ([remap dabbrev-expand] . hippie-expand)
-  :config
-  (setq hippie-expand-try-functions-list '(try-complete-file-name-partially
-                                           try-complete-file-name
-                                           try-expand-all-abbrevs
-                                           try-expand-dabbrev
-                                           try-expand-dabbrev-all-buffers
-                                           try-expand-dabbrev-from-kill
-                                           try-complete-lisp-symbol-partially
-                                           try-complete-lisp-symbol)))
+  :custom
+  (hippie-expand-try-functions-list '(try-complete-file-name-partially
+                                      try-complete-file-name
+                                      try-expand-all-abbrevs
+                                      try-expand-dabbrev
+                                      try-expand-dabbrev-all-buffers
+                                      try-expand-dabbrev-from-kill
+                                      try-complete-lisp-symbol-partially
+                                      try-complete-lisp-symbol)))
 
 (add-hook 'after-init-hook #'electric-pair-mode)
 (add-hook 'after-init-hook #'electric-quote-mode)
@@ -130,7 +139,10 @@
          ("M-*" . tempel-insert)
 	 (:map tempel-map
 	       ("<down>" . tempel-next)))
-  :config
+  :custom
+  (tempel-path `("~/.emacs.d/template/tempel"
+                 ,(expand-file-name "config/tempel" my-galaxy))))
+(with-eval-after-load 'tempel
   (defun tempel-setup-capf ()
     ;; Add the Tempel Capf to `completion-at-point-functions'.
     ;; `tempel-expand' only triggers on exact matches. Alternatively use
@@ -145,9 +157,7 @@
 
   (add-hook 'conf-mode-hook 'tempel-setup-capf)
   (add-hook 'prog-mode-hook 'tempel-setup-capf)
-  (add-hook 'text-mode-hook 'tempel-setup-capf)
-  (setq tempel-path `("~/.emacs.d/template/tempel"
-                      ,(expand-file-name "config/tempel" my-galaxy))))
+  (add-hook 'text-mode-hook 'tempel-setup-capf))
 
 (use-package yasnippet
   :load-path "packages/yasnippet/"
@@ -203,59 +213,57 @@
   :hook (prog-mode . rainbow-mode))
 
 ;; pulse
-(use-package pulse
-  :custom-face
-  (pulse-highlight-start-face ((t (:inherit region :background unspecified))))
-  (pulse-highlight-face ((t (:inherit region :background unspecified :extend t))))
-  :hook (((dumb-jump-after-jump imenu-after-jump) . +recenter-and-pulse)
-         ((bookmark-after-jump magit-diff-visit-file next-error) . +recenter-and-pulse-line))
-  :init
-  (setq pulse-delay 0.1
-        pulse-iterations 2)
+;; (use-package pulse
+;;   :custom-face
+;;   (pulse-highlight-start-face ((t (:inherit region :background unspecified))))
+;;   (pulse-highlight-face ((t (:inherit region :background unspecified :extend t))))
+;;   :hook (((dumb-jump-after-jump imenu-after-jump) . +recenter-and-pulse)
+;;          ((bookmark-after-jump magit-diff-visit-file next-error) . +recenter-and-pulse-line))
+;;   :init
+;;   (setq pulse-delay 0.1
+;;         pulse-iterations 2)
 
-  (defun +pulse-momentary-line (&rest _)
-    "Pulse the current line."
-    (pulse-momentary-highlight-one-line (point)))
+;;   (defun +pulse-momentary-line (&rest _)
+;;     "Pulse the current line."
+;;     (pulse-momentary-highlight-one-line (point)))
 
-  (defun +pulse-momentary (&rest _)
-    "Pulse the region or the current line."
-    (if (fboundp 'xref-pulse-momentarily)
-        (xref-pulse-momentarily)
-      (+pulse-momentary-line)))
+;;   (defun +pulse-momentary (&rest _)
+;;     "Pulse the region or the current line."
+;;     (if (fboundp 'xref-pulse-momentarily)
+;;         (xref-pulse-momentarily)
+;;       (+pulse-momentary-line)))
 
-  (defun +recenter-and-pulse(&rest _)
-    "Recenter and pulse the region or the current line."
-    (recenter)
-    (+pulse-momentary))
+;;   (defun +recenter-and-pulse(&rest _)
+;;     "Recenter and pulse the region or the current line."
+;;     (recenter)
+;;     (+pulse-momentary))
 
-  (defun +recenter-and-pulse-line (&rest _)
-    "Recenter and pulse the current line."
-    (recenter)
-    (+pulse-momentary-line))
+;;   (defun +recenter-and-pulse-line (&rest _)
+;;     "Recenter and pulse the current line."
+;;     (recenter)
+;;     (+pulse-momentary-line))
 
-  (dolist (cmd '(recenter-top-bottom
-                 other-window switch-to-buffer
-                 aw-select toggle-window-split
-                 windmove-do-window-select
-                 pager-page-down pager-page-up
-                 treemacs-select-window
-                 tab-bar-select-tab))
-    (advice-add cmd :after #'+pulse-momentary-line))
+;;   (dolist (cmd '(recenter-top-bottom
+;;                  other-window switch-to-buffer
+;;                  aw-select toggle-window-split
+;;                  windmove-do-window-select
+;;                  pager-page-down pager-page-up
+;;                  treemacs-select-window
+;;                  tab-bar-select-tab))
+;;     (advice-add cmd :after #'+pulse-momentary-line))
 
-  (dolist (cmd '(pop-to-mark-command
-                 pop-global-mark
-                 goto-last-change))
-    (advice-add cmd :after #'+recenter-and-pulse))
+;;   (dolist (cmd '(pop-to-mark-command
+;;                  pop-global-mark
+;;                  goto-last-change))
+;;     (advice-add cmd :after #'+recenter-and-pulse))
 
-  (dolist (cmd '(symbol-overlay-basic-jump
-                 compile-goto-error))
-    (advice-add cmd :after #'+recenter-and-pulse-line)))
+;;   (dolist (cmd '(symbol-overlay-basic-jump
+;;                  compile-goto-error))
+;;     (advice-add cmd :after #'+recenter-and-pulse-line)))
 
 (use-package goggles
   :load-path "packages/goggles/"
-  :hook ((prog-mode text-mode) . goggles-mode)
-  :config
-  (setq-default goggles-pulse nil))
+  :hook ((prog-mode text-mode) . goggles-mode))
 
 ;; Use mode-line indicate which buffer cursor located
 ;; (use-package auto-dim-other-buffers
@@ -279,26 +287,26 @@
       (remove-text-properties beg end '(read-only t)))))
 
 ;; https://github.com/takeokunn/.emacs.d/blob/main/index.org
-(defun my/move-line (arg)
-  (interactive)
-  (let ((col (current-column)))
-    (unless (eq col 0)
-      (move-to-column 0))
-    (save-excursion
-      (forward-line)
-      (transpose-lines arg))
-    (forward-line arg)))
+;; (defun my/move-line (arg)
+;;   (interactive)
+;;   (let ((col (current-column)))
+;;     (unless (eq col 0)
+;;       (move-to-column 0))
+;;     (save-excursion
+;;       (forward-line)
+;;       (transpose-lines arg))
+;;     (forward-line arg)))
 
-(defun my/move-line-down ()
-  (interactive)
-  (my/move-line 1))
+;; (defun my/move-line-down ()
+;;   (interactive)
+;;   (my/move-line 1))
 
-(defun my/move-line-up ()
-  (interactive)
-  (my/move-line -1))
+;; (defun my/move-line-up ()
+;;   (interactive)
+;;   (my/move-line -1))
 
-(global-set-key (kbd "M-P") #'my/move-line-up)
-(global-set-key (kbd "M-N") #'my/move-line-down)
+;; (global-set-key (kbd "M-P") #'my/move-line-up)
+;; (global-set-key (kbd "M-N") #'my/move-line-down)
 
 ;; (use-package indent-bars
 ;;   :load-path "packages/indent-bars/"
@@ -328,12 +336,12 @@
   :load-path "packages/emacs-everywhere/"
   :commands emacs-everywhere)
 
-(use-package ultra-scroll
-  :load-path "packages/ultra-scroll/"
-  :init
-  (setq scroll-conservatively 101 ; important!
-        scroll-margin 0)
-  :hook (on-first-input . ultra-scroll-mode))
+;; (use-package ultra-scroll
+;;   :load-path "packages/ultra-scroll/"
+;;   :init
+;;   (setq scroll-conservatively 101 ; important!
+;;         scroll-margin 0)
+;;   :hook (on-first-input . ultra-scroll-mode))
 
 (provide 'init-edit)
 ;;; init-edit.el ends here

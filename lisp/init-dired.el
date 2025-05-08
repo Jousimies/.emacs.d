@@ -44,8 +44,9 @@
   (dired-recursive-copies 'always)
   (dired-recursive-deletes 'top)
   (dired-auto-revert-buffer t)
-  (dired-filename-display-length 'window)
-  :preface
+  (dired-filename-display-length 'window))
+
+(with-eval-after-load 'dired
   (defun my/org-attach-visit-headline-from-dired ()
     "Go to the headline corresponding to this org-attach directory."
     (interactive)
@@ -85,53 +86,53 @@
   (dired-create-destination-dirs-on-trailing-dirsep t))
 
 ;; dired-do-shell-command, open file with default application.
-(let ((cmd (cond ((and (eq system-type 'darwin) (display-graphic-p)) "open")
-                 ((and (eq system-type 'gnu/linux) (display-graphic-p)) "xdg-open")
-                 ((and (eq system-type 'windows-nt) (display-graphic-p)) "start")
-                 (t ""))))
-  (setq dired-guess-shell-alist-user
-        `(("\\.\\(?:docx\\|doc\\|xlsx\\|xls\\|ppt\\|pptx\\)\\'" ,cmd)
-	  ("\\.\\(?:eps\\|dwg\\|psd\\|drawio\\)\\'" ,cmd)
-          ("\\.\\(?:djvu\\|eps\\)\\'" ,cmd)
-          ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" ,cmd)
-          ("\\.\\(?:xcf\\)\\'" ,cmd)
-	  ("\\.\\(?:epub\\|pdf\\)\\'" ,cmd)
-          ("\\.csv\\'" ,cmd)
-          ("\\.tex\\'" ,cmd)
-          ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\)\\(?:\\.part\\)?\\'" ,cmd)
-          ("\\.\\(?:mp3\\|flac\\)\\'" ,cmd))))
+;; (let ((cmd (cond ((and (eq system-type 'darwin) (display-graphic-p)) "open")
+;;                  ((and (eq system-type 'gnu/linux) (display-graphic-p)) "xdg-open")
+;;                  ((and (eq system-type 'windows-nt) (display-graphic-p)) "start")
+;;                  (t ""))))
+;;   (setq dired-guess-shell-alist-user
+;;         `(("\\.\\(?:docx\\|doc\\|xlsx\\|xls\\|ppt\\|pptx\\)\\'" ,cmd)
+;; 	  ("\\.\\(?:eps\\|dwg\\|psd\\|drawio\\)\\'" ,cmd)
+;;           ("\\.\\(?:djvu\\|eps\\)\\'" ,cmd)
+;;           ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" ,cmd)
+;;           ("\\.\\(?:xcf\\)\\'" ,cmd)
+;; 	  ("\\.\\(?:epub\\|pdf\\)\\'" ,cmd)
+;;           ("\\.csv\\'" ,cmd)
+;;           ("\\.tex\\'" ,cmd)
+;;           ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\)\\(?:\\.part\\)?\\'" ,cmd)
+;;           ("\\.\\(?:mp3\\|flac\\)\\'" ,cmd))))
 
-(defun z/dired-insert-date-folder ()
-  "Create new directory with current date"
-  (interactive)
-  (dired-create-directory (format-time-string "%Y-%m-%d")))
+;; (defun z/dired-insert-date-folder ()
+;;   "Create new directory with current date"
+;;   (interactive)
+;;   (dired-create-directory (format-time-string "%Y-%m-%d")))
 
-(defvar file-extensions-with-default-apps '("xls" "doc" "xlsx" "docx" "eps" "dwg" "psd" "drawio" "pptx")
-  "List of file extensions to open with default applications.")
+;; (defvar file-extensions-with-default-apps '("xls" "doc" "xlsx" "docx" "eps" "dwg" "psd" "drawio" "pptx")
+;;   "List of file extensions to open with default applications.")
 
-(defvar video-file-extensions '("mp4" "mov" "webm" "mkv" "mp3"))
+;; (defvar video-file-extensions '("mp4" "mov" "webm" "mkv" "mp3"))
 
-(defvar html-file '("html"))
+;; (defvar html-file '("html"))
 
-(defun my/eww-html-file ()
-  (let* ((file (dired-get-filename)))
-    (eww (concat "file://" file))))
+;; (defun my/eww-html-file ()
+;;   (let* ((file (dired-get-filename)))
+;;     (eww (concat "file://" file))))
 
-(defun open-with-default-app ()
-  "Open file with system default app in dired."
-  (interactive)
-  (let* ((file (dired-get-filename))
-         (ext (file-name-extension file)))
-    (cond ((member ext file-extensions-with-default-apps)
-           (call-process "open"
-                         nil 0 nil
-                         (expand-file-name (dired-get-filename))))
-	  ((member ext html-file)
-	   (my/eww-html-file))
-          (t (dired-find-file)))))
+;; (defun open-with-default-app ()
+;;   "Open file with system default app in dired."
+;;   (interactive)
+;;   (let* ((file (dired-get-filename))
+;;          (ext (file-name-extension file)))
+;;     (cond ((member ext file-extensions-with-default-apps)
+;;            (call-process "open"
+;;                          nil 0 nil
+;;                          (expand-file-name (dired-get-filename))))
+;; 	  ((member ext html-file)
+;; 	   (my/eww-html-file))
+;;           (t (dired-find-file)))))
 
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "<return>") 'open-with-default-app))
+;; (with-eval-after-load 'dired
+;;   (define-key dired-mode-map (kbd "<return>") 'open-with-default-app))
 
 ;; Preview file in Dired.
 (when (eq system-type 'darwin)
@@ -164,30 +165,30 @@
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "P") #'dired-preview-mode))
 
-(defun eps-to-png-marked ()
-  "Convert all marked EPS files in the current Dired buffer to PNG format using ImageMagick's convert utility.
-Each input file is converted to a PNG file with the same basename.
-This function requires ImageMagick's convert utility to be installed and available in the system's PATH."
-  (interactive)
-  (let ((eps-files (dired-get-marked-files)))
-    (when (not eps-files)
-      (error "No marked files in Dired buffer."))
-    (let ((n 0))
-      (message "Converting:\n")
-      (dolist (epsfile eps-files)
-        (let ((pngfile (concat (file-name-sans-extension epsfile) ".png")))
-          (setq n (1+ n))
-          (message "%d: %s to %s." n epsfile pngfile)
-          (start-process "eps-to-png"
-                         "*eps-to-png*"
-                         "convert"
-                         "-colorspace"
-                         "sRGB"
-                         "-density"
-                         "600x600"
-                         epsfile
-                         pngfile)))
-      (message "\n%d files were converted from EPS to PNG format." n))))
+;; (defun eps-to-png-marked ()
+;;   "Convert all marked EPS files in the current Dired buffer to PNG format using ImageMagick's convert utility.
+;; Each input file is converted to a PNG file with the same basename.
+;; This function requires ImageMagick's convert utility to be installed and available in the system's PATH."
+;;   (interactive)
+;;   (let ((eps-files (dired-get-marked-files)))
+;;     (when (not eps-files)
+;;       (error "No marked files in Dired buffer."))
+;;     (let ((n 0))
+;;       (message "Converting:\n")
+;;       (dolist (epsfile eps-files)
+;;         (let ((pngfile (concat (file-name-sans-extension epsfile) ".png")))
+;;           (setq n (1+ n))
+;;           (message "%d: %s to %s." n epsfile pngfile)
+;;           (start-process "eps-to-png"
+;;                          "*eps-to-png*"
+;;                          "convert"
+;;                          "-colorspace"
+;;                          "sRGB"
+;;                          "-density"
+;;                          "600x600"
+;;                          epsfile
+;;                          pngfile)))
+;;       (message "\n%d files were converted from EPS to PNG format." n))))
 
 ;; (use-package dired-async
 ;;   :hook (dired-mode . dired-async-mode))

@@ -38,6 +38,30 @@
   ;; org-goto
   (setopt org-goto-interface 'outline-path-completion))
 
+(with-eval-after-load 'org
+  ;; (setopt org-todo-state-tags-triggers
+  ;;         (quote (("CNCL" ("CNCL" . t))
+  ;;                 ("WAIT" ("WAIT" . t))
+  ;;                 (done ("WAIT"))
+  ;;                 ("TODO" ("WAIT") ("CNCL"))
+  ;;                 ("NEXT" ("WAIT") ("CNCL"))
+  ;;                 ("DONE" ("WAIT") ("CNCL")))))
+  (setopt org-todo-repeat-to-state t)
+  (setopt org-todo-keywords
+          '((sequence "NEXT(n)" "TODO(t)" "|" "WAIT(w@)" "CNCL(c@/!)" "DONE(d)"))))
+
+(with-eval-after-load 'org-faces
+  (setq org-todo-keyword-faces
+        '(("TODO" . (:inherit (bold org-todo)))
+          ("NEXT" . (:inherit (success org-todo)))
+          ("CNCL" . (:inherit (shadow org-todo)))
+          ("DONE" . (:inherit (button org-todo)))
+          ("WAIT" . (:inherit (warning org-todo)))))
+  (setq org-priority-faces
+        '((?A . (bold . org-priority))
+          (?B . org-priority)
+          (?C . (shadow . org-priority)))))
+
 ;; (use-package math-preview
 ;;   :custom
 ;;   (math-preview-command "/opt/homebrew/bin/math-preview")
@@ -401,6 +425,22 @@
 ;; (use-package org-supertag
 ;;   :load-path "~/.emacs.d/packages/org-supertag/" "~/.emacs.d/packages/ht.el/"
 ;;   :hook (org-mode . org-supertag-setup))
+
+(with-eval-after-load 'org-agenda
+  (setq org-agenda-window-setup 'other-tab)
+  (setq org-agenda-skip-scheduled-if-done t)
+  (setq org-agenda-skip-deadline-if-done t)
+  (setq org-agenda-todo-ignore-scheduled 'future)
+  (setq org-agenda-todo-ignore-deadlines 'near)
+  (setq org-agenda-dim-blocked-tasks t)
+  (setq org-agenda-compact-blocks t)
+  (setq org-agenda-align-tags-to-column 120)
+  (setq org-deadline-warning-days 7)
+  (add-to-list 'org-agenda-custom-commands
+	       '("b" "Book Shelf"
+		 ((tags "+BookShelf"
+			((org-agenda-prefix-format " %i")
+			 (org-agenda-overriding-header "Reading Lists")))))))
 
 
 (provide 'init-org)
