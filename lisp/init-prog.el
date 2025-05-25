@@ -23,19 +23,19 @@
 ;;
 
 ;;; Code:
-(use-package magit-status
-  :load-path ("packages/magit/lisp" "packages/with-editor/lisp" "packages/llama/")
-  :bind ("C-x g" . magit-status-quick))
+;; (use-package magit-status
+;;   :load-path ("packages/magit/lisp" "packages/with-editor/lisp" "packages/llama/")
+;;   :bind ("C-x g" . magit-status-quick))
 
-(with-eval-after-load 'magit
-  (setopt magit-git-executable "/usr/bin/git")
-  (magit-add-section-hook 'magit-status-sections-hook
-                          'magit-insert-modules
-                          'magit-insert-unpulled-from-upstream)
-  (remove-hook 'magit-module-sections-hook 'magit-insert-modules-overview)
-  (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpulled-from-pushremote)
-  (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-upstream)
-  (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote))
+;; (with-eval-after-load 'magit
+;;   (setopt magit-git-executable "/usr/bin/git")
+;;   (magit-add-section-hook 'magit-status-sections-hook
+;;                           'magit-insert-modules
+;;                           'magit-insert-unpulled-from-upstream)
+;;   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-overview)
+;;   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpulled-from-pushremote)
+;;   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-upstream)
+;;   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote))
 
 (with-eval-after-load 'transient
   (setq transient-history-file (expand-file-name "transient/history.el" cache-directory)
