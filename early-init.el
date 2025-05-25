@@ -43,13 +43,13 @@
 (when (eq system-type 'darwin)
   (set-exec-path-from-shell-PATH))
 
-(setq-default inhibit-redisplay t
-              inhibit-message t)
-(add-hook 'window-setup-hook
-          (lambda ()
-            (setq-default inhibit-redisplay nil
-                          inhibit-message nil)
-            (redisplay)))
+;; (setq-default inhibit-redisplay t
+;;               inhibit-message t)
+;; (add-hook 'window-setup-hook
+;;           (lambda ()
+;;             (setq-default inhibit-redisplay nil
+;;                           inhibit-message nil)
+;;             (redisplay)))
 
 ;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
 (push '(menu-bar-lines . 0) default-frame-alist)
@@ -82,7 +82,6 @@
 
 (setq-default mode-line-format nil)
 (setq byte-compile-warnings nil)
-
 (blink-cursor-mode -1)
 
 (fset 'display-startup-echo-area-message 'ignore)
