@@ -49,10 +49,6 @@
 
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 
-(use-package nerd-icons-completion
-  :load-path "packages/nerd-icons-completion/"
-  :hook (minibuffer-setup . nerd-icons-completion-mode))
-
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
 ;; re-use vertico-mode instead of `icomplete-fido-mode'.
 ;; Due to icomplete has compatible problem with citar, a references manager.
@@ -65,7 +61,7 @@
 
 (use-package vertico
   :load-path "packages/vertico/"
-  :hook (on-first-input . vertico-mode))
+  :hook (after-init . vertico-mode))
 
 (use-package vertico-directory
   :load-path "packages/vertico/extensions/"
@@ -256,7 +252,7 @@ value of the selected COLOR."
 
 (use-package corfu
   :load-path "packages/corfu/"
-  :hook (on-first-buffer . global-corfu-mode)
+  :hook (after-init . global-corfu-mode)
   :custom-face
   (corfu-border ((t (:inherit region :background unspecified))))
   :bind ("M-/" . completion-at-point)
@@ -279,11 +275,6 @@ value of the selected COLOR."
   (read-extended-command-predicate #'command-completion-default-include-p)
   :config
   (keymap-unset corfu-map "RET"))
-
-(add-to-list 'load-path "~/.emacs.d/packages/nerd-icons-corfu/")
-(with-eval-after-load 'corfu
-  (require 'nerd-icons-corfu)
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package corfu-echo
   :load-path "packages/corfu/extensions/"

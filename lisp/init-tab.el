@@ -25,6 +25,8 @@
 ;;; Code:
 (use-package tab-bar
   :hook (emacs-startup . tab-bar-mode)
+  :bind (("s-t" . tab-new)
+	 ("s-w" . tab-close))
   :custom
   (tab-bar-auto-width nil)
   ;; (tab-bar-auto-width-max '((160) 20))

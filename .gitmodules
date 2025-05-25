@@ -667,3 +667,12 @@
 [submodule "packages/activities.el"]
 	path = packages/activities.el
 	url = https://github.com/alphapapa/activities.el.git
+[submodule "packages/awesome-tray"]
+	path = packages/awesome-tray
+	url = https://github.com/manateelazycat/awesome-tray.git
+[submodule "packages/nano-modeline"]
+	path = packages/nano-modeline
+	url = https://github.com/rougier/nano-modeline.git
+[submodule "packages/doric-themes"]
+	path = packages/doric-themes
+	url = https://github.com/protesilaos/doric-themes.git

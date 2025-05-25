@@ -23,9 +23,8 @@
 ;;
 
 ;;; Code:
-
-(add-hook 'on-first-buffer-hook #'column-number-mode)
-(add-hook 'on-first-file-hook #'size-indication-mode)
+(add-hook 'after-init-hook #'column-number-mode)
+(add-hook 'after-init-hook #'size-indication-mode)
 (add-hook 'org-mode-hook #'visual-line-mode)
 (add-hook 'eww-mode #'visual-line-mode)
 
@@ -55,7 +54,7 @@
 	auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-" cache-directory))
 
 ;; (setq backup-directory-alist '(("." . "~/.emacs.d/cache/backups")))
-(add-hook 'on-first-file-hook #'auto-save-visited-mode)
+(add-hook 'after-init-hook #'auto-save-visited-mode)
 
 (defun auto-save-delete-trailing-whitespace-except-current-line ()
   (interactive)
@@ -88,13 +87,13 @@
 (global-set-key (kbd "M-g m") #'switch-to-message)
 (global-set-key (kbd "M-g s") #'scratch-buffer)
 
-(add-hook 'on-first-file-hook #'global-so-long-mode)
-(add-hook 'on-first-file-hook #'global-prettify-symbols-mode)
-(add-hook 'on-first-file-hook #'global-word-wrap-whitespace-mode)
+(add-hook 'after-init-hook #'global-so-long-mode)
+(add-hook 'after-init-hook #'global-prettify-symbols-mode)
+(add-hook 'after-init-hook #'global-word-wrap-whitespace-mode)
 
-(when is-fullscreen
-  (add-hook 'after-init-hook 'display-battery-mode)
-  (display-time-mode))
+;; (when is-fullscreen
+;;   (add-hook 'after-init-hook 'display-battery-mode)
+;;   (display-time-mode))
 
 (when display-time-mode
   (setopt display-time-default-load-average nil)
@@ -110,7 +109,7 @@
              'help-echo (format-time-string "%a %b %e, %Y" now))
             " ")))
 
-(add-hook 'on-first-buffer-hook #'midnight-mode)
+(add-hook 'after-init-hook #'midnight-mode)
 
 (setopt prettify-symbols-alist '(("lambda" . ?λ)
 				 ("function" . ?𝑓)))
@@ -121,7 +120,7 @@
 (setq bookmark-default-file (expand-file-name "bookmarks" cache-directory))
 
 ;; auto-insert-mode
-(add-hook 'on-first-file-hook #'auto-insert-mode)
+(add-hook 'after-init-hook #'auto-insert-mode)
 (with-eval-after-load 'auto-insert
   (add-to-list 'auto-insert-alist
                '(("\\.el\\'" . "Emacs Lisp header")
@@ -180,23 +179,25 @@
                  ")
 \;;; " (file-name-nondirectory (buffer-file-name)) " ends here\n")))
 
-(setopt display-line-numbers-widen t
-	display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'org-mode-hook #'display-line-numbers-mode)
+(with-eval-after-load 'display-line-numbers
+  (setopt display-line-numbers-widen t
+	  display-line-numbers-type 'relative))
 
-(face-spec-set 'fill-column-indicator
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+(with-eval-after-load 'display-fill-column-indicator
+  (face-spec-set 'fill-column-indicator
                '((default :height 0.1))
                'face-override-spec)
-(setq-default fill-column 90)
-(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+  (setq-default fill-column 90))
 
 ;; (define-fringe-bitmap 'right-curly-arrow  [])
 ;; (define-fringe-bitmap 'left-curly-arrow  [])
 ;; https://xenodium.com/toggling-emacs-continuation-fringe-indicator/
-(setq-default fringe-indicator-alist
-              (delq (assq 'continuation fringe-indicator-alist)
-		    fringe-indicator-alist))
+;; (setq-default fringe-indicator-alist
+;;               (delq (assq 'continuation fringe-indicator-alist)
+;; 		    fringe-indicator-alist))
 
 (defun toggle-continuation-fringe-indicator ()
   (interactive)
@@ -206,69 +207,55 @@
        (delq (assq 'continuation fringe-indicator-alist) fringe-indicator-alist)
      (cons '(continuation right-curly-arrow left-curly-arrow) fringe-indicator-alist))))
 
-(use-package paren
-  :hook (find-file . show-paren-mode)
-  :custom
-  (show-paren-style 'parenthesis)
-  (show-paren-context-when-offscreen 'overlay)
-  (show-paren-highlight-openparen t)
-  (show-paren-when-point-inside-paren t)
-  (show-paren-when-point-in-periphery t))
+(add-hook 'find-file-hook 'show-paren-mode)
+(with-eval-after-load 'paren
+  (setopt show-paren-style 'parenthesis
+	  show-paren-context-when-offscreen 'overlay
+	  show-paren-highlight-openparen t
+	  show-paren-when-point-inside-paren t
+	  show-paren-when-point-in-periphery t))
 
-(add-hook 'on-first-buffer-hook (lambda ()
-				  (blink-cursor-mode -1)))
+(with-eval-after-load 'frame
+  (setopt window-divider-default-bottom-width 1
+	  window-divider-default-places 'bottom-only))
 
-(setopt window-divider-default-bottom-width 1
-	window-divider-default-places 'bottom-only)
-
-(use-package winner
-  :hook (find-file . winner-mode)
-  :bind (("M-g u" . winner-undo)
-         ("M-g r" . winner-redo))
-  :custom
-  (winner-dont-bind-my-keys t)
-  (winner-boring-buffers '("*Completions*"
-                           "*Compile-Log*"
-                           "*inferior-lisp*"
-                           "*Fuzzy Completions*"
-                           "*Apropos*"
-                           "*Help*"
-                           "*cvs*"
-                           "*Buffer List*"
-                           "*Ibuffer*"
-                           "*esh command on file*")))
+(global-set-key (kbd "M-g u") #'winner-undo)
+(global-set-key (kbd "M-g r") #'winner-redo)
+(with-eval-after-load 'winner
+  (setopt winner-dont-bind-my-keys t
+	  winner-boring-buffers '("*Completions*"
+				  "*Compile-Log*"
+				  "*inferior-lisp*"
+				  "*Fuzzy Completions*"
+				  "*Apropos*"
+				  "*Help*"
+				  "*cvs*"
+				  "*Buffer List*"
+				  "*Ibuffer*"
+				  "*esh command on file*")))
 
 (add-to-list 'display-buffer-alist '("\\*Outline"
                                      (display-buffer-in-side-window)
                                      (side . right)
                                      (window-width . 0.5)))
 
-(use-package windmove
-  :ensure nil
-  :hook (window-setup . windmove-mode)
-  :bind (("M-g h" . windmove-left)
-         ("M-g l" . windmove-right)
-         ("M-g k" . windmove-up)
-         ("M-g j" . windmove-down)))
+(add-hook 'after-init-hook #'windmove-mode)
+(global-set-key (kbd "M-g h") #'windmove-left)
+(global-set-key (kbd "M-g l") #'windmove-right)
+(global-set-key (kbd "M-g k") #'windmove-up)
+(global-set-key (kbd "M-g j") #'windmove-down)
 
-(setopt switch-to-buffer-in-dedicated-window 'pop
-	switch-to-buffer-obey-display-actions t)
+(with-eval-after-load 'window
+  (setopt switch-to-buffer-in-dedicated-window 'pop
+	switch-to-buffer-obey-display-actions t))
 
 (add-hook 'after-init-hook 'pixel-scroll-mode)
 
 ;; desktop
 ;; desktop 和 persp 合用会导致 Unprintable entity 问题
-(use-package desktop
-  :hook ((on-first-buffer . desktop-save-mode)
-	 ;; (emacs-startup . (lambda ()
-	 ;; 		      (desktop-read)))
-	 )
-  :custom
-  (desktop-path `(,cache-directory)))
-
-;; (add-hook 'on-first-buffer-hook #'desktop-save-mode)
-;; (setq desktop-path `(,cache-directory))
-;; (add-hook 'after-init-hook #'desktop-read)
+(add-hook 'after-init-hook #'desktop-save-mode)
+(with-eval-after-load 'desktop
+  (setopt desktop-path `(,cache-directory)))
 
 (defun my/scroll-other-windown-down ()
   "Scroll other window down."
@@ -285,7 +272,6 @@
 (global-set-key (kbd "M-n") 'my/scroll-other-windown)
 
 ;; url-history
-
 (setopt url-configuration-directory (expand-file-name "url" cache-directory))
 (setopt url-history-file (expand-file-name "history" url-configuration-directory))
 (setopt url-cookie-file (expand-file-name "cookies" url-configuration-directory))
@@ -302,39 +288,39 @@
 			      'grep)))
 
 ;;;; Repeatable key chords (repeat-mode)
-(use-package repeat
-  :hook (on-first-input . repeat-mode)
-  :custom
-  (repeat-on-final-keystroke t)
-  (repeat-exit-timeout 5)
-  (repeat-exit-key "<escape>")
-  (repeat-keep-prefix nil)
-  (repeat-check-key t)
-  ;; (repeat-echo-function 'ignore)
-  (set-mark-command-repeat-pop t))
+(add-hook 'after-init-hook #'repeat-mode)
+(with-eval-after-load 'repeat
+  (setopt repeat-on-final-keystroke t
+	  repeat-exit-timeout 5
+	  repeat-exit-key "<escape>"
+	  repeat-keep-prefix nil
+	  repeat-check-key t
+	  set-mark-command-repeat-pop t))
 
-(use-package hl-line
-  :hook ((prog-mode . hl-line-mode)
-         (package-menu-mode . hl-line-mode))
-  :custom
-  (hl-line-sticky-flag nil))
+(add-hook 'prog-mode-hook #'hl-line-mode)
+(add-hook 'package-menu-mode #'hl-line-mode)
+(with-eval-after-load 'hl-line
+  (setopt hl-line-sticky-flag nil))
 
-(use-package calendar
-  :bind ("C-x c" . calendar)
-  :hook (calendar-today-visible . calendar-mark-today)
-  :custom
-  (calendar-view-diary-initially-flag t)
-  (calendar-mark-diary-entries-flag t)
-  (calendar-date-style 'iso)
-  (calendar-date-display-form calendar-iso-date-display-form)
-  (diary-date-forms diary-iso-date-forms)
-  (calendar-time-display-form '(24-hours ":" minutes
-                                         (when time-zone
-                                           (format "(%s)" time-zone)))))
+(global-set-key (kbd "C-x c") #'calendar)
+(add-hook 'calendar-today-visible-hook #'calendar-mark-today)
+(with-eval-after-load 'calendar
+  (setopt calendar-view-diary-initially-flag t
+	  calendar-mark-diary-entries-flag t
+	  calendar-date-style 'iso
+	  calendar-date-display-form calendar-iso-date-display-form
+	  diary-date-forms diary-iso-date-forms
+	  calendar-time-display-form '(24-hours ":" minutes
+						(when time-zone
+						  (format "(%s)" time-zone)))))
 
 ;; Tramp
 (with-eval-after-load 'tramp
   (setq tramp-persistency-file-name (expand-file-name "tramp" cache-directory)))
+
+(global-set-key (kbd "C-<f5>") #'eshell)
+(with-eval-after-load 'eshell
+  (setopt eshell-directory-name (expand-file-name "eshell" cache-directory)))
 
 ;; ispell and flyspell
 ;; (use-package flyspell
@@ -343,44 +329,80 @@
 ;;   (flyspell-issue-message-flag nil)
 ;;   (ispell-extra-args '("--sug-mode=ultra" "--lang=en_US" "--run-together")))
 
+(add-hook 'diary-mode-hook #'appt-activate)
+(with-eval-after-load 'appt
+  (setopt appt-display-diary nil
+	  appt-disp-window-function #'appt-disp-window
+	  appt-display-mode-line t
+	  appt-display-interval 3
+	  appt-audible nil
+	  appt-warning-time-regexp "appt \\([0-9]+\\)"
+	  appt-message-warning-time 6))
 
-(with-eval-after-load 'calendar
-  (setq calendar-view-diary-initially-flag t)
-  (setq calendar-mark-diary-entries-flag t)
+(add-hook 'diary-list-entries-hook #'diary-sort-entries)
+(add-hook 'diary-mode-hook #'goto-address-mode)
+(with-eval-after-load 'diary-lib
+  (setopt diary-display-function #'diary-fancy-display
+	  diary-header-line-format nil
+	  diary-list-include-blanks nil
+	  diary-abbreviated-year-flag nil
+	  diary-number-of-entries 7
+	  diary-comment-start ");;"
+	  diary-comment-end ""
+	  diary-nonmarking-symbol "!"
+	  diary-file (expand-file-name "logs/diary.org" my-galaxy)))
 
-  (setq calendar-date-style 'iso)
-  (setq calendar-date-display-form calendar-iso-date-display-form)
-  (setq diary-date-forms diary-iso-date-forms)
-  (setq calendar-time-display-form
-        '(24-hours ":" minutes
-                   (when time-zone
-                     (format "(%s)" time-zone))))
-  (add-hook 'calendar-today-visible-hook #'calendar-mark-today))
 
-(use-package appt
-  :hook (diary-mode . appt-activate)
+(add-hook 'after-init-hook #'global-auto-revert-mode)
+
+(with-eval-after-load 'register
+  (setopt register-preview-delay 0)
+  (set-register ?a (cons 'file (concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/gtd_archive_" (format-time-string "%Y"))))
+  (set-register ?f (cons 'file (concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/flash_thoughts_" (format-time-string "%Y"))))
+  (set-register ?t (cons 'file (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org/org-gtd-tasks.org" icloud)))
+  (set-register ?r (cons 'file (expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy)))
+  (set-register ?l (cons 'file (expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))))
+
+(defun my/open-recentf ()
+  (interactive)
+  (unless recentf-mode (recentf-mode 1))
+  (consult-recent-file))
+
+(with-eval-after-load 'recentf
+  (setopt recentf-save-file (expand-file-name "recentf" cache-directory)
+	  recentf-auto-cleanup 300
+	  recentf-max-saved-items 1000
+	  recentf-exclude '("~/.telega")))
+
+(add-hook 'after-init-hook #'savehist-mode)
+(with-eval-after-load 'savehist
+  (setopt savehist-file (expand-file-name "history" cache-directory)
+	  history-length 1000
+          savehist-additional-variables '(kill-ring
+                                          search-ring
+                                          regexp-search-ring)
+          history-delete-duplicates t))
+
+(setopt save-place-file (expand-file-name "places" cache-directory))
+(add-hook 'after-init-hook #'save-place-mode)
+
+(use-package hippie-exp
+  :bind ([remap dabbrev-expand] . hippie-expand)
   :custom
-  (appt-display-diary nil)
-  (appt-disp-window-function #'appt-disp-window)
-  (appt-display-mode-line t)
-  (appt-display-interval 3)
-  (appt-audible nil)
-  (appt-warning-time-regexp "appt \\([0-9]+\\)")
-  (appt-message-warning-time 6))
+  (hippie-expand-try-functions-list '(try-complete-file-name-partially
+                                      try-complete-file-name
+                                      try-expand-all-abbrevs
+                                      try-expand-dabbrev
+                                      try-expand-dabbrev-all-buffers
+                                      try-expand-dabbrev-from-kill
+                                      try-complete-lisp-symbol-partially
+                                      try-complete-lisp-symbol)))
 
-(use-package diary-lib
-  :hook ((diary-list-entries . diary-sort-entries)
-	 (diary-mode . goto-address-mode))
-  :custom
-  (diary-display-function #'diary-fancy-display)
-  (diary-header-line-format nil)
-  (diary-list-include-blanks nil)
-  (diary-abbreviated-year-flag nil)
-  (diary-number-of-entries 7)
-  (diary-comment-start ");;")
-  (diary-comment-end "")
-  (diary-nonmarking-symbol "!")
-  (diary-file (expand-file-name "logs/diary.org" my-galaxy)))
+(add-hook 'after-init-hook #'electric-pair-mode)
+;; (add-hook 'after-init-hook #'electric-quote-mode)
+(add-hook 'after-init-hook #'electric-indent-mode)
+(add-hook 'after-init-hook #'delete-selection-mode)
+
 
 (provide 'init-builtin)
 ;;; init-builtin.el ends here

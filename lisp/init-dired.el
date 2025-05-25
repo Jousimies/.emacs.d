@@ -20,7 +20,8 @@
 
 ;;; Commentary:
 
-;;
+;; C-x C-j call dired-jump
+;; C-x 4 C-j call dired-jump-other-window
 
 ;;; Code:
 
@@ -61,7 +62,16 @@
 	(pop-to-buffer (marker-buffer m))
 	(goto-char m)
 	(move-marker m nil)
-	(org-fold-show-context)))))
+	(org-fold-show-context))))
+
+  ;; https://emacs.dyerdwelling.family/emacs/20250513085926-emacs--instantly-open-dired-files-with-isearch-and-enter/
+  ;; (define-advice isearch-exit (after dired-enter-directory-or-file activate)
+  ;;   "In dired mode, enter directory or open file after isearch."
+  ;;   (when (eq major-mode 'dired-mode)
+  ;;     (let ((file (dired-get-file-for-visit)))
+  ;; 	(when file
+  ;;         (dired-find-file)))))
+  )
 
 (use-package dired-x
   :ensure nil
@@ -144,10 +154,6 @@
 
   (with-eval-after-load 'dired
     (define-key dired-mode-map (kbd "SPC") #'my/dired-preview)))
-
-;; (use-package nerd-icons-dired
-;;   :load-path "~/.emacs.d/packages/nerd-icons-completion/"
-;;   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package dired-preview
   :load-path "packages/dired-preview/"

@@ -29,6 +29,14 @@
     (let ((default-directory (or default-directory "~"))) ; 默认目录为当前 buffer 的目录
       (start-process "wezterm" nil "wezterm" "start" "--cwd" default-directory)))
 
+  (defun switch-to-wezterm ()
+    "Switch to WezTerm terminal."
+    (interactive)
+    (do-applescript "
+    tell application \"WezTerm\"
+      activate
+    end tell"))
+
   (advice-add 'start-wezterm-at-current-directory :after
               (lambda (&rest _)
 		(sleep-for 0.1)
@@ -38,7 +46,6 @@
               (lambda (&rest _)
 		(sleep-for 0.1)
 		(switch-to-wezterm))))
-
 
 (provide 'init-shell)
 ;;; init-shell.el ends here.

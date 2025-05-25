@@ -3,6 +3,29 @@
 ;;; Commentary:
 
 ;;; Code:
+(defun find-file-other-window-no-jump (filename)
+  "Find file in other window without jumping to that window."
+  (interactive "FFind file in other window: ")
+  (let ((current-window (selected-window)))
+    (find-file-other-window filename)
+    (select-window current-window)))
+
+;; Sometimes I want open the web archive file with eww.
+(defun my/org-get-link-under-point ()
+  "Get the link under the point in Org mode."
+  (let* ((link (org-element-lineage (org-element-context) '(link) t)))
+    (if link
+	(org-element-property :raw-link link)
+      (url-get-url-at-point))))
+
+(defun my/open-link-with-eww ()
+  (interactive)
+  (when-let ((link (my/org-get-link-under-point)))
+    (if (org-file-url-p link)
+	(org-open-at-point)
+      (eww (concat "file://" (expand-file-name link))))))
+
+
 (use-package gptel
   :load-path "~/.emacs.d/packages/gptel/"
   :hook ((gptel-post-stream . gptel-auto-scroll)

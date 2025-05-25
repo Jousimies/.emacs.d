@@ -34,10 +34,6 @@
 
 (global-set-key (kbd "M-g n") 'next-buffer)
 
-(use-package nerd-icons-ibuffer
-  :load-path "packages/nerd-icons-ibuffer/"
-  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
-
 (use-package bufferlo
   :load-path "packages/bufferlo/"
   :bind (([remap switch-to-buffer] . bufferlo-switch-to-buffer))
@@ -181,7 +177,7 @@
 
 (use-package winum
   :load-path "packages/emacs-winum/"
-  :hook (on-first-buffer . winum-mode)
+  :hook (after-init . winum-mode)
   :custom
   (winum-auto-setup-mode-line nil))
 

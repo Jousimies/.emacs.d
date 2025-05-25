@@ -56,61 +56,29 @@
          ("M-b" . emt-backward-word)
          ("M-d" . emt-kill-word)
          ("M-h" . emt-backward-kill-word))
-  :hook (on-first-input . emt-ensure))
+  :hook (after-init . emt-ensure))
 
 (use-package macim
   :load-path "packages/macim.el/"
-  :hook ((on-first-input . macim-mode)
-	 (on-switch-buffer . macim-context-switch))
+  :hook ((after-init . macim-mode)
+	 (minibuffer-mode . macim-select-ascii)
+	 (isearch-mode . macim-select-ascii))
+  :custom
+  (macim-other "im.rime.inputmethod.Squirrel.Hans")
   :config
-  (setq macim-other "im.rime.inputmethod.Squirrel.Hans"))
+  (defvar my/macim-context-ignore-modes '("telega-root-mode"
+					  "telega-image-mode"
+					  "mu4e-headers-mode"
+					  "mu4e-view-mode"
+					  "elfeed-show-mode"
+					  "elfeed-search-mode"))
+  (defun +macim-context-ignore-modes ()
+    (let ((mode (symbol-name major-mode)))
+      (when (member mode my/macim-context-ignore-modes))
+      'ascii))
 
-;; (use-package macim
-;;   :load-path "packages/macim.el/"
-;;   :bind (("C-\\" . macim-switch)
-;;          :map isearch-mode-map
-;;          ("C-\\" . macim-switch))
-;;   :hook ((on-first-input . macim-select-ascii)
-;;          (on-first-input . macim-mode)
-;;          (isearch-mode . macim-select-ascii)
-;; 	 ;; (on-switch-buffer . macim-context-switch)
-;;          (minibuffer-mode . macim-select-ascii))
-;;   :config
-;;   (defun im-cursor-color ()
-;;     (interactive)
-;;     (if current-system-input-method
-;; 	(progn
-;; 	  (setq cursor-type 'bar)
-;; 	  (set-cursor-color "red"))
-;;       (progn
-;; 	(setq cursor-type 'box)
-;; 	(set-cursor-color (foreground-color-at-point)))))
+  (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes))
 
-;;   (advice-add 'macim-switch :after #'im-cursor-color)
-;;   (advice-add 'macim-context-switch :after #'im-cursor-color)
-
-;;   (setq macim-other "im.rime.inputmethod.Squirrel.Hans")
-;;   (defun macim-switch ()
-;;     (interactive)
-;;     (if current-system-input-method
-;;         (progn
-;; 	  (macim-select-ascii)
-;; 	  (force-mode-line-update))
-;;       (progn
-;;         (macim-select-other)
-;;         (force-mode-line-update))))
-;;   (defvar my/macim-context-ignore-modes '("telega-root-mode"
-;; 					  "telega-image-mode"
-;; 					  "mu4e-headers-mode"
-;; 					  "mu4e-view-mode"
-;; 					  "elfeed-show-mode"
-;; 					  "elfeed-search-mode"))
-;;   (defun +macim-context-ignore-modes ()
-;;     (let ((mode (symbol-name major-mode)))
-;;       (when (member mode my/macim-context-ignore-modes))
-;;       'ascii))
-
-;;   (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes))
 
 (provide 'init-mac)
 ;;; init-mac.el ends here

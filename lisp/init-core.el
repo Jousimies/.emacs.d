@@ -111,7 +111,7 @@
 (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
 (set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend)
 
-;; 除以上方法，也可以使用 `variable-pitch-mode'
+;; 除以上方法，也可以使用 ‘variable-pitch-mode’
 ;; (set-face-attribute 'variable-pitch nil :family "TsangerJinKai02" :height 160)
 ;; (set-face-attribute 'fixed-pitch nil :family "SF Mono" :height 160)
 ;; (add-hook 'text-mode-hook #'variable-pitch-mode)
@@ -122,6 +122,24 @@
   :commands nerd-icons-codicon nerd-icons-faicon nerd-icons-icon-for-file
   :custom
   (nerd-icons-font-family "Symbols Nerd Font Mono"))
+
+(use-package nerd-icons-ibuffer
+  :load-path "packages/nerd-icons-ibuffer/"
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+
+;; (use-package nerd-icons-dired
+;;   :load-path "~/.emacs.d/packages/nerd-icons-completion/"
+;;   :hook (dired-mode . nerd-icons-dired-mode))
+
+(use-package nerd-icons-completion
+  :load-path "packages/nerd-icons-completion/"
+  :hook (minibuffer-setup . nerd-icons-completion-mode))
+
+(add-to-list 'load-path "~/.emacs.d/packages/nerd-icons-corfu/")
+(with-eval-after-load 'corfu
+  (unless (featurep 'nerd-icons-corfu)
+    (require 'nerd-icons-corfu))
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 ;; Adjust alpha background
 (defun lucius/adjust-opacity (frame incr)
@@ -176,15 +194,15 @@
 ;;   (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port)))
 
 ;; start server, so can use emaclient to edit file outside emacs
-(add-hook 'on-first-input-hook (lambda ()
-				 (require 'server)
-				 (unless (server-running-p)
-				   (server-start))))
+(add-hook 'after-init-hook (lambda ()
+			     (require 'server)
+			     (unless (server-running-p)
+			       (server-start))))
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh
   :load-path "packages/gcmh"
-  :hook (on-first-file . gcmh-mode)
+  :hook (after-init . gcmh-mode)
   :custom
   (gc-cons-percentage 0.1)
   (gcmh-verbose nil)

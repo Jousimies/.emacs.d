@@ -268,7 +268,8 @@
                                                                        'error nil))))))
 ;; Winum
 (defvar-local my/winum
-    '(:eval (propertize (format winum-format (winum-get-number-string)) 'face `(:inverse-video t ))))
+    '(:eval (when winum-mode
+	     (propertize (format winum-format (winum-get-number-string)) 'face `(:inverse-video t )))))
 
 ;; eglot
 (defvar-local prot-modeline-eglot

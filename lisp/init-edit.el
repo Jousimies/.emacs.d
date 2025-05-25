@@ -24,45 +24,10 @@
 
 ;;; Code:
 
-(add-hook 'on-first-file-hook #'global-auto-revert-mode)
-
-(with-eval-after-load 'register
-  (setopt register-preview-delay 0)
-  (set-register ?a (cons 'file (concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/gtd_archive_" (format-time-string "%Y"))))
-  (set-register ?f (cons 'file (concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/flash_thoughts_" (format-time-string "%Y"))))
-  (set-register ?t (cons 'file (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org/org-gtd-tasks.org" icloud)))
-  (set-register ?r (cons 'file (expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy)))
-  (set-register ?l (cons 'file (expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))))
-
-;; (add-hook 'on-first-input-hook #'recentf-mode)
-(defun my/open-recentf ()
-  (interactive)
-  (unless recentf-mode (recentf-mode 1))
-  (consult-recent-file))
-
-(with-eval-after-load 'recentf
-  (setopt recentf-save-file (expand-file-name "recentf" cache-directory)
-	  recentf-auto-cleanup 300
-	  recentf-max-saved-items 1000
-	  recentf-exclude '("~/.telega")))
-
-(add-hook 'on-first-file-hook #'savehist-mode)
-(with-eval-after-load 'savehist
-  (setopt savehist-file (expand-file-name "history" cache-directory)
-	  history-length 1000
-          savehist-additional-variables '(kill-ring
-                                          search-ring
-                                          regexp-search-ring)
-          history-delete-duplicates t))
-
-(add-hook 'on-first-file-hook #'save-place-mode)
-
-(with-eval-after-load 'saveplace
- (setopt save-place-file (expand-file-name "places" cache-directory)))
 
 (use-package undo-fu-session
   :load-path "packages/undo-fu-session/"
-  :hook (on-first-file . undo-fu-session-global-mode)
+  :hook (after-init . undo-fu-session-global-mode)
   :custom
   (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory)))
 
@@ -107,31 +72,21 @@
 
   (advice-add 'avy-goto-char-timer :override #'my/avy-goto-char-timer))
 
-(use-package hippie-exp
-  :bind ([remap dabbrev-expand] . hippie-expand)
-  :custom
-  (hippie-expand-try-functions-list '(try-complete-file-name-partially
-                                      try-complete-file-name
-                                      try-expand-all-abbrevs
-                                      try-expand-dabbrev
-                                      try-expand-dabbrev-all-buffers
-                                      try-expand-dabbrev-from-kill
-                                      try-complete-lisp-symbol-partially
-                                      try-complete-lisp-symbol)))
-
-(add-hook 'after-init-hook #'electric-pair-mode)
-(add-hook 'after-init-hook #'electric-quote-mode)
-(add-hook 'after-init-hook #'electric-indent-mode)
-(add-hook 'after-init-hook #'delete-selection-mode)
-
-(use-package rime-regexp
-  :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"
-  :if IS-MAC
-  :hook (minibuffer-mode . rime-regexp-mode)
+;; rime 升级后需要同步升级 librime，去下面的链接中下载对应的文件
+;; https://github.com/rime/librime/releases
+;; 删除 emacs-rime 文件下生成的 .dylib 文件
+;; 重新生成 .dylib 文件
+(use-package rime
+  :load-path "packages/emacs-rime/"
   :config
+  ;; (setq default-input-method "rime")
   (setq rime-librime-root (expand-file-name "librime/dist" user-emacs-directory))
   (setq rime-emacs-module-header-root "/Applications/Emacs.app/Contents/Resources/include/")
   (setq rime-user-data-dir "~/Library/Rime/"))
+
+(use-package rime-regexp
+  :load-path "packages/rime-regexp.el/" "packages/emacs-rime/"
+  :hook (minibuffer-mode . rime-regexp-mode))
 
 (use-package tempel
   :load-path "packages/tempel/"
@@ -161,7 +116,7 @@
 
 (use-package yasnippet
   :load-path "packages/yasnippet/"
-  :hook (on-first-file . yas-global-mode))
+  :hook (after-init . yas-global-mode))
 
 (use-package yasnippet-snippets
   :load-path "packages/yasnippet-snippets/"
@@ -213,54 +168,6 @@
   :hook (prog-mode . rainbow-mode))
 
 ;; pulse
-;; (use-package pulse
-;;   :custom-face
-;;   (pulse-highlight-start-face ((t (:inherit region :background unspecified))))
-;;   (pulse-highlight-face ((t (:inherit region :background unspecified :extend t))))
-;;   :hook (((dumb-jump-after-jump imenu-after-jump) . +recenter-and-pulse)
-;;          ((bookmark-after-jump magit-diff-visit-file next-error) . +recenter-and-pulse-line))
-;;   :init
-;;   (setq pulse-delay 0.1
-;;         pulse-iterations 2)
-
-;;   (defun +pulse-momentary-line (&rest _)
-;;     "Pulse the current line."
-;;     (pulse-momentary-highlight-one-line (point)))
-
-;;   (defun +pulse-momentary (&rest _)
-;;     "Pulse the region or the current line."
-;;     (if (fboundp 'xref-pulse-momentarily)
-;;         (xref-pulse-momentarily)
-;;       (+pulse-momentary-line)))
-
-;;   (defun +recenter-and-pulse(&rest _)
-;;     "Recenter and pulse the region or the current line."
-;;     (recenter)
-;;     (+pulse-momentary))
-
-;;   (defun +recenter-and-pulse-line (&rest _)
-;;     "Recenter and pulse the current line."
-;;     (recenter)
-;;     (+pulse-momentary-line))
-
-;;   (dolist (cmd '(recenter-top-bottom
-;;                  other-window switch-to-buffer
-;;                  aw-select toggle-window-split
-;;                  windmove-do-window-select
-;;                  pager-page-down pager-page-up
-;;                  treemacs-select-window
-;;                  tab-bar-select-tab))
-;;     (advice-add cmd :after #'+pulse-momentary-line))
-
-;;   (dolist (cmd '(pop-to-mark-command
-;;                  pop-global-mark
-;;                  goto-last-change))
-;;     (advice-add cmd :after #'+recenter-and-pulse))
-
-;;   (dolist (cmd '(symbol-overlay-basic-jump
-;;                  compile-goto-error))
-;;     (advice-add cmd :after #'+recenter-and-pulse-line)))
-
 (use-package goggles
   :load-path "packages/goggles/"
   :hook ((prog-mode text-mode) . goggles-mode))

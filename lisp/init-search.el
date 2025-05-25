@@ -75,7 +75,7 @@
                         (deactivate-mark)))))
                my/browser-engines)))
 
-(add-hook 'on-first-input-hook (lambda ()
+(add-hook 'after-init-hook (lambda ()
 				 (my/define-search-functions)))
 
 (use-package grab-mac-link

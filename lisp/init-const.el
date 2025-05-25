@@ -69,6 +69,5 @@
 (defvar my/tab-bar-right-string nil)
 
 
-
 (provide 'init-const)
 ;;; init-const.el ends here
