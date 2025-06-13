@@ -25,75 +25,75 @@
 
 ;;; Code:
 
-(use-package dired
-  :if (and IS-MAC
-	   (executable-find "gls"))
-  :custom
-  (dired-use-ls-dired nil)
-  (insert-directory-program "gls")
-  (dired-listing-switches
-   "-l --almost-all --human-readable --group-directories-first --no-group"))
+;; (use-package dired
+;;   :if (and IS-MAC
+;; 	   (executable-find "gls"))
+;;   :custom
+;;   (dired-use-ls-dired nil)
+;;   (insert-directory-program "gls")
+;;   (dired-listing-switches
+;;    "-l --almost-all --human-readable --group-directories-first --no-group"))
 
-(use-package dired
-  :bind (:map dired-mode-map
-	      ("C-'" . my/org-attach-visit-headline-from-dired))
-  :hook (dired-mode . (lambda ()
-			(setq-local truncate-lines t)))
-  :custom
-  (dired-dwim-target t)
-  (dired-auto-revert-buffer #'dired-buffer-stale-p)
-  (dired-recursive-copies 'always)
-  (dired-recursive-deletes 'top)
-  (dired-auto-revert-buffer t)
-  (dired-filename-display-length 'window))
+;; (use-package dired
+;;   :bind (:map dired-mode-map
+;; 	      ("C-'" . my/org-attach-visit-headline-from-dired))
+;;   :hook (dired-mode . (lambda ()
+;; 			(setq-local truncate-lines t)))
+;;   :custom
+;;   (dired-dwim-target t)
+;;   (dired-auto-revert-buffer #'dired-buffer-stale-p)
+;;   (dired-recursive-copies 'always)
+;;   (dired-recursive-deletes 'top)
+;;   (dired-auto-revert-buffer t)
+;;   (dired-filename-display-length 'window))
 
-(with-eval-after-load 'dired
-  (defun my/org-attach-visit-headline-from-dired ()
-    "Go to the headline corresponding to this org-attach directory."
-    (interactive)
-    (require 'org-attach)
-    (let* ((path (replace-regexp-in-string (regexp-quote org-attach-directory) "" (expand-file-name (dired-filename-at-point))))
-           (id-parts (split-string path "/"))
-           (id1 (nth 1 id-parts))
-           (id2 (nth 2 id-parts))
-           (id (concat id1 id2)))
-      (let ((m (org-id-find id 'marker)))
-	(unless m (user-error "Cannot find entry with ID \"%s\"" id))
-	(pop-to-buffer (marker-buffer m))
-	(goto-char m)
-	(move-marker m nil)
-	(org-fold-show-context))))
+;; (with-eval-after-load 'dired
+;;   (defun my/org-attach-visit-headline-from-dired ()
+;;     "Go to the headline corresponding to this org-attach directory."
+;;     (interactive)
+;;     (require 'org-attach)
+;;     (let* ((path (replace-regexp-in-string (regexp-quote org-attach-directory) "" (expand-file-name (dired-filename-at-point))))
+;;            (id-parts (split-string path "/"))
+;;            (id1 (nth 1 id-parts))
+;;            (id2 (nth 2 id-parts))
+;;            (id (concat id1 id2)))
+;;       (let ((m (org-id-find id 'marker)))
+;; 	(unless m (user-error "Cannot find entry with ID \"%s\"" id))
+;; 	(pop-to-buffer (marker-buffer m))
+;; 	(goto-char m)
+;; 	(move-marker m nil)
+;; 	(org-fold-show-context))))
 
-  ;; https://emacs.dyerdwelling.family/emacs/20250513085926-emacs--instantly-open-dired-files-with-isearch-and-enter/
-  ;; (define-advice isearch-exit (after dired-enter-directory-or-file activate)
-  ;;   "In dired mode, enter directory or open file after isearch."
-  ;;   (when (eq major-mode 'dired-mode)
-  ;;     (let ((file (dired-get-file-for-visit)))
-  ;; 	(when file
-  ;;         (dired-find-file)))))
-  )
+;;   ;; https://emacs.dyerdwelling.family/emacs/20250513085926-emacs--instantly-open-dired-files-with-isearch-and-enter/
+;;   ;; (define-advice isearch-exit (after dired-enter-directory-or-file activate)
+;;   ;;   "In dired mode, enter directory or open file after isearch."
+;;   ;;   (when (eq major-mode 'dired-mode)
+;;   ;;     (let ((file (dired-get-file-for-visit)))
+;;   ;; 	(when file
+;;   ;;         (dired-find-file)))))
+;;   )
 
-(use-package dired-x
-  :ensure nil
-  :hook ((dired-mode . dired-omit-mode)
-	 (dired-mode . dired-hide-details-mode))
-  :bind (:map dired-mode-map
-	      ("s-." . dired-omit-mode)
-	      ("C-c i" . image-dired)
-	      ("s-/ l" . org-store-link))
-  :custom
-  (dired-omit-verbose nil)
-  (dired-omit-files "^\\.[^.].*"))
+;; (use-package dired-x
+;;   :ensure nil
+;;   :hook ((dired-mode . dired-omit-mode)
+;; 	 (dired-mode . dired-hide-details-mode))
+;;   :bind (:map dired-mode-map
+;; 	      ("s-." . dired-omit-mode)
+;; 	      ("C-c i" . image-dired)
+;; 	      ("s-/ l" . org-store-link))
+;;   :custom
+;;   (dired-omit-verbose nil)
+;;   (dired-omit-files "^\\.[^.].*"))
 
-(use-package dired-aux
-  :ensure nil
-  :after dired
-  :custom
-  (dired-isearch-filenames 'dwim)
-  (dired-create-destination-dirs 'ask)
-  (dired-vc-rename-file t)
-  (dired-do-revert-buffer (lambda (dir) (not (file-remote-p dir))))
-  (dired-create-destination-dirs-on-trailing-dirsep t))
+;; (use-package dired-aux
+;;   :ensure nil
+;;   :after dired
+;;   :custom
+;;   (dired-isearch-filenames 'dwim)
+;;   (dired-create-destination-dirs 'ask)
+;;   (dired-vc-rename-file t)
+;;   (dired-do-revert-buffer (lambda (dir) (not (file-remote-p dir))))
+;;   (dired-create-destination-dirs-on-trailing-dirsep t))
 
 ;; dired-do-shell-command, open file with default application.
 ;; (let ((cmd (cond ((and (eq system-type 'darwin) (display-graphic-p)) "open")

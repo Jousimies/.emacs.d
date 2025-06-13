@@ -23,13 +23,7 @@
 ;;
 
 ;;; Code:
-(unbind-key "s-o" 'global-map)
-(unbind-key "s-s" 'global-map)
-(unbind-key "s-m" 'global-map)
 (unbind-key "s-n" 'global-map)
-(unbind-key "C-t" 'global-map)
-(unbind-key "s-q" 'global-map)
-
 (setopt inhibit-startup-screen t
 	initial-major-mode 'fundamental-mode
 

@@ -139,6 +139,30 @@ it can be passed in POS."
 
 (add-hook 'before-save-hook 'my/org-set-date)
 
+(defun aw/notes-this-day ()
+  "Display files of the form '20..mmdd.*' in the current directory,
+where 'mm-dd' are the current month and day."
+  (interactive)
+  (let* ((month-day (format-time-string "%m%d"))
+         (this-day-matching (concat "20[[:digit:]][[:digit:]]" month-day ".*\\.\\(txt\\|org\\|md\\)"))
+         (note-files-this-day (directory-files-recursively "." this-day-matching nil
+                                                           (lambda (dirname) (not (string-search ".git/objects" dirname))))))
+
+    ;; make a buffer and fill it with the contents
+    (let ((buff (generate-new-buffer "*Notes on this day*")))
+      (set-buffer buff)                   ; Make this buffer current
+      (org-mode)
+      ;; (insert "* Notes on this day *\n")
+      (mapc (lambda (notes-file)
+              (progn
+                (insert "\n------------------------------------------------------------\n")
+                (insert (concat "[[file:" notes-file "][" notes-file "]]"))          ; File name, as a hyperlink
+                (insert "\n")
+                (insert-file-contents notes-file)
+                (end-of-buffer)))
+            note-files-this-day)
+      (read-only-mode)
+      (display-buffer-in-direction buff '((direction . rightmost))))))
 
 ;; A simple HACK to let denote support orderless
 ;; https://github.com/protesilaos/denote/issues/253

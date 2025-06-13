@@ -676,3 +676,6 @@
 [submodule "packages/doric-themes"]
 	path = packages/doric-themes
 	url = https://github.com/protesilaos/doric-themes.git
+[submodule "packages/typescript.el"]
+	path = packages/typescript.el
+	url = https://github.com/emacs-typescript/typescript.el.git

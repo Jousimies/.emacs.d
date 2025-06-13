@@ -9,7 +9,6 @@
 (setopt my/reference-lists `(,(concat my-galaxy "/bibtexs/My Library.bib")
                              ,(concat my-galaxy "/bibtexs/Books.bib")
 			     ,(concat my-galaxy "/bibtexs/Seismic.bib")))
-
 (with-eval-after-load 'oc
   (setq org-cite-global-bibliography my/reference-lists))
 

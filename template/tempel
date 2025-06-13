@@ -132,6 +132,16 @@ org-mode
 (attr_code
  "#+ATTR_LATEX: :options frame=lines, fontsize=\small, baselinestretch=1, linenos")
 
+(longtable "#+CAPTION:" p n>
+	   "#+ATTR_ORG: :width 500px" n>
+	   "#+ATTR_LATEX: :environment longtable :align p{0.45\\textwidth} p{0.45\\textwidth} :booktabs t" n>
+	   "#+ATTR_HTML: :width 600px")
+
+(tabularx "#+CAPTION:" p n>
+	  "#+ATTR_ORG: :width 500px" n>
+	  "#+ATTR_LATEX: :environment tabularx :width \\textwidth :align X X :booktabs t" n>
+	  "#+ATTR_HTML: :width 600px")
+
 (caption "#+CAPTION:" p n>
      "#+ATTR_ORG: :width 500px" n>
      "#+ATTR_LaTeX: :width 12cm :placement [!htpb]" n>

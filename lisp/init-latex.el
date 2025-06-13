@@ -6,6 +6,9 @@
 
 (add-to-list 'load-path "~/.emacs.d/packages/citeproc-el/")
 (add-to-list 'load-path "~/.emacs.d/packages/queue/")
+(with-eval-after-load 'oc-biblatex
+  (setopt org-cite-biblatex-styles
+          '((nil nil "cite" nil nil))))
 ;; ox-latex 是 Emacs 中 Org-mode 导出框架中的一个子模块
 ;; minted 需要安装 Pygments, brew install pygments
 (with-eval-after-load 'ox-latex
@@ -18,10 +21,10 @@
   ;; 				     ("framesep"  "2mm")
   ;; 				     ("breaklines")))
   (setopt org-latex-pdf-process '("xelatex -shell-escape %f"
-				  "bibtex -shell-escape %b"
+				  "biber %b"
 				  "xelatex -shell-escape %f"
 				  "xelatex -shell-escape %f"
-				  "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl"))
+				  "rm -f %b.out %b.log %b.tex %b.brf %b.bbl %b.bcf %b.run.xml"))
   (setopt org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
 					  "out" "toc" "nav" "snm" "vrb" "dvi"
 					  "fdb_latexmk" "blg" "brf" "fls"

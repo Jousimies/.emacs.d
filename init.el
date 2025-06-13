@@ -26,43 +26,54 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 ;; load-path
-(mapc (lambda (path)
-        (add-to-list 'load-path (expand-file-name path "~/.emacs.d/packages/")))
-      '("compat/"
-        "dash.el/"
-        "f.el/"
-        "s.el/"
-        "posframe/"
-        "emacs-async/"))
+(add-to-list 'load-path "~/.emacs.d/packages/compat/")
+(add-to-list 'load-path "~/.emacs.d/packages/dash.el/")
+(add-to-list 'load-path "~/.emacs.d/packages/f.el/")
+(add-to-list 'load-path "~/.emacs.d/packages/s.el/")
+(add-to-list 'load-path "~/.emacs.d/packages/posframe/")
+(add-to-list 'load-path "~/.emacs.d/packages/emacs-async/")
 
-;; For debug.
-(when init-file-debug
-  (setq use-package-compute-statistics t)
-  (setq use-package-minimum-reported-time 0)
-  (setq use-package-verbose t)
-  (require 'init-benchmark))
+;; Define consts
+(defconst IS-MAC     (eq system-type 'darwin))
+(defconst IS-LINUX   (eq system-type 'gnu/linux))
+(defconst IS-WINDOWS (memq system-type '(cygwin windows-nt ms-dos)))
 
-(require 'init-const)
+(defvar icloud "~/Library/Mobile Documents/"
+  "This folder contains documents in icloud.")
+(defvar nextcloud "~/Nextcloud"
+  "This folder is My cloud.")
+(defvar my-galaxy (expand-file-name "L.Personal.Galaxy" nextcloud)
+  "This folder stores all the plain text files of my life.")
+(defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
+  "The source folder of my blog.")
+(defvar my-pictures (expand-file-name "pictures/" my-galaxy)
+  "The folder save pictures.")
+(defvar my-web_archive (expand-file-name "web_archive/" my-galaxy)
+  "The folder save web pages.")
+(defvar cache-directory (expand-file-name ".cache" user-emacs-directory))
+
+(defvar my/proxy-ip "127.0.0.1")
+(defvar my/proxy-port "7890")
+
+(defvar my/tab-bar-right-string nil)
+
+;; Require configuration
 (require 'init-core)
 (require 'init-builtin)
 
 ;; UI
-;; (require 'init-dashboard)
 (require 'init-tab)
 (require 'init-modeline)
 (require 'init-buffer)
-;; (require 'init-svg-tag)
 
 ;; Better Editor
 (require 'init-edit)
 (require 'init-completion)
 (require 'init-search)
-
-;; File manager
 (require 'init-dired)
 
 ;; Programming
-(require 'init-lsp)
+;; (require 'init-lsp)
 (require 'init-prog)
 (require 'init-shell)
 (require 'init-git)
@@ -72,33 +83,26 @@
 (require 'init-note)
 (require 'init-bib)
 (require 'init-latex)
-;; (require 'init-gtd)
 (require 'init-finance)
-;; (require 'init-blog)
 
 ;; Reading with Emacs
 (require 'init-reader)
 (require 'init-dict)
 
 ;; Applications
-(require 'init-telega)
+;; (require 'init-telega)
 (require 'init-elfeed)
 ;; (require 'init-pass)
 
 ;; Plateform related configuration
 (when IS-MAC
-  (require 'init-mac)
-  ;; (require 'init-mail)
-  )
-
-;; Some useful functions stealed from Internet
-;; (require 'init-misc)
+  (require 'init-mac))
 
 ;; Keybindings
 (require 'init-keys)
 
 ;; Load custom.el, but It's empty.
-;; (load (setq custom-file (locate-user-emacs-file "custom.el")) t)
+(load (setq custom-file (locate-user-emacs-file "custom.el")) t)
 
 (add-hook 'window-setup-hook
           (lambda ()

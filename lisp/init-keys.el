@@ -28,6 +28,12 @@
 ;; https://github.com/positron-solutions/transient-showcase
 
 ;;; Code:
+(unbind-key "s-o" 'global-map)
+(unbind-key "s-s" 'global-map)
+(unbind-key "s-m" 'global-map)
+(unbind-key "C-t" 'global-map)
+(unbind-key "s-q" 'global-map)
+
 (require 'transient)
 
 (when IS-WINDOWS
@@ -128,7 +134,7 @@
     ("d" "Links: DBlock" denote-org-extras-dblock-insert-links :transient nil)
     ("D" "Backlinks: DBlock" denote-org-extras-dblock-insert-backlinks :transient nil)]
    ["Denote Links Roam"
-    ("e" "Explore Links" my/denote-find-link-other-window :transient t)
+    ;; ("e" "Explore Links" my/denote-find-link-other-window :transient t)
     ("fb" "Find Backlinks" denote-find-backlink :transient nil)
     ("fr" "References" citar-denote-find-reference :transient nil)]
    ["Misc"
@@ -254,7 +260,7 @@
 (global-set-key (kbd "s-s s") #'my/search-scholar)
 (global-set-key (kbd "s-s S") #'my/search-semanticscholar)
 
-;; (global-set-key (kbd "<f12>") #'my/agenda-menu)
+(global-set-key (kbd "<f12>") #'my/agenda-menu)
 (global-set-key (kbd "C-<f8>") #'my/mpv-menu)
 
 (global-set-key (kbd "M-g ,") #'switch-to-minibuffer)

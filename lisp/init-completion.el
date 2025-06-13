@@ -23,31 +23,6 @@
 ;;
 
 ;;; Code:
-(setopt enable-recursive-minibuffers t)
-(setopt read-minibuffer-restore-windows nil)
-
-(add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
-(add-hook 'minibuffer-mode-hook #'cursor-intangible-mode)
-(add-hook 'completion-list-mode-hook (lambda ()
-				       (setq-local truncate-lines t)))
-(add-hook 'minibuffer-setup-hook
-          (lambda () (setq-local truncate-lines t)))
-
-(setopt tab-always-indent 'complete
-	tab-first-completion 'word-or-paren-or-punct
-	completions-detailed t
-        completions-format 'one-column
-        completion-auto-select t
-        completion-ignore-case t
-        minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
-        completion-show-inline-help nil
-        completions-max-height 50
-        completion-show-help nil
-        completion-auto-wrap nil
-        completions-header-format (propertize "%s candidates:\n" 'face 'font-lock-comment-face)
-        completions-highlight-face 'completions-highlight)
-
-(keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 
 ;; use `M-j' call `icomplete-fido-exit' to exit minibuffer completion.
 ;; re-use vertico-mode instead of `icomplete-fido-mode'.
@@ -313,11 +288,6 @@ value of the selected COLOR."
 (add-hook 'completion-at-point-functions #'cape-file)
 (add-hook 'completion-at-point-functions #'cape-elisp-block)
 (add-hook 'completion-at-point-functions #'cape-keyword)
-
-(use-package which-key
-  :hook (after-init . which-key-mode)
-  :custom
-  (which-key-idle-delay 0.1))
 
 (use-package stillness-mode
   :load-path "packages/stillness-mode.el/"

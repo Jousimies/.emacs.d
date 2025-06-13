@@ -81,7 +81,7 @@
   (advice-add 'org-babel-execute-src-block :before 'my/org-babel-execute-src-block))
 
 ;; org-capture
-(global-set-key (kbd "<f12>") #'org-capture)
+(global-set-key (kbd "<f10>") #'org-capture)
 (with-eval-after-load 'org-capture
   (setq org-capture-templates
         `(("i" "Inbox"
@@ -90,6 +90,9 @@
           ("l" "Inbox with link"
            entry (file ,(concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
+	  ("d" "Daily log"
+	   entry (file+olp+datetree ,(expand-file-name (format-time-string "logs/daily_review_%Y.org") my-galaxy))
+	   "* %?\n" :tree-type month :jump-to-captured t)
 	  ("r" "Review"
            plain
            (file+olp+datetree ,(expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy))

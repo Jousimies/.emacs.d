@@ -55,11 +55,18 @@
 (with-eval-after-load 'treesit
   (setopt treesit-language-source-alist
 	  '((python "https://github.com/tree-sitter/tree-sitter-python.git")
-	    (yaml "https://github.com/ikatyang/tree-sitter-yaml.git"))))
+	    (yaml "https://github.com/ikatyang/tree-sitter-yaml.git")
+	    (typescript "https://github.com/tree-sitter/tree-sitter-typescript.git")
+	    (json "https://github.com/tree-sitter/tree-sitter-json.git")
+	    (csharp "https://github.com/tree-sitter/csharp-tree-sitter.git"))))
 
 ;; eglot
 (add-hook 'LaTeX-mode-hook #'eglot-ensure)
 (add-hook 'python-ts-mode #'eglot-ensure)
+(add-hook 'csharp-ts-mode #'eglot-ensure)
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(csharp-mode . ("~/Downloads/omnisharp-osx-arm64-net6/OmniSharp" "-lsp"))))
 
 (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
 
