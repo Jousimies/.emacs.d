@@ -82,7 +82,9 @@
 
 ;; Unicode
 ;; `set-fontset-font' 用于指定某些字符集使用特定的字体
-(set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend)
+(when (display-graphic-p)
+  (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend))
+
 
 ;; 设置中文字集
 ;; `han': 汉字字符集，主要用于简体中文和繁体中文字符
@@ -102,8 +104,10 @@
 ;; Emoji
 ;; According to https://github.com/domtronn/all-the-icons.el
 ;; Use 'prepend for the NS and Mac ports or Emacs will crash.
-(set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
-(set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend)
+(when (display-graphic-p)
+  (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
+  (set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend))
+
 
 ;; 除以上方法，也可以使用 ‘variable-pitch-mode’
 ;; (set-face-attribute 'variable-pitch nil :family "TsangerJinKai02" :height 160)
@@ -170,9 +174,9 @@
 ;; 			       ("https" . ,(concat my/proxy-ip ":" my/proxy-port))
 ;; 			       ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)"))))
 
-;; (add-hook 'on-first-input-hook
-;; 	  (lambda ()
-;; 	    (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port))))
+(add-hook 'after-init-hook
+	  (lambda ()
+	    (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port))))
 
 ;; (use-package socks
 ;;   :if IS-MAC
@@ -187,11 +191,11 @@
 ;;   :config
 ;;   (setenv "all_proxy" (concat "socks5://" my/proxy-ip ":" my/proxy-port)))
 
-;; start server, so can use emaclient to edit file outside emacs
-(add-hook 'after-init-hook (lambda ()
-			     (require 'server)
-			     (unless (server-running-p)
-			       (server-start))))
+;; ;; start server, so can use emaclient to edit file outside emacs
+;; (add-hook 'after-init-hook (lambda ()
+;; 			     (require 'server)
+;; 			     (unless (server-running-p)
+;; 			       (server-start))))
 
 ;; Better emacs garbage collect behavior
 (use-package gcmh

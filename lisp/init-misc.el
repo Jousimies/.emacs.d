@@ -216,6 +216,24 @@ Explain your reasoning.  if you don’t know, say you don’t know.  Be willing 
 ;;   :custom
 ;;   (holo-layer-python-command "~/.env/bin/python3"))
 
+;; https://stebalien.com/blog/dim-minibuffer-prompt-when-unfocused/
+(defvar-local steb/focused-minibuffer-face-remap nil
+  "Face-remapping for a dimmed-minibuffer prompt.")
+
+(defun steb/focused-minibuffer-update (w)
+  (when (eq w (minibuffer-window))
+    (when steb/focused-minibuffer-face-remap
+      (face-remap-remove-relative steb/focused-minibuffer-face-remap)
+      (setq steb/focused-minibuffer-face-remap nil))
+    (unless (eq w (selected-window))
+      (with-selected-window (minibuffer-window)
+        (setq steb/focused-minibuffer-face-remap
+              (face-remap-add-relative 'minibuffer-prompt 'shadow))))))
+
+(defun steb/minibuffer-setup-focus-indicator ()
+  (add-hook 'window-state-change-functions 'steb/focused-minibuffer-update nil t))
+
+(add-hook 'minibuffer-setup-hook #'steb/minibuffer-setup-focus-indicator)
 
 (provide 'init-misc)
 ;;; init-misc.el ends here.

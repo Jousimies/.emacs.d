@@ -53,7 +53,7 @@
 (defvar cache-directory (expand-file-name ".cache" user-emacs-directory))
 
 (defvar my/proxy-ip "127.0.0.1")
-(defvar my/proxy-port "7890")
+(defvar my/proxy-port "1082")
 
 (defvar my/tab-bar-right-string nil)
 
@@ -67,6 +67,7 @@
 (require 'init-buffer)
 
 ;; Better Editor
+(require 'init-evil)
 (require 'init-edit)
 (require 'init-completion)
 (require 'init-search)
@@ -84,13 +85,14 @@
 (require 'init-bib)
 (require 'init-latex)
 (require 'init-finance)
+(require 'init-gtd)
 
 ;; Reading with Emacs
 (require 'init-reader)
 (require 'init-dict)
 
 ;; Applications
-;; (require 'init-telega)
+(require 'init-telega)
 (require 'init-elfeed)
 ;; (require 'init-pass)
 

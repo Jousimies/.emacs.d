@@ -36,7 +36,7 @@
   ;; (setq telega-filters-custom nil)
   ;; (setq telega-filter-custom-show-folders nil
   ;; 		telega-symbol-folder "  ")
-  (setq telega-server-libs-prefix "/opt/homebrew/")
+  (setq telega-server-libs-prefix "/usr/local")
   (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))
   ;; (setq telega-avatar-workaround-gaps-for '(return t))
   (setq telega-chat-fill-column 78)

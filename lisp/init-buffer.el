@@ -68,100 +68,100 @@
 ;;     (global-set-key (kbd (concat "M-s-" (number-to-string (1+ i))))
 ;; 		    `(lambda () (interactive) (persp-switch-by-number ,(1+ i))))))
 
-(use-package popper
-  :load-path "packages/popper/"
-  :bind (("C-`" . popper-toggle)
-         :map popper-mode-map
-         ("M-<tab>" . popper-cycle)
-         ("M-`" . popper-toggle-type))
-  :hook (emacs-startup . popper-mode)
-  :init
-  (setq popper-reference-buffers
-        '("\\*Messages\\*"
-          "Output\\*$" "\\*Pp Eval Output\\*$"
-          "\\*Compile-Log\\*"
-          "\\*Completions\\*"
-          "\\*Warnings\\*"
-          "\\*Async Shell Command\\*"
-          "\\*Apropos\\*"
-          "\\*Backtrace\\*"
-          "\\*Embark Actions\\*"
-          "\\*Finder\\*"
-          "\\*Kill Ring\\*"
-          "\\*Go-Translate\\*"
+;; (use-package popper
+;;   :load-path "packages/popper/"
+;;   :bind (("C-`" . popper-toggle)
+;;          :map popper-mode-map
+;;          ("M-<tab>" . popper-cycle)
+;;          ("M-`" . popper-toggle-type))
+;;   :hook (emacs-startup . popper-mode)
+;;   :init
+;;   (setq popper-reference-buffers
+;;         '("\\*Messages\\*"
+;;           "Output\\*$" "\\*Pp Eval Output\\*$"
+;;           "\\*Compile-Log\\*"
+;;           "\\*Completions\\*"
+;;           "\\*Warnings\\*"
+;;           "\\*Async Shell Command\\*"
+;;           "\\*Apropos\\*"
+;;           "\\*Backtrace\\*"
+;;           "\\*Embark Actions\\*"
+;;           "\\*Finder\\*"
+;;           "\\*Kill Ring\\*"
+;;           "\\*Go-Translate\\*"
 
-          bookmark-bmenu-mode
-          comint-mode
-          compilation-mode
-          help-mode helpful-mode
-          tabulated-list-mode
-          Buffer-menu-mode
+;;           bookmark-bmenu-mode
+;;           comint-mode
+;;           compilation-mode
+;;           help-mode helpful-mode
+;;           tabulated-list-mode
+;;           Buffer-menu-mode
 
-          gnus-article-mode devdocs-mode
-          grep-mode occur-mode rg-mode ag-mode pt-mode
-          youdao-dictionary-mode osx-dictionary-mode fanyi-mode
+;;           gnus-article-mode devdocs-mode
+;;           grep-mode occur-mode rg-mode ag-mode pt-mode
+;;           youdao-dictionary-mode osx-dictionary-mode fanyi-mode
 
-          "^\\*Process List\\*" process-menu-mode
-          list-environment-mode cargo-process-mode
-          "^\\*EKG Capture"
-          "^\\*Ibuffer\\*" ibuffer-mode
-          "^\\*eshell.*\\*.*$" eshell-mode
-          "^\\*shell.*\\*.*$"  shell-mode
-          "^\\*terminal.*\\*.*$" term-mode
-          "^\\*vterm.*\\*.*$"  vterm-mode
-          "^\\*eldoc.*\\*.*$" eldoc-mode
+;;           "^\\*Process List\\*" process-menu-mode
+;;           list-environment-mode cargo-process-mode
+;;           "^\\*EKG Capture"
+;;           "^\\*Ibuffer\\*" ibuffer-mode
+;;           "^\\*eshell.*\\*.*$" eshell-mode
+;;           "^\\*shell.*\\*.*$"  shell-mode
+;;           "^\\*terminal.*\\*.*$" term-mode
+;;           "^\\*vterm.*\\*.*$"  vterm-mode
+;;           "^\\*eldoc.*\\*.*$" eldoc-mode
 
-          "\\*Flycheck errors\\*$" " \\*Flycheck checker\\*$"
-          "\\*Paradox Report\\*$" "\\*package update results\\*$" "\\*Package-Lint\\*$"
-          "\\*[Wo]*Man.*\\*$"
-          "\\*ert\\*$" overseer-buffer-mode
-          "\\*gud-debug\\*$"
-          "\\*lsp-help\\*$" "\\*lsp session\\*$"
-          "\\*quickrun\\*$"
-	  "\\*One-Key\\*$"
-          "\\*tldr\\*$"
-          "\\*vc-.*\\*$"
-          "^\\*elfeed-entry\\*$"
-          "^\\*macro expansion\\**"
+;;           "\\*Flycheck errors\\*$" " \\*Flycheck checker\\*$"
+;;           "\\*Paradox Report\\*$" "\\*package update results\\*$" "\\*Package-Lint\\*$"
+;;           "\\*[Wo]*Man.*\\*$"
+;;           "\\*ert\\*$" overseer-buffer-mode
+;;           "\\*gud-debug\\*$"
+;;           "\\*lsp-help\\*$" "\\*lsp session\\*$"
+;;           "\\*quickrun\\*$"
+;; 	  "\\*One-Key\\*$"
+;;           "\\*tldr\\*$"
+;;           "\\*vc-.*\\*$"
+;;           "^\\*elfeed-entry\\*$"
+;;           "^\\*macro expansion\\**"
 
-          "\\*TeX Help\\*"
-          "^\\*denote-backlinks to "
-          "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Org Note\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"))
-  :config
-  (setq popper-mode-line '(:eval (propertize "POP" 'face `(:inverse-video t))))
-  ;; Enable indicator in minibuffer
-  (defun my/popper--fit-window-height (win)
-    "Determine the height of popup window WIN by fitting it to the buffer's content."
-    (fit-window-to-buffer
-     win
-     (floor (frame-height) 2)
-     (floor (frame-height) 3)))
-  (setq popper-window-height #'my/popper--fit-window-height)
-  ;; HACK: close popper with `C-g'
-  (defun +popper-close-window-hack (&rest _)
-    "Close popper window via `C-g'."
-    (when (and (called-interactively-p 'interactive)
-               (not (region-active-p))
-               popper-open-popup-alist)
-      (let ((window (caar popper-open-popup-alist)))
-        (when (window-live-p window)
-          (delete-window window)))))
-  (advice-add #'keyboard-quit :before #'+popper-close-window-hack))
+;;           "\\*TeX Help\\*"
+;;           "^\\*denote-backlinks to "
+;;           "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Org Note\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"))
+;;   :config
+;;   (setq popper-mode-line '(:eval (propertize "POP" 'face `(:inverse-video t))))
+;;   ;; Enable indicator in minibuffer
+;;   (defun my/popper--fit-window-height (win)
+;;     "Determine the height of popup window WIN by fitting it to the buffer's content."
+;;     (fit-window-to-buffer
+;;      win
+;;      (floor (frame-height) 2)
+;;      (floor (frame-height) 3)))
+;;   (setq popper-window-height #'my/popper--fit-window-height)
+;;   ;; HACK: close popper with `C-g'
+;;   (defun +popper-close-window-hack (&rest _)
+;;     "Close popper window via `C-g'."
+;;     (when (and (called-interactively-p 'interactive)
+;;                (not (region-active-p))
+;;                popper-open-popup-alist)
+;;       (let ((window (caar popper-open-popup-alist)))
+;;         (when (window-live-p window)
+;;           (delete-window window)))))
+;;   (advice-add #'keyboard-quit :before #'+popper-close-window-hack))
 
 ;; (use-package popper-echo
 ;;   :hook (popper-mode . popper-echo-mode))
 
 ;; https://github.com/roife/.emacs.d/blob/323536f51674ef68cad78f72eef31c8b49795518/core/init-ibuffer.el#L8
-(defun +ibuffer-visit-buffer-in-popper ()
-  (interactive)
-  (if (window-parameter nil 'window-side)
-      (let ((win (selected-window)))
-        (ibuffer-visit-buffer-other-window)
-        (delete-window win))
-    (ibuffer-visit-buffer)))
+;; (defun +ibuffer-visit-buffer-in-popper ()
+;;   (interactive)
+;;   (if (window-parameter nil 'window-side)
+;;       (let ((win (selected-window)))
+;;         (ibuffer-visit-buffer-other-window)
+;;         (delete-window win))
+;;     (ibuffer-visit-buffer)))
 
-(with-eval-after-load 'ibuffer
-  (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper))
+;; (with-eval-after-load 'ibuffer
+;;   (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper))
 
 (use-package winum
   :load-path "packages/emacs-winum/"

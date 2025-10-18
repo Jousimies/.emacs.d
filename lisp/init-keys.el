@@ -242,8 +242,8 @@
 (global-set-key (kbd "C-t") #'my/dict-menu)
 
 ;; Specific Application
-(global-set-key (kbd "C-c g") #'my/bean-generate)
-(global-set-key (kbd "C-c f") #'my/beancount-fava)
+;; (global-set-key (kbd "C-c g") #'my/bean-generate)
+;; (global-set-key (kbd "C-c f") #'my/beancount-fava)
 (global-set-key (kbd "C-c t") #'telega)
 ;; (global-set-key (kbd "s-a p") #'password-store-menu)
 (global-set-key (kbd "C-c e") #'elfeed)
@@ -290,6 +290,84 @@
 ;;               :map calc-alg-map
 ;;               ("C-o" . casual-calc-tmenu))
 ;;   :after (calc))
+
+(transient-define-prefix my/note ()
+  "Notes"
+  [["Open"
+    ("f" "find notes" consult-notes :transient nil)]
+   ["New"
+    ("c" "Child" denote-sequence-new-child-of-current :transient nil)
+    ("s" "Sibling" denote-sequence-new-sibling-of-current :transient nil)
+    ("b" "Bibtex" citar-create-note :transient nil)
+    ]
+   ["Renmae"
+    ("t" "Title" denote-rename-file-title :transient nil)
+    ("k" "Keywords" denote-rename-file-keywords :transient nil)]
+   ["Sort"
+    ("/" "Sort" my/note-sort :transient nil)
+    ]
+   ])
+
+(transient-define-prefix my/note-sort ()
+  "Sort"
+  [[
+    ("d" "Dired" denote-sequence-dired :transient nil)
+    ;("s" "Siblings" denote-sequence-find-dired-siblings :transient nil)
+    ;("c" "Children" denote-sequence-find-dired-children :transient nil)
+    ;("C" "All children" denote-sequence-find-dired-all-children :transient nil)
+    ;("p" "Parent" denote-sequence-find-dired-parent :transient nil)
+    ;("P" "All Parent" denote-sequence-find-dired-all-parents :transient nil)
+    ]])
+
+(global-set-key (kbd "C-c n") #'my/note)
+
+(global-set-key (kbd "C-c f r") #'my/open-recentf)
+
+;; evil keybindings
+
+(evil-set-leader nil (kbd "SPC"))
+
+(evil-define-key 'normal 'global
+  (kbd "<leader>ff") 'find-file
+  (kbd "<leader>fp") 'find-file-at-point
+  (kbd "<leader>fw") 'find-file-other-window
+  (kbd "<leader>fr") 'my/open-recentf
+  (kbd "<leader>fd") 'consult-dir
+  (kbd "<leader>fu") 'update-org-attach-property
+  )
+(evil-define-key 'normal 'global
+  (kbd "<leader>w1") 'winum-select-window-1
+  (kbd "<leader>w2") 'winum-select-window-2
+  (kbd "<leader>w3") 'winum-select-window-3
+  (kbd "<leader>w4") 'winum-select-window-3
+)
+(evil-define-key 'normal 'global
+  (kbd "<leader>sr") 'rg
+  (kbd "<leader>sg") 'my/search-google
+  (kbd "<leader>sw") 'my/search-wikipedia_en
+  (kbd "<leader>sz") 'my/search-zhihu
+)
+
+(evil-define-key 'normal 'global
+  (kbd "<leader><f12>") 'my/agenda-menu
+  )
+(evil-define-key 'normal 'global
+  (kbd "<leader>fn") 'consult-notes
+  (kbd "<leader>nc") 'denote-sequence-new-child-of-current
+  (kbd "<leader>ns") 'denote-sequence-new-sibling-of-current
+  (kbd "<leader>nt") 'denote-rename-file-title
+  (kbd "<leader>nk") 'denote-rename-file-keywords
+  (kbd "<leader>sd") 'denote-sequence-dired
+  )
+
+(evil-define-key 'normal 'global
+  (kbd "<leader>bk") 'kill-current-buffer
+  (kbd "<leader>bb") 'bufferlo-switch-to-buffer
+  )
+(evil-define-key 'normal 'global
+  (kbd "<leader>gs") 'scratch-buffer)
+
+
 
 (provide 'init-keys)
 ;;; init-keys.el ends here
