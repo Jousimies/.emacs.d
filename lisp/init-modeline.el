@@ -308,6 +308,8 @@ Specific to the current window's mode line.")
 			   ;; (:eval (when (and (mode-line-window-selected-p)
 			   ;; 		     persp-mode)
 			   ;; 	    (tab-bar-format-persp)))
+			   (:eval (when (bound-and-true-p evil-local-mode)
+				    evil-mode-line-tag))
                            my/winum
                            (:eval (when repeat-mode
                                     my/modeline-repeat))

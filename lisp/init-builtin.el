@@ -40,10 +40,14 @@
 (add-hook 'after-init-hook 'winner-mode)
 (add-hook 'after-init-hook #'windmove-mode)
 (add-hook 'after-init-hook 'pixel-scroll-mode)
-(add-hook 'after-init-hook #'desktop-save-mode)
+(when (display-graphic-p)
+  (add-hook 'after-init-hook #'desktop-save-mode))
 (add-hook 'after-init-hook #'repeat-mode)
-(add-hook 'prog-mode-hook #'hl-line-mode)
-(add-hook 'package-menu-mode #'hl-line-mode)
+
+(when (display-graphic-p)
+  (add-hook 'prog-mode-hook #'hl-line-mode)
+  (add-hook 'package-menu-mode #'hl-line-mode))
+
 (add-hook 'calendar-today-visible-hook #'calendar-mark-today)
 (add-hook 'diary-mode-hook #'appt-activate)
 (add-hook 'diary-list-entries-hook #'diary-sort-entries)
@@ -117,11 +121,11 @@
 ;; (when is-fullscreen
 ;;   (add-hook 'after-init-hook 'display-battery-mode)
 ;;   (display-time-mode))
-
-(when display-time-mode
+(unless (display-graphic-p)
+  (add-hook 'after-init-hook 'display-time-mode)
   (setopt display-time-default-load-average nil)
   (setopt display-time-mail-string "")
-  (setopt display-time-format "%H:%M")
+  (setopt display-time-format "%H:%M %A %Y-%m-%d")
   (setopt display-time-string-forms
           '((propertize
              (format-time-string

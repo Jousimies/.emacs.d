@@ -691,3 +691,18 @@
 [submodule "packages/evil"]
 	path = packages/evil
 	url = https://github.com/emacs-evil/evil.git
+[submodule "packages/denote-regexp"]
+	path = packages/denote-regexp
+	url = https://git.sr.ht/~swflint/denote-regexp
+[submodule "packages/evil-collection"]
+	path = packages/evil-collection
+	url = https://github.com/emacs-evil/evil-collection.git
+[submodule "packages/evil-surround"]
+	path = packages/evil-surround
+	url = https://github.com/emacs-evil/evil-surround.git
+[submodule "packages/emacs-corfu-terminal"]
+	path = packages/emacs-corfu-terminal
+	url = https://codeberg.org/akib/emacs-corfu-terminal.git
+[submodule "packages/emacs-popon"]
+	path = packages/emacs-popon
+	url = https://codeberg.org/akib/emacs-popon.git

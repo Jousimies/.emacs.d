@@ -79,7 +79,7 @@
   (ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
 
 (use-package denote-explore
-  :load-path "packages/denote-explore/"
+  :load-path "packages/denote-explore/" "packages/denote-regexp/"
   :after denote
   :custom
   (denote-explore-network-filename (expand-file-name "mindmap/denote-network.html" my-galaxy))

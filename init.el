@@ -67,7 +67,9 @@
 (require 'init-buffer)
 
 ;; Better Editor
-(require 'init-evil)
+(unless (display-graphic-p)
+  (require 'init-evil))
+
 (require 'init-edit)
 (require 'init-completion)
 (require 'init-search)

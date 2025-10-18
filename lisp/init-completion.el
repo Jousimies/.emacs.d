@@ -261,6 +261,11 @@ value of the selected COLOR."
   :custom
   (corfu-popupinfo-delay '(0.4 . 0.2)))
 
+(use-package corfu-terminal
+  :load-path "~/.emacs.d/packages/emacs-corfu-terminal/" "~/.emacs.d/packages/emacs-popon/"
+  :config
+  (corfu-terminal-mode 1))
+
 ;; (progn
 ;;   (eval-and-compile (add-to-list 'load-path "/Users/dn/.emacs.d/packages/cape/"))
 ;;   (defvar use-package--warning136

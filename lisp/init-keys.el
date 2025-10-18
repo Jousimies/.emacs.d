@@ -324,48 +324,53 @@
 (global-set-key (kbd "C-c f r") #'my/open-recentf)
 
 ;; evil keybindings
+(when (featurep 'evil)
+  (evil-set-leader nil (kbd "SPC"))
 
-(evil-set-leader nil (kbd "SPC"))
+  (evil-define-key 'normal 'global
+		   (kbd "<leader>ff") 'find-file
+		   (kbd "<leader>fF") 'macos-reveal-in-finder
+		   (kbd "<leader>fp") 'find-file-at-point
+		   (kbd "<leader>fw") 'find-file-other-window
+		   (kbd "<leader>fr") 'my/open-recentf
+		   (kbd "<leader>fd") 'consult-dir
+		   (kbd "<leader>fu") 'update-org-attach-property
+		   )
+  (evil-define-key 'normal 'global
+		   (kbd "<leader>w1") 'winum-select-window-1
+		   (kbd "<leader>w2") 'winum-select-window-2
+		   (kbd "<leader>w3") 'winum-select-window-3
+		   (kbd "<leader>w4") 'winum-select-window-3
+		   )
+  (evil-define-key 'normal 'global
+		   (kbd "<leader>sr") 'rg
+		   (kbd "<leader>sg") 'my/search-google
+		   (kbd "<leader>sw") 'my/search-wikipedia_en
+		   (kbd "<leader>sz") 'my/search-zhihu
+		   )
 
-(evil-define-key 'normal 'global
-  (kbd "<leader>ff") 'find-file
-  (kbd "<leader>fp") 'find-file-at-point
-  (kbd "<leader>fw") 'find-file-other-window
-  (kbd "<leader>fr") 'my/open-recentf
-  (kbd "<leader>fd") 'consult-dir
-  (kbd "<leader>fu") 'update-org-attach-property
-  )
-(evil-define-key 'normal 'global
-  (kbd "<leader>w1") 'winum-select-window-1
-  (kbd "<leader>w2") 'winum-select-window-2
-  (kbd "<leader>w3") 'winum-select-window-3
-  (kbd "<leader>w4") 'winum-select-window-3
-)
-(evil-define-key 'normal 'global
-  (kbd "<leader>sr") 'rg
-  (kbd "<leader>sg") 'my/search-google
-  (kbd "<leader>sw") 'my/search-wikipedia_en
-  (kbd "<leader>sz") 'my/search-zhihu
-)
+  (evil-define-key 'normal 'global
+		   (kbd "<leader><f12>") 'my/agenda-menu
+		   )
+  (evil-define-key 'normal 'global
+		   (kbd "<leader>fn") 'consult-notes
+		   (kbd "<leader>nc") 'denote-sequence-new-child-of-current
+		   (kbd "<leader>ns") 'denote-sequence-new-sibling-of-current
+		   (kbd "<leader>nt") 'denote-rename-file-title
+		   (kbd "<leader>nk") 'denote-rename-file-keywords
+		   (kbd "<leader>sd") 'denote-sequence-dired
+		   )
 
-(evil-define-key 'normal 'global
-  (kbd "<leader><f12>") 'my/agenda-menu
+  (evil-define-key 'normal 'global
+		   (kbd "<leader>bk") 'kill-current-buffer
+		   (kbd "<leader>bb") 'bufferlo-switch-to-buffer
+		   )
+  (evil-define-key 'normal 'global
+		   (kbd "<leader>gs") 'scratch-buffer
+		   (kbd "<leader>gm") 'switch-to-message
+		   (kbd "<leader>gl") 'avy-goto-line
+		   (kbd "<leader>gc") 'my/avy-goto-char-timer)
   )
-(evil-define-key 'normal 'global
-  (kbd "<leader>fn") 'consult-notes
-  (kbd "<leader>nc") 'denote-sequence-new-child-of-current
-  (kbd "<leader>ns") 'denote-sequence-new-sibling-of-current
-  (kbd "<leader>nt") 'denote-rename-file-title
-  (kbd "<leader>nk") 'denote-rename-file-keywords
-  (kbd "<leader>sd") 'denote-sequence-dired
-  )
-
-(evil-define-key 'normal 'global
-  (kbd "<leader>bk") 'kill-current-buffer
-  (kbd "<leader>bb") 'bufferlo-switch-to-buffer
-  )
-(evil-define-key 'normal 'global
-  (kbd "<leader>gs") 'scratch-buffer)
 
 
 
