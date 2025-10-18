@@ -679,3 +679,15 @@
 [submodule "packages/typescript.el"]
 	path = packages/typescript.el
 	url = https://github.com/emacs-typescript/typescript.el.git
+[submodule "packages/emacs-deferred"]
+	path = packages/emacs-deferred
+	url = https://github.com/kiwanami/emacs-deferred.git
+[submodule "packages/emacs-epc"]
+	path = packages/emacs-epc
+	url = https://github.com/kiwanami/emacs-epc.git
+[submodule "packages/emacs-ctable"]
+	path = packages/emacs-ctable
+	url = https://github.com/kiwanami/emacs-ctable.git
+[submodule "packages/evil"]
+	path = packages/evil
+	url = https://github.com/emacs-evil/evil.git
