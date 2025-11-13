@@ -559,9 +559,6 @@
 [submodule "packages/org-superstar-mode"]
 	path = packages/org-superstar-mode
 	url = https://github.com/integral-dw/org-superstar-mode.git
-[submodule "packages/yeetube"]
-	path = packages/yeetube
-	url = https://git.thanosapollo.org/yeetube
 [submodule "packages/ox-pandoc"]
 	path = packages/ox-pandoc
 	url = https://github.com/emacsorphanage/ox-pandoc.git
