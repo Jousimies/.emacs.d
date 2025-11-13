@@ -95,34 +95,34 @@
 ;;                                     (my/beancount-align-transaction)))))
 
 ;; Use double-entry-genertor generate beancount file from source date, provided by Alipay and Wechat.
-;; (defvar my/finance (expand-file-name "finance" my-galaxy))
-;; (defvar my/finance-source-data (expand-file-name "SourceData/" my/finance))
-;; (defvar DEG/config-dir (expand-file-name "Config/" my/finance))
+(defvar my/finance (expand-file-name "finance" my-galaxy))
+(defvar my/finance-source-data (expand-file-name "SourceData/" my/finance))
+(defvar DEG/config-dir (expand-file-name "Config/" my/finance))
 ;; (defvar my/beancount-file (expand-file-name "AllBeans/" my/finance))
-;; (defvar DEG-cli "/opt/homebrew/bin/double-entry-generator")
+(defvar DEG-cli "/opt/homebrew/bin/double-entry-generator")
 
-;; (defvar my/bean-regexp "\\([0-9]\\{8\\}[_-]\\([0-9]\\{6\\}\\|[0-9]\\{8\\}\\)\\)")
+(defvar my/bean-regexp "\\([0-9]\\{8\\}[_-]\\([0-9]\\{6\\}\\|[0-9]\\{8\\}\\)\\)")
 
-;; (defun my/bean-rename-source (file)
-;;   (when (string-match my/bean-regexp file)
-;;     (let ((new-file-path (concat my/finance-source-data "wechat_" (match-string 1 file) ".csv")))
-;;       (rename-file file new-file-path)
-;;       new-file-path)))
+(defun my/bean-rename-source (file)
+  (when (string-match my/bean-regexp file)
+    (let ((new-file-path (concat my/finance-source-data "wechat_" (match-string 1 file) ".csv")))
+      (rename-file file new-file-path)
+      new-file-path)))
 
 ;; According account data get from alipy and wechat, the csv file name has similiar pattern.
 ;; Generaly, I get data at the first day of month, the csv file will as `20240101' or `20240201'.
-;; (defvar finance-source-regexp (concat (format-time-string "%Y") "0[1-2]01"))
+(defvar finance-source-regexp (concat (format-time-string "%Y") "0[1-2]01"))
 
-;; (defun my/bean-generate (file)
-;;   (interactive (list (read-file-name "CSV transaction:"
-;;                                      my/finance-source-data nil nil finance-source-regexp)))
-;;   (let* ((file (if (string-match-p "alipay" file) file (my/bean-rename-source file)))
-;; 		 (prefix (if (string-match-p "alipay" file) "alipay" "wechat"))
-;; 		 (config (concat DEG/config-dir prefix ".yaml"))
-;; 		 (output (concat my/beancount-file (file-name-base file) ".bean"))
-;; 		 (provider (if (string= prefix "alipay") "" "--provider wechat")))
-;; 	(shell-command (format "%s translate --config %s %s --output %s %s"
-;;                            DEG-cli config provider output file))))
+(defun my/bean-generate (file)
+  (interactive (list (read-file-name "CSV transaction:"
+                                     my/finance-source-data nil nil finance-source-regexp)))
+  (let* ((file (if (string-match-p "alipay" file) file (my/bean-rename-source file)))
+		 (prefix (if (string-match-p "alipay" file) "alipay" "wechat"))
+		 (config (concat DEG/config-dir prefix ".yaml"))
+		 (output (concat my/beancount-file (file-name-base file) ".bean"))
+		 (provider (if (string= prefix "alipay") "" "--provider wechat")))
+	(shell-command (format "%s translate --config %s %s --output %s %s"
+                           DEG-cli config provider output file))))
 
 ;;;###autoload
 ;; (defun my/beancount-fava ()

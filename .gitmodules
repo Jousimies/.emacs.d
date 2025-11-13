@@ -100,9 +100,6 @@
 [submodule "packages/emacs-websocket"]
 	path = packages/emacs-websocket
 	url = https://github.com/ahyatt/emacs-websocket.git
-[submodule "packages/beancount-mode"]
-	path = packages/beancount-mode
-	url = https://github.com/beancount/beancount-mode.git
 [submodule "packages/org-appear"]
 	path = packages/org-appear
 	url = https://github.com/awth13/org-appear.git
@@ -310,9 +307,6 @@
 [submodule "packages/go-translate"]
 	path = packages/go-translate
 	url = https://github.com/lorniu/go-translate.git
-[submodule "packages/benchmark-init-el"]
-	path = packages/benchmark-init-el
-	url = https://github.com/dholm/benchmark-init-el.git
 [submodule "packages/tablist"]
 	path = packages/tablist
 	url = https://github.com/emacsorphanage/tablist.git
@@ -448,9 +442,6 @@
 [submodule "packages/emacs-winum"]
 	path = packages/emacs-winum
 	url = https://github.com/deb0ch/emacs-winum.git
-[submodule "packages/on.el"]
-	path = packages/on.el
-	url = https://github.com/ajgrf/on.el.git
 [submodule "packages/macim.el"]
 	path = packages/macim.el
 	url = https://github.com/Jousimies/macim.el.git
@@ -664,9 +655,6 @@
 [submodule "packages/activities.el"]
 	path = packages/activities.el
 	url = https://github.com/alphapapa/activities.el.git
-[submodule "packages/awesome-tray"]
-	path = packages/awesome-tray
-	url = https://github.com/manateelazycat/awesome-tray.git
 [submodule "packages/nano-modeline"]
 	path = packages/nano-modeline
 	url = https://github.com/rougier/nano-modeline.git
