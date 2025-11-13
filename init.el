@@ -79,7 +79,7 @@
 ;; (require 'init-lsp)
 (require 'init-prog)
 (require 'init-shell)
-(require 'init-git)
+;; (require 'init-git)
 
 ;; Note Everything based on org-mode
 (require 'init-org)
