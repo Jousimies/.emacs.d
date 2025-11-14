@@ -1,0 +1,96 @@
+#+TITLE: Jousimies's Personal Emacs Configuration
+#+DATE: [2024-06-02 Sun 09:33]
+
+* Interface Show
+#+ATTR_ORG: :width 800px
+#+ATTR_HTML: :width 1000px
+[[file:src/interface.png]]
+上面的图生成方式如下。如果你打算使用下面的命令，需要对相应的尺寸进行修改。
+#+begin_src bash
+  magick convert -size 2880x1800 xc:black -fill white -draw "path 'M 0,100 C 1000,200 800,1600 2880,1700 V 1800 H 2880 V 0 H 0'" mask.png
+  magick composite dark.png light.png mask.png -alpha Off shot.png
+  rm mask.png
+#+end_src
+* Emacs is Swiss Army Knife
+#+NAME: Awesome emacs
+#+CAPTION: What Emacs can do
+#+ATTR_ORG: :width 500px
+#+ATTR_HTML: :width 500px
+[[file:src/emacscando.png]]
+
+* Packages management
+尝试过的 Emacs 配置方式有多种，有 ~package.el~ ~straight.el~ ~git submodule~ ~borg.el~ 。
+
+2023-02-26 目前升级到 Emacs 29.0.60，使用 git submodule 和 use-package 相结合的方式管理 Packages。
+
+~git submodule~ 可以更好的管理 package 的版本，相比较直接使用 elpa 和 melpa 上面的包，可以追踪上游的状态。
+
+=use-package= 则是 Emacs 内置包。能使用 Emacs 内置包则不使用第三方插件。合理使用 use-package 管理配置可以有效的提高 Emacs 的启动速度。
+
+#+begin_src shell
+  git clone --depth=1 https://github.com/Jousimies/.emacs.d.git -b master
+
+  git submodule update --init --recursive
+
+  git submodule foreach git reset --hard
+
+  git submodule foreach git checkout master
+#+end_src
+
+* Emacs Configuration
+
+** 显示启动时间
+#+begin_src emacs-lisp
+  (defun my/packages-installed (load-path)
+      (let ((my/packages 0))
+        (dolist (path load-path)
+          (when (not (string-prefix-p "/Applications/" path))
+            (setq my/packages (1+ my/packages))))
+        my/packages))
+
+  (add-hook 'window-setup-hook
+              (lambda ()
+                (garbage-collect)
+                (let ((curtime (current-time)))
+                  (with-current-buffer "*scratch*"
+                    (goto-char (point-max))
+                    (insert
+                     (concat "\n"
+                             (format ";; Emacs Startup Times: init:%.03f total:%.03f gc-done:%d"
+                                     (float-time (time-subtract after-init-time before-init-time))
+                                     (float-time (time-subtract curtime before-init-time))
+                                     gcs-done)
+                             "\n"
+                             (format ";; Total Packages Required: %d" (my/packages-installed load-path))
+                             "\n\n"))
+                    90))))
+#+end_src
+* Keybindings
+#+ATTR_ORG: :width 500px
+[[./src/keybinding.png]]
+
+此图片通过 Tex 生成，该文件的模版来自 [[https://github.com/bbatsov/prelude][bbatsov/prelude: Prelude is an enhanced Emacs 25.1+ distribution that should make your experience with Emacs both more pleasant and more powerful.]]
+
+* ELISP learning
+使用 Emacs 有必要学习一些 elisp 知识。
+
+- [[https://manateelazycat.github.io/emacs/2022/11/18/write-emacs-plugin.html][Emacs 插件开发手册]]
+- [[http://smacs.github.io/elisp/][Emacs Lisp 简明教程 - 水木社区Emacs版]]
+- [[https://www.youtube.com/watch?v=RQK_DaaX34Q&list=PLEoMzSkcN8oPQtn7FQEF3D7sroZbXuPZ7][Introduction to Emacs Lisp - Learning Emacs Lisp #1 - YouTube]]
+
+* Acknowledgment
+#+begin_quote
+If I have seen further, it is by standing on the shoulders of giants. ---- Sir Isaac Newton
+#+end_quote
++ https://github.com/bbatsov/prelude
++ https://github.com/syl20bnr/spacemacs
++ https://github.com/seagle0128/.emacs.d
++ https://github.com/hlissner/doom-emacs
++ https://github.com/remacs/remacs
++ https://github.com/redguardtoo/emacs.d
++ https://github.com/manateelazycat/lazycat-emacs
++ https://github.com/purcell/emacs.d
++ https://github.com/MatthewZMD/.emacs.d
++ https://sachachua.com/dotemacs/
++ https://github.com/raxod502/radian
++ https://tecosaur.github.io/emacs-config/config.html

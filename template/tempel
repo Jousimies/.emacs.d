@@ -1,0 +1,713 @@
+;; -*- mode: lisp -*-
+
+fundamental-mode ;; Available everywhere
+
+(today (format-time-string "%Y-%m-%d"))
+(time (format-time-string "%Y-%m-%d %H:%m"))
+
+prog-mode
+
+(fixme (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "FIXME ")
+(todo (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "TODO ")
+(bug (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "BUG ")
+(hack (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "HACK ")
+
+latex-mode
+
+(begin "\\begin{" (s env) "}" > n> r> "\\end{" (s env) "}")
+(frac "\\frac{" p "}{" p "}")
+(enumerate "\\begin{enumerate}\n\\item " r> n> "\\end{enumerate}")
+(itemize "\\begin{itemize}\n\\item " r> n> "\\end{itemize}")
+
+(fig* "\\begin{figure*}[" p "]" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\textwidth]{" p "}" n>
+      "\\caption{" p "} " n>
+      "\\label{fig:" p"}" n
+      "\\end{figure*}")
+
+emacs-lisp-mode
+
+(lambda "(lambda (" p ")" n> r> ")")
+(var "(defvar " p "\n  \"" p "\")")
+(const "(defconst " p "\n  \"" p "\")")
+(custom "(defcustom " p "\n  \"" p "\"" n> ":type '" p ")")
+(face "(defface " p " '((t :inherit " p "))\n  \"" p "\")")
+(group "(defgroup " p " nil\n  \"" p "\"" n> ":group '" p n> ":prefix \"" p "-\")")
+(macro "(defmacro " p " (" p ")\n  \"" p "\"" n> r> ")")
+(fun "(defun " p " (" p ")\n  \"" p "\"" n> r> ")")
+(let "(let (" p ")" n> r> ")")
+(star "(let* (" p ")" n> r> ")")
+(rec "(letrec (" p ")" n> r> ")")
+(command "(defun " p " (" p ")\n  \"" p "\"" n> "(interactive)" n> r> ")")
+
+text-mode
+
+(cut "--8<---------------cut here---------------start------------->8---" n r n
+     "--8<---------------cut here---------------end--------------->8---" n)
+(asciibox "+-" (make-string (length str) ?-) "-+" n
+          "| " (s str)                       " |" n
+          "+-" (make-string (length str) ?-) "-+" n)
+
+rst-mode
+
+(title (make-string (length title) ?=) n (p "Title: " title) n (make-string (length title) ?=) n)
+
+java-mode
+
+(class "public class " (p (file-name-base (or (buffer-file-name) (buffer-name)))) " {" n> r> n "}")
+
+org-mode
+
+(tran_execude "#+transclude: " p " :exclude-elements"  " \"drawer keyword\"" n)
+(tran_content "#+transclude: " p " :only-contents" n)
+(tran_level "#+transclude: " p " :level" p n)
+(tran "#+transclude:  " p n)
+
+(title "#+title: " p n>
+       "#+author: Jousimies" n>
+       "#+language: zh" n n)
+
+(quote "#+begin_quote" n> r> n> "#+end_quote")
+
+(example "#+begin_example" n> r> n> "#+end_example")
+
+(center "#+begin_center" n> r> n> "#+end_center")
+
+(comment "#+begin_comment" n> r> n> "#+end_comment")
+
+(verse "#+begin_verse" n> r> n> "#+end_verse")
+
+(src "#+begin_src " p n> r> n> "#+end_src" :post (org-edit-src-code))
+
+(elisp "#+begin_src emacs-lisp" n> r> n "#+end_src")
+(eq "\\begin{equation}" n> r> n>"\\end{equation}")
+(eq-ali "\\begin{align*}" n> r> n>"\\end{align*}")
+(frac "\\frac{" p "}{" p "}")
+
+(drawio "#+drawio: " p)
+
+(ref "* What is the problem addressed in the paper?" n> n>
+     "# Is this a new problem? If it is a new problem, why does it matter? If it is not an entirely new problem, why does it still matter?" n>
+     "# 这个问题的性质是什么？是一个新的问题吗？如果是一个新问题，它的重要性何在？如果不完全是一个新问题，为什么它“仍然重要”？" n> n>
+     "* What is the scientific hypothesis that the paper is trying to verify?" n>
+     "* What are the key related works and who are the key people working on this topic?" n>
+     "* What is the key of the proposed solution in the paper?" n>
+     "# Summarize the key differentiation of the paper when compared with the previous related works." n>
+     "* Implementation Details or Experimental Setup" n>
+     "# Dataset [Ref], No of Attributes, Environment/Tool and Technique, Compared and validated with Techniques [Name and parameters compared]" n>
+     "# 实施细节/实验设置。 数据集 [Ref]，属性数，环境/工具和技术，与技术进行比较和验证 [名称和参数比较]" n>
+     "# 实验是在什么样的数据集基础上运行的？科学研究结果应当是可以量化、可以复现的，读文章的人是否能接触到文中所用的数据集？" n> n>
+     "* Findings and Conclusions" n>
+     "# 实验结果能否有力地支持假设？" n>
+     "* Limitations and Weaknesses" n>
+     "* Research Contribution" n>
+     "# 用自己的语言总结出来。" n>
+     "* What should/could be done next?" n>
+     "# 下一步可以做什么？这是非常关键的一个问题。" n>)
+(blog
+ "#+TITLE: " p n>
+ "#+DATE: " n>
+ "#+OPTIONS: toc:nil" n>
+ "#+AUTHOR: Jousimies" n)
+
+(hugo
+ "#+DESCRIPTION: " p n>
+ "#+DATE: " p n>
+ "#+AUTHOR: Jousimies" p n>
+ "#+OPTIONS: author:nil" p n>
+ "#+AUTO_EXPORT: t" p n>
+ "#+HUGO_BASE_DIR: ~/Documents/hugo-source" n>
+ "#+HUGO_AUTO_SET_LASTMOD: t" n>
+ "#+HUGO_TAGS:" n>)
+
+(tikz
+ "#+HEADER: :file " p ".png :fit yes :noweb yes :cache yes :output-dir ~/Downloads/" n>
+ "#+HEADER: :imagemagick yes :iminoptions -density 600 :imoutoptions -geometry 400" n>
+ "#+HEADER: :results (if (and (boundp 'backend) (eq backend 'latex)) \"latex\" \"file link\")" " :headers '(\"\\\\usepackage{tikz}\")" n>
+ "#+begin_src latex" n>
+ p n>
+ "#+end_src")
+
+(attr_code
+ "#+ATTR_LATEX: :options frame=lines, fontsize=\small, baselinestretch=1, linenos")
+
+(longtable "#+CAPTION:" p n>
+	   "#+ATTR_ORG: :width 500px" n>
+	   "#+ATTR_LATEX: :environment longtable :align p{0.45\\textwidth} p{0.45\\textwidth} :booktabs t" n>
+	   "#+ATTR_HTML: :width 600px")
+
+(tabularx "#+CAPTION:" p n>
+	  "#+ATTR_ORG: :width 500px" n>
+	  "#+ATTR_LATEX: :environment tabularx :width \\textwidth :align X X :booktabs t" n>
+	  "#+ATTR_HTML: :width 600px")
+
+(caption "#+CAPTION:" p n>
+     "#+ATTR_ORG: :width 500px" n>
+     "#+ATTR_LaTeX: :width 12cm :placement [!htpb]" n>
+     "#+ATTR_HTML: :width 600px")
+
+(2fig  "#+begin_latex" n>
+      "\\begin{figure}[htbp]" n>
+      "\\centering" n>
+      "\\subfigure[" p "]{" n>
+      "\\begin{minipage}[t]{0.5\\linewidth}" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\linewidth]{" p "}" n>
+      "\\end{minipage}" n>
+      "}" n>
+      "\\subfigure[" p "]{" n>
+      "\\begin{minipage}[t]{0.5\\linewidth}" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\linewidth]{" p "}" n>
+      "\\end{minipage}" n>
+      "}" n>
+      "\\centering" n>
+      "\\caption{fig:" p "}" n>
+      "\\end{figure}" n>
+      "#+end_latex")
+
+(equ-latex-env
+ "#+begin_export latex" n>
+ "\\begin{equation}" n>
+ p n>
+ "\\end{equation}" n>
+ "#+end_export" n>)
+
+(fig4 "#+begin_latex" n>
+      "\\begin{figure}[htbp]" n>
+      "\\centering" n>
+      "\\subfigure[" p "]{" n>
+      "\\begin{minipage}[t]{0.5\\linewidth}" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\linewidth]{" p "}" n>
+      "\\end{minipage}}" n>
+      "\\subfigure[" p "]{" n>
+      "\\begin{minipage}[t]{0.5\\linewidth}" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\linewidth]{" p "}" n>
+      "\\end{minipage}}" n>
+      "\\subfigure[" p "]{" n>
+      "\\begin{minipage}[t]{0.5\\linewidth}" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\linewidth]{" p "}" n>
+      "\\end{minipage}}" n>
+      "\\subfigure[" p "]{" n>
+      "\\begin{minipage}[t]{0.5\\linewidth}" n>
+      "\\centering" n>
+      "\\includegraphics[width=\\linewidth]{" p "}" n>
+      "\\end{minipage}}" n>
+      "\\centering" n>
+      "\\caption{fig:" p "}" n>
+      "\\end{figure}" n>
+      "#+end_latex")
+
+python-mode
+
+(plot-header-mac
+ "import pandas as pd" n>
+ "import numpy as np"
+ "import matplotlib.pyplot as plt" n>
+ "# 显示中文字体" n>
+ "plt.rcParams[\"font.family\"] = [\"Source Han Serif SC\"]" n>
+ "# 显示负号" n>
+ "plt.rcParams[\"axes.unicode_minus\"] = False" n>
+ "如果使用希腊字体，插入 latin-font " n>)
+
+(plot-basic
+ "fig,ax = plt.subplots(figsize=(5,5))" n>
+ "ax.set_title('Title')" n>
+ "ax.set_xlabel('xlabel')" n>
+ "ax.set_ylabel('ylabel')" n>
+ "ax.minorticks_on()"  n>
+ "ax.legend(frameon=False)" n>
+ "ax.set_xlim(xmin,xmax)" n>
+ "ax.set_ylim(ymin,ymax)" n>
+ "plt.savefig('figname.svg', dpi=400, bbox_inches='tight')" n>
+ "plt.savefig('figname.png', dpi=400, bbox_inches='tight')")
+
+(plot-scatter
+ "ax.scatter(x1,y1,color='black')")
+
+(plot-plot
+ "ax.plot(x1,y1,color='black', label="label")")
+
+(plot-hline
+ "plt.axhline(y=y_value,ls='--',color='r')")
+
+(plot-latin-font
+ "import matplotlib"
+ "matplotlib.use('pgf')"
+ "# 显示中文字体"
+ "plt.rcParams["font.family"] = ["Source Han Serif SC"]"
+ "# 显示负号"
+ "plt.rcParams["axes.unicode_minus"] = False")
+
+
+visual-basic-mode
+
+(Var
+ "Option Explicit
+
+Public NormalFontSize As Double
+Public NormalSpaceBefore As Double
+Public NormalSpaceAfter As Double
+Public NormalFontFarEast As String
+Public NormalFontAscii As String
+Public NormalFontOther As String
+
+Public Heading1FontSize As Double
+Public Heading1SpaceBefore As Double
+Public Heading1SpaceAfter As Double
+Public Heading1FontFarEast As String
+Public Heading1FontAscii As String
+Public Heading1FontOther As String
+
+Public Heading2FontSize As Double
+Public Heading2SpaceBefore As Double
+Public Heading2SpaceAfter As Double
+Public Heading2FontFarEast As String
+Public Heading2FontAscii As String
+Public Heading2FontOther As String
+
+Public Heading3FontSize As Double
+Public Heading3SpaceBefore As Double
+Public Heading3SpaceAfter As Double
+Public Heading3FontFarEast As String
+Public Heading3FontAscii As String
+Public Heading3FontOther As String
+
+Public HeadingNoNumFontFarEast As String
+Public HeadingNoNumSpaceBefore As Double
+Public HeadingNoNumSpaceAfter As Double
+Public HeadingNoNumFontSize As Double
+Public HeadingNoNumFontAscii As String
+Public HeadingNoNumFontOther As String
+
+Sub SetGlobalVariable()
+    NormalFontSize = "(p "12")"
+    NormalFontFarEast = \""(p "SimSun")"\"
+	NormalFontAscii = \""(p "Times New Roman")"\"
+	NormalFontOther = \""(p "Times New Roman")"\"
+	NormalSpaceBefore = "(p "0")"
+	NormalSpaceAfter = "(p "0")"
+
+	Heading1FontSize = "(p "12")"
+    Heading1FontFarEast = \"SimSun\"
+	Heading1FontAscii = \""(p "Times New Roman")"\"
+	Heading1FontOther = \""(p "Times New Roman")"\"
+	Heading1SpaceBefore = "(p "0")"
+	Heading1SpaceAfter = "(p "0")"
+
+    Heading2FontSize = "(p "12")"
+    Heading2FontFarEast = \"SimSun\"
+	Heading2FontAscii = \""(p "Times New Roman")"\"
+	Heading2FontOther = \""(p "Times New Roman")"\"
+	Heading2SpaceBefore = "(p "0")"
+	Heading2SpaceAfter = "(p "0")"
+
+	Heading3FontSize = "(p "12")"
+    Heading3FontFarEast = \"SimSun\"
+	Heading3FontAscii = \""(p "Times New Roman")"\"
+	Heading3FontOther = \""(p "Times New Roman")"\"
+	Heading3SpaceBefore = "(p "0")"
+	Heading3SpaceAfter = "(p "0")"
+
+    HeadingNoNumFontSize = "(p "12")"
+    HeadingNoNumFontFarEast = \"SimSun\"
+	HeadingNoNumFontAscii = \""(p "Times New Roman")"\"
+	HeadingNoNumFontOther = \""(p "Times New Roman")"\"
+	HeadingNoNumSpaceBefore = "(p "0")"
+	HeadingNoNumSpaceAfter = "(p "0")"
+End Sub
+")
+
+(Layout
+ "Sub SetAllSectionsMargins()
+   Dim sec As Section
+   For Each sec In ActiveDocument.Sections
+	  With sec.PageSetup
+		 .PaperSize = wdPaperA4
+		 .LeftMargin = CentimetersToPoints("(p "2.54")")
+		 .RightMargin = CentimetersToPoints("(p "2.54")")
+		 .TopMargin = CentimetersToPoints("(p "2.54")")
+		 .BottomMargin = CentimetersToPoints("(p "2.54")")
+		 .Gutter = CentimetersToPoints(0)
+		 .HeaderDistance = CentimetersToPoints("(p "2.54")")
+		 .FooterDistance = CentimetersToPoints("(p "2.54")")
+	  End With
+   Next sec
+End Sub
+")
+
+(Normal
+ "Sub SetBodyStyle()
+   Dim styleBody As Style
+   Set styleBody = ActiveDocument.Styles(\"Normal\")
+
+   With styleBody.Font
+	  .NameFarEast = NormalFontFarEast
+	  .NameAscii = NormalFontAscii
+	  .NameOther = NormalFontOther
+	  .Size = NormalFontSize
+
+	  .Bold = False
+	  .Italic = False
+	  .Underline = wdUnderlineNone
+	  .Color = wdColorAutomatic
+   End With
+
+   With styleBody.ParagraphFormat
+	  .Alignment = wdAlignParagraphJustify
+	  .OutlineLevel = wdOutlineLevelBodyText
+
+      .CharacterUnitFirstLineIndent = 2
+	  .LineSpacingRule = "(p "wdLineSpaceExactly")"
+	  .LineSpacing = "(p "20")"
+
+	  .SpaceBefore = NormalSpaceBefore
+	  .SpaceAfter = NormalSpaceAfter
+
+	  .WidowControl = "(p "True")"
+   End With
+End Sub")
+
+(Heading1
+ "Sub SetHeading1Style()
+   Dim styleHeading1 As Style
+   Set styleHeading1 = ActiveDocument.Styles(\"Heading 1\")
+
+   With styleHeading1.Font
+	  .NameFarEast = Heading1FontFarEast
+	  .NameAscii = Heading1FontAscii
+	  .NameOther = Heading1FontOther
+	  .Size = Heading1FontSize
+
+	  .Bold = False
+	  .Italic = False
+	  .Underline = wdUnderlineNone
+	  .Color = wdColorAutomatic
+   End With
+
+   With styleHeading1.ParagraphFormat
+	  .Alignment = "(p "wdAlignParagraphCenter")"
+	  .OutlineLevel = wdOutlineLevel1
+
+	  .LeftIndent = "(p "0")"
+	  .RightIndent = "(p "0")"
+	  .FirstLineIndent = "(p "0")"
+
+      'wdLineSpaceSingle wdLineSpace1pt5 wdLineSpaceDouble wdLineSpaceAtLeast wdLineSpaceExactly wdLineSpaceMultiple
+	  .LineSpacingRule = wdLineSpaceSingle
+      '.LineSpacing = If use multiple line space
+
+	  .SpaceBefore = Heading1SpaceBefore
+	  .SpaceAfter = Heading1SpaceAfter
+
+	  .KeepWithNext = True
+   End With
+End Sub")
+
+(Heading2
+ "Sub SetHeading2Style()
+   Dim styleHeading2 As Style
+   Set styleHeading2 = ActiveDocument.Styles(\"Heading 2\")
+
+   With styleHeading2.Font
+	  .NameFarEast = Heading2FontFarEast
+	  .NameAscii = Heading2FontAscii
+	  .NameOther = Heading2FontOther
+	  .Size = Heading2FontSize
+
+	  .Bold = False
+	  .Italic = False
+	  .Underline = wdUnderlineNone
+	  .Color = wdColorAutomatic
+   End With
+
+   With styleHeading2.ParagraphFormat
+	  .Alignment = "(p "wdAlignParagraphLeft")"
+	  .OutlineLevel = wdOutlineLevel2
+
+	  .LeftIndent = "(p "0")"
+	  .RightIndent = "(p "0")"
+	  .FirstLineIndent = "(p "0")"
+
+	  .LineSpacingRule = wdLineSpaceSingle
+
+	  .SpaceBefore = Heading2SpaceBefore
+	  .SpaceAfter = Heading2SpaceAfter
+
+	  .KeepWithNext = True
+   End With
+End Sub")
+
+(Heading3
+ "Sub SetHeading3Style()
+   Dim styleHeading3 As Style
+   Set styleHeading3 = ActiveDocument.Styles(\"Heading 3\")
+
+   With styleHeading3.Font
+	  .NameFarEast = Heading3FontFarEast
+	  .NameAscii = Heading3FontAscii
+	  .NameOther = Heading3FontOther
+	  .Size = Heading3FontSize
+
+	  .Bold = False
+	  .Italic = False
+	  .Underline = wdUnderlineNone
+	  .Color = wdColorAutomatic
+   End With
+
+   With styleHeading3.ParagraphFormat
+	  .Alignment = "(p "wdAlignParagraphLeft")"
+	  .OutlineLevel = wdOutlineLevel3
+
+	  .LeftIndent = "(p "0")"
+	  .RightIndent = "(p "0")"
+	  .FirstLineIndent = "(p "0")"
+
+	  .LineSpacingRule = wdLineSpaceSingle
+
+	  .SpaceBefore = Heading3SpaceBefore
+	  .SpaceAfter = Heading3SpaceAfter
+
+	  .KeepWithNext = True
+   End With
+End Sub")
+
+(Heading4
+ "Sub SetHeading4Style()
+   Dim styleHeading4 As Style
+   Set styleHeading4 = ActiveDocument.Styles(\"Heading 4\")
+
+   With styleHeading4.Font
+	  .NameFarEast = \"SimHei\"
+	  .NameAscii = \"Times New Roman\"
+	  .NameOther = \"Times New Roman\"
+	  .Size = "(p "16")"
+
+	  .Bold = False
+	  .Italic = False
+	  .Underline = wdUnderlineNone
+	  .Color = wdColorAutomatic
+   End With
+
+   With styleHeading4.ParagraphFormat
+	  .Alignment = "(p "wdAlignParagraphLeft")"
+	  .OutlineLevel = wdOutlineLevel4
+
+	  .LeftIndent = "(p "0")"
+	  .RightIndent = "(p "0")"
+	  .FirstLineIndent = "(p "0")"
+
+	  .LineSpacingRule = wdLineSpaceSingle
+	  .SpaceBefore = "(p "0")"
+	  .SpaceAfter = "(p "0")"
+
+	  .KeepWithNext = True
+   End With
+End Sub")
+
+(HeadingNoNum
+ "Sub SetHeadingnNoNumStyle()
+   Dim styleHeadingNoNum As Style
+   Set styleHeadingNoNum = ActiveDocument.Styles.Add(Name:=\"HeadingNoNum\", Type:=wdStyleTypeParagraph)
+   styleHeadingNoNum.BaseStyle = ActiveDocument.Styles(\"Normal\")
+
+   With styleHeadingNoNum.Font
+	  .NameFarEast = HeadingNoNumFontFarEast
+	  .NameAscii = HeadingNoNumFontAscii
+	  .NameOther = HeadingNoNumFontOther
+	  .Size = HeadingNoNumFontSize
+
+	  .Bold = False
+	  .Italic = False
+	  .Underline = wdUnderlineNone
+	  .Color = wdColorAutomatic
+   End With
+
+   With styleHeadingNoNum.ParagraphFormat
+	  .Alignment = "(p "wdAlignParagraphCenter")"
+	  .OutlineLevel = wdOutlineLevel1
+
+	  .LeftIndent = "(p "0")"
+	  .RightIndent = "(p "0")"
+	  .FirstLineIndent = "(p "0")"
+
+      'wdLineSpaceSingle wdLineSpace1pt5 wdLineSpaceDouble wdLineSpaceAtLeast wdLineSpaceExactly wdLineSpaceMultiple
+	  .LineSpacingRule = wdLineSpaceSingle
+      '.LineSpacing = If use multiple line space
+
+	  .SpaceBefore = "(p "0")"
+	  .SpaceAfter = "(p "0")"
+
+	  .KeepWithNext = True
+   End With
+   CustomizationContext = ActiveDocument
+   KeyBindings.Add KeyCategory:=wdKeyCategoryStyle, _
+			  Command:=\"styleHeadingNoNum\", _
+			  KeyCode:=BuildKeyCode(wdKeyCommand, wdKeyAlt, wdKey5)
+End Sub")
+
+(Figure
+ "Sub SetApplyFigStyle()
+   'Define Figure style
+   Dim styleFig As Style
+
+   Set styleFig = ActiveDocument.Styles.Add(Name:=\"Figure\", Type:=wdStyleTypeParagraph)
+   styleFig.BaseStyle = ActiveDocument.Styles(\"Normal\")
+
+   With styleFig.ParagraphFormat
+	  .LineSpacingRule = wdLineSpaceSingle
+	  .Alignment = wdAlignParagraphCenter
+	  .LeftIndent = 0
+	  .FirstLineIndent = 0
+	  .SpaceBefore = 0
+	  .SpaceAfter = 0
+   End With
+
+   'Set pic wrap type
+   Dim pic1 As InlineShape
+   Dim pic2 As Shape
+
+   For Each pic2 In ActiveDocument.Shapes
+	  pic2.Select
+	  Selection.ShapeRange.ConvertToInlineShape
+   Next pic2
+
+   For Each pic1 In ActiveDocument.InlineShapes
+	  pic1.Select
+	  Selection.Style = ActiveDocument.Styles(\"Figure\")
+   Next pic1
+
+   'Set Fig Caption format
+   Dim SetFigNameStyle As Style
+
+   Set SetFigNameStyle = ActiveDocument.Styles.Add(Name:=\"FigName\", Type:=wdStyleTypeParagraph)
+   SetFigNameStyle.BaseStyle = ActiveDocument.Styles(\"Normal\")
+
+   With SetFigNameStyle.Font
+	  .NameFarEast = \"SimSun\"
+	  .NameAscii = \"Times New Roman\"
+      .NameOther = \"Times New Roman\"
+	  .Size = 10.5
+   End With
+
+   With SetFigNameStyle.ParagraphFormat
+	  .Alignment = wdAlignParagraphCenter
+	  .LineSpacingRule = wdLineSpaceSingle
+	  .LeftIndent = 0
+	  .FirstLineIndent = 0
+	  .SpaceBefore = 0
+	  .SpaceAfter = 0
+   End With
+
+   'Bind key to style
+   CustomizationContext = ActiveDocument
+   KeyBindings.Add KeyCategory:=wdKeyCategoryStyle, _
+			  Command:=\"Figure\", _
+			  KeyCode:=BuildKeyCode(wdKeyCommand, wdKeyAlt, wdKey6)
+   KeyBindings.Add KeyCategory:=wdKeyCategoryStyle, _
+			  Command:=\"FigName\", _
+			  KeyCode:=BuildKeyCode(wdKeyCommand, wdKeyAlt, wdKey7)
+End Sub")
+
+(Table
+"Sub SetTableStyle
+   Dim SetTableStyle As Style
+
+   Set SetTableStyle = ActiveDocument.Styles.Add(Name:=\"Table\", Type:=wdStyleTypeParagraph)
+   SetTableStyle.BaseStyle = ActiveDocument.Styles(\"Normal\")
+
+   With SetTableStyle.Font
+	  .NameFarEast = \"SimSun\"
+	  .NameAscii = \"Times New Roman\"
+      .NameOther = \"Times New Roman\"
+	  .Size = 10.5
+   End With
+
+   With SetTableStyle.ParagraphFormat
+	  .Alignment = wdAlignParagraphCenter
+	  .LineSpacingRule = wdLineSpaceSingle
+
+	  .LeftIndent = 0
+	  .FirstLineIndent = 0
+
+	  .SpaceBefore = 0
+	  .SpaceAfter = 0
+   End With
+End Sub
+
+Sub SetTableNameStyle()
+   Dim SetTableNameStyle As Style
+
+   Set SetTableNameStyle = ActiveDocument.Styles.Add(Name:=\"TableName\", Type:=wdStyleTypeParagraph)
+   SetTableNameStyle.BaseStyle = ActiveDocument.Styles(\"Normal\")
+
+   With SetTableNameStyle.Font
+	  .NameFarEast = \"SimSun\"
+	  .NameAscii = \"Times New Roman\"
+      .NameAscii = \"Times New Roman\"
+	  .Size = 10.5
+   End With
+
+   With SetTableNameStyle.ParagraphFormat
+	  .Alignment = wdAlignParagraphCenter
+
+	  .LeftIndent = 0
+	  .FirstLineIndent = 0
+
+	  .SpaceBefore = 0
+	  .SpaceAfter = 0
+
+	  .LineSpacingRule = wdLineSpaceSingle
+   End With
+   CustomizationContext = ActiveDocument
+   KeyBindings.Add KeyCategory:=wdKeyCategoryStyle, _
+              Command:=\"TableName\", _
+              KeyCode:=BuildKeyCode(wdKeyCommand, wdKeyAlt, wdKey9)
+End Sub
+")
+
+(ParagraphStyleFix
+ "Sub ParagraphStyleFix()
+    Dim findRange As Range
+    Dim replaceStyle As Style
+    Dim findStyle As Style
+
+    Set findStyle = ActiveDocument.Styles(\""(p "文档原始样式")"\")
+    Set replaceStyle = ActiveDocument.Styles(\"Normal\")
+
+    Set findRange = ActiveDocument.Range
+
+    With findRange.Find
+        .ClearFormatting
+        .Style = findStyle
+        .Text = ""
+        .Replacement.ClearFormatting
+        .Replacement.Style = replaceStyle
+        .Forward = True
+        .Wrap = wdFindContinue
+        .Execute Replace:=wdReplaceAll
+    End With
+End Sub")
+
+(RunSub
+ "Sub RunAllSubs()
+   SetGlobalVariable
+   SetAllSectionsMargins
+   SetBodyStyle
+   'ParagraphStyleFix
+   SetHeading1Style
+   SetHeading2Style
+   SetHeading3Style
+   ' SetHeading4Style
+   styleHeadingNoNum
+   SetApplyFigStyle
+End Sub")
+
+beancount-mode
+
+(balance
+ (format-time-string "%Y-%m-%d") " balance " p p " CNY")

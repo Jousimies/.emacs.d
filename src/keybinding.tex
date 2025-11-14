@@ -1,0 +1,249 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.5cm,landscape,a3paper]{geometry}
+\pagestyle{empty}
+
+\usepackage{textcomp}
+\usepackage{multicol}
+\usepackage{menukeys}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{xpatch}
+\usepackage{xparse}
+\usepackage{calc}
+\usepackage{tcolorbox}
+
+\definecolor{default}{HTML}{333333}
+\definecolor{heading}{HTML}{000000}
+\definecolor{command}{HTML}{666666}
+\definecolor{key}{HTML}{268BD2}
+
+\renewcommand\section[1]{\bigskip\par\textbf{\color{heading}\large#1}\smallskip}
+\renewcommand\subsection[1]{\smallskip\par\textbf{\color{heading}#1}}
+\renewcommand\subsubsection[1]{\smallskip\par\textbf{\color{heading}\small#1}}
+\newcommand\humanreadable[1]{{\par\color{default}\small\sffamily#1}}
+\newcommand\meta[1]{\textlangle\textit{#1}\textrangle}
+\newcommand\keyify[1]{\color{key}\ttfamily#1}
+\newlist{keylist}{description}{1}
+\setlist[keylist]{
+  topsep      = 1pt,
+  labelindent = 1pt,
+  itemsep     = -1ex,
+  labelwidth  = \widthof{xxxxxxxxxxxxxx},
+  font        = \keyify,
+  leftmargin  = !,
+  before      = \color{command}\sffamily
+}
+
+\setlength\parindent{0em}
+\setlength\parsep{0ex}
+\renewcommand\baselinestretch{1.2}
+
+\begin{document}
+\author{Jousimies}
+\begin{multicols}{4}
+
+  \setlength{\columnsep}{1cm}
+  \begin{center}
+    \LARGE\color{heading}\textbf{My Emacs Cheat Sheet}
+  \end{center}
+
+  \section{Getting Help in Emacs}
+  \begin{keylist}
+  \item[F1 k \meta{key}] \humanreadable{describe function bound to \meta{key}}
+  \item[F1 b] \humanreadable{list key-bindings for focused buffer}
+  \item[F1 m] \humanreadable{describe mode}
+  \item[F1 l] \humanreadable{show the keys you have pressed}
+  \item[F1 f] \humanreadable{describe function}
+  \item[F1 n] \humanreadable{View Emacs news}
+  \end{keylist}
+
+  \section{Global keymap}
+
+  \subsection{Buffers}
+  \begin{keylist}
+  \item[C-c b s] switch-to-scratch
+  \item[C-c b m] switch-to-message
+
+  \item[C-h] delete-backward-char
+  \item[M-h] backward-kill-word
+
+  \item[C-x C-f] find-file
+  \item[C-c f f] find-file-at-point
+
+  \item[C-x C-b] ibuffer
+  \item[C-x b] bufferlo-switch-to-buffer
+
+  \item[M-p] my/scroll-other-windown-down
+  \item[M-n] my/scroll-other-windown
+
+  \item[C-c b t] tab-switch
+  \item[s-t] tab-new
+  \item[s-w] tab-close
+  \item[s-1..9] tab-bar-select-tab
+
+  \item[M-s-n] persp-switch
+  \item[M-s-w] persp-kill
+  \item[C-c z] persp-mode-prefix-key
+
+  \item[C-`] popper-toggle
+
+  \item[s-z] vundo
+
+  \item[M-+] tempel-complete
+  \item[M-*] tempel-insert
+
+  \item[C-=] er/expand-region
+  \item[C-c C-=] er/contract-region
+
+  \item[M-'] surround-keymap
+
+  \item[C-c f r] recentf-open
+  \item[C-c f a] consult-find
+  \item[C-c f F] macos-reveal-in-finder
+  \item[C-c f o] embark-open-externally
+
+  \item[C-;] embark-act
+  \item[M-.] embark-dwim
+
+  \item[C-c s] rg
+  \item[C-c w] my/search
+
+  \item[C-x d] dired
+  \item[C-c e] my/eww-html-file
+
+  \item[C-x g] magit
+  \item[M-g h] httpd-serve-directory
+  \item[M-g t] git-timemachine
+  \item[M-g b] browse-at-remote
+
+  \item[f2] ebib
+  \item[f5] eshell
+  \item[f10] org-capture
+  %\item[f8] my/copy-idlink
+  \item[f12] org-gtd-engage
+  \item[C-f12] org-agenda
+  \item[s-f12] org-gtd-process-inbox
+  \item[M-f12 c] org-gtd-clarify-item
+  \item[M-f12 C] org-gtd-clarify-agenda-item
+  \item[M-f12 r] org-gtd-review-area-of-focus
+  \item[M-f12 s] org-gtd-review-stuck-projects
+
+  \item[f9] hammy-start
+  \item[C-f9] hammy-stop
+
+  \item[C-c m r] jf/org-link-remove-link
+
+  \item[M-s-z] olivetti-mode
+
+  \item[s-v] my/yank
+  \item[M-=] advance-words-count
+
+  \item[s-n] consult-notes
+  \item[s-s] my/literature-save
+
+  \item[C-c n s] denote-signature
+  \item[C-c n S] denote-subdirectory
+  \item[C-c n r] denote-rename-file-using-front-matter
+  \item[C-c n k] denote-keywords-add
+  \item[C-c n K] denote-keywords-remove
+  \item[C-c n j] denote-journal-extras-new-or-existing-entry
+  \item[C-c n e] ibooks-annot/extract-annotations-to-note
+  \item[C-c n a] my/new-article
+  \item[C-c n m] my/new-meeting
+
+  \item[s-/ g] my/link-grab
+  \item[s-/ l] denote-link
+  \item[s-/ b] denote-backlinks
+  \item[s-/ L] denote-link-insert-links-matching-regexp
+  \item[s-/ s] my/denote-sort-by-sigature
+
+  \item[C-c m o] my/ocr
+
+  \item[C-c n o] citar-open-files
+  \item[C-c n O] citar-open
+  \item[C-c n n] citar-create-note
+
+
+  \item[M-#] my/search-dictionary
+  \item[C-c l i] sdcv-search-input
+  \item[C-c l p] powerthesaurus-lookup-dwim
+  \item[C-c l s] popweb-dict-say-word
+  \item[C-c l S] emacs-azure-tts-sentence
+  \item[C-c l l] my/gts-do-translate
+  \item[C-c l r] dictionary-overlay-toggle
+  \item[C-c l R] dictionary-overlay-render-buffer
+  \item[s-;] jinx-correct
+  \item[C-c l w] writegood-mode
+
+  \item[C-c C] calendar
+  \item[s-T] telega
+  \item[s-E] elfeed
+
+  \end{keylist}
+
+  \section{Local keymaps}
+  \subsection{elfeed-show-mode-map}
+  \begin{keylist}
+  \item[C-c C-f] elfeed-tube-mpv-follow-mode
+  \item[C-c C-w] elfeed-tube-mpv-where
+  \item[m] elfeed-tube-mpv
+  \end{keylist}
+  \subsection{dired-mode-map}
+  \begin{keylist}
+  \item[P] dired-preview
+  \item[r] denote-dired-rename-marked-files
+  \item[RET] open-with-default-app
+  \item[C-RET] my/dired-preview
+  \item[s-.] dired-omit-mode
+  \item[C-c i] image-dired
+  \item[s-/ s] org-store-link
+  \item[C-'] my/org-attach-visit-headline-from-dired
+  \item[/ r] prot-dired-limit-regexp
+  \end{keylist}
+  \subsection{minibuffer-mode-map}
+  \begin{keylist}
+  \item[C-r] consult-history
+  \item[M-j] icomplete-fido-exit
+
+  \item[C-;] embark-act
+  \item[C-c C-;] embark-export
+  \item[C-c C-l] embark-collect
+  \end{keylist}
+  \subsection{popper-mode-map}
+  \begin{keylist}
+  \item[M-<tab>] popper-cycle
+  \item[M-`] popper-toggle-type
+  \end{keylist}
+
+  \subsection{selected-keymap}
+  \begin{keylist}
+  \item[q] selected-off
+  \item[u] upcase-region
+  \item[d] downcase-region
+  \item[c] my/copy-region
+  \item[x] kill-region
+  \item[w] count-words-region
+  \item[i] surround-insert
+  \item[s] my/search
+  \item[t] my/gts-do-translate
+  \item[m] apply-macro-to-region-lines
+  \item[\\] indent-region
+  \item[;] comment-dwim
+  \end{keylist}
+
+  \subsection{symbol-overlay-mode-map}
+  \begin{keylist}
+  \item[M-i] symbol-overlay-put
+  \item[M-I] symbol-overlay-remove-all
+  \item[M-n] symbol-overlay-jump-next
+  \item[M-P] symbol-overlay-jump-prev
+  \item[M-\%] symbol-overlay-query-replace
+  \end{keylist}
+
+\end{multicols}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: fig
+# key: fig
+# --
+#+CAPTION: $1
+#+ATTR_ORG: :width 500px
+#+ATTR_LATEX: :width 10cm :placement [!htpb]
+#+ATTR_HTML: :width 600px
