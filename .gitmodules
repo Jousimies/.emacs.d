@@ -691,3 +691,12 @@
 [submodule "packages/emacs-popon"]
 	path = packages/emacs-popon
 	url = https://codeberg.org/akib/emacs-popon.git
+[submodule "packages/upiv"]
+	path = packages/upiv
+	url = https://forge.arjenwiersma.nl/arjen/upiv.git
+[submodule "packages/casual"]
+	path = packages/casual
+	url = https://github.com/kickingvegas/casual.git
+[submodule "packages/page-break-lines"]
+	path = packages/page-break-lines
+	url = https://github.com/purcell/page-break-lines.git
