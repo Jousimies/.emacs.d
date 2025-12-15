@@ -1390,7 +1390,7 @@ This function requires GNU ls from coreutils installed."
 (use-package eee
   :vc (:url "https://github.com/eval-exec/eee.el"
 	    :rev "main")
-  :bind ("M-g C-g" . ee-lazygit)
+  :bind ("C-x g" . ee-lazygit)
   :custom
   (ee-terminal-command "/opt/homebrew/bin/wezterm"))
 
