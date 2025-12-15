@@ -1,0 +1,10 @@
+
+ - [ ] 
+ - [ ] 
+ - [ ]
+
+#+BEGIN: clocktable :scope agenda :maxlevel 9 :emphasize t :fileskip0 t :hidefiles t :block `(format-time-string "%Y-%m-%d" )`
+#+END:
+
+
+
