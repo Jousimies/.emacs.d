@@ -26,6 +26,22 @@ latex-mode
       "\\label{fig:" p"}" n
       "\\end{figure*}")
 
+yaml-ts-mode
+
+(income "  Income:"p":"\n
+	"    rules:"\n
+	"      - keywords: [" p "]")
+
+(expense "  Expenses:"p":"\n
+	 "    rules:"\n
+	 "      - keywords: [" p "]")
+
+(expense-with-time "  Expenses:"p":"\n
+		   "    rules:"\n
+		   "      - keywords: [" p "]"\n
+		   "        time_range: \"" p "\"")
+
+
 emacs-lisp-mode
 
 (lambda "(lambda (" p ")" n> r> ")")
@@ -58,6 +74,7 @@ java-mode
 (class "public class " (p (file-name-base (or (buffer-file-name) (buffer-name)))) " {" n> r> n "}")
 
 org-mode
+(ec "#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el" n> r> n> "#+end_src")
 
 (tran_execude "#+transclude: " p " :exclude-elements"  " \"drawer keyword\"" n)
 (tran_content "#+transclude: " p " :only-contents" n)
@@ -143,29 +160,29 @@ org-mode
 	  "#+ATTR_HTML: :width 600px")
 
 (caption "#+CAPTION:" p n>
-     "#+ATTR_ORG: :width 500px" n>
-     "#+ATTR_LaTeX: :width 12cm :placement [!htpb]" n>
-     "#+ATTR_HTML: :width 600px")
+	 "#+ATTR_ORG: :width 500px" n>
+	 "#+ATTR_LaTeX: :width 12cm :placement [!htpb]" n>
+	 "#+ATTR_HTML: :width 600px")
 
 (2fig  "#+begin_latex" n>
-      "\\begin{figure}[htbp]" n>
-      "\\centering" n>
-      "\\subfigure[" p "]{" n>
-      "\\begin{minipage}[t]{0.5\\linewidth}" n>
-      "\\centering" n>
-      "\\includegraphics[width=\\linewidth]{" p "}" n>
-      "\\end{minipage}" n>
-      "}" n>
-      "\\subfigure[" p "]{" n>
-      "\\begin{minipage}[t]{0.5\\linewidth}" n>
-      "\\centering" n>
-      "\\includegraphics[width=\\linewidth]{" p "}" n>
-      "\\end{minipage}" n>
-      "}" n>
-      "\\centering" n>
-      "\\caption{fig:" p "}" n>
-      "\\end{figure}" n>
-      "#+end_latex")
+       "\\begin{figure}[htbp]" n>
+       "\\centering" n>
+       "\\subfigure[" p "]{" n>
+       "\\begin{minipage}[t]{0.5\\linewidth}" n>
+       "\\centering" n>
+       "\\includegraphics[width=\\linewidth]{" p "}" n>
+       "\\end{minipage}" n>
+       "}" n>
+       "\\subfigure[" p "]{" n>
+       "\\begin{minipage}[t]{0.5\\linewidth}" n>
+       "\\centering" n>
+       "\\includegraphics[width=\\linewidth]{" p "}" n>
+       "\\end{minipage}" n>
+       "}" n>
+       "\\centering" n>
+       "\\caption{fig:" p "}" n>
+       "\\end{figure}" n>
+       "#+end_latex")
 
 (equ-latex-env
  "#+begin_export latex" n>
@@ -614,7 +631,7 @@ End Sub")
 End Sub")
 
 (Table
-"Sub SetTableStyle
+ "Sub SetTableStyle
    Dim SetTableStyle As Style
 
    Set SetTableStyle = ActiveDocument.Styles.Add(Name:=\"Table\", Type:=wdStyleTypeParagraph)

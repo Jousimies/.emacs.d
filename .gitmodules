@@ -700,3 +700,15 @@
 [submodule "packages/page-break-lines"]
 	path = packages/page-break-lines
 	url = https://github.com/purcell/page-break-lines.git
+[submodule "packages/mermaid-mode"]
+	path = packages/mermaid-mode
+	url = https://github.com/abrochard/mermaid-mode.git
+[submodule "packages/denote-merge"]
+	path = packages/denote-merge
+	url = https://github.com/protesilaos/denote-merge.git
+[submodule "packages/beancount-mode"]
+	path = packages/beancount-mode
+	url = https://github.com/beancount/beancount-mode.git
+[submodule "packages/awesome-tray"]
+	path = packages/awesome-tray
+	url = https://github.com/manateelazycat/awesome-tray.git

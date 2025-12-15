@@ -1,9 +1,5 @@
 ;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
 
-;;; Commentary:
-
-;;; Code:
-
 ;; Profiling since here when in debug-mode
 (when init-file-debug
   (profiler-start 'cpu)
@@ -12,6 +8,7 @@
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 1.0)
+(setq package-enable-at-startup t)
 
 ;; Emacs startup performance
 ;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
@@ -43,15 +40,15 @@
 (when (eq system-type 'darwin)
   (set-exec-path-from-shell-PATH))
 
-;; (setq-default inhibit-redisplay t
-;;               inhibit-message t)
-;; (add-hook 'window-setup-hook
-;;           (lambda ()
-;;             (setq-default inhibit-redisplay nil
-;;                           inhibit-message nil)
-;;             (redisplay)))
-
 ;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
+(setq-default inhibit-redisplay t
+              inhibit-message t)
+(add-hook 'window-setup-hook
+          (lambda ()
+            (setq-default inhibit-redisplay nil
+                          inhibit-message nil)
+            (redisplay)))
+
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(scroll-bar-width . 5) default-frame-alist)
@@ -71,19 +68,10 @@
 ;; Themes
 (when is-fullscreen
   (setq ns-use-native-fullscreen nil))
-(when (featurep 'ns)
-  (defun my/apply-theme (appearance)
-	"Load theme, taking current system APPEARANCE into consideration."
-	(mapc #'disable-theme custom-enabled-themes)
-	(pcase appearance
-      ('light (load-theme 'modus-operandi-deuteranopia t))
-      ('dark (load-theme 'modus-vivendi-deuteranopia t))))
-  (add-hook 'ns-system-appearance-change-functions #'my/apply-theme))
 
 (setq-default mode-line-format nil)
 (setq byte-compile-warnings nil)
+
 (blink-cursor-mode -1)
 
 (fset 'display-startup-echo-area-message 'ignore)
-
-;;; early-init.el ends here
