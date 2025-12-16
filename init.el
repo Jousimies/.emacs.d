@@ -564,7 +564,7 @@
   :vc (:url "https://github.com/roife/macim.el"
 	    :rev "master")
   :hook ((after-init . macim-mode)
-	 (minibuffer-mode . macim-select-ascii)
+	 (minibuffer-setup-mode . macim-select-ascii)
 	 (isearch-mode . macim-select-ascii))
   :custom
   (macim-other "im.rime.inputmethod.Squirrel.Hans")
@@ -1710,6 +1710,11 @@ This function requires GNU ls from coreutils installed."
   :ensure t
   :commands denote-search)
 
+(use-package consult-denote
+  :ensure t
+  :commands consult-denote-find consult-denote-grep
+  :hook (org-mode . consult-denote-mode))
+
 (use-package denote-explore
   :ensure t
   :after denote
@@ -1805,15 +1810,17 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 
 (use-package consult-notes
   :ensure t
-  :commands consult-notes
+  :hook (org-mode . consult-notes-denote-mode)
   :custom
   (consult-notes-file-dir-annotate-function 'consult-notes--file-dir-annotate)
-  (consult-notes-file-dir-sources
-   `(("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
-     ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
-     ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
-     ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
-     ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy)))))
+  (consult-notes-denote-files-function (lambda () (denote-directory-files nil t t)))
+  ;; (consult-notes-file-dir-sources
+  ;;  `(("Denote Notes"  ?d ,(expand-file-name "denote" my-galaxy))
+  ;;    ("Book Reading"  ?b ,(expand-file-name "denote/books" my-galaxy))
+  ;;    ("Meet"  ?m ,(expand-file-name "meeting" my-galaxy))
+  ;;    ("References"  ?r ,(expand-file-name "denote/references" my-galaxy))
+  ;;    ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))))
+  )
 
 (defvar my/dict-map (make-sparse-keymap)
   "Keymap for Dictionary commands.")
@@ -2401,8 +2408,10 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     ("p" "Blog Push" blog-git-auto-push)
     ]
    ["Search"
-    ("f" "Find (Consult)" consult-notes)]]
-  )
+    ("f" "Consult Find" consult-notes)
+    ("F" "Find" consult-denote-find)
+    ("g" "Grep" consult-denote-grep)
+    ]])
 
 ;; 绑定到 C-c n m (Menu)
 (global-set-key (kbd "C-c n") 'my/knowledge-menu)
