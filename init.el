@@ -2461,7 +2461,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   :custom
   (org-gtd-refile-to-any-target nil)
   (org-use-fast-todo-selection 'expert)
-  (org-gtd-clarify-show-horizons t)
+  (org-gtd-clarify-show-horizons 'right)
   (org-gtd-clarify-display-helper-buffer t)
   (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAIT(w)" "|" "DONE(d)" "CNCL(c)")))
   (org-gtd-keyword-mapping '((todo . "TODO")
