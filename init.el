@@ -730,6 +730,7 @@
   :config
   (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
 
+;; 需要使用 C-c C-c 的地方不要使用 popper 管理，会导致按键不识别的问题.
 (use-package popper
   :ensure t
   :bind (("C-`" . popper-toggle)
@@ -789,7 +790,7 @@
 
           "\\*TeX Help\\*"
           "^\\*denote-backlinks to "
-          "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Org Note\\*" "\\*Capture\\*"))
+          "\\*Agenda Commands\\*" "\\*Org Select\\*"))
   :config
   (setq popper-mode-line '(:eval (propertize "POP" 'face `(:inverse-video t))))
   ;; Enable indicator in minibuffer
@@ -2469,7 +2470,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
                              (wait . "WAIT")
 			     (done . "DONE")
                              (canceled . "CNCL")))
-  (org-gtd-areas-of-focus '("Work" "Health" "Growth" "Finances" "Leisure" "Home" "Family" "Social"))
+  (org-gtd-areas-of-focus '("Work" "Professional" "Health" "Growth" "Finances" "Leisure" "Home" "Family" "Social"))
   :config
   (org-edna-mode 1))
 
@@ -2478,6 +2479,10 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 
 (with-eval-after-load 'org
   (setopt org-agenda-files (list org-gtd-directory)))
+
+(with-eval-after-load 'org-agenda
+  (unless (featurep 'org-gtd-agenda-transient)
+    (require 'org-gtd-agenda-transient)))
 
 (with-eval-after-load 'org-gtd-clarify
   (unless (featurep 'org-gtd-organize)

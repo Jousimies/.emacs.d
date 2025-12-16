@@ -1099,6 +1099,7 @@
 #+end_src
 *** popper
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  ;; 需要使用 C-c C-c 的地方不要使用 popper 管理，会导致按键不识别的问题.
   (use-package popper
     :ensure t
     :bind (("C-`" . popper-toggle)
@@ -1158,7 +1159,7 @@
 
             "\\*TeX Help\\*"
             "^\\*denote-backlinks to "
-            "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Org Note\\*" "\\*Capture\\*"))
+            "\\*Agenda Commands\\*" "\\*Org Select\\*"))
     :config
     (setq popper-mode-line '(:eval (propertize "POP" 'face `(:inverse-video t))))
     ;; Enable indicator in minibuffer
@@ -3180,7 +3181,7 @@ Decimal digits after the % specify field width to which to pad.
                                (wait . "WAIT")
   			     (done . "DONE")
                                (canceled . "CNCL")))
-    (org-gtd-areas-of-focus '("Work" "Health" "Growth" "Finances" "Leisure" "Home" "Family" "Social"))
+    (org-gtd-areas-of-focus '("Work" "Professional" "Health" "Growth" "Finances" "Leisure" "Home" "Family" "Social"))
     :config
     (org-edna-mode 1))
 
@@ -3190,11 +3191,32 @@ Decimal digits after the % specify field width to which to pad.
   (with-eval-after-load 'org
     (setopt org-agenda-files (list org-gtd-directory)))
 
+  (with-eval-after-load 'org-agenda
+    (unless (featurep 'org-gtd-agenda-transient)
+      (require 'org-gtd-agenda-transient)))
+
   (with-eval-after-load 'org-gtd-clarify
     (unless (featurep 'org-gtd-organize)
       (require 'org-gtd-organize))
     (define-key org-gtd-clarify-mode-map (kbd "C-c c") #'org-gtd-organize))
 #+end_src
+**** org-gtd 情境标签
+在 GTD 系统中，标签的两个作用：
+- 我可以在哪里执行这个任务？
+  使用情境/Context标签
+- 我需要什么条件才能执行这个任务？
+  资源/Energy/Time，这个不一定需要使用标签进行，使用 org-mode 里的 effort 实现。
+
+情境标签
+| @home     | 只能在家中执行的任务（如：打扫卫生、修理家具）                    |
+| @office   | 只能在工作地点执行的任务（如：处理纸质文件、参加面对面会议）      |
+| @errands  | 只能在户外跑腿时执行的任务（如：去银行、取快递、加油）            |
+| @computer | 任何需要电脑才能完成的任务                                        |
+| @phone    | 任何需要使用手机或电话才能完成的任务（如：打客服电话、回复短信）  |
+| @email    | 任何专门与收发邮件相关的任务（如果您的 org-gtd 文件与邮件集成）   |
+
+
+
 *** Sync org entry with clocking to MacOS Calendar.
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   ;; Sync org entry with clocking to MacOS Calendar.
