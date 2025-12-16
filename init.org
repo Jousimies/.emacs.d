@@ -1750,7 +1750,7 @@ Decimal digits after the % specify field width to which to pad.
 **** org-gtd-count
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (defvar-local my/modeline-gtd
-    '(:eval (when org-gtd-mode
+    '(:eval (when (and org-gtd-mode (not (eq (org-gtd-inbox-count) 0)))
               (propertize (format " GTD[%d]" (org-gtd-inbox-count))
                           'face `(:inherit font-lock-builtin-face)))))
 #+end_src
@@ -3170,21 +3170,17 @@ Decimal digits after the % specify field width to which to pad.
     (setq org-gtd-update-ack "3.0.0")
     (setopt org-gtd-directory (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org" icloud))
     :custom
+    (org-gtd-refile-to-any-target nil)
     (org-use-fast-todo-selection 'expert)
+    (org-gtd-clarify-show-horizons t)
+    (org-gtd-clarify-display-helper-buffer t)
     (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAIT(w)" "|" "DONE(d)" "CNCL(c)")))
     (org-gtd-keyword-mapping '((todo . "TODO")
                                (next . "NEXT")
                                (wait . "WAIT")
   			     (done . "DONE")
                                (canceled . "CNCL")))
-    (org-gtd-areas-of-focus '(
-  			    "Basic Life"
-  			    "Reading" "Skill" "Finances"
-  			    "Hobbies" "Travel" "Amusement"
-  			    "Health" "Fitness" "Mental" "Spirituality"
-  			    "Spouse" "Kids" "Parents" "Sister" "Relative"
-  			    "Work" "Professional" "Social"
-  			    ))
+    (org-gtd-areas-of-focus '("Work" "Health" "Growth" "Finances" "Leisure" "Home" "Family" "Social"))
     :config
     (org-edna-mode 1))
 
@@ -3278,7 +3274,7 @@ Decimal digits after the % specify field width to which to pad.
                `(lambda ()
                   (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
                (lambda (result)
-                 (message "Calendar sync completed: %s" ,summary)))
+                 (message "Calendar sync completed.")))
             ;; Synchronous fallback
             (shell-command-to-string (format "osascript -e %s" (shell-quote-argument apple-script)))
             (message "Calendar sync completed.")))
@@ -3298,6 +3294,13 @@ Decimal digits after the % specify field width to which to pad.
   (add-hook 'org-clock-out-hook #'org2calendar-handle-clock-out)
 #+end_src
 ** transient keybindings
+有些按键不需要使用 transient 重新定义，使用默认的按键即可。
+- ~C-c C-t~ 改变任务的状态
+- ~C-c C-x e~ 设置 effort
+- ~C-c ,~ 设置任务的优先级
+- ~C-c C-z~ 给任务添加笔记
+- ~C-c C-q~ 给任务添加 Tag
+- ~C-c C-w~ refile 任务
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (transient-define-prefix my/agenda-menu ()
     "GTD"
@@ -3317,11 +3320,26 @@ Decimal digits after the % specify field width to which to pad.
       ("c" "Item" org-gtd-clarify-item :transient nil)
       ("C" "Item: agenda" org-gtd-clarify-agenda-item :transient nil)]
      ["Review"
+      ("A" "Archive" org-gtd-archive-completed-items)
       ("o" "Missed Appointments" org-gtd-oops :transient t)
       ;; ("m" "Missed Items" org-gtd-review-missed-items :transient t)
       ("f" "Area of Focus" org-gtd-review-area-of-focus :transient t)
       ;; ("s" "Stucks" my/gtd-stuck-menu :transient t)
       ]])
+
+  (transient-define-prefix my/org-gtd-agenda-transient ()
+    [[:if org-gtd-agenda-transient--show-time-p
+     "Time"
+     ("+" "Defer 1 day" org-gtd-agenda-transient--defer)
+     ("s" "Set date" org-gtd-agenda-transient--set-date)]
+    ["Metadata"
+     ("a" "Area of focus" org-gtd-agenda-transient--area-of-focus)]
+    ["Clarify"
+     ("c" "Clarify (refile)" org-gtd-agenda-transient--clarify-refile)
+     ("C" "Clarify (in place)" org-gtd-agenda-transient--clarify-in-place)]])
+
+  (with-eval-after-load 'org-agenda
+    (define-key org-agenda-mode-map (kbd "C-.") #'my/org-gtd-agenda-transient))
 #+end_src
 * Misc
 ** COMMENT listen

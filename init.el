@@ -1220,7 +1220,7 @@ This function requires GNU ls from coreutils installed."
 	      (propertize (format winum-format (winum-get-number-string)) 'face `(:inverse-video t )))))
 
 (defvar-local my/modeline-gtd
-  '(:eval (when org-gtd-mode
+  '(:eval (when (and org-gtd-mode (not (eq (org-gtd-inbox-count) 0)))
             (propertize (format " GTD[%d]" (org-gtd-inbox-count))
                         'face `(:inherit font-lock-builtin-face)))))
 
@@ -2459,21 +2459,17 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   (setq org-gtd-update-ack "3.0.0")
   (setopt org-gtd-directory (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org" icloud))
   :custom
+  (org-gtd-refile-to-any-target nil)
   (org-use-fast-todo-selection 'expert)
+  (org-gtd-clarify-show-horizons t)
+  (org-gtd-clarify-display-helper-buffer t)
   (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAIT(w)" "|" "DONE(d)" "CNCL(c)")))
   (org-gtd-keyword-mapping '((todo . "TODO")
                              (next . "NEXT")
                              (wait . "WAIT")
 			     (done . "DONE")
                              (canceled . "CNCL")))
-  (org-gtd-areas-of-focus '(
-			    "Basic Life"
-			    "Reading" "Skill" "Finances"
-			    "Hobbies" "Travel" "Amusement"
-			    "Health" "Fitness" "Mental" "Spirituality"
-			    "Spouse" "Kids" "Parents" "Sister" "Relative"
-			    "Work" "Professional" "Social"
-			    ))
+  (org-gtd-areas-of-focus '("Work" "Health" "Growth" "Finances" "Leisure" "Home" "Family" "Social"))
   :config
   (org-edna-mode 1))
 
@@ -2565,7 +2561,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
              `(lambda ()
                 (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
              (lambda (result)
-               (message "Calendar sync completed: %s" ,summary)))
+               (message "Calendar sync completed.")))
           ;; Synchronous fallback
           (shell-command-to-string (format "osascript -e %s" (shell-quote-argument apple-script)))
           (message "Calendar sync completed.")))
@@ -2602,11 +2598,26 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     ("c" "Item" org-gtd-clarify-item :transient nil)
     ("C" "Item: agenda" org-gtd-clarify-agenda-item :transient nil)]
    ["Review"
+    ("A" "Archive" org-gtd-archive-completed-items)
     ("o" "Missed Appointments" org-gtd-oops :transient t)
     ;; ("m" "Missed Items" org-gtd-review-missed-items :transient t)
     ("f" "Area of Focus" org-gtd-review-area-of-focus :transient t)
     ;; ("s" "Stucks" my/gtd-stuck-menu :transient t)
     ]])
+
+(transient-define-prefix my/org-gtd-agenda-transient ()
+  [[:if org-gtd-agenda-transient--show-time-p
+   "Time"
+   ("+" "Defer 1 day" org-gtd-agenda-transient--defer)
+   ("s" "Set date" org-gtd-agenda-transient--set-date)]
+  ["Metadata"
+   ("a" "Area of focus" org-gtd-agenda-transient--area-of-focus)]
+  ["Clarify"
+   ("c" "Clarify (refile)" org-gtd-agenda-transient--clarify-refile)
+   ("C" "Clarify (in place)" org-gtd-agenda-transient--clarify-in-place)]])
+
+(with-eval-after-load 'org-agenda
+  (define-key org-agenda-mode-map (kbd "C-.") #'my/org-gtd-agenda-transient))
 
 (defun my/wallpaper-set ()
   (interactive)
