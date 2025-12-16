@@ -258,7 +258,8 @@
 (setopt url-history-file (expand-file-name "history" url-configuration-directory))
 (setopt url-cookie-file (expand-file-name "cookies" url-configuration-directory))
 
-(setopt minibuffer-completion-auto-choose t)
+(setopt minibuffer-completion-auto-choose t
+	minibuffer-completion-confirm 'confirm)
 (setopt tab-always-indent 'complete
 	tab-first-completion 'word-or-paren-or-punct
 	completion-cycle-threshold 3
