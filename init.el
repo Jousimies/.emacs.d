@@ -2595,6 +2595,27 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 
 (add-hook 'org-clock-out-hook #'org2calendar-handle-clock-out)
 
+(defun org2calendar-sync-at-point ()
+  "Parse the CLOCK line at point and sync it to MacOS Calendar."
+  (interactive)
+  (let* ((element (org-element-at-point))
+         (type (org-element-type element)))
+    (if (eq type 'clock)
+        (let* ((value (org-element-property :value element))
+               (start-ts (org-format-timestamp value "%Y-%m-%d %H:%M:%S"))
+               (end-ts (org-format-timestamp value "%Y-%m-%d %H:%M:%S" t))
+               (summary (org2calendar-get-context-summary))
+               (start (org2calendar--format-for-applescript start-ts))
+               (end (org2calendar--format-for-applescript end-ts)))
+
+          ;; Debug message to verify parsing
+          (message "Syncing: %s from %s to %s" summary start-ts end-ts)
+
+          (if (and start end)
+              (org2calendar-sync start end summary)
+            (user-error "Could not format timestamps for AppleScript")))
+      (user-error "Cursor is not on a CLOCK line (detected: %s)" type))))
+
 (transient-define-prefix my/agenda-menu ()
   "GTD"
   [["Agenda"
