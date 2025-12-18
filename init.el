@@ -1499,6 +1499,26 @@ This function requires GNU ls from coreutils installed."
 ;; org-capture
 (global-set-key (kbd "<f10>") #'org-capture)
 
+(defun get-today-heading-with-subheading (subheading)
+  (save-excursion
+      (goto-char (point-min))
+      (unless (re-search-forward
+               (concat "^\\* " (regexp-quote subheading))
+               nil t)
+        (goto-char (point-max))
+        (insert "* " subheading "\n")))
+  (list subheading))
+
+(defun org-capture-heading-logs ()
+  "Ensure a top-level * Notes :note: heading exists.
+Return OLP for capture."
+  (get-today-heading-with-subheading "Daily logs :Logs:"))
+
+(defun org-capture-heading-notes ()
+  "Ensure a top-level * Notes :note: heading exists.
+Return OLP for capture."
+  (get-today-heading-with-subheading "Fleet Notes :Note:"))
+
 (with-eval-after-load 'org-capture
   (setq org-capture-templates
         `(("i" "Inbox"
@@ -1507,9 +1527,12 @@ This function requires GNU ls from coreutils installed."
           ("l" "Inbox with link"
            entry (file ,(concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/inbox.org"))
            "* %?\n %U\n%a\n" :time-prompt t :tree-type week)
-	  ("d" "Daily log"
-	   entry (file+olp+datetree ,(expand-file-name (format-time-string "logs/daily_review_%Y.org") my-galaxy))
-	   "* %?\n" :tree-type month :jump-to-captured t)
+	  ("f" "Fleet Note"
+	   entry (file+function denote-journal-path-to-new-or-existing-entry org-capture-heading-notes)
+	   "**  %?\n" :kill-buffer t)
+	  ("d" "Daily Log"
+	   entry (file+function denote-journal-path-to-new-or-existing-entry org-capture-heading-logs)
+	   "**  %?\n" :kill-buffer t)
 	  ("r" "Review"
            plain
            (file+olp+datetree ,(expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy))
@@ -1706,6 +1729,15 @@ This function requires GNU ls from coreutils installed."
 (use-package denote-org
   :ensure t
   :after denote)
+
+(use-package denote-journal
+  :ensure t
+  :commands denote-journal-new-or-existing-entry
+  :hook (calendar-mode . denote-journal-calendar-mode)
+  :custom
+  (denote-journal-directory
+   (expand-file-name "journal" denote-directory))
+  (denote-journal-keyword "journal"))
 
 (use-package denote-search
   :ensure t
@@ -2412,6 +2444,9 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     ("f" "Consult Find" consult-notes)
     ("F" "Find" consult-denote-find)
     ("g" "Grep" consult-denote-grep)
+    ]
+   ["Diary"
+    ("j" "Journal" denote-journal-new-or-existing-entry)
     ]])
 
 ;; 绑定到 C-c n m (Menu)
@@ -2497,7 +2532,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 (with-eval-after-load 'org-gtd-clarify
   (unless (featurep 'org-gtd-organize)
     (require 'org-gtd-organize))
-  (define-key org-gtd-clarify-mode-map (kbd "C-c c") #'org-gtd-organize))
+  (define-key org-gtd-clarify-mode-map (kbd "C-c C-c") #'org-gtd-organize))
 
 ;; Sync org entry with clocking to MacOS Calendar.
 
