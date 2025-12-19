@@ -2674,7 +2674,9 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     ;; ("m" "Missed Items" org-gtd-review-missed-items :transient t)
     ("f" "Area of Focus" org-gtd-review-area-of-focus :transient t)
     ;; ("s" "Stucks" my/gtd-stuck-menu :transient t)
-    ]])
+    ]
+   ["Misc"
+    ("s" "Sync Calendar" org2calendar-sync-at-point)]])
 
 (transient-define-prefix my/org-gtd-agenda-transient ()
   [[:if org-gtd-agenda-transient--show-time-p
