@@ -238,6 +238,7 @@
           history-delete-duplicates t))
 
 (setopt save-place-file (expand-file-name "places" cache-directory))
+(setopt save-place-autosave-interval (* 60 5))
 (add-hook 'after-init-hook #'save-place-mode)
 
 (setopt mark-ring-max 128
@@ -296,24 +297,30 @@
 
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 
-(add-hook 'after-init-hook #'icomplete-mode)
+;; (add-hook 'after-init-hook #'icomplete-mode)
 (with-eval-after-load 'icomplete
   (setopt icomplete-delay-completions-threshold 0
 	  icomplete-show-matches-on-no-input t
 	  icomplete-hide-common-prefix nil
 	  icomplete-separator "  |  "
 	  icomplete-max-delay-chars 0
-	  icomplete-compute-delay 0)
+	  icomplete-compute-delay 0
+	  )
 
-  (define-key icomplete-minibuffer-map (kbd "C-n") #'minibuffer-next-completion)
-  (define-key icomplete-minibuffer-map (kbd "C-p") #'minibuffer-previous-completion)
-  (define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-force-complete-and-exit))
+  ;; (define-key icomplete-minibuffer-map (kbd "C-n") #'minibuffer-next-completion)
+  ;; (define-key icomplete-minibuffer-map (kbd "C-p") #'minibuffer-previous-completion)
+  ;; (define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-force-complete-and-exit)
+  )
+
+(add-hook 'after-init-hook #'fido-mode)
 
 (use-package orderless
   :ensure t
   :custom
   (orderless-matching-styles '(orderless-prefixes orderless-regexp))
   (completion-styles '(basic substring initials orderless))
+  (completion-pcm-leading-wildcard t)
+  (completions-format 'vertical)
   (completion-category-defaults nil)
   (completion-category-overrides
    '((file (styles . (basic partial-completion orderless)))
@@ -415,23 +422,8 @@
 
 (add-hook 'after-init-hook #'global-word-wrap-whitespace-mode)
 
-(defun auto-save-delete-trailing-whitespace-except-current-line ()
-  (interactive)
-  (let ((begin (line-beginning-position))
-        (end (point))
-        (buffername (buffer-name (buffer-base-buffer))))
-    (when (not (or (string-prefix-p "inbox" buffername)
-                   (string-match-p "^[0-9]" buffername)))
-      (save-excursion
-        (when (< (point-min) begin)
-          (save-restriction
-            (narrow-to-region (point-min) (1- begin))
-            (delete-trailing-whitespace)))
-        (when (> (point-max) end)
-          (save-restriction
-            (narrow-to-region end (point-max))
-            (delete-trailing-whitespace)))))))
-(add-hook 'before-save-hook #'auto-save-delete-trailing-whitespace-except-current-line)
+(add-hook 'after-init-hook #'whitespace-mode)
+(add-hook 'after-init-hook #'delete-trailing-whitespace-mode)
 
 (with-eval-after-load 'register
   (setopt register-preview-delay 0)
@@ -1313,7 +1305,8 @@ This function requires GNU ls from coreutils installed."
 	  tab-bar-new-tab-to 'rightmost
 	  tab-bar-separator "​"
 	  tab-bar-select-tab-modifiers '(super)
-	  tab-bar-tab-hints t))
+	  tab-bar-tab-hints t
+	  tab-bar-truncate t))
 
 ;; Mac 上需要先安装 tree-sitter 然后再编译 Emacs
 ;; brew install tree-sitter
@@ -2498,11 +2491,11 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 
 (use-package org-gtd
   :vc (:url "https://github.com/Trevoke/org-gtd.el"
-	    :rev "org-gtd-4")
+	    :rev "master")
   :hook (after-init . org-gtd-mode)
   :bind ("<f12>" . my/agenda-menu)
   :init
-  (setq org-gtd-update-ack "3.0.0")
+  (setq org-gtd-update-ack "4.0.0")
   (setopt org-gtd-directory (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org" icloud))
   :custom
   (org-gtd-refile-to-any-target nil)

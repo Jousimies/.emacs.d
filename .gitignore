@@ -3,3 +3,5 @@ elpa
 projects.eld
 nil
 .cache
+build-emacs-macos
+emacs
