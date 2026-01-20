@@ -700,3 +700,15 @@
 [submodule "packages/page-break-lines"]
 	path = packages/page-break-lines
 	url = https://github.com/purcell/page-break-lines.git
+[submodule "/Users/dn/.emacs.d/packages/nerd-icons-dired"]
+	path = /Users/dn/.emacs.d/packages/nerd-icons-dired
+	url = https://github.com/rainstormstudio/nerd-icons-dired.git
+[submodule "/Users/dn/.emacs.d/packages/beancount-mode"]
+	path = /Users/dn/.emacs.d/packages/beancount-mode
+	url = https://github.com/beancount/beancount-mode.git
+[submodule "/Users/dn/.emacs.d/packages/emacs-reader"]
+	path = /Users/dn/.emacs.d/packages/emacs-reader
+	url = https://codeberg.org/divyaranjan/emacs-reader.git
+[submodule "/Users/dn/.emacs.d/packages/corg.el"]
+	path = /Users/dn/.emacs.d/packages/corg.el
+	url = https://github.com/isamert/corg.el.git
