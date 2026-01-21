@@ -900,6 +900,21 @@
   			       (rime-regexp-load-rime)
   			       (advice-add 'orderless-regexp :filter-args #'rime-regexp-filter-args)))))
 #+end_src
+
+*** COMMENT sis
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package sis
+    :load-path "~/.emacs.d/packages/emacs-smart-input-source/"
+    :config
+    (sis-global-cursor-color-mode t)
+    ;; enable the /respect/ mode
+    (sis-global-respect-mode t)
+    ;; enable the /context/ mode for all buffers
+    (sis-global-context-mode t)
+    ;; enable the /inline english/ mode for all buffers
+    (sis-global-inline-mode t))
+#+end_src
+
 *** macim
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
@@ -1544,11 +1559,11 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
           (error "git submodule add failed"))))))
 #+end_src
 
-*** magit
+*** COMMENT magit
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package magit
     :load-path "~/.emacs.d/packages/magit/lisp/" "~/.emacs.d/packages/cond-let/" "~/.emacs.d/packages/with-editor/lisp/" "~/.emacs.d/packages/llama/"
-    :commands magit)
+    :bind ("C-x g" . magit))
 #+end_src
 
 *** eee
@@ -2991,7 +3006,7 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
       (shell-command (format "pandoc %s -o %s --citeproc --csl %s" input output csl))))
 #+end_src
 ** reader
-*** COMMENT pdf-tools
+*** pdf-tools
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package pdf-tools
     :load-path ("packages/pdf-tools/lisp" "packages/tablist")
@@ -3063,7 +3078,7 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
     :load-path "~/.emacs.d/packages/saveplace-pdf-view/"
     :defer t)
 #+end_src
-*** COMMENT pdf-tools modify metadata
+*** pdf-tools modify metadata
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   ;; https://gist.github.com/krisbalintona/f4554bb8e53c27c246ae5e3c4ff9b342
   ;;;###autoload
@@ -3130,8 +3145,8 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
     (nov-unzip-args '("-xC" directory "-f" filename))
     (nov-save-place-file (expand-file-name "nov_place" cache-directory)))
 #+end_src
-*** reader
-配置目前不可用。
+*** COMMENT reader
+目前己经可用，但是功能还有欠缺，等功能完善后再来使用。
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package reader
     :load-path "~/.emacs.d/packages/emacs-reader/"

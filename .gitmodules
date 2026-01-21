@@ -718,3 +718,6 @@
 [submodule "/Users/dn/.emacs.d/packages/cond-let"]
 	path = /Users/dn/.emacs.d/packages/cond-let
 	url = https://github.com/tarsius/cond-let.git
+[submodule "/Users/dn/.emacs.d/packages/emacs-smart-input-source"]
+	path = /Users/dn/.emacs.d/packages/emacs-smart-input-source
+	url = https://github.com/laishulu/emacs-smart-input-source.git
