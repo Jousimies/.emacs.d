@@ -9,6 +9,18 @@
             (setq gc-cons-threshold (* 100 1024 1024)
                   gc-cons-percentage 0.1)))
 
+(use-package gcmh
+  :load-path "~/.emacs.d/packages/gcmh/"
+  :hook (after-init . gcmh-mode)
+  :custom
+  (gc-cons-percentage 0.1)
+  (gcmh-verbose nil)
+  (gcmh-idle-delay 'auto)
+  (gcmh-auto-idle-delay-factor 10)
+  (gcmh-high-cons-threshold #x1000000))
+
+(advice-add 'after-focus-change-function :after 'garbage-collect)
+
 (set-language-environment "UTF-8")	;中文
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -250,8 +262,8 @@
 (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 (add-hook 'minibuffer-setup-hook (lambda ()
   				   (setq-local truncate-lines t)))
-(define-key minibuffer-local-completion-map (kbd "C-n") #'minibuffer-next-completion)
-(define-key minibuffer-local-completion-map (kbd "C-p") #'minibuffer-previous-completion)
+(define-key minibuffer-local-completion-map (kbd "C-n") #'icomplete-forward-completions)
+(define-key minibuffer-local-completion-map (kbd "C-p") #'icomplete-backward-completions)
 
 (defun crm-indicator (args)
   (cons (format "[`completing-read-multiple': %s]  %s"
@@ -267,20 +279,9 @@
 
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 
-(add-hook 'after-init-hook #'icomplete-mode)
-(with-eval-after-load 'icomplete
-  (setopt icomplete-delay-completions-threshold 0
-	  icomplete-show-matches-on-no-input t
-	  icomplete-hide-common-prefix nil
-	  icomplete-separator "  |  "
-	  icomplete-max-delay-chars 0
-	  icomplete-compute-delay 0
-	  )
-
-  ;; (define-key icomplete-minibuffer-map (kbd "C-n") #'minibuffer-next-completion)
-  ;; (define-key icomplete-minibuffer-map (kbd "C-p") #'minibuffer-previous-completion)
-  ;; (define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-force-complete-and-exit)
-  )
+(use-package vertico
+  :load-path "~/.emacs.d/packages/vertico/"
+  :hook (after-init . vertico-mode))
 
 (add-hook 'prog-mode-hook #'completion-preview-mode)
 (add-hook 'org-mode-hook #'completion-preview-mode)
@@ -334,6 +335,10 @@
 (with-eval-after-load 'org
   (require 'consult-org)
   (define-key org-mode-map (kbd "M-g h") #'consult-org-heading))
+
+(use-package marginalia
+  :load-path "~/.emacs.d/packages/marginalia/"
+  :hook (after-init . marginalia-mode))
 
 (use-package consult-dir
   :load-path "~/.emacs.d/packages/consult-dir"
@@ -1883,13 +1888,15 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   :load-path "~/.emacs.d/packages/lexdb/"
   :commands lexdb-search
   :config
+  (require 'lexdb-ldoce)
   (setq lexdb-dictionaries
 	'((:id ldoce
          :type ldoce
          :name "朗文当代"
          :db-file "~/.emacs.d/sdcv-dict/LDOCE6.db"
          :audio-dir "~/dicts/audio/"
-         :priority 1)))
+         :priority 1)
+	  ))
   (lexdb-init))
 
 (use-package osx-dictionary
@@ -2213,109 +2220,6 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 	 (output (concat base ".docx")))
     (shell-command (format "pandoc %s -o %s --citeproc --csl %s" input output csl))))
 
-(use-package pdf-tools
-  :load-path "~/.emacs.d/packages/pdf-tools/"
-  :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
-  :hook ((pdf-tools-enabled . pdf-view-themed-minor-mode)
-         (pdf-view-mode . (lambda ()
-                            (require 'saveplace-pdf-view)))
-	 (pdf-view-mode . pdf-occur-global-minor-mode)
-	 (pdf-view-mode . pdf-history-minor-mode)
-	 (pdf-view-mode . pdf-links-minor-mode)
-	 (pdf-view-mode . pdf-outline-minor-mode)
-	 (pdf-view-mode . pdf-annot-minor-mode)
-	 (pdf-view-mode . pdf-sync-minor-mode))
-  :bind	 ((:map pdf-view-mode-map
-		([remap pdf-misc-print-document] . mrb/pdf-misc-print-pages)))
-  :magic ("%PDF" . pdf-view-mode)
-  :custom
-  (pdf-view-display-size 'fit-width)
-  (pdf-view-use-unicode-ligther nil)
-  (pdf-view-use-scaling t)
-  (pdf-view-use-imagemagick nil)
-  (pdf-annot-activate-created-annotations nil)
-  :config
-  (pdf-tools-install t nil t nil)
-  (define-pdf-cache-function pagelabels)
-  (setq pdf-misc-print-program-executable "/usr/bin/lp")
-  (defun mrb/pdf-misc-print-pages(filename pages &optional interactive-p)
-    "Wrapper for `pdf-misc-print-document` to add page selection support."
-    (interactive (list (pdf-view-buffer-file-name)
-                       (read-string "Page range (empty for all pages): "
-                                    (number-to-string (pdf-view-current-page)))
-                       t) pdf-view-mode)
-    (let ((pdf-misc-print-program-args
-           (if (not (string-blank-p pages))
-               (cons (concat "-P " pages) pdf-misc-print-program-args)
-             pdf-misc-print-program-args)))
-      (pdf-misc-print-document filename)))
-  )
-
-(with-eval-after-load 'pdf-outline
-  (define-key pdf-outline-buffer-mode-map (kbd "RET") #'pdf-outline-follow-link-and-quit))
-
-(with-eval-after-load 'pdf-annot
-  (define-key pdf-annot-edit-contents-minor-mode-map (kbd "RET") #'pdf-annot-edit-contents-commit))
-
-(use-package saveplace-pdf-view
-  :load-path "~/.emacs.d/packages/saveplace-pdf-view/"
-  :defer t)
-
-;; https://gist.github.com/krisbalintona/f4554bb8e53c27c246ae5e3c4ff9b342
-;;;###autoload
-(defun krisb-pdf-tools-metadata-bookmark-section ()
-  "Insert bookmark metadata section."
-  (interactive)
-  (save-excursion
-    (insert "\nBookmarkBegin\nBookmarkTitle: \nBookmarkLevel: 1\nBookmarkPageNumber: "))
-  (move-end-of-line 2))
-
-(defvar-keymap krisb-pdf-tools-metadata-mode-map
-  :doc "Mode map for `krisb-pdf-tools-metadata-mode'."
-  "C-c C-b" #'krisb-pdf-tools-metadata-bookmark-section)
-
-(define-derived-mode krisb-pdf-tools-metadata-mode fundamental-mode "Metadata"
-  "Major mode for altering and viewing PDF metadata."
-  :interactive t
-  (use-local-map krisb-pdf-tools-metadata-mode-map))
-
-;;;###autoload
-(defun krisb-pdf-tools-metadata-modify (pdf-file)
-  "Modify PDF-FILE metadata."
-  (interactive (list (buffer-file-name)))
-  (unless (string= "pdf" (file-name-extension pdf-file))
-    (user-error "File is not a PDF!"))
-  (unless (executable-find "pdftk")
-    (error "System executable `pdftk' not found. Please install executable on filesystem to proceed"))
-  (let* ((pdf-name (file-name-sans-extension (file-name-nondirectory pdf-file)))
-         (buf-name (concat "*pdf-tools metadata: " pdf-name))
-         (metadata-file (concat "/tmp/pdf-tools-metadata--" pdf-name))
-         (temp-pdf (make-temp-file "/tmp/pdf-tools-metadata--temp-pdf"))
-         (metadata-dump-command (concat "pdftk \"" pdf-file "\" dump_data"))
-         (metadata-update-command
-          (concat "pdftk \"" pdf-file "\" update_info \"" metadata-file "\" output \"" temp-pdf "\""))
-         (commit-func (lambda ()
-                        "Commit the changes to PDF metadata."
-                        (interactive)
-                        (with-current-buffer buf-name
-                          (widen)
-                          (write-region (point-min) (point-max) metadata-file))
-                        (shell-command metadata-update-command "*pdf-tools metadata: CLI output")
-                        (kill-buffer buf-name)
-                        ;; Have to do it this way since `pdftk' does not allow
-                        ;; having the output file be the input file
-                        (rename-file temp-pdf pdf-file t)
-                        (message "Updated metadata!"))))
-    (save-buffer)
-    (with-current-buffer (get-buffer-create buf-name)
-      (insert (shell-command-to-string metadata-dump-command))
-      (goto-char (point-min))
-      (krisb-pdf-tools-metadata-mode))
-    (pop-to-buffer buf-name)
-    (define-key krisb-pdf-tools-metadata-mode-map (kbd "C-c C-c") commit-func)
-    (set-buffer-modified-p nil)
-    (message (substitute-command-keys "Press `C-c C-c' when finished editing PDF metadata. To see keybinds, press \\[describe-mode]"))))
-
 (use-package nov
   :load-path "~/.emacs.d/packages/nov.el/"
   :mode (".epub" . nov-mode)
@@ -2323,6 +2227,15 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   (nov-unzip-program (executable-find "bsdtar"))
   (nov-unzip-args '("-xC" directory "-f" filename))
   (nov-save-place-file (expand-file-name "nov_place" cache-directory)))
+
+(use-package reader
+  :load-path "~/.emacs.d/packages/emacs-reader/"
+  :custom
+  (reader-default-fit 'reader-fit-to-width))
+
+(with-eval-after-load 'reader
+  (unless (featurep 'reader-outline)
+    (require 'reader-outline)))
 
 (use-package ibooks-annot
   :load-path "~/.emacs.d/packages/ibooks-annot.el/"

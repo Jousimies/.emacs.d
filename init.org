@@ -140,7 +140,7 @@
                     gc-cons-percentage 0.1)))
 #+end_src
 
-#+begin_src emacs-lisp :tangle nil
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package gcmh
     :load-path "~/.emacs.d/packages/gcmh/"
     :hook (after-init . gcmh-mode)
@@ -355,13 +355,6 @@
     :load-path "~/.emacs.d/packages/nerd-icons-completion/"
     :hook (minibuffer-setup . nerd-icons-completion-mode))
 #+end_src
-#+begin_src emacs-lisp :tangle nil
-(use-package nerd-icons-corfu
-    :ensure t
-    :after corfu
-    :config
-    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
-#+end_src
 *** cursor type
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (add-hook 'input-method-activate-hook (lambda ()
@@ -501,8 +494,8 @@
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
   (add-hook 'minibuffer-setup-hook (lambda ()
     				   (setq-local truncate-lines t)))
-  (define-key minibuffer-local-completion-map (kbd "C-n") #'minibuffer-next-completion)
-  (define-key minibuffer-local-completion-map (kbd "C-p") #'minibuffer-previous-completion)
+  (define-key minibuffer-local-completion-map (kbd "C-n") #'icomplete-forward-completions)
+  (define-key minibuffer-local-completion-map (kbd "C-p") #'icomplete-backward-completions)
 #+end_src
 
 ** read multiple strings with completion
@@ -523,7 +516,14 @@
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 #+end_src
-** icomplete
+** vertico
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package vertico
+    :load-path "~/.emacs.d/packages/vertico/"
+    :hook (after-init . vertico-mode))
+#+end_src
+
+** COMMENT icomplete
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (add-hook 'after-init-hook #'icomplete-mode)
   (with-eval-after-load 'icomplete
@@ -606,10 +606,10 @@
     (define-key org-mode-map (kbd "M-g h") #'consult-org-heading))
 #+end_src
 
-#+begin_src emacs-lisp :tangle "~/.emacs.d/packages/init.el"
-(use-package marginalia
-  :ensure t
-  :hook (minibuffer-setup . marginalia-mode))
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package marginalia
+    :load-path "~/.emacs.d/packages/marginalia/"
+    :hook (after-init . marginalia-mode))
 #+end_src
 *** consult-dir
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
@@ -2595,13 +2595,15 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
     :load-path "~/.emacs.d/packages/lexdb/"
     :commands lexdb-search
     :config
+    (require 'lexdb-ldoce)
     (setq lexdb-dictionaries
   	'((:id ldoce
            :type ldoce
            :name "朗文当代"
            :db-file "~/.emacs.d/sdcv-dict/LDOCE6.db"
            :audio-dir "~/dicts/audio/"
-           :priority 1)))
+           :priority 1)
+  	  ))
     (lexdb-init))
 #+end_src
 
@@ -2989,32 +2991,58 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
       (shell-command (format "pandoc %s -o %s --citeproc --csl %s" input output csl))))
 #+end_src
 ** reader
-*** pdf-tools
+*** COMMENT pdf-tools
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package pdf-tools
-    :load-path "~/.emacs.d/packages/pdf-tools/"
+    :load-path ("packages/pdf-tools/lisp" "packages/tablist")
+    :commands pdf-tools-install
     :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
+    :magic ("%PDF" . pdf-view-mode)
+    :config
+    (pdf-tools-install t nil t nil))
+
+  (use-package pdf-view
     :hook ((pdf-tools-enabled . pdf-view-themed-minor-mode)
            (pdf-view-mode . (lambda ()
-                              (require 'saveplace-pdf-view)))
-  	 (pdf-view-mode . pdf-occur-global-minor-mode)
-  	 (pdf-view-mode . pdf-history-minor-mode)
-  	 (pdf-view-mode . pdf-links-minor-mode)
-  	 (pdf-view-mode . pdf-outline-minor-mode)
-  	 (pdf-view-mode . pdf-annot-minor-mode)
-  	 (pdf-view-mode . pdf-sync-minor-mode))
-    :bind	 ((:map pdf-view-mode-map
-  		([remap pdf-misc-print-document] . mrb/pdf-misc-print-pages)))
-    :magic ("%PDF" . pdf-view-mode)
-    :custom
-    (pdf-view-display-size 'fit-width)
-    (pdf-view-use-unicode-ligther nil)
-    (pdf-view-use-scaling t)
-    (pdf-view-use-imagemagick nil)
-    (pdf-annot-activate-created-annotations nil)
+                             (require 'saveplace-pdf-view))))
     :config
-    (pdf-tools-install t nil t nil)
-    (define-pdf-cache-function pagelabels)
+    (setq pdf-view-display-size 'fit-width)
+    (setq pdf-view-use-unicode-ligther nil)
+    (setq pdf-view-use-scaling t)
+    (setq pdf-view-use-imagemagick nil)
+    (setq pdf-annot-activate-created-annotations nil))
+
+  (use-package pdf-occur
+    :hook (pdf-view-mode . pdf-occur-global-minor-mode))
+
+  (use-package pdf-history
+    :hook (pdf-view-mode . pdf-history-minor-mode))
+
+  (use-package pdf-links
+    :hook (pdf-view-mode . pdf-links-minor-mode))
+
+  (use-package pdf-outline
+    :hook (pdf-view-mode . pdf-outline-minor-mode)
+    :bind (:map pdf-outline-buffer-mode-map
+                ("RET" . pdf-outline-follow-link-and-quit)))
+
+  (use-package pdf-annot
+    :hook (pdf-view-mode . pdf-annot-minor-mode)
+    :bind (:map pdf-annot-edit-contents-minor-mode-map
+                ("<return>" . pdf-annot-edit-contents-commit)
+                ("<S-return>" . newline)))
+
+  (use-package pdf-sync
+    :hook (pdf-view-mode . pdf-sync-minor-mode))
+
+  (use-package pdf-cache
+    :after pdf-view
+    :config
+    (define-pdf-cache-function pagelabels))
+
+  (use-package pdf-misc
+    :after pdf-view
+    :config
     (setq pdf-misc-print-program-executable "/usr/bin/lp")
     (defun mrb/pdf-misc-print-pages(filename pages &optional interactive-p)
       "Wrapper for `pdf-misc-print-document` to add page selection support."
@@ -3026,20 +3054,16 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
              (if (not (string-blank-p pages))
                  (cons (concat "-P " pages) pdf-misc-print-program-args)
                pdf-misc-print-program-args)))
-        (pdf-misc-print-document filename)))
-    )
+        (pdf-misc-print-document filename))))
 
-  (with-eval-after-load 'pdf-outline
-    (define-key pdf-outline-buffer-mode-map (kbd "RET") #'pdf-outline-follow-link-and-quit))
-
-  (with-eval-after-load 'pdf-annot
-    (define-key pdf-annot-edit-contents-minor-mode-map (kbd "RET") #'pdf-annot-edit-contents-commit))
+  (with-eval-after-load 'pdf-view
+    (define-key pdf-view-mode-map [remap pdf-misc-print-document] #'mrb/pdf-misc-print-pages))
 
   (use-package saveplace-pdf-view
     :load-path "~/.emacs.d/packages/saveplace-pdf-view/"
     :defer t)
 #+end_src
-*** pdf-tools modify metadata
+*** COMMENT pdf-tools modify metadata
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   ;; https://gist.github.com/krisbalintona/f4554bb8e53c27c246ae5e3c4ff9b342
   ;;;###autoload
@@ -3106,11 +3130,17 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
     (nov-unzip-args '("-xC" directory "-f" filename))
     (nov-save-place-file (expand-file-name "nov_place" cache-directory)))
 #+end_src
-*** COMMENT reader
+*** reader
 配置目前不可用。
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package reader
-    :load-path "~/.emacs.d/packages/emacs-reader/")
+    :load-path "~/.emacs.d/packages/emacs-reader/"
+    :custom
+    (reader-default-fit 'reader-fit-to-width))
+
+  (with-eval-after-load 'reader
+    (unless (featurep 'reader-outline)
+      (require 'reader-outline)))
 #+end_src
 ** ibook annot extract
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
