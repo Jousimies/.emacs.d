@@ -81,6 +81,7 @@ org-mode
 (src "#+begin_src " p n> r> n> "#+end_src" :post (org-edit-src-code))
 
 (elisp "#+begin_src emacs-lisp" n> r> n "#+end_src")
+(ec "#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el" n> r> n "#+end_src" n)
 (eq "\\begin{equation}" n> r> n>"\\end{equation}")
 (eq-ali "\\begin{align*}" n> r> n>"\\end{align*}")
 (frac "\\frac{" p "}{" p "}")

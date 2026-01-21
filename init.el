@@ -46,6 +46,30 @@
 
 (defvar cache-directory (expand-file-name ".cache" user-emacs-directory))
 
+(use-package dashboard
+  :load-path "~/.emacs.d/packages/emacs-dashboard/"
+  :demand t
+  :hook (dashboard-mode . (lambda ()
+			    (setq-local display-line-numbers nil)))
+  :bind (:map dashboard-mode-map
+			  ("n" . dashboard-next-line)
+			  ("p" . dashboard-previous-line))
+  :custom
+  (dashboard-startup-banner (expand-file-name "src/bitmap.png" user-emacs-directory))
+  (dashboard-image-banner-max-width 500)
+  (dashboard-icon-type 'nerd-icons)
+  (dashboard-set-file-icons t)
+  (dashboard-center-content t)
+  (dashboard-set-init-info t)
+  (dashboard-week-agenda nil)
+  (dashboard-set-footer nil)
+  (dashboard-items '((recents  . 5)
+                     (bookmarks . 5)
+                     (registers . 5)))
+  (dashboard-banner-logo-title "EXPLORE THE WORLD, FULFILL YOUR BEING.")
+  :config
+  (dashboard-setup-startup-hook))
+
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'org-mode-hook #'display-line-numbers-mode)
 (with-eval-after-load 'display-line-numbers
@@ -308,6 +332,7 @@
 
 ;; Bind org-mode keys safely
 (with-eval-after-load 'org
+  (require 'consult-org)
   (define-key org-mode-map (kbd "M-g h") #'consult-org-heading))
 
 (use-package consult-dir
@@ -333,6 +358,7 @@
 (use-package cape
   :load-path "~/.emacs.d/packages/cape"
   :bind ("C-c p" . cape-prefix-map)
+  :commands cape-elisp-block
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
@@ -1005,6 +1031,74 @@ This function requires GNU ls from coreutils installed."
 (global-set-key (kbd "M-s s") #'my/search-scholar)
 (global-set-key (kbd "M-s S") #'my/search-semanticscholar)
 
+(defun my/git-submodule-add (repo-url &optional dest-dir)
+  "Add a git submodule with depth=1 into DEST-DIR.
+
+REPO-URL is the Git repository URL.
+DEST-DIR defaults to ~/.emacs.d/packages/."
+  (interactive
+   (list
+    (read-string "Git repo URL: ")
+    (read-directory-name
+     "Destination directory: "
+     (expand-file-name "packages/" user-emacs-directory))))
+
+  (let* ((default-directory (file-name-as-directory user-emacs-directory))
+         (repo-name (file-name-base (directory-file-name repo-url)))
+         (target (expand-file-name repo-name dest-dir))
+         (buffer (get-buffer-create "*git submodule add*")))
+    (unless (file-directory-p dest-dir)
+      (make-directory dest-dir t))
+
+    (with-current-buffer buffer
+      (erase-buffer))
+
+    (let ((exit-code
+           (process-file
+            "git" nil buffer t
+            "submodule" "add" "--depth=1"
+            repo-url target)))
+      (if (zerop exit-code)
+          (message "Submodule added: %s" target)
+        (progn
+          (display-buffer buffer)
+          (error "git submodule add failed"))))))
+
+(use-package magit
+  :load-path "~/.emacs.d/packages/magit/lisp/" "~/.emacs.d/packages/cond-let/" "~/.emacs.d/packages/with-editor/lisp/" "~/.emacs.d/packages/llama/"
+  :commands magit)
+
+(use-package eee
+  :load-path "~/.emacs.d/packages/eee.el/"
+  :bind ("C-x g" . ee-lazygit)
+  :custom
+  (ee-terminal-command "/opt/homebrew/bin/wezterm"))
+
+(with-eval-after-load 'eee
+  (defun start-wezterm-at-current-directory ()
+    "Start Wezterm at the current buffer's directory."
+    (interactive)
+    (let ((default-directory (or default-directory "~"))) ; 默认目录为当前 buffer 的目录
+      (start-process "wezterm" nil "wezterm" "start" "--cwd" default-directory)))
+
+  (defun switch-to-wezterm ()
+    "Switch to WezTerm terminal."
+    (interactive)
+    (do-applescript "
+    tell application \"WezTerm\"
+      activate
+    end tell"))
+
+  (advice-add 'start-wezterm-at-current-directory :after
+              (lambda (&rest _)
+		(sleep-for 0.1)
+		(switch-to-wezterm)))
+
+  (advice-add 'ee-run :after
+              (lambda (&rest _)
+		(sleep-for 0.1)
+		(switch-to-wezterm))))
+
 (use-package browse-at-remote
   :load-path "~/.emacs.d/packages/browse-at-remote/"
   :bind ("M-g b" . browse-at-remote))
@@ -1250,6 +1344,7 @@ This function requires GNU ls from coreutils installed."
 
 (use-package tempel
   :load-path "~/.emacs.d/packages/tempel/"
+  :commands tempel-expand
   :bind (("M-+" . tempel-complete)
          ("M-*" . tempel-insert)
 	 (:map tempel-map
@@ -1302,37 +1397,6 @@ This function requires GNU ls from coreutils installed."
   :custom
   (vterm-kill-buffer-on-exit t)
   (vterm-max-scrollback 5000))
-
-(use-package eee
-  :load-path "~/.emacs.d/packages/eee.el/"
-  :bind ("C-x g" . ee-lazygit)
-  :custom
-  (ee-terminal-command "/opt/homebrew/bin/wezterm"))
-
-(with-eval-after-load 'eee
-  (defun start-wezterm-at-current-directory ()
-    "Start Wezterm at the current buffer's directory."
-    (interactive)
-    (let ((default-directory (or default-directory "~"))) ; 默认目录为当前 buffer 的目录
-      (start-process "wezterm" nil "wezterm" "start" "--cwd" default-directory)))
-
-  (defun switch-to-wezterm ()
-    "Switch to WezTerm terminal."
-    (interactive)
-    (do-applescript "
-    tell application \"WezTerm\"
-      activate
-    end tell"))
-
-  (advice-add 'start-wezterm-at-current-directory :after
-              (lambda (&rest _)
-		(sleep-for 0.1)
-		(switch-to-wezterm)))
-
-  (advice-add 'ee-run :after
-              (lambda (&rest _)
-		(sleep-for 0.1)
-		(switch-to-wezterm))))
 
 (with-eval-after-load 'org
   (setopt org-ellipsis " ⇲"
@@ -1513,6 +1577,8 @@ Return OLP for capture."
 	  org-refile-active-region-within-subtree t))
 
 (with-eval-after-load 'org-clock
+  (add-to-list 'warning-suppress-types
+             '(files . "org-clock-save.el"))
   (org-clock-persistence-insinuate)
   (setopt org-clock-persist-file (expand-file-name "org-clock-save.el" cache-directory)
 	  org-clock-history-length 23
@@ -1812,6 +1878,19 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 ;; 针对 Mac 的原生词典 (可选)
 (when IS-MAC
   (define-key my/dict-map (kbd "m") #'osx-dictionary-search-pointer))
+
+(use-package lexdb
+  :load-path "~/.emacs.d/packages/lexdb/"
+  :commands lexdb-search
+  :config
+  (setq lexdb-dictionaries
+	'((:id ldoce
+         :type ldoce
+         :name "朗文当代"
+         :db-file "~/.emacs.d/sdcv-dict/LDOCE6.db"
+         :audio-dir "~/dicts/audio/"
+         :priority 1)))
+  (lexdb-init))
 
 (use-package osx-dictionary
   :load-path "~/.emacs.d/packages/osx-dictionary.el/"

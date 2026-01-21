@@ -131,6 +131,7 @@
   (add-to-list 'load-path "~/.emacs.d/packages/f.el/")
   (add-to-list 'load-path "~/.emacs.d/packages/s.el/")
 #+end_src
+
 ** Better garbage collection
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (add-hook 'emacs-startup-hook
@@ -205,10 +206,10 @@
 
 ** Display and Appearance
 
-*** COMMENT dashboard
+*** dashboard
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package dashboard
-    :ensure t
+    :load-path "~/.emacs.d/packages/emacs-dashboard/"
     :demand t
     :hook (dashboard-mode . (lambda ()
   			    (setq-local display-line-numbers nil)))
@@ -601,6 +602,7 @@
 
   ;; Bind org-mode keys safely
   (with-eval-after-load 'org
+    (require 'consult-org)
     (define-key org-mode-map (kbd "M-g h") #'consult-org-heading))
 #+end_src
 
@@ -635,10 +637,12 @@
 #+end_src
 ** Cape
 补全后端扩展
+
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package cape
     :load-path "~/.emacs.d/packages/cape"
     :bind ("C-c p" . cape-prefix-map)
+    :commands cape-elisp-block
     :init
     (add-hook 'completion-at-point-functions #'cape-dabbrev)
     (add-hook 'completion-at-point-functions #'cape-file)
@@ -1503,6 +1507,83 @@
 #+end_src
 
 ** Git
+
+*** git add submodule
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+(defun my/git-submodule-add (repo-url &optional dest-dir)
+  "Add a git submodule with depth=1 into DEST-DIR.
+
+REPO-URL is the Git repository URL.
+DEST-DIR defaults to ~/.emacs.d/packages/."
+  (interactive
+   (list
+    (read-string "Git repo URL: ")
+    (read-directory-name
+     "Destination directory: "
+     (expand-file-name "packages/" user-emacs-directory))))
+
+  (let* ((default-directory (file-name-as-directory user-emacs-directory))
+         (repo-name (file-name-base (directory-file-name repo-url)))
+         (target (expand-file-name repo-name dest-dir))
+         (buffer (get-buffer-create "*git submodule add*")))
+    (unless (file-directory-p dest-dir)
+      (make-directory dest-dir t))
+
+    (with-current-buffer buffer
+      (erase-buffer))
+
+    (let ((exit-code
+           (process-file
+            "git" nil buffer t
+            "submodule" "add" "--depth=1"
+            repo-url target)))
+      (if (zerop exit-code)
+          (message "Submodule added: %s" target)
+        (progn
+          (display-buffer buffer)
+          (error "git submodule add failed"))))))
+#+end_src
+
+*** magit
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package magit
+    :load-path "~/.emacs.d/packages/magit/lisp/" "~/.emacs.d/packages/cond-let/" "~/.emacs.d/packages/with-editor/lisp/" "~/.emacs.d/packages/llama/"
+    :commands magit)
+#+end_src
+
+*** eee
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package eee
+    :load-path "~/.emacs.d/packages/eee.el/"
+    :bind ("C-x g" . ee-lazygit)
+    :custom
+    (ee-terminal-command "/opt/homebrew/bin/wezterm"))
+
+  (with-eval-after-load 'eee
+    (defun start-wezterm-at-current-directory ()
+      "Start Wezterm at the current buffer's directory."
+      (interactive)
+      (let ((default-directory (or default-directory "~"))) ; 默认目录为当前 buffer 的目录
+        (start-process "wezterm" nil "wezterm" "start" "--cwd" default-directory)))
+
+    (defun switch-to-wezterm ()
+      "Switch to WezTerm terminal."
+      (interactive)
+      (do-applescript "
+      tell application \"WezTerm\"
+        activate
+      end tell"))
+
+    (advice-add 'start-wezterm-at-current-directory :after
+                (lambda (&rest _)
+  		(sleep-for 0.1)
+  		(switch-to-wezterm)))
+
+    (advice-add 'ee-run :after
+                (lambda (&rest _)
+  		(sleep-for 0.1)
+  		(switch-to-wezterm))))
+#+end_src
 *** browse at remote
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package browse-at-remote
@@ -1884,6 +1965,7 @@ Decimal digits after the % specify field width to which to pad.
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package tempel
     :load-path "~/.emacs.d/packages/tempel/"
+    :commands tempel-expand
     :bind (("M-+" . tempel-complete)
            ("M-*" . tempel-insert)
   	 (:map tempel-map
@@ -1949,39 +2031,7 @@ Decimal digits after the % specify field width to which to pad.
     (vterm-kill-buffer-on-exit t)
     (vterm-max-scrollback 5000))
 #+end_src
-*** eee
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
-  (use-package eee
-    :load-path "~/.emacs.d/packages/eee.el/"
-    :bind ("C-x g" . ee-lazygit)
-    :custom
-    (ee-terminal-command "/opt/homebrew/bin/wezterm"))
 
-  (with-eval-after-load 'eee
-    (defun start-wezterm-at-current-directory ()
-      "Start Wezterm at the current buffer's directory."
-      (interactive)
-      (let ((default-directory (or default-directory "~"))) ; 默认目录为当前 buffer 的目录
-        (start-process "wezterm" nil "wezterm" "start" "--cwd" default-directory)))
-
-    (defun switch-to-wezterm ()
-      "Switch to WezTerm terminal."
-      (interactive)
-      (do-applescript "
-      tell application \"WezTerm\"
-        activate
-      end tell"))
-
-    (advice-add 'start-wezterm-at-current-directory :after
-                (lambda (&rest _)
-  		(sleep-for 0.1)
-  		(switch-to-wezterm)))
-
-    (advice-add 'ee-run :after
-                (lambda (&rest _)
-  		(sleep-for 0.1)
-  		(switch-to-wezterm))))
-#+end_src
 * Writing & Knowledge Management
 ** Org Mode Core
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
@@ -2189,6 +2239,8 @@ Decimal digits after the % specify field width to which to pad.
 *** org-clock
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (with-eval-after-load 'org-clock
+    (add-to-list 'warning-suppress-types
+               '(files . "org-clock-save.el"))
     (org-clock-persistence-insinuate)
     (setopt org-clock-persist-file (expand-file-name "org-clock-save.el" cache-directory)
   	  org-clock-history-length 23
@@ -2537,6 +2589,22 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
   (when IS-MAC
     (define-key my/dict-map (kbd "m") #'osx-dictionary-search-pointer))
 #+end_src
+*** lexdb
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package lexdb
+    :load-path "~/.emacs.d/packages/lexdb/"
+    :commands lexdb-search
+    :config
+    (setq lexdb-dictionaries
+  	'((:id ldoce
+           :type ldoce
+           :name "朗文当代"
+           :db-file "~/.emacs.d/sdcv-dict/LDOCE6.db"
+           :audio-dir "~/dicts/audio/"
+           :priority 1)))
+    (lexdb-init))
+#+end_src
+
 *** osx-dictionary
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package osx-dictionary

@@ -712,3 +712,9 @@
 [submodule "/Users/dn/.emacs.d/packages/corg.el"]
 	path = /Users/dn/.emacs.d/packages/corg.el
 	url = https://github.com/isamert/corg.el.git
+[submodule "/Users/dn/.emacs.d/packages/lexdb"]
+	path = /Users/dn/.emacs.d/packages/lexdb
+	url = https://github.com/LuciusChen/lexdb.git
+[submodule "/Users/dn/.emacs.d/packages/cond-let"]
+	path = /Users/dn/.emacs.d/packages/cond-let
+	url = https://github.com/tarsius/cond-let.git
