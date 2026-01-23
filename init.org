@@ -201,6 +201,15 @@
   (defvar my-galaxy (expand-file-name "L.Personal.Galaxy" nextcloud)
     "This folder stores all the plain text files of my life.")
 
+  (defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
+    "The source folder of my blog.")
+
+  (defvar my-pictures (expand-file-name "pictures/" my-galaxy)
+      "The folder save pictures.")
+
+  (defvar my-web_archive (expand-file-name "web_archive/" my-galaxy)
+      "The folder save web pages.")
+
   (defvar cache-directory (expand-file-name ".cache" user-emacs-directory))
 #+end_src
 
@@ -458,6 +467,7 @@
 *** transient
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (with-eval-after-load 'transient
+    (setopt transient-show-popup 1)
     (setq transient-history-file (expand-file-name "transient/history.el" cache-directory)
   	transient-levels-file (expand-file-name "transient/levels.el" cache-directory)
   	transient-values-file (expand-file-name "transient/values.el" cache-directory)))
@@ -470,14 +480,23 @@
 (setopt url-cookie-file (expand-file-name "cookies" url-configuration-directory))
 #+end_src
 * Completion System
-** minibuffer
+** minibuffer and completion
 将 Minibuffer 和补全后端整合，构建统一交互。
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (setopt minibuffer-completion-auto-choose t
   	minibuffer-completion-confirm 'confirm)
   (setopt tab-always-indent 'complete
-  	tab-first-completion 'word-or-paren-or-punct
-  	completion-cycle-threshold 3
+  	tab-first-completion 'word-or-paren-or-punct)
+
+  (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
+  (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+  (add-hook 'minibuffer-setup-hook (lambda ()
+    				   (setq-local truncate-lines t)))
+  (define-key minibuffer-local-completion-map (kbd "C-n") #'icomplete-forward-completions)
+  (define-key minibuffer-local-completion-map (kbd "C-p") #'icomplete-backward-completions)
+
+  (setopt	completion-cycle-threshold 2
   	completions-detailed t
           completions-format 'one-column
           completion-auto-select t
@@ -488,14 +507,6 @@
           completion-auto-wrap nil
           completions-header-format (propertize "%s candidates:\n" 'face 'font-lock-comment-face)
           completions-highlight-face 'completions-highlight)
-
-  (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
-  (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-  (add-hook 'minibuffer-setup-hook (lambda ()
-    				   (setq-local truncate-lines t)))
-  (define-key minibuffer-local-completion-map (kbd "C-n") #'icomplete-forward-completions)
-  (define-key minibuffer-local-completion-map (kbd "C-p") #'icomplete-backward-completions)
 #+end_src
 
 ** read multiple strings with completion
@@ -516,14 +527,14 @@
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 #+end_src
-** vertico
+** COMMENT vertico
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package vertico
     :load-path "~/.emacs.d/packages/vertico/"
     :hook (after-init . vertico-mode))
 #+end_src
 
-** COMMENT icomplete
+** icomplete
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (add-hook 'after-init-hook #'icomplete-mode)
   (with-eval-after-load 'icomplete
@@ -2133,6 +2144,13 @@ Decimal digits after the % specify field width to which to pad.
              err)))))
     (advice-add 'org-babel-execute-src-block :before 'my/org-babel-execute-src-block))
 #+end_src
+*** ox-html
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (add-to-list 'load-path "~/.emacs.d/packages/emacs-htmlize/")
+  (with-eval-after-load 'ox
+    (require 'ox-html))
+#+end_src
+
 *** org-capture
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   ;; org-capture
@@ -3027,6 +3045,9 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
     (setq pdf-view-use-imagemagick nil)
     (setq pdf-annot-activate-created-annotations nil))
 
+  (use-package pdf-roll
+    :hook (pdf-view-mode . pdf-view-roll-minor-mode))
+
   (use-package pdf-occur
     :hook (pdf-view-mode . pdf-occur-global-minor-mode))
 
@@ -3138,7 +3159,7 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
 *** nov
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package nov
-    :load-path "~/.emacs.d/packages/nov.el/"
+    :load-path "~/.emacs.d/packages/nov.el/" "~/.emacs.d/packages/esxml"
     :mode (".epub" . nov-mode)
     :custom
     (nov-unzip-program (executable-find "bsdtar"))

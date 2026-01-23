@@ -56,6 +56,15 @@
 (defvar my-galaxy (expand-file-name "L.Personal.Galaxy" nextcloud)
   "This folder stores all the plain text files of my life.")
 
+(defvar website-directory (expand-file-name "blogs_source/" my-galaxy)
+  "The source folder of my blog.")
+
+(defvar my-pictures (expand-file-name "pictures/" my-galaxy)
+    "The folder save pictures.")
+
+(defvar my-web_archive (expand-file-name "web_archive/" my-galaxy)
+    "The folder save web pages.")
+
 (defvar cache-directory (expand-file-name ".cache" user-emacs-directory))
 
 (use-package dashboard
@@ -233,6 +242,7 @@
 (setopt inhibit-startup-screen t)	;关闭启动页
 
 (with-eval-after-load 'transient
+  (setopt transient-show-popup 1)
   (setq transient-history-file (expand-file-name "transient/history.el" cache-directory)
 	transient-levels-file (expand-file-name "transient/levels.el" cache-directory)
 	transient-values-file (expand-file-name "transient/values.el" cache-directory)))
@@ -244,8 +254,17 @@
 (setopt minibuffer-completion-auto-choose t
 	minibuffer-completion-confirm 'confirm)
 (setopt tab-always-indent 'complete
-	tab-first-completion 'word-or-paren-or-punct
-	completion-cycle-threshold 3
+	tab-first-completion 'word-or-paren-or-punct)
+
+(keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
+(add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+(add-hook 'minibuffer-setup-hook (lambda ()
+  				   (setq-local truncate-lines t)))
+(define-key minibuffer-local-completion-map (kbd "C-n") #'icomplete-forward-completions)
+(define-key minibuffer-local-completion-map (kbd "C-p") #'icomplete-backward-completions)
+
+(setopt	completion-cycle-threshold 2
 	completions-detailed t
         completions-format 'one-column
         completion-auto-select t
@@ -256,14 +275,6 @@
         completion-auto-wrap nil
         completions-header-format (propertize "%s candidates:\n" 'face 'font-lock-comment-face)
         completions-highlight-face 'completions-highlight)
-
-(keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
-(add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
-(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-(add-hook 'minibuffer-setup-hook (lambda ()
-  				   (setq-local truncate-lines t)))
-(define-key minibuffer-local-completion-map (kbd "C-n") #'icomplete-forward-completions)
-(define-key minibuffer-local-completion-map (kbd "C-p") #'icomplete-backward-completions)
 
 (defun crm-indicator (args)
   (cons (format "[`completing-read-multiple': %s]  %s"
@@ -279,9 +290,20 @@
 
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 
-(use-package vertico
-  :load-path "~/.emacs.d/packages/vertico/"
-  :hook (after-init . vertico-mode))
+(add-hook 'after-init-hook #'icomplete-mode)
+(with-eval-after-load 'icomplete
+  (setopt icomplete-delay-completions-threshold 0
+	  icomplete-show-matches-on-no-input t
+	  icomplete-hide-common-prefix nil
+	  icomplete-separator "  |  "
+	  icomplete-max-delay-chars 0
+	  icomplete-compute-delay 0
+	  )
+
+  ;; (define-key icomplete-minibuffer-map (kbd "C-n") #'minibuffer-next-completion)
+  ;; (define-key icomplete-minibuffer-map (kbd "C-p") #'minibuffer-previous-completion)
+  ;; (define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-force-complete-and-exit)
+  )
 
 (add-hook 'prog-mode-hook #'completion-preview-mode)
 (add-hook 'org-mode-hook #'completion-preview-mode)
@@ -1474,6 +1496,10 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
            err)))))
   (advice-add 'org-babel-execute-src-block :before 'my/org-babel-execute-src-block))
 
+(add-to-list 'load-path "~/.emacs.d/packages/emacs-htmlize/")
+(with-eval-after-load 'ox
+  (require 'ox-html))
+
 ;; org-capture
 (global-set-key (kbd "<f10>") #'org-capture)
 
@@ -2235,6 +2261,9 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   (setq pdf-view-use-imagemagick nil)
   (setq pdf-annot-activate-created-annotations nil))
 
+(use-package pdf-roll
+  :hook (pdf-view-mode . pdf-view-roll-minor-mode))
+
 (use-package pdf-occur
   :hook (pdf-view-mode . pdf-occur-global-minor-mode))
 
@@ -2342,7 +2371,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     (message (substitute-command-keys "Press `C-c C-c' when finished editing PDF metadata. To see keybinds, press \\[describe-mode]"))))
 
 (use-package nov
-  :load-path "~/.emacs.d/packages/nov.el/"
+  :load-path "~/.emacs.d/packages/nov.el/" "~/.emacs.d/packages/esxml"
   :mode (".epub" . nov-mode)
   :custom
   (nov-unzip-program (executable-find "bsdtar"))
