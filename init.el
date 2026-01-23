@@ -436,6 +436,26 @@
   (add-to-list 'expand-region-exclude-text-mode-expansions 'org-mode)
   (add-to-list 'expand-region-exclude-text-mode-expansions 'LaTeX-mode))
 
+(use-package avy
+  :load-path "~/.emacs.d/packages/avy/"
+  :bind ([remap goto-char] . my/avy-goto-char-timer)
+  :config
+  (defun my/avy-goto-char-timer (&optional arg)
+    (interactive "P")
+    (unless (featurep 'pinyinlib)
+      (require 'pinyinlib))
+    (let ((avy-all-windows (if arg
+                               (not avy-all-windows)
+                             avy-all-windows)))
+      (avy-with avy-goto-char-timer
+		(setq avy--old-cands (avy--read-candidates
+				      'pinyinlib-build-regexp-string))
+		(avy-process avy--old-cands))))
+  (advice-add 'avy-goto-char-timer :override #'my/avy-goto-char-timer))
+
+(use-package pinyinlib
+  :load-path "~/.emacs.d/packages/pinyinlib.el/")
+
 (use-package surround
   :load-path "~/.emacs.d/packages/surround/"
   :commands surround-delete surround-change surround-insert)
@@ -997,7 +1017,7 @@ This function requires GNU ls from coreutils installed."
 			      'grep)))
 
 (use-package rg
-  :load-path "~/.emacs.d/packages/rg.el/"
+  :load-path "~/.emacs.d/packages/rg.el/" "~/.emacs.d/packages/Emacs-wgrep/"
   :bind ("M-s r" . rg)
   :custom
   (rg-group-result t)
@@ -1252,8 +1272,8 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
 	      (propertize (format winum-format (winum-get-number-string)) 'face `(:inverse-video t )))))
 
 (defvar-local my/modeline-gtd
-  '(:eval (when (and org-gtd-mode (not (eq (org-gtd-inbox-count) 0)))
-            (propertize (format " GTD[%d]" (org-gtd-inbox-count))
+  '(:eval (when org-gtd-mode
+            (propertize (org-gtd-mode-lighter)
                         'face `(:inherit font-lock-builtin-face)))))
 
 (dolist (construct '(my/modeline-major-mode
@@ -1675,6 +1695,8 @@ Return OLP for capture."
           (let ((content (buffer-substring-no-properties content-begin content-end)))
             (delete-region link-begin link-end)
             (insert content)))))))
+
+(global-set-key (kbd "C-c l r") #'jf/org-link-remove-link)
 
 (use-package org-superstar
   :load-path "~/.emacs.d/packages/org-superstar-mode/"
@@ -2518,6 +2540,9 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     ]
    ["Diary"
     ("j" "Journal" denote-journal-new-or-existing-entry)
+    ]
+   ["Sort"
+    ("/" "Sort dired" denote-sort-dired)
     ]])
 
 ;; 绑定到 C-c n m (Menu)
@@ -2576,6 +2601,8 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   (setopt org-gtd-directory (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org" icloud))
   :custom
   (org-gtd-refile-to-any-target nil)
+  (org-gtd-refile-prompt-for-types '(single-action project-heading calendar someday delegated tickler habit))
+  (org-gtd-mode-lighter-display 'when-non-zero)
   (org-use-fast-todo-selection 'expert)
   (org-gtd-clarify-show-horizons 'right)
   (org-gtd-clarify-display-helper-buffer t)
@@ -2788,6 +2815,8 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   "u" #'update-org-attach-property)
 
 (keymap-set global-map "C-c f" my/file-prefix-map)
+
+(global-set-key (kbd "C-z") #'set-mark-command)
 
 (load (setq custom-file (locate-user-emacs-file "custom.el")) t)
 

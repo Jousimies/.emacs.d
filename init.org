@@ -770,7 +770,7 @@
     (add-to-list 'expand-region-exclude-text-mode-expansions 'LaTeX-mode))
 #+end_src
 
-*** COMMENT avy
+*** avy
 ~avy~ 可以进行屏幕可视范围的跳转，不管是哪个 window。我使用 ~avy~ 替代窗口跳转如 ~windmove~ ，直接使用 ~avy-goto-char-timer~ 即可。
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package avy
@@ -1467,7 +1467,7 @@
 *** rg
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package rg
-    :load-path "~/.emacs.d/packages/rg.el/"
+    :load-path "~/.emacs.d/packages/rg.el/" "~/.emacs.d/packages/Emacs-wgrep/"
     :bind ("M-s r" . rg)
     :custom
     (rg-group-result t)
@@ -1853,8 +1853,8 @@ Decimal digits after the % specify field width to which to pad.
 **** org-gtd-count
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (defvar-local my/modeline-gtd
-    '(:eval (when (and org-gtd-mode (not (eq (org-gtd-inbox-count) 0)))
-              (propertize (format " GTD[%d]" (org-gtd-inbox-count))
+    '(:eval (when org-gtd-mode
+              (propertize (org-gtd-mode-lighter)
                           'face `(:inherit font-lock-builtin-face)))))
 #+end_src
 *** construct
@@ -2358,6 +2358,8 @@ Decimal digits after the % specify field width to which to pad.
             (let ((content (buffer-substring-no-properties content-begin content-end)))
               (delete-region link-begin link-end)
               (insert content)))))))
+
+  (global-set-key (kbd "C-c l r") #'jf/org-link-remove-link)
 #+end_src
 *** org superstar
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
@@ -3325,6 +3327,9 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
       ]
      ["Diary"
       ("j" "Journal" denote-journal-new-or-existing-entry)
+      ]
+     ["Sort"
+      ("/" "Sort dired" denote-sort-dired)
       ]])
 
   ;; 绑定到 C-c n m (Menu)
@@ -3391,6 +3396,8 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
     (setopt org-gtd-directory (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org" icloud))
     :custom
     (org-gtd-refile-to-any-target nil)
+    (org-gtd-refile-prompt-for-types '(single-action project-heading calendar someday delegated tickler habit))
+    (org-gtd-mode-lighter-display 'when-non-zero)
     (org-use-fast-todo-selection 'expert)
     (org-gtd-clarify-show-horizons 'right)
     (org-gtd-clarify-display-helper-buffer t)
@@ -3680,6 +3687,8 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
     "u" #'update-org-attach-property)
 
   (keymap-set global-map "C-c f" my/file-prefix-map)
+
+  (global-set-key (kbd "C-z") #'set-mark-command)
 #+end_src
 ** custom.el
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
