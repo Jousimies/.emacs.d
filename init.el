@@ -2669,6 +2669,45 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     (require 'org-gtd-organize))
   (define-key org-gtd-clarify-mode-map (kbd "C-c C-c") #'org-gtd-organize))
 
+(defun my/org-gtd-Reading ()
+  "Show all projects, including completed ones."
+  (interactive)
+  (org-gtd-view-show
+   '(((name . "Today's Schedule")
+      (block-type . calendar-day))
+     ((name . "Reading Tasks")
+      (area-of-focus . "Reading")
+      (type . next-action)))))
+
+(defun my/org-gtd-work ()
+  (interactive)
+  (org-gtd-view-show
+   '(((name . "Today's Schedule")
+      (block-type . calendar-day))
+     ((name . "Active Projects")
+      (type . active-project))
+     ((name . "Actions Related to Work")
+      (type . next-action)
+      (area-of-focus . "Work")))))
+
+(defun my/org-gtd-engage-view-spec ()
+  `((name . "GTD Engage View")
+    (prefix . (project area-of-focus "—"))
+    (prefix-width . ,org-gtd-prefix-width)
+    (blocks . (((name . "Today's Schedule")
+		(block-type . calendar-day))
+	       ((name . "Actions with A Priority")
+		(type . next-action)
+		(priority . A))	       	       
+	       ((name . "Delegated tasks")
+		(type . delegated)
+		)
+	       ((name . "All actions ready to be executed")
+		(type . next-action)		
+		)))))
+
+(advice-add 'org-gtd-engage-view-spec :override #'my/org-gtd-engage-view-spec)
+
 ;; Sync org entry with clocking to MacOS Calendar.
 
 (module-load "/Users/dn/.emacs.d/org2calendar/module/.build/release/liborg2calendar.dylib")
@@ -2762,8 +2801,10 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 (transient-define-prefix my/agenda-menu ()
   "GTD"
   [["Agenda"
-    ("a" "Agenda" org-agenda :transient nil)
+    
     ("<f12>" "Engage" org-gtd-engage)
+    ("r" "Reading view" my/org-gtd-Reading)
+    ("w" "Work view" my/org-gtd-work)
     ;; ("b" "Book" my/book-agenda :transient nil)
     ;; ("t" "TODO" my/all-todo-agenda :transient nil)
     ]
