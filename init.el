@@ -419,7 +419,7 @@
 (add-hook 'after-init-hook #'global-word-wrap-whitespace-mode)
 
 (add-hook 'after-init-hook #'whitespace-mode)
-(add-hook 'after-init-hook #'delete-trailing-whitespace-mode)
+(setq-default delete-trailing-whitespace-mode t)
 
 (with-eval-after-load 'register
   (setopt register-preview-delay 0)
