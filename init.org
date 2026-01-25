@@ -1580,7 +1580,7 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
 *** eee
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package eee
-    :load-path "~/.emacs.d/packages/eee.el/"
+    :load-path "~/.emacs.d/packages/eee.el/" "~/.emacs.d/packages/emacs-async/"
     :bind ("C-x g" . ee-lazygit)
     :custom
     (ee-terminal-command "/opt/homebrew/bin/wezterm"))
@@ -1853,9 +1853,7 @@ Decimal digits after the % specify field width to which to pad.
 **** org-gtd-count
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (defvar-local my/modeline-gtd
-    '(:eval (when org-gtd-mode
-              (propertize (org-gtd-mode-lighter)
-                          'face `(:inherit font-lock-builtin-face)))))
+    '(:eval (org-gtd-mode-lighter)))
 #+end_src
 *** construct
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
@@ -2279,6 +2277,7 @@ Decimal digits after the % specify field width to which to pad.
   	  org-clock-history-length 23
   	  org-clock-in-resume t
   	  org-clock-into-drawer "LOGCLOCK"
+  	  org-clock-idle-time 15
   	  org-clock-out-remove-zero-time-clocks t
   	  org-clock-out-when-done t
   	  org-clock-persist 'history
@@ -3388,7 +3387,7 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
 *** org-gtd
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package org-gtd
-    :load-path "~/.emacs.d/packages/org-gtd.el/" "~/.emacs.d/packages/org-edna/"
+    :load-path "~/.emacs.d/packages/org-gtd.el/" "~/.emacs.d/packages/org-edna/" "~/.emacs.d/packages/dag-draw.el/" "~/.emacs.d/packages/ht.el/"
     :hook (after-init . org-gtd-mode)
     :bind ("<f12>" . my/agenda-menu)
     :init
@@ -3447,120 +3446,93 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   ;; Sync org entry with clocking to MacOS Calendar.
 
-  (use-package async
-    :load-path "~/.emacs.d/packages/emacs-async/")
+  (module-load "/Users/dn/.emacs.d/org2calendar/module/.build/release/liborg2calendar.dylib")
 
-  (defgroup org2calendar nil
-    "Sync Org clocking to macOS Calendar."
-    :group 'org-clock)
-
-  (defcustom org2calendar-target-calendar "Clocking"
-    "The name of the macOS Calendar to sync to."
-    :type 'string
-    :group 'org2calendar)
-
-  (defun org2calendar--format-for-applescript (time-val)
-    "将时间转换为 (年 月 日 时 分 秒) 的数字列表。"
-    (let ((time (if (stringp time-val) (org-time-string-to-time time-val) time-val)))
-      (mapcar #'string-to-number
-              (split-string (format-time-string "%Y %m %d %H %M %S" time)))))
-
-  (defun my/create-applescript (start-list end-list summary)
-    "通过直接设置属性的方式构建日期。"
-    (let ((s-y (nth 0 start-list)) (s-m (nth 1 start-list)) (s-d (nth 2 start-list))
-          (s-h (nth 3 start-list)) (s-min (nth 4 start-list)) (s-s (nth 5 start-list))
-          (e-y (nth 0 end-list)) (e-m (nth 1 end-list)) (e-d (nth 2 end-list))
-          (e-h (nth 3 end-list)) (e-min (nth 4 end-list)) (e-s (nth 5 end-list)))
-      (format
-       "tell application \"Calendar\"
-          tell calendar \"%s\"
-            set theStart to (current date)
-            set year of theStart to %s
-            set month of theStart to %s
-            set day of theStart to %s
-            set hours of theStart to %s
-            set minutes of theStart to %s
-            set seconds of theStart to %s
-
-            set theEnd to (current date)
-            set year of theEnd to %s
-            set month of theEnd to %s
-            set day of theEnd to %s
-            set hours of theEnd to %s
-            set minutes of theEnd to %s
-            set seconds of theEnd to %s
-
-            make new event at end with properties {summary:\"%s\", start date:theStart, end date:theEnd}
-          end tell
-        end tell"
-       org2calendar-target-calendar
-       s-y s-m s-d s-h s-min s-s
-       e-y e-m e-d e-h e-min e-s
-       (replace-regexp-in-string "\"" "\\\"" summary))))
-
-  (defun org2calendar-get-context-summary ()
-    "获取标题摘要。
-  如果父标题存在且不属于特定的过滤词（Actions, Calendar, Projects），
-  则返回 '父标题 / 当前标题'。"
-    (let* ((heading (org-get-heading t t t t))
-           (excluded-parents '("Actions" "Calendar" "Projects"))
-           (parent-title (save-excursion
-                           (when (org-up-heading-safe)
-                             (org-get-heading t t t t)))))
-      (if (and parent-title
-               (not (member parent-title excluded-parents)))
-          (format "%s / %s" parent-title heading)
-        heading)))
-
-  (defun org2calendar-sync (start end summary)
-    "Generate AppleScript and execute it asynchronously with error handling."
-    (condition-case err
-        (let ((apple-script (my/create-applescript start end summary)))
-          (message "Syncing to Calendar: %s..." summary)
-          (if (and (featurep 'async) (display-graphic-p))
-              (async-start
-               `(lambda ()
-                  (shell-command-to-string (format "osascript -e %s" (shell-quote-argument ,apple-script))))
-               (lambda (result)
-                 (message "Calendar sync completed.")))
-            ;; Synchronous fallback
-            (shell-command-to-string (format "osascript -e %s" (shell-quote-argument apple-script)))
-            (message "Calendar sync completed.")))
-      (error (message "Org2Calendar Sync failed: %s" (error-message-string err)))))
-
-  (defun org2calendar-handle-clock-out ()
-    "Handler for `org-clock-out-hook`."
-    (save-excursion
-      ;; org-clock-start-time and org-clock-out-time are available here
-      (let* ((summary (org2calendar-get-context-summary))
-             (start (org2calendar--format-for-applescript org-clock-start-time))
-             (end (org2calendar--format-for-applescript org-clock-out-time)))
-        (if (and start end)
-            (org2calendar-sync start end summary)
-          (message "Org2Calendar: Could not determine clock duration.")))))
-
-  (add-hook 'org-clock-out-hook #'org2calendar-handle-clock-out)
-
-  (defun org2calendar-sync-at-point ()
-    "Parse the CLOCK line at point and sync it to MacOS Calendar."
+  (defun org2calendar-sync-current ()
+    "同步当前光标下的最后一条 CLOCK 记录至 macOS 日历。
+  通常由 org-clock-out-hook 自动触发。"
     (interactive)
-    (let* ((element (org-element-at-point))
-           (type (org-element-type element)))
-      (if (eq type 'clock)
-          (let* ((value (org-element-property :value element))
-                 (start-ts (org-format-timestamp value "%Y-%m-%d %H:%M:%S"))
-                 (end-ts (org-format-timestamp value "%Y-%m-%d %H:%M:%S" t))
-                 (summary (org2calendar-get-context-summary))
-                 (start (org2calendar--format-for-applescript start-ts))
-                 (end (org2calendar--format-for-applescript end-ts)))
+    (save-excursion
+      ;; 确保在 org 标题或条目上
+      (org-back-to-heading t)
+      (let* ((element (org-element-at-point))
+             (calendar-name (or (bound-and-true-p org2calendar-target-calendar) "Work"))
+             ;; 搜索当前标题下的最后一条 CLOCK 记录
+             (clock-found (re-search-forward "CLOCK: \\(\\[.*?\\]\\)--\\(\\[.*?\\]\\)" 
+                                           (save-excursion (org-end-of-subtree) (point)) t)))
+        
+        (if (not clock-found)
+            (message "未在当前条目下找到 CLOCK 记录，无法同步。")
+          (let* ((start-ts (match-string 1))
+                 (end-ts (match-string 2))
+                 (s (org-parse-time-string start-ts))
+                 (e (org-parse-time-string end-ts))
+                 ;; 使用你定义的上下文摘要获取标题
+                 (summary (org-get-heading t t t t))
+                 ;; 调用 Swift 模块
+                 (result (org2calendar-sync-clock
+                          (nth 5 s) (nth 4 s) (nth 3 s) (nth 2 s) (nth 1 s) (nth 0 s)
+                          (nth 5 e) (nth 4 e) (nth 3 e) (nth 2 e) (nth 1 e) (nth 0 e)
+                          summary
+                          calendar-name)))
+            
+            (cond
+             ((string= result "synced") (message "日历已同步: %s" summary))
+             ((string= result "skipped") (message "日历已存在，跳过: %s" summary))
+             (t (message "日历同步失败: %s" result))))))))
 
-            ;; Debug message to verify parsing
-            (message "Syncing: %s from %s to %s" summary start-ts end-ts)
+  (add-hook 'org-clock-out-hook #'org2calendar-sync-current)
 
-            (if (and start end)
-                (org2calendar-sync start end summary)
-              (user-error "Could not format timestamps for AppleScript")))
-        (user-error "Cursor is not on a CLOCK line (detected: %s)" type))))
+  (defun org2calendar-sync-today ()
+    "同步当前 Buffer 中所有今天的 CLOCK 记录至 macOS 日历。
+  使用原生的 Swift 模块接口进行同步。"
+    (interactive)
+    (let* ((today (format-time-string "%Y-%m-%d"))
+           (synced-count 0)
+           (skipped-count 0)
+           (total-found 0)
+           (calendar-name "Clocking"))
+      
+      (save-excursion
+        (goto-char (point-min))
+        ;; 1. 使用 org-element 扫描所有 clock 条目
+        (org-element-map (org-element-parse-buffer) 'clock
+          (lambda (clock)
+            (let* ((value (org-element-property :value clock))
+                   ;; 获取开始和结束的原始解码时间
+                   (start-time (org-timestamp-to-time value))
+                   (end-time (org-timestamp-to-time value t))
+                   ;; 格式化日期用于对比是否是今天
+                   (start-date-str (format-time-string "%Y-%m-%d" start-time)))
+              
+              ;; 2. 匹配日期：只处理发生在今天的记录
+              (when (string= today start-date-str)
+                (setq total-found (1+ total-found))
+                (let* ((s (decode-time start-time))
+                       (e (decode-time end-time))
+                       ;; 获取当前条目的标题作为日历总结
+                       (summary (save-excursion
+                                  (goto-char (org-element-property :begin clock))
+                                  (org-get-heading t t t t)))
+                       ;; 3. 调用 Swift 模块函数
+                       ;; 参数顺序: sy sm sd sh smin ss ey em ed eh emin es summary calendar
+                       (result (org2calendar-sync-clock
+                                (nth 5 s) (nth 4 s) (nth 3 s) (nth 2 s) (nth 1 s) (nth 0 s)
+                                (nth 5 e) (nth 4 e) (nth 3 e) (nth 2 e) (nth 1 e) (nth 0 e)
+                                summary
+                                calendar-name)))
+                  
+                  ;; 4. 统计结果
+                  (cond
+                   ((string= result "synced")  (setq synced-count (1+ synced-count)))
+                   ((string= result "skipped") (setq skipped-count (1+ skipped-count)))
+                   (t (message "警告: [%s] 同步失败: %s" summary result))))))))
+      
+      ;; 5. 打印汇总报告
+      (if (= total-found 0)
+          (message "未发现今天 (%s) 的 CLOCK 记录。" today)
+        (message "日历同步完成！共发现: %d, 新增: %d, 跳过: %d" 
+                 total-found synced-count skipped-count)))))
 #+end_src
 
 ** transient keybindings
@@ -3597,7 +3569,7 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
       ;; ("s" "Stucks" my/gtd-stuck-menu :transient t)
       ]
      ["Misc"
-      ("s" "Sync Calendar" org2calendar-sync-at-point)]])
+      ("s" "Sync Calendar" org2calendar-sync-today)]])
 
   (transient-define-prefix my/org-gtd-agenda-transient ()
     [[:if org-gtd-agenda-transient--show-time-p

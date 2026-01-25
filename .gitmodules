@@ -721,3 +721,6 @@
 [submodule "/Users/dn/.emacs.d/packages/emacs-smart-input-source"]
 	path = /Users/dn/.emacs.d/packages/emacs-smart-input-source
 	url = https://github.com/laishulu/emacs-smart-input-source.git
+[submodule "/Users/dn/.emacs.d/packages/dag-draw.el"]
+	path = /Users/dn/.emacs.d/packages/dag-draw.el
+	url = https://codeberg.org/Trevoke/dag-draw.el.git
