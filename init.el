@@ -659,6 +659,18 @@
 (add-hook 'after-init-hook 'winner-mode)
 (global-set-key (kbd "M-g u") #'winner-undo)
 (global-set-key (kbd "M-g r") #'winner-redo)
+
+(defvar my-winner-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "u" #'winner-undo)
+    (define-key map "r" #'winner-redo)
+    map)
+  "Winner-mode 连击按键映射.")
+
+;; 2. 将命令关联到该映射
+(put 'winner-undo 'repeat-map 'my-winner-repeat-map)
+(put 'winner-redo 'repeat-map 'my-winner-repeat-map)
+
 (with-eval-after-load 'winner
   (setopt winner-dont-bind-my-keys t
 	  winner-boring-buffers '("*Completions*"
@@ -1666,7 +1678,7 @@ Return OLP for capture."
   (interactive)
   (grab-mac-link-dwim 'safari))
 
-(global-set-key (kbd "M-g C-l") #'my/link-grab)
+(global-set-key (kbd "M-g L") #'my/link-grab)
 
 (defun my/copy-idlink ()
   "Copy idlink to clipboard."
