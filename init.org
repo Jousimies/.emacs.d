@@ -745,7 +745,7 @@
 *** delete-trailing-whitespace-mode
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (add-hook 'after-init-hook #'whitespace-mode)
-  (add-hook 'after-init-hook #'delete-trailing-whitespace-mode)
+  (setq-default delete-trailing-whitespace-mode t)
 #+end_src
 
 *** registery
@@ -926,7 +926,7 @@
     (sis-global-inline-mode t))
 #+end_src
 
-*** macim
+*** COMMENT macim
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package macim

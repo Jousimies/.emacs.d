@@ -548,68 +548,6 @@
 			       (rime-regexp-load-rime)
 			       (advice-add 'orderless-regexp :filter-args #'rime-regexp-filter-args)))))
 
-(use-package macim
-  :load-path "~/.emacs.d/packages/macim.el/"
-  :hook ((after-init . macim-mode)
-	 (minibuffer-setup-mode . macim-select-ascii)
-	 (isearch-mode . macim-select-ascii))
-  :custom
-  (macim-other "im.rime.inputmethod.Squirrel.Hans")
-  :config
-  (advice-add 'select-window :after #'(lambda (&rest _) (macim-context-switch)))
-  (defvar my/macim-context-ignore-modes '("telega-root-mode"
-					  "telega-image-mode"
-					  "mu4e-headers-mode"
-					  "mu4e-view-mode"
-					  "elfeed-show-mode"
-					  "elfeed-search-mode"))
-  (defun +macim-context-ignore-modes ()
-    (let ((mode (symbol-name major-mode)))
-      (when (member mode my/macim-context-ignore-modes))
-      'ascii))
-
-  (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes)
-
-  ;; Trim excess spaces on both sides on deactivation
-  (setq +macim-chinese-punc-chars (mapcar #'string-to-char macim--chinese-punc-list))
-
-  (defun +macim-remove-head-space-after-cc-punc (_)
-    (when (or (memq (char-before) +macim-chinese-punc-chars)
-              (bolp))
-      (delete-char 1)))
-  (setq macim-inline-head-handler #'+macim-remove-head-space-after-cc-punc)
-
-  (defun +macim-remove-tail-space-before-cc-punc (tighten-back-to)
-    (when (> (point) tighten-back-to)
-      (backward-delete-char (1- (- (point) tighten-back-to))))
-    (when (and (eq (char-before) ? )
-               (memq (char-after) +macim-chinese-punc-chars))
-      (backward-delete-char 1)))
-  (setq macim-inline-tail-handler #'+macim-remove-tail-space-before-cc-punc)
-
-  ;; Before inserting Chinese punctuation, delete extra spaces introduced by inline mode
-  (defun +macim-line-set-last-space-pos ()
-    (when (eq (char-before) ?\s)
-      (setq +macim-inline-english-last-space-pos (point))))
-  (add-hook 'macim-inline-deactivated-hook #'+macim-line-set-last-space-pos)
-
-  (defun +macim-inline-remove-redundant-space ()
-    (when (eq +macim-inline-english-last-space-pos (1- (point)))
-      (when (and (memq (char-before) +macim-chinese-punc-chars)
-		 (eq (char-before (1- (point))) ?\s))
-	(save-excursion
-          (backward-char 2)
-          (delete-char 1)
-          (setq-local +macim-inline-english-last-space-pos nil)))
-      (remove-hook 'post-self-insert-hook #'+macim-inline-remove-redundant-space t))
-    )
-
-  (defun +macim-inline-add-post-self-insert-hook ()
-    (add-hook 'post-self-insert-hook #'+macim-inline-remove-redundant-space nil t))
-
-  (add-hook 'macim-inline-deactivated-hook #'+macim-inline-add-post-self-insert-hook)
-  )
-
 (setopt ns-pop-up-frames nil)
 
 (use-package winum
