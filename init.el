@@ -1670,6 +1670,26 @@ Return OLP for capture."
 			((org-agenda-prefix-format " %i")
 			 (org-agenda-overriding-header "Reading Lists")))))))
 
+(with-eval-after-load 'org-archive
+  ;; 定义一个函数来动态设置归档位置
+  (defun my/org-gtd-dynamic-archive-location (orig-fun &rest args)
+    "根据任务的 CLOSED 属性动态设置归档文件的年份。"
+    (let* ((closed (org-entry-get nil "CLOSED"))
+           ;; 尝试从 CLOSED 属性提取年份，例如 [2025-10-12...] 提取 2025
+           (year (if (and closed (string-match "\\([0-9]\\{4\\}\\)" closed))
+                     (match-string 1 closed)
+                   (format-time-string "%Y")))
+           ;; 动态构建 org-archive-location
+           ;; 注意：这里建议加上 .org 后缀，避免产生无后缀文件
+           (org-archive-location
+            (concat (expand-file-name (format "gtd_archive_%s" year) org-gtd-directory)
+                    "::datetree/")))
+      ;; 在 let 绑定作用域内执行原始的归档函数
+      (apply orig-fun args)))
+
+  ;; 将该逻辑应用到 org-archive-subtree 函数上
+  (advice-add 'org-archive-subtree :around #'my/org-gtd-dynamic-archive-location))
+
 (use-package grab-mac-link
   :load-path "~/.emacs.d/packages/grab-mac-link.el/"
   :commands grab-mac-link-dwim grab-mac-link-safari-1)
