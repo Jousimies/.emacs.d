@@ -1129,6 +1129,9 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
   :custom
   (ee-terminal-command "/opt/homebrew/bin/wezterm"))
 
+(unless (featurep 'async)
+  (require 'async))
+
 (with-eval-after-load 'eee
   (defun start-wezterm-at-current-directory ()
     "Start Wezterm at the current buffer's directory."
