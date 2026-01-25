@@ -2638,6 +2638,13 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   (org-gtd-clarify-show-horizons 'right)
   (org-gtd-clarify-display-helper-buffer t)
   (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAIT(w)" "|" "DONE(d)" "CNCL(c)")))
+  (org-todo-state-tags-triggers
+      (quote (("CNCL" ("CNCL" . t))
+              ("WAIT" ("WAIT" . t))              
+              (done ("WAIT"))
+              ("TODO" ("WAIT") ("CNCL"))
+              ("NEXT" ("WAIT") ("CNCL"))
+              ("DONE" ("WAIT") ("CNCL")))))
   (org-gtd-keyword-mapping '((todo . "TODO")
                              (next . "NEXT")
                              (wait . "WAIT")
