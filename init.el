@@ -2661,7 +2661,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     ;; 确保在 org 标题或条目上
     (org-back-to-heading t)
     (let* ((element (org-element-at-point))
-           (calendar-name (or (bound-and-true-p org2calendar-target-calendar) "Work"))
+           (calendar-name "Clocking")
            ;; 搜索当前标题下的最后一条 CLOCK 记录
            (clock-found (re-search-forward "CLOCK: \\(\\[.*?\\]\\)--\\(\\[.*?\\]\\)" 
                                          (save-excursion (org-end-of-subtree) (point)) t)))
