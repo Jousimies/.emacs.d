@@ -1381,6 +1381,10 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
   :mode "\\.lua$"
   :interpreter "lua")
 
+(use-package swift-mode
+  :load-path "~/.emacs.d/packages/swift-mode/"
+  :mode "\\.swift$")
+
 (global-set-key (kbd "C-<f5>") #'eshell)
 (with-eval-after-load 'eshell
   (setopt eshell-directory-name (expand-file-name "eshell" cache-directory)))

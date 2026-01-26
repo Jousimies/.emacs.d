@@ -2054,6 +2054,13 @@ Decimal digits after the % specify field width to which to pad.
     :mode "\\.lua$"
     :interpreter "lua")
 #+end_src
+*** swift mode
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package swift-mode
+    :load-path "~/.emacs.d/packages/swift-mode/"
+    :mode "\\.swift$")
+#+end_src
+
 ** Terminals
 *** eshell
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
