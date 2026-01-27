@@ -2704,58 +2704,57 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
            ((string= result "skipped") (message "日历已存在，跳过: %s" summary))
            (t (message "日历同步失败: %s" result))))))))
 
-(add-hook 'org-clock-out-hook #'org2calendar-sync-current)
+(defvar org2calendar-sync-location (expand-file-name "org-gtd-tasks.org" org-gtd-directory)
+  "需要同步至日历的固定 Org 文件路径。")
 
-(defun org2calendar-sync-today ()
-  "同步当前 Buffer 中所有今天的 CLOCK 记录至 macOS 日历。
-使用原生的 Swift 模块接口进行同步。"
+(defun org2calendar-sync-recent ()
+  "同步最近两天的 CLOCK 记录。"
   (interactive)
-  (let* ((today (format-time-string "%Y-%m-%d"))
-         (synced-count 0)
-         (skipped-count 0)
-         (total-found 0)
-         (calendar-name "Clocking"))
-    
-    (save-excursion
-      (goto-char (point-min))
-      ;; 1. 使用 org-element 扫描所有 clock 条目
-      (org-element-map (org-element-parse-buffer) 'clock
-        (lambda (clock)
-          (let* ((value (org-element-property :value clock))
-                 ;; 获取开始和结束的原始解码时间
-                 (start-time (org-timestamp-to-time value))
-                 (end-time (org-timestamp-to-time value t))
-                 ;; 格式化日期用于对比是否是今天
-                 (start-date-str (format-time-string "%Y-%m-%d" start-time)))
-            
-            ;; 2. 匹配日期：只处理发生在今天的记录
-            (when (string= today start-date-str)
-              (setq total-found (1+ total-found))
-              (let* ((s (decode-time start-time))
-                     (e (decode-time end-time))
-                     ;; 获取当前条目的标题作为日历总结
-                     (summary (save-excursion
-                                (goto-char (org-element-property :begin clock))
-                                (org-get-heading t t t t)))
-                     ;; 3. 调用 Swift 模块函数
-                     ;; 参数顺序: sy sm sd sh smin ss ey em ed eh emin es summary calendar
-                     (result (org2calendar-sync-clock
-                              (nth 5 s) (nth 4 s) (nth 3 s) (nth 2 s) (nth 1 s) (nth 0 s)
-                              (nth 5 e) (nth 4 e) (nth 3 e) (nth 2 e) (nth 1 e) (nth 0 e)
-                              summary
-                              calendar-name)))
-                
-                ;; 4. 统计结果
-                (cond
-                 ((string= result "synced")  (setq synced-count (1+ synced-count)))
-                 ((string= result "skipped") (setq skipped-count (1+ skipped-count)))
-                 (t (message "警告: [%s] 同步失败: %s" summary result))))))))
-    
-    ;; 5. 打印汇总报告
-    (if (= total-found 0)
-        (message "未发现今天 (%s) 的 CLOCK 记录。" today)
-      (message "日历同步完成！共发现: %d, 新增: %d, 跳过: %d" 
-               total-found synced-count skipped-count)))))
+  (let ((filepath (expand-file-name org2calendar-sync-location)))
+    (if (not (file-exists-p filepath))
+        (error "找不到同步文件: %s" filepath)
+      (let* ((today (format-time-string "%Y-%m-%d"))
+             (yesterday (format-time-string "%Y-%m-%d" (time-subtract (current-time) (days-to-time 1))))
+             (synced-count 0)
+             (skipped-count 0)
+             (total-found 0)
+             (calendar-name "Clocking")
+             (temp-buf (find-file-noselect filepath)))
+        
+        (with-current-buffer temp-buf
+          (save-excursion
+            (goto-char (point-min))
+            (org-element-map (org-element-parse-buffer) 'clock
+              (lambda (clock)
+                (let* ((value (org-element-property :value clock))
+                       (start-time (org-timestamp-to-time value))
+                       (end-time (org-timestamp-to-time value t))
+                       (start-date-str (format-time-string "%Y-%m-%d" start-time)))
+                  
+                  ;; 修改判定条件：如果日期是今天 OR 昨天，则进行同步
+                  (when (or (string= today start-date-str)
+                            (string= yesterday start-date-str))
+                    (setq total-found (1+ total-found))
+                    (let* ((s (decode-time start-time))
+                           (e (decode-time end-time))
+                           (summary (save-excursion
+                                      (goto-char (org-element-property :begin clock))
+                                      (org-get-heading t t t t)))
+                           ;; 调用 Swift 模块
+                           (result (org2calendar-sync-clock
+                                    (nth 5 s) (nth 4 s) (nth 3 s) (nth 2 s) (nth 1 s) (nth 0 s)
+                                    (nth 5 e) (nth 4 e) (nth 3 e) (nth 2 e) (nth 1 e) (nth 0 e)
+                                    summary
+                                    calendar-name)))
+                      (cond
+                       ((string= result "synced")  (setq synced-count (1+ synced-count)))
+                       ((string= result "skipped") (setq skipped-count (1+ skipped-count)))
+                       (t (message "警告: [%s] 同步失败: %s" summary result))))))))))
+        
+        (message "同步完成！共发现: %d, 新增: %d, 跳过: %d" 
+                 total-found synced-count skipped-count)))))
+
+(add-hook 'midnight-hook #'org2calendar-sync-today)
 
 (transient-define-prefix my/agenda-menu ()
   "GTD"
