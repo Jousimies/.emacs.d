@@ -821,10 +821,21 @@
   (use-package symbol-overlay
     :load-path "~/.emacs.d/packages/symbol-overlay/"
     :hook ((prog-mode . symbol-overlay-mode)
-           (html-mode . symbol-overlay-mode))
-    :bind (:map symbol-overlay-mode-map
-                ("M-i" . symbol-overlay-put)
-                ("M-I" . symbol-overlay-remove-all)))
+           (html-mode . symbol-overlay-mode)))
+
+  (with-eval-after-load 'embark
+    (unless (featurep 'symbol-overlay)
+      (require 'symbol-overlay))
+    (defun my/embark-symbol-overlay-toggle ()
+      "如果当前符号未高亮，则高亮它；
+  如果当前符号已经处于高亮状态，则清除缓冲区内所有高亮。"
+      (interactive)
+      (if (get-char-property (point) 'symbol-overlay)
+  	(progn
+            (symbol-overlay-remove-all)
+            (message "Cleared all highlights."))
+        (symbol-overlay-put)))
+    (advice-add 'embark-toggle-highlight :override #'my/embark-symbol-overlay-toggle))
 #+end_src
 *** rainbow mode
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
