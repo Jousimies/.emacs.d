@@ -2638,7 +2638,10 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 (defun my/org-gtd-work ()
   (interactive)
   (org-gtd-view-show
-   '(((name . "Today's Schedule")
+   '(((name . "Actions with A Priority")
+      (type . next-action)
+      (priority . A))
+     ((name . "Today's Schedule")
       (block-type . calendar-day))
      ((name . "Active Projects")
       (type . active-project))
