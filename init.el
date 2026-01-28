@@ -460,6 +460,18 @@
   :load-path "~/.emacs.d/packages/surround/"
   :commands surround-delete surround-change surround-insert)
 
+(defun my/selected-wrap-textcolor (color)
+  "用 \textcolor{COLOR}{region} 包裹选中的文字。"
+  (interactive "sEnter color (default red): ")
+  (let ((c (if (string-empty-p color) "red" color))
+        (beg (region-beginning))
+        (end (region-end)))
+    (save-excursion
+      (goto-char end)
+      (insert "}")
+      (goto-char beg)
+      (insert (format "\\textcolor{%s}{" c)))))
+
 (use-package selected
   :load-path "~/.emacs.d/packages/selected.el/"
   :hook (post-select-region . selected-minor-mode)
@@ -473,7 +485,8 @@
               ("s" . my/search-menu)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
-              (";" . comment-dwim)))
+              (";" . comment-dwim)
+	      ("k" . my/selected-wrap-textcolor)))
 
 (use-package symbol-overlay
   :load-path "~/.emacs.d/packages/symbol-overlay/"
@@ -558,6 +571,21 @@
 			     (progn
 			       (rime-regexp-load-rime)
 			       (advice-add 'orderless-regexp :filter-args #'rime-regexp-filter-args)))))
+
+(use-package sis
+  :load-path "~/.emacs.d/packages/emacs-smart-input-source/"
+  :config
+  (add-hook 'org-capture-mode-hook #'sis-set-other)
+  (sis-ism-lazyman-config
+   "com.apple.keylayout.ABC"
+   "im.rime.inputmethod.Squirrel.Hans")
+  (sis-global-cursor-color-mode t)
+  ;; enable the /respect/ mode
+  (sis-global-respect-mode t)
+  ;; enable the /context/ mode for all buffers
+  (sis-global-context-mode t)
+  ;; enable the /inline english/ mode for all buffers
+  (sis-global-inline-mode t))
 
 (setopt ns-pop-up-frames nil)
 
@@ -2143,11 +2171,14 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   ;; 				     ("frame"     "none") ; box frame is created by `mdframed' package
   ;; 				     ("framesep"  "2mm")
   ;; 				     ("breaklines")))
-  (setopt org-latex-pdf-process '("xelatex -shell-escape %f"
-				  "biber %b"
-				  "xelatex -shell-escape %f"
-				  "xelatex -shell-escape %f"
-				  "rm -f %b.out %b.log %b.tex %b.brf %b.bbl %b.bcf %b.run.xml"))
+  (setq org-latex-pdf-process
+      '("latexmk -xelatex -shell-escape -interaction=nonstopmode -output-directory=%o %f"))
+  
+  ;; (setopt org-latex-pdf-process '("xelatex -shell-escape %f"
+  ;; 				  "biber %b"
+  ;; 				  "xelatex -shell-escape %f"
+  ;; 				  "xelatex -shell-escape %f"
+  ;; 				  "rm -f %b.out %b.log %b.tex %b.brf %b.bbl %b.bcf %b.run.xml"))
   (setopt org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
 					  "out" "toc" "nav" "snm" "vrb" "dvi"
 					  "fdb_latexmk" "blg" "brf" "fls"
@@ -2212,6 +2243,27 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+
+
+(defun my/org-latex-clear-all-temp-files ()
+  "清理所有最近编辑过的 Org 文件目录下的 LaTeX 临时文件。"
+  (message "正在清理 LaTeX 临时文件...")
+  (let ((extensions '("aux" "log" "out" "toc" "tex" "bbl" "blg" "bcf" 
+                      "run.xml" "fdb_latexmk" "fls" "xdv" "synctex.gz")))
+    (let ((directories (delete-dups 
+                        (mapcar #'file-name-directory 
+                                (cl-remove-if-not (lambda (f) (string-match-p "\\.org$" f)) 
+                                                  (bound-and-true-p recentf-list))))))
+      (dolist (dir directories)
+        (when (file-directory-p dir)
+          (dolist (ext extensions)
+            (let ((files (directory-files dir t (concat ".*\\." ext "$"))))
+              (dolist (file files)
+                (when (file-exists-p file)
+                  (delete-file file)
+                  (message "已删除: %s" file))))))))))
+
+(add-hook 'kill-emacs-hook #'my/org-latex-clear-all-temp-files)
 
 (use-package tex
   :load-path "~/.emacs.d/packages/auctex/"
@@ -2671,6 +2723,23 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 
 (module-load "/Users/dn/.emacs.d/org2calendar/module/.build/release/liborg2calendar.dylib")
 
+(defun org2calendar-get-context-summary ()
+  "获取标题摘要。如果父标题存在且不属于特定的过滤词，则返回 '父标题 / 当前标题'。
+同时移除标题中的统计 Cookie，如 [3/3] 或 [100%]。"
+  (let* ((clean-heading (lambda (text)
+                          (if text
+                              (string-trim (replace-regexp-in-string "\\[\\([0-9/]*\\|[0-9%]*\\)\\][ \t]*" "" text))
+                            text)))
+         (heading (funcall clean-heading (org-get-heading t t t t)))
+         (excluded-parents '("Actions" "Calendar" "Projects"))
+         (parent-title (save-excursion
+                         (when (org-up-heading-safe)
+                           (funcall clean-heading (org-get-heading t t t t))))))
+    (if (and parent-title
+             (not (member parent-title excluded-parents)))
+        (format "%s:%s" parent-title heading)
+      heading)))
+
 (defun org2calendar-sync-current ()
   "同步当前光标下的最后一条 CLOCK 记录至 macOS 日历。
 通常由 org-clock-out-hook 自动触发。"
@@ -2739,7 +2808,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
                            (e (decode-time end-time))
                            (summary (save-excursion
                                       (goto-char (org-element-property :begin clock))
-                                      (org-get-heading t t t t)))
+                                      (org2calendar-get-context-summary)))
                            ;; 调用 Swift 模块
                            (result (org2calendar-sync-clock
                                     (nth 5 s) (nth 4 s) (nth 3 s) (nth 2 s) (nth 1 s) (nth 0 s)
@@ -2754,7 +2823,8 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
         (message "同步完成！共发现: %d, 新增: %d, 跳过: %d" 
                  total-found synced-count skipped-count)))))
 
-(add-hook 'midnight-hook #'org2calendar-sync-today)
+(with-eval-after-load 'midnight
+  (add-to-list 'midnight-hook 'org2calendar-sync-recent))
 
 (transient-define-prefix my/agenda-menu ()
   "GTD"
@@ -2783,7 +2853,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     ;; ("s" "Stucks" my/gtd-stuck-menu :transient t)
     ]
    ["Misc"
-    ("s" "Sync Calendar" org2calendar-sync-today)]])
+    ("s" "Sync Calendar" org2calendar-sync-recent)]])
 
 (transient-define-prefix my/org-gtd-agenda-transient ()
   [[:if org-gtd-agenda-transient--show-time-p

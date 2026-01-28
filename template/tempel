@@ -82,8 +82,12 @@ org-mode
 
 (elisp "#+begin_src emacs-lisp" n> r> n "#+end_src")
 (ec "#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el" n> r> n "#+end_src" n)
+
+(mhl "\\[ " p " \\]" >)
+(qty "\\qty{" p "}{" p "}")
+(mhj "\\(" p "\\)" >)
 (eq "\\begin{equation}" n> r> n>"\\end{equation}")
-(eq-ali "\\begin{align*}" n> r> n>"\\end{align*}")
+(eqali "\\begin{align*}" n> r> n>"\\end{align*}")
 (frac "\\frac{" p "}{" p "}")
 
 (drawio "#+drawio: " p)
