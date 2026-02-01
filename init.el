@@ -38,6 +38,8 @@
 (setopt read-buffer-completion-ignore-case t)
 (setopt ns-use-proxy-icon nil)
 (setopt ns-use-srgb-colorspace nil)
+(setopt read-process-output-max (* 1024 1024))
+(setopt inhibit-compacting-font-caches t)
 
 (setopt enable-recursive-minibuffers t)
 (setopt read-minibuffer-restore-windows nil
@@ -60,10 +62,10 @@
   "The source folder of my blog.")
 
 (defvar my-pictures (expand-file-name "pictures/" my-galaxy)
-    "The folder save pictures.")
+  "The folder save pictures.")
 
 (defvar my-web_archive (expand-file-name "web_archive/" my-galaxy)
-    "The folder save web pages.")
+  "The folder save web pages.")
 
 (defvar cache-directory (expand-file-name ".cache" user-emacs-directory))
 
@@ -73,8 +75,8 @@
   :hook (dashboard-mode . (lambda ()
 			    (setq-local display-line-numbers nil)))
   :bind (:map dashboard-mode-map
-			  ("n" . dashboard-next-line)
-			  ("p" . dashboard-previous-line))
+	      ("n" . dashboard-next-line)
+	      ("p" . dashboard-previous-line))
   :custom
   (dashboard-startup-banner (expand-file-name "src/bitmap.png" user-emacs-directory))
   (dashboard-image-banner-max-width 500)
@@ -208,9 +210,9 @@
 (add-hook 'after-init-hook 'pixel-scroll-precision-mode)
 
 (with-eval-after-load 'pixel-scroll
- (setopt pixel-scroll-precision-use-momentum t
-	pixel-scroll-precision-large-scroll-height 40.0
-	pixel-scroll-precision-interpolation-factor 2.0))
+  (setopt pixel-scroll-precision-use-momentum t
+	  pixel-scroll-precision-large-scroll-height 40.0
+	  pixel-scroll-precision-interpolation-factor 2.0))
 
 (add-hook 'after-init-hook #'recentf-mode)
 (with-eval-after-load 'recentf
@@ -220,13 +222,13 @@
 	  recentf-exclude '("~/.telega")))
 
 (add-hook 'after-init-hook #'savehist-mode)
-(with-eval-after-load 'savehist
-  (setopt savehist-file (expand-file-name "history" cache-directory)
-	  history-length 1000
-          savehist-additional-variables '(kill-ring
-                                          search-ring
-                                          regexp-search-ring)
-          history-delete-duplicates t))
+
+(setopt savehist-file (expand-file-name "history" cache-directory)
+	history-length 1000
+        savehist-additional-variables '(kill-ring
+                                        search-ring
+                                        regexp-search-ring)
+        history-delete-duplicates t)
 
 (setopt save-place-file (expand-file-name "places" cache-directory))
 (setopt save-place-autosave-interval (* 60 5))
@@ -290,29 +292,71 @@
 
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 
-(add-hook 'after-init-hook #'icomplete-mode)
-(with-eval-after-load 'icomplete
-  (setopt icomplete-delay-completions-threshold 0
-	  icomplete-show-matches-on-no-input t
-	  icomplete-hide-common-prefix nil
-	  icomplete-separator "  |  "
-	  icomplete-max-delay-chars 0
-	  icomplete-compute-delay 0
-	  )
+(use-package vertico
+  :load-path "~/.emacs.d/packages/vertico/" "~/.emacs.d/packages/vertico/extensions/"
+  :hook (after-init . vertico-mode))
 
-  ;; (define-key icomplete-minibuffer-map (kbd "C-n") #'minibuffer-next-completion)
-  ;; (define-key icomplete-minibuffer-map (kbd "C-p") #'minibuffer-previous-completion)
-  ;; (define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-force-complete-and-exit)
-  )
+(use-package vertico-sort
+  :after vertico
+  :custom
+  (vertico-sort-function #'vertico-sort-history-length-alpha))
 
-(add-hook 'prog-mode-hook #'completion-preview-mode)
-(add-hook 'org-mode-hook #'completion-preview-mode)
-(add-hook 'comint-mode-hook #'completion-preview-mode)
+(use-package vertico-directory
+  :after vertico
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
-(with-eval-after-load 'completion-preview
-  (define-key completion-preview-active-mode-map (kbd "TAB") #'completion-preview-insert)
-  (define-key completion-preview-active-mode-map (kbd "C-n") #'completion-preview-next-candidate)
-  (define-key completion-preview-active-mode-map (kbd "C-p") #'completion-preview-prev-candidate))
+;; (use-package vertico-multiform
+;;   :after vertico
+;;   :hook (vertico-mode . vertico-multiform-mode)
+;;   :config
+;;   (add-to-list 'vertico-multiform-categories ; to have it as grid in a temp buffer
+;;                '(jinx (vertico-grid-annotate . 20) (vertico-grid-min-columns . 1))))
+
+(use-package vertico-multiform
+  :after vertico
+  :hook (vertico-mode . vertico-multiform-mode)
+  :config
+  (unless (featurep 'vertico-grid)
+    (require 'vertico-grid))
+  (setq vertico-multiform-categories
+	'((jinx grid (vertico-grid-annotate . 30)))))
+
+(use-package corfu
+  :load-path "~/.emacs.d/packages/corfu/" "~/.emacs.d/packages/corfu/extensions"
+  :hook (after-init . global-corfu-mode)
+  :custom-face
+  (corfu-border ((t (:inherit region :background unspecified))))
+  :bind ("M-/" . completion-at-point)
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-prefix 1)
+  (corfu-auto-delay 0.2)
+  (corfu-preselect 'valid)
+  (corfu-max-width 120)
+  (corfu-on-exact-match nil)
+  (corfu-quit-no-match t)
+  (global-corfu-modes '((not erc-mode
+			     circe-mode
+			     help-mode
+			     gud-mode
+			     vterm-mode)
+			t))
+  (text-mode-ispell-word-completion nil)
+  (read-extended-command-predicate #'command-completion-default-include-p)
+  :config
+  (keymap-unset corfu-map "RET"))
+
+
+(use-package nerd-icons-corfu
+  :load-path "~/.emacs.d/packages/nerd-icons-corfu/"
+  :after corfu
+  :config
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package orderless
   :load-path "~/.emacs.d/packages/orderless/"
@@ -572,20 +616,68 @@
 			       (rime-regexp-load-rime)
 			       (advice-add 'orderless-regexp :filter-args #'rime-regexp-filter-args)))))
 
-(use-package sis
-  :load-path "~/.emacs.d/packages/emacs-smart-input-source/"
+(use-package macim
+  :load-path "~/.emacs.d/packages/macim.el/"
+  :hook ((after-init . macim-mode)
+	 (minibuffer-setup . macim-select-ascii)
+	 (minibuffer-mode . macim-select-ascii)
+	 (isearch-mode . macim-select-ascii))
+  :custom
+  (macim-other "im.rime.inputmethod.Squirrel.Hans")
   :config
-  (add-hook 'org-capture-mode-hook #'sis-set-other)
-  (sis-ism-lazyman-config
-   "com.apple.keylayout.ABC"
-   "im.rime.inputmethod.Squirrel.Hans")
-  (sis-global-cursor-color-mode t)
-  ;; enable the /respect/ mode
-  (sis-global-respect-mode t)
-  ;; enable the /context/ mode for all buffers
-  (sis-global-context-mode t)
-  ;; enable the /inline english/ mode for all buffers
-  (sis-global-inline-mode t))
+  ;; (advice-add 'select-window :after #'(lambda (&rest _) (macim-context-switch)))
+  (defvar my/macim-context-ignore-modes '("telega-root-mode"
+					  "telega-image-mode"
+					  "mu4e-headers-mode"
+					  "mu4e-view-mode"
+					  "elfeed-show-mode"
+					  "elfeed-search-mode"))
+  (defun +macim-context-ignore-modes ()
+    (let ((mode (symbol-name major-mode)))
+      (when (member mode my/macim-context-ignore-modes))
+      'ascii))
+
+  ;; (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes)
+
+  ;; Trim excess spaces on both sides on deactivation
+  (setq +macim-chinese-punc-chars (mapcar #'string-to-char macim--chinese-punc-list))
+
+  (defun +macim-remove-head-space-after-cc-punc (_)
+    (when (or (memq (char-before) +macim-chinese-punc-chars)
+              (bolp))
+      (delete-char 1)))
+  (setq macim-inline-head-handler #'+macim-remove-head-space-after-cc-punc)
+
+  (defun +macim-remove-tail-space-before-cc-punc (tighten-back-to)
+    (when (> (point) tighten-back-to)
+      (backward-delete-char (1- (- (point) tighten-back-to))))
+    (when (and (eq (char-before) ? )
+               (memq (char-after) +macim-chinese-punc-chars))
+      (backward-delete-char 1)))
+  (setq macim-inline-tail-handler #'+macim-remove-tail-space-before-cc-punc)
+
+  ;; Before inserting Chinese punctuation, delete extra spaces introduced by inline mode
+  (defun +macim-line-set-last-space-pos ()
+    (when (eq (char-before) ?\s)
+      (setq +macim-inline-english-last-space-pos (point))))
+  (add-hook 'macim-inline-deactivated-hook #'+macim-line-set-last-space-pos)
+
+  (defun +macim-inline-remove-redundant-space ()
+    (when (eq +macim-inline-english-last-space-pos (1- (point)))
+      (when (and (memq (char-before) +macim-chinese-punc-chars)
+		 (eq (char-before (1- (point))) ?\s))
+	(save-excursion
+          (backward-char 2)
+          (delete-char 1)
+          (setq-local +macim-inline-english-last-space-pos nil)))
+      (remove-hook 'post-self-insert-hook #'+macim-inline-remove-redundant-space t))
+    )
+
+  (defun +macim-inline-add-post-self-insert-hook ()
+    (add-hook 'post-self-insert-hook #'+macim-inline-remove-redundant-space nil t))
+
+  (add-hook 'macim-inline-deactivated-hook #'+macim-inline-add-post-self-insert-hook)
+  )
 
 (setopt ns-pop-up-frames nil)
 
@@ -596,12 +688,12 @@
   (winum-auto-setup-mode-line nil))
 
 (defun my/winum-select (num)
-    (lambda (&optional arg) (interactive "P")
-      (if arg
-          (winum-select-window-by-number (- 0 num))
-        (if (equal num (winum-get-number))
-            (winum-select-window-by-number (winum-get-number (get-mru-window t)))
-          (winum-select-window-by-number num)))))
+  (lambda (&optional arg) (interactive "P")
+    (if arg
+        (winum-select-window-by-number (- 0 num))
+      (if (equal num (winum-get-number))
+          (winum-select-window-by-number (winum-get-number (get-mru-window t)))
+        (winum-select-window-by-number num)))))
 
 (setq winum-keymap
       (let ((map (make-sparse-keymap)))
@@ -1020,43 +1112,43 @@ This function requires GNU ls from coreutils installed."
                                        (window-width . 0.5))))
 
 (setopt my/browser-engines
-          '((DoubanMovie . "https://search.douban.com/movie/subject_search?search_text=")
-            (DoubanBook . "https://search.douban.com/book/subject_search?search_text=")
-            (Zhihu . "https://www.zhihu.com/search?type=content&q=")
-            (Google . "https://www.google.com/search?q=")
-            (Scholar . "https://scholar.google.com/scholar?q=")
-            (SemanticScholar . "https://www.semanticscholar.org/search?q=")
-            (Github . "https://github.com/search?q=")
-            (Youtube . "http://www.youtube.com/results?aq=f&oq=&search_query=")
+        '((DoubanMovie . "https://search.douban.com/movie/subject_search?search_text=")
+          (DoubanBook . "https://search.douban.com/book/subject_search?search_text=")
+          (Zhihu . "https://www.zhihu.com/search?type=content&q=")
+          (Google . "https://www.google.com/search?q=")
+          (Scholar . "https://scholar.google.com/scholar?q=")
+          (SemanticScholar . "https://www.semanticscholar.org/search?q=")
+          (Github . "https://github.com/search?q=")
+          (Youtube . "http://www.youtube.com/results?aq=f&oq=&search_query=")
   	  (Bilibili . "https://search.bilibili.com/all?keyword=")
   	  (WikiPedia_en . "https://en.wikipedia.org/w/index.php?search=")
   	  (Annas-Archvie . "https://annas-archive.org/search?q=")))
 
-  (defmacro my/define-search-functions ()
-    "Dynamically define search functions for each search engine in `my/browser-engines`."
-    `(progn
-       ,@(mapcar (lambda (engine)
-                   (let* ((engine-name (car engine))
-                          (function-name (intern (format "my/search-%s" (downcase (symbol-name engine-name))))))
-                     `(defun ,function-name (query)
-                        ,(format "Search for QUERY using the %s engine." engine-name)
-                        (interactive
-                         (list (let ((default-query
-                                      (if (and (eq system-type 'darwin)
-                                               (featurep 'emt))
-                                          (emt-word-at-point-or-forward)
-                                        (thing-at-point 'word t))))
-                                 (if (region-active-p)
-                                     (buffer-substring-no-properties (region-beginning) (region-end))
-                                   (read-string (format "[%s] Enter search terms (default: %s): " ,(symbol-name engine-name) default-query))))))
-                        (let ((search-url (concat ,(cdr engine) (url-encode-url query))))
-                          (browse-url search-url))
-                        (when (region-active-p)
-                          (deactivate-mark)))))
-                 my/browser-engines)))
+(defmacro my/define-search-functions ()
+  "Dynamically define search functions for each search engine in `my/browser-engines`."
+  `(progn
+     ,@(mapcar (lambda (engine)
+                 (let* ((engine-name (car engine))
+                        (function-name (intern (format "my/search-%s" (downcase (symbol-name engine-name))))))
+                   `(defun ,function-name (query)
+                      ,(format "Search for QUERY using the %s engine." engine-name)
+                      (interactive
+                       (list (let ((default-query
+                                    (if (and (eq system-type 'darwin)
+                                             (featurep 'emt))
+                                        (emt-word-at-point-or-forward)
+                                      (thing-at-point 'word t))))
+                               (if (region-active-p)
+                                   (buffer-substring-no-properties (region-beginning) (region-end))
+                                 (read-string (format "[%s] Enter search terms (default: %s): " ,(symbol-name engine-name) default-query))))))
+                      (let ((search-url (concat ,(cdr engine) (url-encode-url query))))
+                        (browse-url search-url))
+                      (when (region-active-p)
+                        (deactivate-mark)))))
+               my/browser-engines)))
 
-  (add-hook 'after-init-hook (lambda ()
-  				 (my/define-search-functions)))
+(add-hook 'after-init-hook (lambda ()
+  			     (my/define-search-functions)))
 
 (global-set-key (kbd "M-s g") #'my/search-google)
 (global-set-key (kbd "M-s W") #'my/search-wikipedia_en)
@@ -1160,23 +1252,23 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
             (propertize (format-time-string " %Y-%m-%d %a ") 'face `(:inherit success)))))
 
 (defvar-local my/modeline-time
-    '(:eval (when (mode-line-window-selected-p)
-              (propertize (format-time-string "%H:%M") 'face nil))))
+  '(:eval (when (mode-line-window-selected-p)
+            (propertize (format-time-string "%H:%M") 'face nil))))
 
 (defvar-local my/modeline-timer
-    '(:eval (when (and (mode-line-window-selected-p) (or org-timer-countdown-timer
-							 pomm-current-mode-line-string))
-              (propertize (my/modeline--timer) 'face `(:inherit font-lock-constant-face)))))
+  '(:eval (when (and (mode-line-window-selected-p) (or org-timer-countdown-timer
+						       pomm-current-mode-line-string))
+            (propertize (my/modeline--timer) 'face `(:inherit font-lock-constant-face)))))
 
 (defvar-local my/modeline-clock-info
-    '(:eval (when (and (mode-line-window-selected-p) (org-clocking-p))
-              (propertize (format " [%s](%s)"
-                                  (org-duration-from-minutes
-                                   (floor (org-time-convert-to-integer
-                                           (org-time-since org-clock-start-time))
-                                          60))
-                                  org-clock-heading)
-                          'face `(:inherit font-lock-builtin-face)))))
+  '(:eval (when (and (mode-line-window-selected-p) (org-clocking-p))
+            (propertize (format " [%s](%s)"
+                                (org-duration-from-minutes
+                                 (floor (org-time-convert-to-integer
+                                         (org-time-since org-clock-start-time))
+                                        60))
+                                org-clock-heading)
+                        'face `(:inherit font-lock-builtin-face)))))
 
 (defun my/modeline--major-mode ()
   (capitalize (string-replace "-mode" "" (symbol-name major-mode))))
@@ -1250,18 +1342,18 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
   (car (process-lines  "identify"  "-precision"  "3"  "-format"  "[%m %wx%h %[size]]" (buffer-file-name))))
 
 (defvar-local my/modeline-image-info
-    '(:eval (when (and (mode-line-window-selected-p) (or (eq major-mode 'image-mode)
-                                                         (eq major-mode 'telega-image-mode)))
-              (propertize (my/modeline--image-info) 'face font-lock-string-face))))
+  '(:eval (when (and (mode-line-window-selected-p) (or (eq major-mode 'image-mode)
+                                                       (eq major-mode 'telega-image-mode)))
+            (propertize (my/modeline--image-info) 'face font-lock-string-face))))
 
 (defvar-local my/modeline-kbd-macro
-    '(:eval
-      (when (and (mode-line-window-selected-p) defining-kbd-macro)
-        (propertize " KMacro " 'face `(:inherit font-lock-constant-face :inverse-video t)))))
+  '(:eval
+    (when (and (mode-line-window-selected-p) defining-kbd-macro)
+      (propertize " KMacro " 'face `(:inherit font-lock-constant-face :inverse-video t)))))
 
 (defvar-local my/winum
-    '(:eval (when winum-mode
-	      (propertize (format winum-format (winum-get-number-string)) 'face `(:inverse-video t )))))
+  '(:eval (when winum-mode
+	    (propertize (format winum-format (winum-get-number-string)) 'face `(:inverse-video t )))))
 
 (defvar-local my/modeline-gtd
   '(:eval (org-gtd-mode-lighter)))
@@ -1381,7 +1473,8 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
   :bind (("M-+" . tempel-complete)
          ("M-*" . tempel-insert)
 	 (:map tempel-map
-	       ("<down>" . tempel-next)))
+	       ("C-p" . tempel-previous)
+	       ("C-n" . tempel-next)))
   :init
   (defun tempel-setup-capf ()
     ;; Add the Tempel Capf to `completion-at-point-functions'.
@@ -1401,6 +1494,7 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
   (add-hook 'conf-mode-hook 'tempel-setup-capf)
   (add-hook 'prog-mode-hook 'tempel-setup-capf)
   (add-hook 'text-mode-hook 'tempel-setup-capf)
+  (add-hook 'org-mode-hook 'tempel-setup-capf)
   :custom
   (tempel-path `("~/.emacs.d/template/tempel"
                  ,(expand-file-name "config/tempel" my-galaxy))))
@@ -1519,12 +1613,12 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
 
 (defun get-today-heading-with-subheading (subheading)
   (save-excursion
-      (goto-char (point-min))
-      (unless (re-search-forward
-               (concat "^\\* " (regexp-quote subheading))
-               nil t)
-        (goto-char (point-max))
-        (insert "* " subheading "\n")))
+    (goto-char (point-min))
+    (unless (re-search-forward
+             (concat "^\\* " (regexp-quote subheading))
+             nil t)
+      (goto-char (point-max))
+      (insert "* " subheading "\n")))
   (list subheading))
 
 (defun org-capture-heading-logs ()
@@ -1558,9 +1652,9 @@ Return OLP for capture."
            :tree-type week :jump-to-captured t))))
 
 (defun org-attach-save-file-list-to-property (dir)
-    "Save list of attachments to ORG_ATTACH_FILES property."
-    (when-let* ((files (org-attach-file-list dir)))
-      (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", "))))
+  "Save list of attachments to ORG_ATTACH_FILES property."
+  (when-let* ((files (org-attach-file-list dir)))
+    (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", "))))
 (add-hook 'org-attach-after-change-hook #'org-attach-save-file-list-to-property)
 
 (defun update-org-attach-property ()
@@ -1618,8 +1712,8 @@ Return OLP for capture."
 	  org-refile-active-region-within-subtree t))
 
 (with-eval-after-load 'org-clock
-  (add-to-list 'warning-suppress-types
-             '(files . "org-clock-save.el"))
+  ;; (add-to-list 'warning-suppress-types
+  ;;            '(files . "org-clock-save.el"))
   (org-clock-persistence-insinuate)
   (setopt org-clock-persist-file (expand-file-name "org-clock-save.el" cache-directory)
 	  org-clock-history-length 23
@@ -1921,6 +2015,61 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   ;;    ("Literature"  ?l ,(expand-file-name "denote/literature" my-galaxy))))
   )
 
+(use-package org-transclusion
+  :load-path "~/.emacs.d/packages/org-transclusion/"
+  :hook (org-mode . org-transclusion-mode))
+
+(defun my/insert-denote-standard-transclusion ()
+  "搜索规范：显示 [文件名] 标题路径 > 内容预览 > ID。"
+  (interactive)
+  (unless org-id-locations (org-id-locations-load))
+  (let* ((orig-buffer (current-buffer))
+         (all-files (denote-directory-files))
+         (standard-files (cl-remove-if-not 
+                          (lambda (f) (string-match-p "Standard" (file-name-nondirectory f)))
+                          all-files))
+         (chosen-file (completing-read "选择规范文件: " standard-files))
+         (candidates '()))
+    
+    (when (and chosen-file (file-exists-p chosen-file))
+      (with-current-buffer (find-file-noselect chosen-file)
+        (org-with-wide-buffer
+         (goto-char (point-min))
+         (org-element-map (org-element-parse-buffer) 'headline
+           (lambda (headline)
+             (let ((id (org-element-property :ID headline))
+                   (title (org-element-property :raw-value headline))
+                   (begin-pos (org-element-property :begin headline))
+                   (end-pos (org-element-property :end headline)))
+               (when id
+                 (save-excursion
+                   (goto-char begin-pos)
+                   (let* ((path-list (org-get-outline-path t t))
+                          (full-path (mapconcat #'identity (append path-list (list title)) " > "))
+                          (preview (save-excursion
+                                     (org-end-of-meta-data t)
+                                     (let ((content-start (point))
+                                           (content-end (save-excursion 
+                                                          (outline-next-heading) (point))))
+                                       (setq content-end (min content-end (+ content-start 100)))
+                                       (replace-regexp-in-string 
+                                        "[\n\t\r]+" " " ;; 将换行符转为空格，方便显示
+                                        (buffer-substring-no-properties content-start content-end)))))
+                          (display-name (format "%-20s | %s..." full-path preview)))
+                     (push (cons display-name id) candidates)))))))))
+      
+      (if (not candidates)
+          (message "未发现带 ID 的条目")
+        (let* ((selection (completing-read "选择条文 (路径 | 预览): " (reverse candidates)))
+               (selected-id (cdr (assoc selection candidates)))
+               (link (format "[[id:%s]]" selected-id)))
+          (when selected-id
+            (with-current-buffer orig-buffer
+              (insert (format "\n#+begin_quote\n#+transclude: %s :only-contents t\n#+end_quote\n" link))
+              (when (and (boundp 'org-transclusion-mode) org-transclusion-mode)
+		(previous-line 2)
+                (org-transclusion-add)))))))))
+
 (defvar my/dict-map (make-sparse-keymap)
   "Keymap for Dictionary commands.")
 
@@ -1950,11 +2099,11 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   (require 'lexdb-ldoce)
   (setq lexdb-dictionaries
 	'((:id ldoce
-         :type ldoce
-         :name "朗文当代"
-         :db-file "~/.emacs.d/sdcv-dict/LDOCE6.db"
-         :audio-dir "~/dicts/audio/"
-         :priority 1)
+               :type ldoce
+               :name "朗文当代"
+               :db-file "~/.emacs.d/sdcv-dict/LDOCE6.db"
+               :audio-dir "~/dicts/audio/"
+               :priority 1)
 	  ))
   (lexdb-init))
 
@@ -2100,7 +2249,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   (citar-notes-paths `(,(expand-file-name "denote/references" my-galaxy)))
   (citar-library-file-extensions '("pdf" "jpg" "epub"))
   (citar-symbol-separator "​")
-  (citar-select-multiple nil)
+  (citar-select-multiple t)
   (citar-file-additional-files-separator "-")
   (citar-at-point-function 'embark-act))
 
@@ -2172,7 +2321,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   ;; 				     ("framesep"  "2mm")
   ;; 				     ("breaklines")))
   (setq org-latex-pdf-process
-      '("latexmk -xelatex -shell-escape -interaction=nonstopmode -output-directory=%o %f"))
+	'("latexmk -xelatex -shell-escape -interaction=nonstopmode -output-directory=%o %f"))
   
   ;; (setopt org-latex-pdf-process '("xelatex -shell-escape %f"
   ;; 				  "biber %b"
@@ -2296,6 +2445,37 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   :load-path "~/.emacs.d/packages/auctex-latexmk/"
   :hook (LaTeX-mode . auctex-latexmk-setup))
 
+(with-eval-after-load 'org
+  (add-to-list 'org-options-keywords "AUTO_GENERATE_TEX:")
+  
+  (defun my/org-auto-export-to-latex ()
+    (let* ((keywords (org-collect-keywords '("AUTO_GENERATE_TEX")))
+           (val (cl-second (car keywords))))
+      (when (string-equal (and val (downcase val)) "t")
+	(let* ((base-path (file-name-sans-extension (buffer-file-name)))
+               (tex-file (concat base-path ".tex"))
+               (generated-file (org-export-to-file 'latex tex-file nil nil nil nil)))
+          
+          (if (and generated-file (file-exists-p generated-file))
+              (progn
+		(my/org-latex-auto-manage)
+		(message "Tex 文件 %s 己生成！" tex-file))
+            )))))
+
+  (add-hook 'after-save-hook #'my/org-auto-export-to-latex)
+
+  (defun my/org-latex-auto-manage ()
+    "检测关键字并启动后台 latexmk，编译结果通过 macOS 通知。"
+    (when-let* ((tex-file (concat (file-name-sans-extension (buffer-file-name)) ".tex"))
+		(file-name (file-name-nondirectory tex-file))
+		(process-name (concat "latexmk-" file-name))
+		(file-dir (file-name-directory (buffer-file-name))))   
+      (unless (get-process process-name)
+        (let ((default-directory file-dir))
+	  (start-process process-name "*latexmk-out*"
+			 "latexmk" "-pvc" "-pdf" "-view=none" "-interaction=nonstopmode" file-name))
+        (message "已开启针对 %s 的后台实时监控" file-name)))))
+
 (defun org-export-docx (input csl)
   (interactive "FInput file (Default is Buffer File):\nFCSL file (Default is chinese-gb7714-2005-numeric):")
   (let* ((base (or (file-name-sans-extension input) (buffer-file-name)))
@@ -2314,7 +2494,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 (use-package pdf-view
   :hook ((pdf-tools-enabled . pdf-view-themed-minor-mode)
          (pdf-view-mode . (lambda ()
-                           (require 'saveplace-pdf-view))))
+                            (require 'saveplace-pdf-view))))
   :config
   (setq pdf-view-display-size 'fit-width)
   (setq pdf-view-use-unicode-ligther nil)
@@ -2556,7 +2736,8 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     ("i" "Insert Link" denote-link)
     ("I" "Batch Links" denote-add-links)
     ("b" "Backlinks" denote-backlinks)
-    ("L" "Create & Link" denote-link-after-creating)]
+    ("L" "Create & Link" denote-link-after-creating)
+    ("t" "Transclusion" my/insert-denote-standard-transclusion)]
    ["Denote Manage"
     ("r" "Rename File" denote-rename-file)
     ("R" "Rename using Front Matter" denote-rename-file-using-front-matter)
@@ -2647,12 +2828,12 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   (org-gtd-clarify-display-helper-buffer t)
   (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAIT(w)" "|" "DONE(d)" "CNCL(c)")))
   (org-todo-state-tags-triggers
-      (quote (("CNCL" ("CNCL" . t))
-              ("WAIT" ("WAIT" . t))              
-              (done ("WAIT"))
-              ("TODO" ("WAIT") ("CNCL"))
-              ("NEXT" ("WAIT") ("CNCL"))
-              ("DONE" ("WAIT") ("CNCL")))))
+   (quote (("CNCL" ("CNCL" . t))
+           ("WAIT" ("WAIT" . t))              
+           (done ("WAIT"))
+           ("TODO" ("WAIT") ("CNCL"))
+           ("NEXT" ("WAIT") ("CNCL"))
+           ("DONE" ("WAIT") ("CNCL")))))
   (org-gtd-keyword-mapping '((todo . "TODO")
                              (next . "NEXT")
                              (wait . "WAIT")
@@ -2721,7 +2902,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 
 ;; Sync org entry with clocking to MacOS Calendar.
 
-(module-load "/Users/dn/.emacs.d/org2calendar/module/.build/release/liborg2calendar.dylib")
+(module-load "/Users/dn/.emacs.d/modules/liborg2calendar.dylib")
 
 (defun org2calendar-get-context-summary ()
   "获取标题摘要。如果父标题存在且不属于特定的过滤词，则返回 '父标题 / 当前标题'。
@@ -2751,7 +2932,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
            (calendar-name "Clocking")
            ;; 搜索当前标题下的最后一条 CLOCK 记录
            (clock-found (re-search-forward "CLOCK: \\(\\[.*?\\]\\)--\\(\\[.*?\\]\\)" 
-                                         (save-excursion (org-end-of-subtree) (point)) t)))
+                                           (save-excursion (org-end-of-subtree) (point)) t)))
       
       (if (not clock-found)
           (message "未在当前条目下找到 CLOCK 记录，无法同步。")
@@ -2800,7 +2981,6 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
                        (end-time (org-timestamp-to-time value t))
                        (start-date-str (format-time-string "%Y-%m-%d" start-time)))
                   
-                  ;; 修改判定条件：如果日期是今天 OR 昨天，则进行同步
                   (when (or (string= today start-date-str)
                             (string= yesterday start-date-str))
                     (setq total-found (1+ total-found))
@@ -2825,6 +3005,90 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 
 (with-eval-after-load 'midnight
   (add-to-list 'midnight-hook 'org2calendar-sync-recent))
+
+(defun my/org-sync-from-calendar ()
+  "从日历同步事件，手动选择目标标题并精准插入 Clock 记录。"
+  (interactive)
+  (let ((events (org2calendar-fetch-pending "Phone"))
+        (all-targets nil))
+    (unless events
+      (user-error "日历中没有发现待处理事件。"))
+
+    (with-current-buffer (find-file-noselect org2calendar-sync-location)
+      (org-map-entries
+       (lambda ()
+         (push (cons (org-get-heading t t t t) (point)) all-targets))))
+    
+    (dolist (event events)
+      (let* ((id (cdr (assoc :id event)))
+             (title (cdr (assoc :title event)))
+             (start (cdr (assoc :start event)))
+             (end (cdr (assoc :end event)))
+             (selection (completing-read (format "归档 [%s] 到标题: " title) all-targets))
+             (target-pos (cdr (assoc selection all-targets))))
+        
+        (when target-pos
+          (with-current-buffer (find-file-noselect org2calendar-sync-location)
+            (save-excursion
+              (goto-char target-pos)
+              (org-back-to-heading t)
+              
+              (let ((org-log-into-drawer t))
+                (org-clock-into-drawer))
+              (cond 
+               ((re-search-forward "^[ \t]*:LOGCLOCK:" (save-excursion (org-end-of-subtree t) (point)) t)
+                (forward-line 1))
+               (t
+                (org-end-of-meta-data t)
+                (insert "\n:LOGCLOCK:\n:END:\n")
+                (forward-line -1)))
+
+              (indent-to-column (org-get-indentation))
+              (insert "CLOCK: " "[" start "]" "--" "[" end "]" "\n")
+              (save-excursion
+                (forward-line -1)
+                (org-ctrl-c-ctrl-c))))
+
+	  (if (org2calendar-delete-event id)
+              (message "已同步并从日历删除: %s" title)
+            (message "同步成功但删除日历事件失败: %s" title))
+          )))))
+
+(defun my/send-to-reminders ()
+  "在 Agenda 视图中，将当前光标下的任务同步到 Apple Reminders 的 'Work' 列表中。"
+  (interactive)
+  ;; 1. 检查是否在 Agenda 模式中
+  (unless (derived-mode-p 'org-agenda-mode)
+    (user-error "该命令只能在 Org Agenda 视图中使用"))
+
+  (let* ((marker (or (get-text-property (point) 'org-marker)
+                     (get-text-property (point) 'org-hd-marker)))
+         (target-list "Work")
+         (task-title nil))
+    
+    (if (not marker)
+        (message "错误：当前行未找到有效的 Org 任务标记 (Marker)。")
+      (with-current-buffer (marker-buffer marker)
+        (save-excursion
+          (goto-char (marker-position marker))
+          (setq task-title (org-get-heading t t t t))))
+
+      (let ((result (org2calendar-sync-reminder task-title target-list)))
+        (cond
+         ((string= result "synced")
+          (message "已同步到提醒事项 [%s]: %s" target-list task-title))
+         ((string= result "list-not-found")
+          (message "错误：找不到提醒事项列表 '%s'" target-list))
+         (t
+          (message "同步失败: %s" result)))))))
+
+
+(define-key org-agenda-mode-map (kbd "<f8>") #'my/send-to-reminders)
+(advice-add 'org-agenda-redo :override #'my/send-to-reminders)
+
+
+(with-eval-after-load 'midnight
+  (add-to-list 'midnight-hook 'my/org-sync-from-calendar))
 
 (transient-define-prefix my/agenda-menu ()
   "GTD"
@@ -2853,21 +3117,29 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     ;; ("s" "Stucks" my/gtd-stuck-menu :transient t)
     ]
    ["Misc"
-    ("s" "Sync Calendar" org2calendar-sync-recent)]])
+    ("s" "Sync To Calendar" org2calendar-sync-recent)
+    ("S" "Sync From Calendar" my/org-sync-from-calendar)
+    ]])
 
 (transient-define-prefix my/org-gtd-agenda-transient ()
   [[:if org-gtd-agenda-transient--show-time-p
-   "Time"
-   ("+" "Defer 1 day" org-gtd-agenda-transient--defer)
-   ("s" "Set date" org-gtd-agenda-transient--set-date)]
-  ["Metadata"
-   ("a" "Area of focus" org-gtd-agenda-transient--area-of-focus)]
-  ["Clarify"
-   ("c" "Clarify (refile)" org-gtd-agenda-transient--clarify-refile)
-   ("C" "Clarify (in place)" org-gtd-agenda-transient--clarify-in-place)]])
+	"Time"
+	("+" "Defer 1 day" org-gtd-agenda-transient--defer)
+	("s" "Set date" org-gtd-agenda-transient--set-date)]
+   ["Metadata"
+    ("a" "Area of focus" org-gtd-agenda-transient--area-of-focus)]
+   ["Clarify"
+    ("c" "Clarify (refile)" org-gtd-agenda-transient--clarify-refile)
+    ("C" "Clarify (in place)" org-gtd-agenda-transient--clarify-in-place)]])
 
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "C-.") #'my/org-gtd-agenda-transient))
+
+(use-package telega
+  :load-path "~/.emacs.d/packages/telega.el/" "~/.emacs.d/packages/visual-fill-column/"
+  :custom
+  (telega-chat-fill-column 90)
+  (telega-avatar-workaround-gaps-for (when (display-graphic-p) '(return t))))
 
 (defun my/wallpaper-set ()
   (interactive)
