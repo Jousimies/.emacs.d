@@ -17,6 +17,11 @@
     (add-hook 'window-setup-hook #'profiler-stop 0))
 #+end_src
 
+Disable lexical warning
+#+begin_src emacs-lisp :tangle ~/.emacs.d/early-init.el
+  (setq byte-compile-warnings '(not lexical))
+#+end_src
+
 #+begin_src emacs-lisp :tangle ~/.emacs.d/early-init.el
   ;; Defer garbage collection further back in the startup process
   (setq gc-cons-threshold most-positive-fixnum
@@ -177,6 +182,8 @@
   (setopt ns-use-srgb-colorspace nil)
   (setopt read-process-output-max (* 1024 1024))
   (setopt inhibit-compacting-font-caches t)
+
+  (setopt lexical-binding t)
 #+end_src
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
@@ -317,6 +324,10 @@
 
 *** Font setting
 ~set-face-attribute~ 设置默认字体， ~set-fontset-font~ 用于指定某些字符集使用特定的字体。
+
+See: [[https://archive.casouri.cc/note/2019/emacs-%E5%AD%97%E4%BD%93%E4%B8%8E%E5%AD%97%E4%BD%93%E9%9B%86/index.html][Emacs，字体与字符集]]
+
+Maple Mono Font: [[https://github.com/subframe7536/maple-font][subframe7536/maple-font: Maple Mono]]
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   ;; 设置中文字集
   ;; `han': 汉字字符集，主要用于简体中文和繁体中文字符
@@ -324,27 +335,29 @@
   ;; `kana': 日文假名字符集，但在处理与中文相关的文档时可能偶尔用到
   ;; `bopomofo': 注音符号字符集，用于台湾地区的汉字注音
 
-  (setopt use-default-font-for-symbols nil)
+  ;; (setopt use-default-font-for-symbols nil)
 
-  (when IS-MAC
-    (set-face-attribute 'default nil :family "Cascadia Next SC" :height 140))
+  ;; (when IS-MAC
+  ;;   (set-face-attribute 'default nil :family "Cascadia Next SC" :height 140))
 
-  (when (and IS-MAC (display-graphic-p))
-    (dolist (charset '(kana han cjk-misc bopomofo symbol))
-      (set-fontset-font (frame-parameter nil 'font) charset
-                        (font-spec :family "SimSun"))))
+  ;; (when (and IS-MAC (display-graphic-p))
+  ;;   (dolist (charset '(kana han cjk-misc bopomofo symbol))
+  ;;     (set-fontset-font (frame-parameter nil 'font) charset
+  ;;                       (font-spec :family "SimSun"))))
 
-  (when IS-WINDOWS
-    (dolist (charset '(kana han cjk-misc bopomofo symbol))
-      (set-fontset-font (frame-parameter nil 'font) charset
-                        (font-spec :family "SimHei"))))
+  ;; (when IS-WINDOWS
+  ;;   (dolist (charset '(kana han cjk-misc bopomofo symbol))
+  ;;     (set-fontset-font (frame-parameter nil 'font) charset
+  ;;                       (font-spec :family "SimHei"))))
 
-  (when (display-graphic-p)
-    (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend))
+  ;; (when (display-graphic-p)
+  ;;   (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend))
 
-  (when (display-graphic-p)
-    (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
-    (set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend))
+  ;; (when (display-graphic-p)
+  ;;   (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
+  ;;   (set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend))
+
+  (set-face-attribute 'default nil :family "Maple Mono CN" :height 140)
 #+end_src
 *** Icons
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
@@ -586,7 +599,7 @@
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (add-hook 'after-init-hook #'fido-mode)
 #+end_src
-** corfu
+** COMMENT corfu
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package corfu
     :load-path "~/.emacs.d/packages/corfu/" "~/.emacs.d/packages/corfu/extensions"
@@ -622,7 +635,7 @@
     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 #+end_src
 
-** COMMENT completion preview mode
+** completion preview mode
 行内灰色幽灵补全，代替 Corfu。
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (add-hook 'prog-mode-hook #'completion-preview-mode)
@@ -1936,6 +1949,14 @@ Decimal digits after the % specify field width to which to pad.
   (defvar-local my/modeline-gtd
     '(:eval (org-gtd-mode-lighter)))
 #+end_src
+
+**** telega
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (defvar-local my/telega
+    '(:eval (propertize telega-mode-line-string 'face 'bold)))
+#+end_src
+
+
 *** construct
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (dolist (construct '(my/modeline-major-mode
@@ -1954,7 +1975,8 @@ Decimal digits after the % specify field width to which to pad.
   		     my/modeline-timer
   		     my/modeline-clock-info
   		     my/winum
-  		     my/modeline-gtd))
+  		     my/modeline-gtd
+  		     my/telega))
 
     (put construct 'risky-local-variable t))
 
@@ -1981,6 +2003,7 @@ Decimal digits after the % specify field width to which to pad.
   		   which-func-format))
   	  my/modeline-gtd
             my/modeline-sys
+  	  my/telega
             " "
             my/modeline-major-mode
   	  (project-mode-line project-mode-line-format)
@@ -2282,8 +2305,25 @@ Decimal digits after the % specify field width to which to pad.
              plain
              (file+olp+datetree ,(expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy))
              (file "~/.emacs.d/template/review-weekly")
-             :tree-type week :jump-to-captured t))))
+             :tree-type week :jump-to-captured t)
+  	  ("R" "Report" plain (file+olp+datetree ,(expand-file-name (format "org_report_%s.org" (format-time-string "%Y")) org-gtd-directory))
+  	   ,(concat "#+BEGIN: clocktable :scope agenda :maxlevel 9 :block " 
+  		    (format-time-string "%Y-%m-%d") 
+  		    " :fileskip0 t :compact t\n#+END:")
+  	   :immediate-finish t 
+  	   :jump-to-captured t))))
 #+end_src
+
+**** org-report
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (defun my/org-auto-generate-report ()
+    "静默触发 Org-capture 中的 R 模板生成报告。"
+    (interactive)
+    (org-capture nil "R")
+    (message "已于 %s 自动生成今日时钟报告" (format-time-string "%H:%M:%S")))
+#+end_src
+
+
 *** org-attach
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (defun org-attach-save-file-list-to-property (dir)
@@ -2362,7 +2402,7 @@ Decimal digits after the % specify field width to which to pad.
   (with-eval-after-load 'org-clock
     ;; (add-to-list 'warning-suppress-types
     ;;            '(files . "org-clock-save.el"))
-    (org-clock-persistence-insinuate)
+    ;; (org-clock-persistence-insinuate)
     (setopt org-clock-persist-file (expand-file-name "org-clock-save.el" cache-directory)
   	  org-clock-history-length 23
   	  org-clock-in-resume t
@@ -3069,6 +3109,7 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
       (delete-file xml-file)))
 #+end_src
 ** LaTeX & Export
+Latex 中制图可以参见：[[https://castel.dev/post/lecture-notes-2/][How I draw figures for my mathematical lecture notes using Inkscape | Gilles Castel]]。虽然我目前没有实践这种方式。
 *** ox-latex
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (with-eval-after-load 'oc-biblatex
@@ -3232,8 +3273,8 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
   		(message "Tex 文件 %s 己生成！" tex-file))
               )))))
 
-    (add-hook 'after-save-hook #'my/org-auto-export-to-latex)
-
+    (run-with-idle-timer (* 2 60) t #'my/org-auto-export-to-latex)
+    
     (defun my/org-latex-auto-manage ()
       "检测关键字并启动后台 latexmk，编译结果通过 macOS 通知。"
       (when-let* ((tex-file (concat (file-name-sans-extension (buffer-file-name)) ".tex"))
@@ -3422,6 +3463,7 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
     (ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
 #+end_src
 ** Blog with ox-publish
+See: [[https://gsj987.github.io/use-org-mode-publish-blog.html#org36c61a7][使用 org-mode 写博客]] and [[https://nicolasknoebber.com/posts/blogging-with-emacs-and-org.html#org9edef43][Blogging with Emacs and Org]]。
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (defvar my/publish-directory "~/Blogs/")
 
@@ -3563,6 +3605,9 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
       ]
      ["Sort"
       ("/" "Sort dired" denote-sort-dired)
+      ]
+     ["Misc"
+      ("O" "OCR" my/ocr)
       ]])
 
   ;; 绑定到 C-c n m (Menu)
@@ -3723,9 +3768,27 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
 | @phone    | 任何需要使用手机或电话才能完成的任务（如：打客服电话、回复短信）  |
 | @email    | 任何专门与收发邮件相关的任务（如果您的 org-gtd 文件与邮件集成）   |
 
-
-
 *** Sync org entry with clocking to MacOS Calendar.
+Mac Tahoe 26.2 有一些变更导致会提示无权限写入日历。可以尝试重置日历权限或者终端执行以下命令：
+
+给生成的 dylib 签名。
+#+begin_src bash
+  codesign -s - .build/release/liborg2calendar.dylib
+#+end_src
+
+给 Emacs 申请权限。经过测试，需要执行下面的命令获取权限才可以。
+
+获取 Calendar 权限：
+#+begin_src bash
+  defaults write /Applications/Emacs.app/Contents/Info.plist NSCalendarsFullAccessUsageDescription "Org-mode needs calendar access to sync your clocks."
+#+end_src
+
+获取 Reminders 权限：
+#+begin_src bash
+  defaults write /Applications/Emacs.app/Contents/Info.plist NSRemindersFullAccessUsageDescription "Org-mode 需要访问提醒事项以同步任务清单。"
+#+end_src
+
+
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   ;; Sync org entry with clocking to MacOS Calendar.
 
@@ -3839,7 +3902,7 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
     (let ((events (org2calendar-fetch-pending "Phone"))
           (all-targets nil))
       (unless events
-        (user-error "日历中没有发现待处理事件。"))
+        (message "日历中没有发现待处理事件。"))
 
       (with-current-buffer (find-file-noselect org2calendar-sync-location)
         (org-map-entries
@@ -3911,7 +3974,9 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
 
 
   (define-key org-agenda-mode-map (kbd "<f8>") #'my/send-to-reminders)
-  (advice-add 'org-agenda-redo :override #'my/send-to-reminders)
+
+  (with-eval-after-load 'org-agenda
+    (define-key org-agenda-mode-map (kbd "r") #'my/send-to-reminders))
 
 
   (with-eval-after-load 'midnight
@@ -3976,10 +4041,36 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
 ** Telega
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package telega
-    :load-path "~/.emacs.d/packages/telega.el/" "~/.emacs.d/packages/visual-fill-column/"
-    :custom
-    (telega-chat-fill-column 90)
-    (telega-avatar-workaround-gaps-for (when (display-graphic-p) '(return t))))
+    :load-path ("packages/telega.el/" "packages/telega.el/contrib/"  "packages/rainbow-identifiers" "packages/visual-fill-column")
+    :init
+    (add-to-list 'display-buffer-alist '((or (derived-mode . telega-image-mode)
+                                             (derived-mode . telega-webpage-mode)
+                                             (derived-mode . image-mode))
+                                         (display-buffer-in-tab)))
+    (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
+                                         (display-buffer-in-side-window)
+                                         (side . right)
+                                         (window-width . 0.4)))
+    :bind ((:map telega-chat-mode-map
+                 ("C-g" . my/telega-chat-quit-window)))
+    :commands telega
+    :config
+    (defun my/telega-deactive-input-method ()
+      (when (and (boundp 'this-command) this-command cur-sys-input-method)
+        (if (or (string= (symbol-name this-command) "next-line")
+                (string= (symbol-name this-command) "previous-line"))
+            (switch-to-abc-input-method))))
+
+    (defun my/telega-chat-quit-window ()
+      (interactive)
+      (if (region-active-p)
+          (deactivate-mark)
+        (quit-window)))
+    (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))
+    ;; (setq telega-avatar-workaround-gaps-for '(return t))
+    (setq telega-chat-fill-column 80)
+    (setq telega-translate-to-language-by-default "zh")
+    (setq telega-completing-read-function completing-read-function))
 #+end_src
 
 ** wallpaper set
@@ -3988,12 +4079,45 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
     (interactive)
     (wallpaper-set (buffer-file-name)))
 #+end_src
+
+** OCR
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (defun my/ocr ()
+    (interactive)
+    (macos-run-shortcut "OCR Selected Area"))
+
+  (defun my/org-insert-latex-ocr ()
+    (interactive)
+    (message "请划选公式区域...")
+    (macos-run-ocr-paste "OCRLatex"))
+#+end_src
+
 ** snow
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package snow
     :load-path "~/.emacs.d/packages/snow.el/"
     :commands snow)
 #+end_src
+
+** holo-layer
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (add-to-list 'load-path "~/.emacs.d/packages/holo-layer/")
+
+  (require 'holo-layer)
+  (setq holo-layer-python-command "~/.venv/bin/python3")
+
+  (setq holo-layer-enable-place-info t)
+  (holo-layer-enable)
+#+end_src
+
+** MacOSModule
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package macos
+    :load-path "~/.emacs.d/packages/EmacsMacOSModule/"
+    :config
+    (module-load "/Users/dn/.emacs.d/modules/libEmacsMacOSModule.dylib"))
+#+end_src
+
 
 ** COMMENT auto tangle
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el

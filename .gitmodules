@@ -724,3 +724,6 @@
 [submodule "/Users/dn/.emacs.d/packages/dag-draw.el"]
 	path = /Users/dn/.emacs.d/packages/dag-draw.el
 	url = https://codeberg.org/Trevoke/dag-draw.el.git
+[submodule "packages/holo-layer"]
+	path = packages/holo-layer
+	url = https://github.com/manateelazycat/holo-layer.git

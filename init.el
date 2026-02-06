@@ -41,6 +41,8 @@
 (setopt read-process-output-max (* 1024 1024))
 (setopt inhibit-compacting-font-caches t)
 
+(setopt lexical-binding t)
+
 (setopt enable-recursive-minibuffers t)
 (setopt read-minibuffer-restore-windows nil
   	minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
@@ -131,27 +133,29 @@
 ;; `kana': 日文假名字符集，但在处理与中文相关的文档时可能偶尔用到
 ;; `bopomofo': 注音符号字符集，用于台湾地区的汉字注音
 
-(setopt use-default-font-for-symbols nil)
+;; (setopt use-default-font-for-symbols nil)
 
-(when IS-MAC
-  (set-face-attribute 'default nil :family "Cascadia Next SC" :height 140))
+;; (when IS-MAC
+;;   (set-face-attribute 'default nil :family "Cascadia Next SC" :height 140))
 
-(when (and IS-MAC (display-graphic-p))
-  (dolist (charset '(kana han cjk-misc bopomofo symbol))
-    (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "SimSun"))))
+;; (when (and IS-MAC (display-graphic-p))
+;;   (dolist (charset '(kana han cjk-misc bopomofo symbol))
+;;     (set-fontset-font (frame-parameter nil 'font) charset
+;;                       (font-spec :family "SimSun"))))
 
-(when IS-WINDOWS
-  (dolist (charset '(kana han cjk-misc bopomofo symbol))
-    (set-fontset-font (frame-parameter nil 'font) charset
-                      (font-spec :family "SimHei"))))
+;; (when IS-WINDOWS
+;;   (dolist (charset '(kana han cjk-misc bopomofo symbol))
+;;     (set-fontset-font (frame-parameter nil 'font) charset
+;;                       (font-spec :family "SimHei"))))
 
-(when (display-graphic-p)
-  (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend))
+;; (when (display-graphic-p)
+;;   (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend))
 
-(when (display-graphic-p)
-  (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
-  (set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend))
+;; (when (display-graphic-p)
+;;   (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
+;;   (set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend))
+
+(set-face-attribute 'default nil :family "Maple Mono CN" :height 140)
 
 (use-package nerd-icons
   :load-path "~/.emacs.d/packages/nerd-icons.el/"
@@ -325,38 +329,14 @@
   (setq vertico-multiform-categories
 	'((jinx grid (vertico-grid-annotate . 30)))))
 
-(use-package corfu
-  :load-path "~/.emacs.d/packages/corfu/" "~/.emacs.d/packages/corfu/extensions"
-  :hook (after-init . global-corfu-mode)
-  :custom-face
-  (corfu-border ((t (:inherit region :background unspecified))))
-  :bind ("M-/" . completion-at-point)
-  :custom
-  (corfu-cycle t)
-  (corfu-auto t)
-  (corfu-auto-prefix 1)
-  (corfu-auto-delay 0.2)
-  (corfu-preselect 'valid)
-  (corfu-max-width 120)
-  (corfu-on-exact-match nil)
-  (corfu-quit-no-match t)
-  (global-corfu-modes '((not erc-mode
-			     circe-mode
-			     help-mode
-			     gud-mode
-			     vterm-mode)
-			t))
-  (text-mode-ispell-word-completion nil)
-  (read-extended-command-predicate #'command-completion-default-include-p)
-  :config
-  (keymap-unset corfu-map "RET"))
+(add-hook 'prog-mode-hook #'completion-preview-mode)
+(add-hook 'org-mode-hook #'completion-preview-mode)
+(add-hook 'comint-mode-hook #'completion-preview-mode)
 
-
-(use-package nerd-icons-corfu
-  :load-path "~/.emacs.d/packages/nerd-icons-corfu/"
-  :after corfu
-  :config
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+(with-eval-after-load 'completion-preview
+  (define-key completion-preview-active-mode-map (kbd "TAB") #'completion-preview-insert)
+  (define-key completion-preview-active-mode-map (kbd "C-n") #'completion-preview-next-candidate)
+  (define-key completion-preview-active-mode-map (kbd "C-p") #'completion-preview-prev-candidate))
 
 (use-package orderless
   :load-path "~/.emacs.d/packages/orderless/"
@@ -1358,6 +1338,9 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
 (defvar-local my/modeline-gtd
   '(:eval (org-gtd-mode-lighter)))
 
+(defvar-local my/telega
+  '(:eval (propertize telega-mode-line-string 'face 'bold)))
+
 (dolist (construct '(my/modeline-major-mode
 		     my/modeline-file-name
 		     my/modeline-buffer-modified
@@ -1374,7 +1357,8 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
 		     my/modeline-timer
 		     my/modeline-clock-info
 		     my/winum
-		     my/modeline-gtd))
+		     my/modeline-gtd
+		     my/telega))
 
   (put construct 'risky-local-variable t))
 
@@ -1401,6 +1385,7 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
 		   which-func-format))
 	  my/modeline-gtd
           my/modeline-sys
+	  my/telega
           " "
           my/modeline-major-mode
 	  (project-mode-line project-mode-line-format)
@@ -1649,7 +1634,19 @@ Return OLP for capture."
            plain
            (file+olp+datetree ,(expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy))
            (file "~/.emacs.d/template/review-weekly")
-           :tree-type week :jump-to-captured t))))
+           :tree-type week :jump-to-captured t)
+	  ("R" "Report" plain (file+olp+datetree ,(expand-file-name (format "org_report_%s.org" (format-time-string "%Y")) org-gtd-directory))
+	   ,(concat "#+BEGIN: clocktable :scope agenda :maxlevel 9 :block " 
+		    (format-time-string "%Y-%m-%d") 
+		    " :fileskip0 t :compact t\n#+END:")
+	   :immediate-finish t 
+	   :jump-to-captured t))))
+
+(defun my/org-auto-generate-report ()
+  "静默触发 Org-capture 中的 R 模板生成报告。"
+  (interactive)
+  (org-capture nil "R")
+  (message "已于 %s 自动生成今日时钟报告" (format-time-string "%H:%M:%S")))
 
 (defun org-attach-save-file-list-to-property (dir)
   "Save list of attachments to ORG_ATTACH_FILES property."
@@ -1714,7 +1711,7 @@ Return OLP for capture."
 (with-eval-after-load 'org-clock
   ;; (add-to-list 'warning-suppress-types
   ;;            '(files . "org-clock-save.el"))
-  (org-clock-persistence-insinuate)
+  ;; (org-clock-persistence-insinuate)
   (setopt org-clock-persist-file (expand-file-name "org-clock-save.el" cache-directory)
 	  org-clock-history-length 23
 	  org-clock-in-resume t
@@ -2462,8 +2459,8 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 		(message "Tex 文件 %s 己生成！" tex-file))
             )))))
 
-  (add-hook 'after-save-hook #'my/org-auto-export-to-latex)
-
+  (run-with-idle-timer (* 2 60) t #'my/org-auto-export-to-latex)
+  
   (defun my/org-latex-auto-manage ()
     "检测关键字并启动后台 latexmk，编译结果通过 macOS 通知。"
     (when-let* ((tex-file (concat (file-name-sans-extension (buffer-file-name)) ".tex"))
@@ -2763,6 +2760,9 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     ]
    ["Sort"
     ("/" "Sort dired" denote-sort-dired)
+    ]
+   ["Misc"
+    ("O" "OCR" my/ocr)
     ]])
 
 ;; 绑定到 C-c n m (Menu)
@@ -3012,7 +3012,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   (let ((events (org2calendar-fetch-pending "Phone"))
         (all-targets nil))
     (unless events
-      (user-error "日历中没有发现待处理事件。"))
+      (message "日历中没有发现待处理事件。"))
 
     (with-current-buffer (find-file-noselect org2calendar-sync-location)
       (org-map-entries
@@ -3084,7 +3084,9 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 
 
 (define-key org-agenda-mode-map (kbd "<f8>") #'my/send-to-reminders)
-(advice-add 'org-agenda-redo :override #'my/send-to-reminders)
+
+(with-eval-after-load 'org-agenda
+  (define-key org-agenda-mode-map (kbd "r") #'my/send-to-reminders))
 
 
 (with-eval-after-load 'midnight
@@ -3136,18 +3138,66 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   (define-key org-agenda-mode-map (kbd "C-.") #'my/org-gtd-agenda-transient))
 
 (use-package telega
-  :load-path "~/.emacs.d/packages/telega.el/" "~/.emacs.d/packages/visual-fill-column/"
-  :custom
-  (telega-chat-fill-column 90)
-  (telega-avatar-workaround-gaps-for (when (display-graphic-p) '(return t))))
+  :load-path ("packages/telega.el/" "packages/telega.el/contrib/"  "packages/rainbow-identifiers" "packages/visual-fill-column")
+  :init
+  (add-to-list 'display-buffer-alist '((or (derived-mode . telega-image-mode)
+                                           (derived-mode . telega-webpage-mode)
+                                           (derived-mode . image-mode))
+                                       (display-buffer-in-tab)))
+  (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
+                                       (display-buffer-in-side-window)
+                                       (side . right)
+                                       (window-width . 0.4)))
+  :bind ((:map telega-chat-mode-map
+               ("C-g" . my/telega-chat-quit-window)))
+  :commands telega
+  :config
+  (defun my/telega-deactive-input-method ()
+    (when (and (boundp 'this-command) this-command cur-sys-input-method)
+      (if (or (string= (symbol-name this-command) "next-line")
+              (string= (symbol-name this-command) "previous-line"))
+          (switch-to-abc-input-method))))
+
+  (defun my/telega-chat-quit-window ()
+    (interactive)
+    (if (region-active-p)
+        (deactivate-mark)
+      (quit-window)))
+  (setf (alist-get 2 telega-avatar-factors-alist) '(0.45 . 0.1))
+  ;; (setq telega-avatar-workaround-gaps-for '(return t))
+  (setq telega-chat-fill-column 80)
+  (setq telega-translate-to-language-by-default "zh")
+  (setq telega-completing-read-function completing-read-function))
 
 (defun my/wallpaper-set ()
   (interactive)
   (wallpaper-set (buffer-file-name)))
 
+(defun my/ocr ()
+  (interactive)
+  (macos-run-shortcut "OCR Selected Area"))
+
+(defun my/org-insert-latex-ocr ()
+  (interactive)
+  (message "请划选公式区域...")
+  (macos-run-ocr-paste "OCRLatex"))
+
 (use-package snow
   :load-path "~/.emacs.d/packages/snow.el/"
   :commands snow)
+
+(add-to-list 'load-path "~/.emacs.d/packages/holo-layer/")
+
+(require 'holo-layer)
+(setq holo-layer-python-command "~/.venv/bin/python3")
+
+(setq holo-layer-enable-place-info t)
+(holo-layer-enable)
+
+(use-package macos
+  :load-path "~/.emacs.d/packages/EmacsMacOSModule/"
+  :config
+  (module-load "/Users/dn/.emacs.d/modules/libEmacsMacOSModule.dylib"))
 
 (defvar-keymap my/file-prefix-map
   :doc "Prefix map for file."

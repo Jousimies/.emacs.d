@@ -5,6 +5,8 @@
   (profiler-start 'cpu)
   (add-hook 'window-setup-hook #'profiler-stop 0))
 
+(setq byte-compile-warnings '(not lexical))
+
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 1.0)
