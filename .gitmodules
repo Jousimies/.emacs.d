@@ -727,3 +727,21 @@
 [submodule "packages/holo-layer"]
 	path = packages/holo-layer
 	url = https://github.com/manateelazycat/holo-layer.git
+[submodule "/Users/dn/.emacs.d/packages/lin"]
+	path = /Users/dn/.emacs.d/packages/lin
+	url = https://github.com/protesilaos/lin.git
+[submodule "/Users/dn/.emacs.d/packages/plz-event-source"]
+	path = /Users/dn/.emacs.d/packages/plz-event-source
+	url = https://github.com/r0man/plz-event-source.git
+[submodule "/Users/dn/.emacs.d/packages/plz-media-type"]
+	path = /Users/dn/.emacs.d/packages/plz-media-type
+	url = https://github.com/r0man/plz-media-type.git
+[submodule "/Users/dn/.emacs.d/packages/plz.el"]
+	path = /Users/dn/.emacs.d/packages/plz.el
+	url = https://github.com/alphapapa/plz.el.git
+[submodule "/Users/dn/.emacs.d/packages/chai"]
+	path = /Users/dn/.emacs.d/packages/chai
+	url = https://github.com/yibie/chai.git
+[submodule "/Users/dn/.emacs.d/packages/tp"]
+	path = /Users/dn/.emacs.d/packages/tp
+	url = https://github.com/Kinneyzhang/tp.git
