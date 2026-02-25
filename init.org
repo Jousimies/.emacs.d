@@ -19,7 +19,7 @@
 
 Disable lexical warning
 #+begin_src emacs-lisp :tangle ~/.emacs.d/early-init.el
-  (setq byte-compile-warnings '(not lexical))
+  (setq byte-compile-warnings '(not lexical obsolete))
 #+end_src
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/early-init.el
@@ -100,7 +100,7 @@ Disable lexical warning
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/early-init.el
   (setq-default mode-line-format nil)
-  (setq byte-compile-warnings nil)
+  ;; (setq byte-compile-warnings nil)
 
   (blink-cursor-mode -1)
 
@@ -285,20 +285,24 @@ Disable lexical warning
 #+end_src
 
 *** auto switch theme
+
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (add-to-list 'load-path "~/.emacs.d/packages/doric-themes/")
+  (require 'doric-themes)
   (when (featurep 'ns)
     (defun my/apply-theme (appearance)
       "Load theme, taking current system APPEARANCE into consideration."
       (mapc #'disable-theme custom-enabled-themes)
       (pcase appearance
-        ('light (load-theme 'modus-operandi-deuteranopia t))
+        ('light (load-theme 'doric-light t))
         ('dark (load-theme 'modus-vivendi-deuteranopia t))))
     (add-hook 'ns-system-appearance-change-functions #'my/apply-theme))
 #+end_src
 
-*** COMMENT alpha background
+*** alpha background
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   ;; Adjust alpha background
+  (set-frame-parameter nil 'ns-alpha-elements '(ns-alpha-all))
   (defun lucius/adjust-opacity (frame incr)
     "Adjust the background opacity of FRAME by increment INCR."
     (unless (display-graphic-p frame)
@@ -350,12 +354,12 @@ Maple Mono Font: [[https://github.com/subframe7536/maple-font][subframe7536/mapl
   ;;     (set-fontset-font (frame-parameter nil 'font) charset
   ;;                       (font-spec :family "SimHei"))))
 
-  ;; (when (display-graphic-p)
-  ;;   (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend))
+  (when (display-graphic-p)
+    (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend))
 
-  ;; (when (display-graphic-p)
-  ;;   (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
-  ;;   (set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend))
+  (when (display-graphic-p)
+    (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
+    (set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend))
 
   (set-face-attribute 'default nil :family "Maple Mono CN" :height 140)
 #+end_src
@@ -712,6 +716,7 @@ Maple Mono Font: [[https://github.com/subframe7536/maple-font][subframe7536/mapl
            ("C-x C-j" . consult-dir-jump-file)))
 #+end_src
 ** Embark
+~embark-dwim~ 很方便，有很多功能可以尝试。如在文件路径上直接 ~M-.~ 可以替代 ~find-file-at-point~ ，结合 ~xref-go-back~ 可以快速的跳转回之前的位置。
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package embark
     :load-path "~/.emacs.d/packages/embark/"
@@ -1017,6 +1022,7 @@ Maple Mono Font: [[https://github.com/subframe7536/maple-font][subframe7536/mapl
     (macim-other "im.rime.inputmethod.Squirrel.Hans")
     :config
     ;; (advice-add 'select-window :after #'(lambda (&rest _) (macim-context-switch)))
+    (add-hook 'window-state-change-hook #'macim-context-switch)
     (defvar my/macim-context-ignore-modes '("telega-root-mode"
   					  "telega-image-mode"
   					  "mu4e-headers-mode"
@@ -1028,7 +1034,7 @@ Maple Mono Font: [[https://github.com/subframe7536/maple-font][subframe7536/mapl
         (when (member mode my/macim-context-ignore-modes))
         'ascii))
 
-    ;; (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes)
+    (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes)
 
     ;; Trim excess spaces on both sides on deactivation
     (setq +macim-chinese-punc-chars (mapcar #'string-to-char macim--chinese-punc-list))
@@ -1251,6 +1257,7 @@ Maple Mono Font: [[https://github.com/subframe7536/maple-font][subframe7536/mapl
             grep-mode occur-mode rg-mode ag-mode pt-mode
             youdao-dictionary-mode osx-dictionary-mode fanyi-mode
 
+  	  ;; telega-chat-mode
             "^\\*Process List\\*" process-menu-mode
             list-environment-mode cargo-process-mode
             "^\\*EKG Capture"
@@ -2003,7 +2010,8 @@ Decimal digits after the % specify field width to which to pad.
   		   which-func-format))
   	  my/modeline-gtd
             my/modeline-sys
-  	  my/telega
+  	  (:eval (with-eval-after-load 'telega
+  		   my/telega))
             " "
             my/modeline-major-mode
   	  (project-mode-line project-mode-line-format)
@@ -2167,6 +2175,19 @@ Decimal digits after the % specify field width to which to pad.
     :custom
     (vterm-kill-buffer-on-exit t)
     (vterm-max-scrollback 5000))
+#+end_src
+** Xref
+对于 xref 的使用不了解。初步只知道可以用于查找定义，然后快速的返回来前的位置。
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (defvar +xref-mark-target
+    '(
+      find-file goto-line avy-goto-line compile-goto-error deadgrep-visit-result-other-window
+      project-find-file project-switch-to-buffer
+      consult-buffer consult-outline consult-imenu consult-imenu-multi consult-ripgrep consult-line consult-line-multi)
+    "Add xref-back/forward target function alist.")
+
+  (dolist (target +xref-mark-target)
+    (advice-add target :before (lambda (&rest _) (xref-push-marker-stack (point-marker)))))
 #+end_src
 
 * Writing & Knowledge Management
@@ -2810,6 +2831,21 @@ Emacs 内置有 ~whitespace-page-delimiters-mode~, 和 form-feed 有一些差别
                 (when (and (boundp 'org-transclusion-mode) org-transclusion-mode)
   		(previous-line 2)
                   (org-transclusion-add)))))))))
+#+end_src
+** Chai
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package chai
+    :load-path "~/.emacs.d/packages/chai/" "~/.emacs.d/packages/tp/"
+    :commands chai-library-import chai-refine-heading
+    :after denote
+    :config
+    (defvar my/chai-folder (expand-file-name "Chai" nextcloud))
+    (setq chai-library-directory (expand-file-name "Library" my/chai-folder))
+    (setq chai-library-import-inbox (expand-file-name "Inbox" my/chai-folder))
+    (setq chai-library-import-archive (expand-file-name "Archive" my/chai-folder))
+    (setq chai-refinery-file (expand-file-name "refinery.org" my/chai-folder))
+    (setq chai-notes-directory denote-directory)
+    (setq chai-library-python-executable "~/.venv/bin/python"))
 #+end_src
 
 ** Dictionary
@@ -4042,6 +4078,7 @@ Mac Tahoe 26.2 有一些变更导致会提示无权限写入日历。可以尝�
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package telega
     :load-path ("packages/telega.el/" "packages/telega.el/contrib/"  "packages/rainbow-identifiers" "packages/visual-fill-column")
+    :bind ("C-c t" . telega)
     :init
     (add-to-list 'display-buffer-alist '((or (derived-mode . telega-image-mode)
                                              (derived-mode . telega-webpage-mode)
@@ -4050,7 +4087,7 @@ Mac Tahoe 26.2 有一些变更导致会提示无权限写入日历。可以尝�
     (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
                                          (display-buffer-in-side-window)
                                          (side . right)
-                                         (window-width . 0.4)))
+                                         (window-width . 0.45)))
     :bind ((:map telega-chat-mode-map
                  ("C-g" . my/telega-chat-quit-window)))
     :commands telega

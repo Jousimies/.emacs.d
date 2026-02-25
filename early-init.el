@@ -5,7 +5,7 @@
   (profiler-start 'cpu)
   (add-hook 'window-setup-hook #'profiler-stop 0))
 
-(setq byte-compile-warnings '(not lexical))
+(setq byte-compile-warnings '(not lexical obsolete))
 
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum
@@ -72,7 +72,7 @@
   (setq ns-use-native-fullscreen nil))
 
 (setq-default mode-line-format nil)
-(setq byte-compile-warnings nil)
+;; (setq byte-compile-warnings nil)
 
 (blink-cursor-mode -1)
 

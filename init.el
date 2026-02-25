@@ -118,14 +118,40 @@
 (with-eval-after-load 'hl-line
   (setopt hl-line-sticky-flag nil))
 
+(add-to-list 'load-path "~/.emacs.d/packages/doric-themes/")
+(require 'doric-themes)
 (when (featurep 'ns)
   (defun my/apply-theme (appearance)
     "Load theme, taking current system APPEARANCE into consideration."
     (mapc #'disable-theme custom-enabled-themes)
     (pcase appearance
-      ('light (load-theme 'modus-operandi-deuteranopia t))
+      ('light (load-theme 'doric-light t))
       ('dark (load-theme 'modus-vivendi-deuteranopia t))))
   (add-hook 'ns-system-appearance-change-functions #'my/apply-theme))
+
+;; Adjust alpha background
+(set-frame-parameter nil 'ns-alpha-elements '(ns-alpha-all))
+(defun lucius/adjust-opacity (frame incr)
+  "Adjust the background opacity of FRAME by increment INCR."
+  (unless (display-graphic-p frame)
+    (error "Cannot adjust opacity of this frame"))
+  (let* ((oldalpha (or (frame-parameter frame 'alpha-background) 100))
+         ;; The 'alpha frame param became a pair at some point in
+         ;; emacs 24.x, e.g. (100 100)
+         (oldalpha (if (listp oldalpha) (car oldalpha) oldalpha))
+         (newalpha (+ incr oldalpha)))
+    (when (and (<= frame-alpha-lower-limit newalpha) (>= 100 newalpha))
+      (modify-frame-parameters frame (list (cons 'alpha-background newalpha))))))
+
+(defun my/increase-alpha-background ()
+  (interactive)
+  (lucius/adjust-opacity (selected-frame) 5))
+(global-set-key (kbd "s-<f2>") #'my/increase-alpha-background)
+
+(defun my/decrease-alpha-background ()
+  (interactive)
+  (lucius/adjust-opacity (selected-frame) -5))
+(global-set-key (kbd "s-<f1>") #'my/decrease-alpha-background)
 
 ;; 设置中文字集
 ;; `han': 汉字字符集，主要用于简体中文和繁体中文字符
@@ -148,12 +174,12 @@
 ;;     (set-fontset-font (frame-parameter nil 'font) charset
 ;;                       (font-spec :family "SimHei"))))
 
-;; (when (display-graphic-p)
-;;   (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend))
+(when (display-graphic-p)
+  (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend))
 
-;; (when (display-graphic-p)
-;;   (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
-;;   (set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend))
+(when (display-graphic-p)
+  (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
+  (set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend))
 
 (set-face-attribute 'default nil :family "Maple Mono CN" :height 140)
 
@@ -606,6 +632,7 @@
   (macim-other "im.rime.inputmethod.Squirrel.Hans")
   :config
   ;; (advice-add 'select-window :after #'(lambda (&rest _) (macim-context-switch)))
+  (add-hook 'window-state-change-hook #'macim-context-switch)
   (defvar my/macim-context-ignore-modes '("telega-root-mode"
 					  "telega-image-mode"
 					  "mu4e-headers-mode"
@@ -617,7 +644,7 @@
       (when (member mode my/macim-context-ignore-modes))
       'ascii))
 
-  ;; (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes)
+  (add-to-list 'macim-context-early-predicates #'+macim-context-ignore-modes)
 
   ;; Trim excess spaces on both sides on deactivation
   (setq +macim-chinese-punc-chars (mapcar #'string-to-char macim--chinese-punc-list))
@@ -813,6 +840,7 @@
           grep-mode occur-mode rg-mode ag-mode pt-mode
           youdao-dictionary-mode osx-dictionary-mode fanyi-mode
 
+	  ;; telega-chat-mode
           "^\\*Process List\\*" process-menu-mode
           list-environment-mode cargo-process-mode
           "^\\*EKG Capture"
@@ -1385,7 +1413,8 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
 		   which-func-format))
 	  my/modeline-gtd
           my/modeline-sys
-	  my/telega
+	  (:eval (with-eval-after-load 'telega
+		   my/telega))
           " "
           my/modeline-major-mode
 	  (project-mode-line project-mode-line-format)
@@ -1513,6 +1542,16 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
   :custom
   (vterm-kill-buffer-on-exit t)
   (vterm-max-scrollback 5000))
+
+(defvar +xref-mark-target
+  '(
+    find-file goto-line avy-goto-line compile-goto-error deadgrep-visit-result-other-window
+    project-find-file project-switch-to-buffer
+    consult-buffer consult-outline consult-imenu consult-imenu-multi consult-ripgrep consult-line consult-line-multi)
+  "Add xref-back/forward target function alist.")
+
+(dolist (target +xref-mark-target)
+  (advice-add target :before (lambda (&rest _) (xref-push-marker-stack (point-marker)))))
 
 (with-eval-after-load 'org
   (setopt org-ellipsis " ⇲"
@@ -2066,6 +2105,19 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
               (when (and (boundp 'org-transclusion-mode) org-transclusion-mode)
 		(previous-line 2)
                 (org-transclusion-add)))))))))
+
+(use-package chai
+  :load-path "~/.emacs.d/packages/chai/" "~/.emacs.d/packages/tp/"
+  :commands chai-library-import chai-refine-heading
+  :after denote
+  :config
+  (defvar my/chai-folder (expand-file-name "Chai" nextcloud))
+  (setq chai-library-directory (expand-file-name "Library" my/chai-folder))
+  (setq chai-library-import-inbox (expand-file-name "Inbox" my/chai-folder))
+  (setq chai-library-import-archive (expand-file-name "Archive" my/chai-folder))
+  (setq chai-refinery-file (expand-file-name "refinery.org" my/chai-folder))
+  (setq chai-notes-directory denote-directory)
+  (setq chai-library-python-executable "~/.venv/bin/python"))
 
 (defvar my/dict-map (make-sparse-keymap)
   "Keymap for Dictionary commands.")
@@ -3139,6 +3191,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 
 (use-package telega
   :load-path ("packages/telega.el/" "packages/telega.el/contrib/"  "packages/rainbow-identifiers" "packages/visual-fill-column")
+  :bind ("C-c t" . telega)
   :init
   (add-to-list 'display-buffer-alist '((or (derived-mode . telega-image-mode)
                                            (derived-mode . telega-webpage-mode)
@@ -3147,7 +3200,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
   (add-to-list 'display-buffer-alist '((derived-mode . telega-chat-mode)
                                        (display-buffer-in-side-window)
                                        (side . right)
-                                       (window-width . 0.4)))
+                                       (window-width . 0.45)))
   :bind ((:map telega-chat-mode-map
                ("C-g" . my/telega-chat-quit-window)))
   :commands telega
