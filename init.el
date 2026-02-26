@@ -1370,7 +1370,8 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
 	    (propertize (format winum-format (winum-get-number-string)) 'face `(:inverse-video t )))))
 
 (defvar-local my/modeline-gtd
-  '(:eval (org-gtd-mode-lighter)))
+  '(:eval (when (featurep 'org-gtd)
+	   (org-gtd-mode-lighter))))
 
 (defvar-local my/telega
   '(:eval (propertize telega-mode-line-string 'face 'bold)))
@@ -3446,8 +3447,9 @@ but mark is only pushed if region isn't active."
   :config
   (org-edna-mode 1))
 
-(unless (featurep 'org-gtd-wip)
-  (require 'org-gtd-wip))
+(with-eval-after-load 'org
+  (unless (featurep 'org-gtd-wip)
+    (require 'org-gtd-wip)))
 
 (with-eval-after-load 'org
   (setopt org-agenda-files (list org-gtd-directory)))
@@ -3685,10 +3687,8 @@ but mark is only pushed if region isn't active."
          (t
           (message "同步失败: %s" result)))))))
 
-
-(define-key org-agenda-mode-map (kbd "<f8>") #'my/send-to-reminders)
-
 (with-eval-after-load 'org-agenda
+  (define-key org-agenda-mode-map (kbd "<f8>") #'my/send-to-reminders)
   (define-key org-agenda-mode-map (kbd "r") #'my/send-to-reminders))
 
 
