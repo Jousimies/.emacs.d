@@ -745,3 +745,6 @@
 [submodule "/Users/dn/.emacs.d/packages/tp"]
 	path = /Users/dn/.emacs.d/packages/tp
 	url = https://github.com/Kinneyzhang/tp.git
+[submodule "/Users/dn/.emacs.d/packages/benchmark-init-el"]
+	path = /Users/dn/.emacs.d/packages/benchmark-init-el
+	url = https://github.com/dholm/benchmark-init-el.git
