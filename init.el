@@ -1,5 +1,11 @@
 ;;; init.el --- Emacs Initial Configuration          -*- lexical-binding: t; -*-
 
+(use-package benchmark-init
+  :load-path "~/.emacs.d/packages/benchmark-init-el/"
+  :config
+  (require 'benchmark-init-loaddefs)
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
 (add-to-list 'load-path "~/.emacs.d/packages/dash.el/")
 (add-to-list 'load-path "~/.emacs.d/packages/f.el/")
 (add-to-list 'load-path "~/.emacs.d/packages/s.el/")
