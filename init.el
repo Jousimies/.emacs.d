@@ -180,14 +180,20 @@
 ;;     (set-fontset-font (frame-parameter nil 'font) charset
 ;;                       (font-spec :family "SimHei"))))
 
+(set-face-attribute 'default nil :family "Maple Mono CN" :height 140)
+
+(set-face-attribute 'variable-pitch nil :font "Cascadia Next SC" :height 140)
+(set-face-attribute 'fixed-pitch nil :font "Maple Mono CN" :height 140)
+
+;; (add-hook 'after-init-hook (lambda ()
+;; 			     (variable-pitch-mode 1)))
+
 (when (display-graphic-p)
   (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend))
 
 (when (display-graphic-p)
   (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 14) nil 'prepend)
   (set-fontset-font t 'symbol (font-spec :family "Symbols" :size 14) nil 'prepend))
-
-(set-face-attribute 'default nil :family "Maple Mono CN" :height 140)
 
 (use-package nerd-icons
   :load-path "~/.emacs.d/packages/nerd-icons.el/"
@@ -280,7 +286,7 @@
 (setopt inhibit-startup-screen t)	;关闭启动页
 
 (with-eval-after-load 'transient
-  (setopt transient-show-popup 1)
+  ;; (setopt transient-show-popup 1)
   (setq transient-history-file (expand-file-name "transient/history.el" cache-directory)
 	transient-levels-file (expand-file-name "transient/levels.el" cache-directory)
 	transient-values-file (expand-file-name "transient/values.el" cache-directory)))
@@ -480,17 +486,15 @@
 (with-eval-after-load 'register
   (setopt register-preview-delay 0)
   (set-register ?a (cons 'file (concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/gtd_archive_" (format-time-string "%Y"))))
-  (set-register ?f (cons 'file (concat icloud "iCloud~com~appsonthemove~beorg/Documents/org/flash_thoughts_" (format-time-string "%Y"))))
+  (set-register ?f (cons 'file (expand-file-name "com~apple~CloudDocs/Documents/finance" icloud)))
   (set-register ?t (cons 'file (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org/org-gtd-tasks.org" icloud)))
   (set-register ?r (cons 'file (expand-file-name (format-time-string "logs/weekly_review_%Y.org") my-galaxy)))
   (set-register ?l (cons 'file (expand-file-name (format-time-string "logs/work_log_%Y.org") my-galaxy))))
 
-(use-package expand-region
-  :load-path "~/.emacs.d/packages/expand-region.el/"
-  :bind ("C-=" . er/expand-region)
-  :config
-  (add-to-list 'expand-region-exclude-text-mode-expansions 'org-mode)
-  (add-to-list 'expand-region-exclude-text-mode-expansions 'LaTeX-mode))
+(use-package expreg
+  :load-path "~/.emacs.d/packages/expreg/"
+  :bind (("C-=" . expreg-expand)
+         ("C--" . expreg-contract)))
 
 (use-package avy
   :load-path "~/.emacs.d/packages/avy/"
@@ -528,6 +532,60 @@
       (goto-char beg)
       (insert (format "\\textcolor{%s}{" c)))))
 
+(defun my/org-insert-emphasis-with-zws (marker)
+  "在标记符两侧自动插入零宽空格 (U+200B) 并包裹内容。"
+  (interactive "sEnter marker (e.g. *, ~, =): ")
+  (let* ((zws "\u200b")
+         (has-region (use-region-p))
+         (beg (if has-region (region-beginning) (point)))
+         (end (if has-region (region-end) (point))))
+    (goto-char end)
+    (insert marker zws)
+    (goto-char beg)
+    (insert zws marker)
+    (if has-region
+        (goto-char (+ end 4))
+      (forward-char 2))))
+
+(defun my/org-element-unwrap-emphasis ()
+  "参照 jf/org-link-remove-link 的逻辑，精准删除标记符及两侧的零宽空格。"
+  (interactive)
+  (let ((elem (org-element-context))
+        (zws ?\u200b))
+    (when (memq (car elem) '(bold italic code verbatim strike-through underline))
+      (let* ((begin (org-element-property :begin elem))
+             (end (org-element-property :end elem))
+             (marker-char (buffer-substring-no-properties begin (1+ begin)))
+             (actual-beg begin)
+             (actual-end end)
+             content)
+        (setq content
+              (if (org-element-property :contents-begin elem)
+                  (buffer-substring-no-properties 
+                   (org-element-property :contents-begin elem)
+                   (org-element-property :contents-end elem))
+                (buffer-substring-no-properties (+ begin 1) (- end 1))))
+
+        (when (eq (char-before begin) zws)
+          (setq actual-beg (1- begin)))
+
+        (if (eq (char-after end) zws)
+            (setq actual-end (1+ end))
+          (when (eq (char-before end) zws)
+            (setq actual-end end)))
+
+        (delete-region actual-beg actual-end)
+        (insert content)
+        (message "已清理标记: %s" marker-char)))))
+
+;; (use-package hl
+;;   :load-path "~/.emacs.d/lisp/hl.el"
+;;   :commands hl-highlight-region hl-remove-highlight hl-change-color)
+
+;; (use-package fmt
+;;   :load-path "~/.emacs.d/lisp/fmt.el"
+;;   :commands fmt-style-region fmt-remove-style fmt-change-style)
+
 (use-package selected
   :load-path "~/.emacs.d/packages/selected.el/"
   :hook (post-select-region . selected-minor-mode)
@@ -538,7 +596,8 @@
               ("i" . surround-insert)
               ("c" . surrond-change)
 	      ("d" . surround-delete)
-              ("s" . my/search-menu)
+              ("s" . my/org-insert-emphasis-with-zws)
+	      ("S" . my/org-element-unwrap-emphasis)
               ("m" . apply-macro-to-region-lines)
               ("\\" . indent-region)
               (";" . comment-dwim)
@@ -941,7 +1000,7 @@
   (define-key dired-mode-map (kbd "P") #'dired-preview-mode))
 
 (use-package dired-sidebar
-  :load-path "~/.emacs.d/packages/dired-sidebar/"
+  :load-path "~/.emacs.d/packages/dired-sidebar/" "~/.emacs.d/packages/dired-hacks/"
   :bind ("C-x C-n" . dired-sidebar-toggle-sidebar)
   :custom
   (dired-sidebar-mode-line-format '("%e" my/winum "丨" mode-line-front-space mode-line-buffer-identification " " mode-line-end-spaces)))
@@ -1559,6 +1618,10 @@ DEST-DIR defaults to ~/.emacs.d/packages/."
 
 (dolist (target +xref-mark-target)
   (advice-add target :before (lambda (&rest _) (xref-push-marker-stack (point-marker)))))
+
+(use-package agent-shell
+  :load-path "~/.emacs.d/packages/agent-shell/" "~/.emacs.d/packages/acp.el/" "~/.emacs.d/packages/shell-maker/"
+  :commands agent-shell)
 
 (with-eval-after-load 'org
   (setopt org-ellipsis " ⇲"
@@ -2300,7 +2363,7 @@ Return OLP for capture."
       (let* ((content-begin (org-element-property :contents-begin elem))
              (content-end  (org-element-property :contents-end elem))
              (link-begin (org-element-property :begin elem))
-             (link-end (org-element-property :end elem)))
+             (link-end (+ content-end 2)))   ; skip closing "]]", avoid eating trailing space
         (when (and content-begin content-end)
           (let ((content (buffer-substring-no-properties content-begin content-end)))
             (delete-region link-begin link-end)
@@ -2573,7 +2636,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
 
 (use-package chai
   :load-path "~/.emacs.d/packages/chai/" "~/.emacs.d/packages/tp/"
-  :commands chai-library-import chai-refine-heading
+  :commands chai-library-import chai-refine-heading chai-library-open
   :after denote
   :config
   (defvar my/chai-folder (expand-file-name "Chai" nextcloud))
@@ -3044,7 +3107,7 @@ Never goes into deeper environments.
 DO-PUSH-MARK defaults to t when interactive,
 but mark is only pushed if region isn't active."
     (interactive "p")
-    (LaTeX-forward-environment (- N) do-push-mark))))
+    (LaTeX-forward-environment (- N) do-push-mark)))
 
 (with-eval-after-load 'org
   (add-to-list 'org-options-keywords "AUTO_GENERATE_TEX:")
@@ -3227,7 +3290,7 @@ but mark is only pushed if region isn't active."
   (pdfannots-script "~/.emacs.d/packages/pdfannots/pdfannots.py -f json")
   (ibooks-annot/book-note-directory (expand-file-name "denote/books" my-galaxy)))
 
-(defvar my/publish-directory "~/Blogs/")
+(defvar my/publish-directory "~/Repositories/blog-source/")
 
 (with-eval-after-load 'ox-publish
   (setq org-publish-project-alist `(("site"
@@ -3342,7 +3405,7 @@ but mark is only pushed if region isn't active."
    ["Denote Manage"
     ("r" "Rename File" denote-rename-file)
     ("R" "Rename using Front Matter" denote-rename-file-using-front-matter)
-    ("k" "Keywords (Add/Remove)" denote-keywords-add)
+    ("k" "Keywords (Add/Remove)" denote-rename-file-keywords)
     ]
    ["References"
     ("C-n" "Create Ref Note" citar-create-note)
@@ -3415,6 +3478,96 @@ but mark is only pushed if region isn't active."
          (beancount-mode . outline-minor-mode))
   :custom
   (beancount-highlight-transaction-at-point t))
+
+(defun my/finance-importer ()
+  "Generate beancount file from source data."
+  (interactive)
+  (let* ((project-root (expand-file-name "~/Coding/ledger-importer"))
+         (python (expand-file-name "~/.venv/bin/python"))
+         (script (expand-file-name "import.py" project-root))
+         (platforms '("WeChat" "Alipay" "CCB_Credit" "CCB_Debit" "BOC"))
+         (output-dir (read-directory-name "Output directory: "
+                                          (expand-file-name "finance/output/" nextcloud)))
+         (file-specs '())
+         (continue t))
+    (while continue
+      (let* ((platform (completing-read
+                        (format "Platform (%d added, empty to finish): "
+                                (length file-specs))
+                        platforms nil t))
+             (_ (when (string-empty-p platform) (setq continue nil))))
+        (when (and continue (not (string-empty-p platform)))
+          (let ((input-file (read-file-name
+                             (format "[%s] Input file: " platform)
+                             (expand-file-name "finance/sources_data/" nextcloud)
+                             nil t)))
+            (push (format "%s:%s"
+                          platform
+                          (shell-quote-argument (expand-file-name input-file)))
+                  file-specs)
+            (setq continue
+                  (y-or-n-p "Add another file? "))))))
+    (unless file-specs
+      (user-error "No files specified"))
+    (let* ((buf-name "*ledger-importer*")
+           (file-args (mapconcat #'identity (nreverse file-specs) " "))
+           (cmd (format "%s %s -f %s -o %s"
+                        (shell-quote-argument python)
+                        (shell-quote-argument script)
+                        file-args
+                        (shell-quote-argument (expand-file-name output-dir)))))
+      (when (get-buffer buf-name)
+        (kill-buffer buf-name))
+      (let ((default-directory project-root))
+        (make-comint-in-buffer "ledger-importer" buf-name "/bin/sh" nil "-c" cmd))
+      (pop-to-buffer buf-name)
+      (message "Running: %s" cmd))))
+
+(defun ledger-importer-run ()
+  "Run ledger-importer interactively in a comint buffer.
+Supports multiple platform:file pairs and per-platform output files."
+  (interactive)
+  (let* ((project-root (expand-file-name "~/Coding/ledger-importer"))
+         (python (expand-file-name "~/.venv/bin/python"))
+	 (icloud-document (expand-file-name "com~apple~CloudDocs/Documents" icloud))
+         (script (expand-file-name "import.py" project-root))
+         (platforms '("WeChat" "Alipay" "CCB_Credit" "CCB_Debit" "BOC" "BOCOM"))
+         (output-dir (read-directory-name "Output directory: "
+                                          (expand-file-name "finance/output/" icloud-document)))
+         (file-specs '())
+         (continue t))
+    (while continue
+      (let* ((platform (completing-read
+                        (format "Platform (%d added, empty to finish): "
+                                (length file-specs))
+                        platforms nil t))
+             (_ (when (string-empty-p platform) (setq continue nil))))
+        (when (and continue (not (string-empty-p platform)))
+          (let ((input-file (read-file-name
+                             (format "[%s] Input file: " platform)
+                             (expand-file-name "finance/sources_data/" icloud-document)
+                             nil t)))
+            (push (format "%s:%s"
+                          platform
+                          (shell-quote-argument (expand-file-name input-file)))
+                  file-specs)
+            (setq continue
+                  (y-or-n-p "Add another file? "))))))
+    (unless file-specs
+      (user-error "No files specified"))
+    (let* ((buf-name "*ledger-importer*")
+           (file-args (mapconcat #'identity (nreverse file-specs) " "))
+           (cmd (format "%s %s -f %s -o %s"
+                        (shell-quote-argument python)
+                        (shell-quote-argument script)
+                        file-args
+                        (shell-quote-argument (expand-file-name output-dir)))))
+      (when (get-buffer buf-name)
+        (kill-buffer buf-name))
+      (let ((default-directory project-root))
+        (make-comint-in-buffer "ledger-importer" buf-name "/bin/sh" nil "-c" cmd))
+      (pop-to-buffer buf-name)
+      (message "Running: %s" cmd))))
 
 (use-package org-gtd
   :load-path "~/.emacs.d/packages/org-gtd.el/" "~/.emacs.d/packages/org-edna/" "~/.emacs.d/packages/dag-draw.el/" "~/.emacs.d/packages/ht.el/"
@@ -3504,6 +3657,8 @@ but mark is only pushed if region isn't active."
 		)))))
 
 (advice-add 'org-gtd-engage-view-spec :override #'my/org-gtd-engage-view-spec)
+
+(require 'org-gtd-graph-mode)
 
 ;; Sync org entry with clocking to MacOS Calendar.
 
@@ -3704,6 +3859,7 @@ but mark is only pushed if region isn't active."
     ("w" "Work view" my/org-gtd-work)
     ;; ("b" "Book" my/book-agenda :transient nil)
     ;; ("t" "TODO" my/all-todo-agenda :transient nil)
+    ("g" "Graph" org-gtd-show-project-graph)
     ]
    ["Capture & Process"
     ("C-<f12>" "Capture" org-gtd-capture)

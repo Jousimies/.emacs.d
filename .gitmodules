@@ -748,3 +748,18 @@
 [submodule "/Users/dn/.emacs.d/packages/benchmark-init-el"]
 	path = /Users/dn/.emacs.d/packages/benchmark-init-el
 	url = https://github.com/dholm/benchmark-init-el.git
+[submodule "/Users/dn/.emacs.d/packages/agent-shell"]
+	path = /Users/dn/.emacs.d/packages/agent-shell
+	url = https://github.com/xenodium/agent-shell.git
+[submodule "/Users/dn/.emacs.d/packages/acp.el"]
+	path = /Users/dn/.emacs.d/packages/acp.el
+	url = https://github.com/xenodium/acp.el.git
+[submodule "/Users/dn/.emacs.d/packages/shell-maker"]
+	path = /Users/dn/.emacs.d/packages/shell-maker
+	url = https://github.com/xenodium/shell-maker.git
+[submodule "/Users/dn/.emacs.d/packages/expreg"]
+	path = /Users/dn/.emacs.d/packages/expreg
+	url = https://github.com/casouri/expreg.git
+[submodule "/Users/dn/.emacs.d/packages/dag-draw"]
+	path = /Users/dn/.emacs.d/packages/dag-draw
+	url = https://codeberg.org/trevoke/dag-draw.el
