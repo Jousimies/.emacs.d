@@ -3357,6 +3357,7 @@ but mark is only pushed if region isn't active."
   (add-hook 'org-publish-after-publishing-hook 'my/ox-publish-replace-src-path))
 
 (with-eval-after-load 'ox-html
+  (setq org-html-htmlize-output-type 'css)
   (setq org-export-global-macros
         '(("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@")))
   (setq org-html-preamble t)
@@ -3958,6 +3959,13 @@ Supports multiple platform:file pairs and per-platform output files."
   :load-path "~/.emacs.d/packages/EmacsMacOSModule/"
   :config
   (module-load "/Users/dn/.emacs.d/modules/libEmacsMacOSModule.dylib"))
+
+(defun my/open-mp4-with-mpv ()
+  (interactive)
+  (start-process "mpv" nil "mpv" (buffer-file-name))
+  (kill-buffer))
+
+(add-to-list 'auto-mode-alist '("\\.mp4\\'" . my/open-mp4-with-mpv))
 
 (defvar-keymap my/file-prefix-map
   :doc "Prefix map for file."

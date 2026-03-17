@@ -4194,6 +4194,7 @@ See: [[https://gsj987.github.io/use-org-mode-publish-blog.html#org36c61a7][使�
     (add-hook 'org-publish-after-publishing-hook 'my/ox-publish-replace-src-path))
 
   (with-eval-after-load 'ox-html
+    (setq org-html-htmlize-output-type 'css)
     (setq org-export-global-macros
           '(("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@")))
     (setq org-html-preamble t)
@@ -4876,6 +4877,15 @@ Mac Tahoe 26.2 有一些变更导致会提示无权限写入日历。可以尝�
     (module-load "/Users/dn/.emacs.d/modules/libEmacsMacOSModule.dylib"))
 #+end_src
 
+** Open mp4 file with mpv
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (defun my/open-mp4-with-mpv ()
+    (interactive)
+    (start-process "mpv" nil "mpv" (buffer-file-name))
+    (kill-buffer))
+
+  (add-to-list 'auto-mode-alist '("\\.mp4\\'" . my/open-mp4-with-mpv))
+#+end_src
 
 ** COMMENT auto tangle
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el

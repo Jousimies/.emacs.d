@@ -763,3 +763,6 @@
 [submodule "/Users/dn/.emacs.d/packages/dag-draw"]
 	path = /Users/dn/.emacs.d/packages/dag-draw
 	url = https://codeberg.org/trevoke/dag-draw.el
+[submodule "/Users/dn/.emacs.d/packages/appine"]
+	path = /Users/dn/.emacs.d/packages/appine
+	url = https://github.com/chaoswork/appine.git
