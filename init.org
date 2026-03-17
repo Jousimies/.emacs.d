@@ -3961,7 +3961,7 @@ Latex 中制图可以参见：[[https://castel.dev/post/lecture-notes-2/][How I 
 #+end_src
 
 ** reader
-*** pdf-tools
+*** COMMENT pdf-tools
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package pdf-tools
     :load-path ("packages/pdf-tools/lisp" "packages/tablist")
@@ -4036,7 +4036,7 @@ Latex 中制图可以参见：[[https://castel.dev/post/lecture-notes-2/][How I 
     :load-path "~/.emacs.d/packages/saveplace-pdf-view/"
     :defer t)
 #+end_src
-*** pdf-tools modify metadata
+*** COMMENT pdf-tools modify metadata
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   ;; https://gist.github.com/krisbalintona/f4554bb8e53c27c246ae5e3c4ff9b342
   ;;;###autoload
@@ -4093,6 +4093,20 @@ Latex 中制图可以参见：[[https://castel.dev/post/lecture-notes-2/][How I 
       (set-buffer-modified-p nil)
       (message (substitute-command-keys "Press `C-c C-c' when finished editing PDF metadata. To see keybinds, press \\[describe-mode]"))))
 #+end_src
+*** Open pdf with system preview
+pdf-tools 还是不太好用，结合系统的方式进行吧。
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (defun my/open-pdf-with-preview ()
+    "用 Preview 打开 PDF 并关闭当前 buffer。"
+    (interactive)
+    (when buffer-file-name
+      (call-process "open" nil 0 nil "-a" "Preview" buffer-file-name)
+      (kill-buffer)))
+
+  (add-to-list 'auto-mode-alist
+               '("\\.pdf\\'" . my/open-pdf-with-preview))
+#+end_src
+
 *** nov
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package nov
