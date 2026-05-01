@@ -700,69 +700,69 @@
 [submodule "packages/page-break-lines"]
 	path = packages/page-break-lines
 	url = https://github.com/purcell/page-break-lines.git
-[submodule "/Users/dn/.emacs.d/packages/nerd-icons-dired"]
-	path = /Users/dn/.emacs.d/packages/nerd-icons-dired
+[submodule "packages/nerd-icons-dired"]
+	path = packages/nerd-icons-dired
 	url = https://github.com/rainstormstudio/nerd-icons-dired.git
-[submodule "/Users/dn/.emacs.d/packages/beancount-mode"]
-	path = /Users/dn/.emacs.d/packages/beancount-mode
+[submodule "packages/beancount-mode"]
+	path = packages/beancount-mode
 	url = https://github.com/beancount/beancount-mode.git
-[submodule "/Users/dn/.emacs.d/packages/emacs-reader"]
-	path = /Users/dn/.emacs.d/packages/emacs-reader
+[submodule "packages/emacs-reader"]
+	path = packages/emacs-reader
 	url = https://codeberg.org/divyaranjan/emacs-reader.git
-[submodule "/Users/dn/.emacs.d/packages/corg.el"]
-	path = /Users/dn/.emacs.d/packages/corg.el
+[submodule "packages/corg.el"]
+	path = packages/corg.el
 	url = https://github.com/isamert/corg.el.git
-[submodule "/Users/dn/.emacs.d/packages/lexdb"]
-	path = /Users/dn/.emacs.d/packages/lexdb
+[submodule "packages/lexdb"]
+	path = packages/lexdb
 	url = https://github.com/LuciusChen/lexdb.git
-[submodule "/Users/dn/.emacs.d/packages/cond-let"]
-	path = /Users/dn/.emacs.d/packages/cond-let
+[submodule "packages/cond-let"]
+	path = packages/cond-let
 	url = https://github.com/tarsius/cond-let.git
-[submodule "/Users/dn/.emacs.d/packages/emacs-smart-input-source"]
-	path = /Users/dn/.emacs.d/packages/emacs-smart-input-source
+[submodule "packages/emacs-smart-input-source"]
+	path = packages/emacs-smart-input-source
 	url = https://github.com/laishulu/emacs-smart-input-source.git
-[submodule "/Users/dn/.emacs.d/packages/dag-draw.el"]
-	path = /Users/dn/.emacs.d/packages/dag-draw.el
+[submodule "packages/dag-draw.el"]
+	path = packages/dag-draw.el
 	url = https://codeberg.org/Trevoke/dag-draw.el.git
 [submodule "packages/holo-layer"]
 	path = packages/holo-layer
 	url = https://github.com/manateelazycat/holo-layer.git
-[submodule "/Users/dn/.emacs.d/packages/lin"]
-	path = /Users/dn/.emacs.d/packages/lin
+[submodule "packages/lin"]
+	path = packages/lin
 	url = https://github.com/protesilaos/lin.git
-[submodule "/Users/dn/.emacs.d/packages/plz-event-source"]
-	path = /Users/dn/.emacs.d/packages/plz-event-source
+[submodule "packages/plz-event-source"]
+	path = packages/plz-event-source
 	url = https://github.com/r0man/plz-event-source.git
-[submodule "/Users/dn/.emacs.d/packages/plz-media-type"]
-	path = /Users/dn/.emacs.d/packages/plz-media-type
+[submodule "packages/plz-media-type"]
+	path = packages/plz-media-type
 	url = https://github.com/r0man/plz-media-type.git
-[submodule "/Users/dn/.emacs.d/packages/plz.el"]
-	path = /Users/dn/.emacs.d/packages/plz.el
+[submodule "packages/plz.el"]
+	path = packages/plz.el
 	url = https://github.com/alphapapa/plz.el.git
-[submodule "/Users/dn/.emacs.d/packages/chai"]
-	path = /Users/dn/.emacs.d/packages/chai
+[submodule "packages/chai"]
+	path = packages/chai
 	url = https://github.com/yibie/chai.git
-[submodule "/Users/dn/.emacs.d/packages/tp"]
-	path = /Users/dn/.emacs.d/packages/tp
+[submodule "packages/tp"]
+	path = packages/tp
 	url = https://github.com/Kinneyzhang/tp.git
-[submodule "/Users/dn/.emacs.d/packages/benchmark-init-el"]
-	path = /Users/dn/.emacs.d/packages/benchmark-init-el
+[submodule "packages/benchmark-init-el"]
+	path = packages/benchmark-init-el
 	url = https://github.com/dholm/benchmark-init-el.git
-[submodule "/Users/dn/.emacs.d/packages/agent-shell"]
-	path = /Users/dn/.emacs.d/packages/agent-shell
+[submodule "packages/agent-shell"]
+	path = packages/agent-shell
 	url = https://github.com/xenodium/agent-shell.git
-[submodule "/Users/dn/.emacs.d/packages/acp.el"]
-	path = /Users/dn/.emacs.d/packages/acp.el
+[submodule "packages/acp.el"]
+	path = packages/acp.el
 	url = https://github.com/xenodium/acp.el.git
-[submodule "/Users/dn/.emacs.d/packages/shell-maker"]
-	path = /Users/dn/.emacs.d/packages/shell-maker
+[submodule "packages/shell-maker"]
+	path = packages/shell-maker
 	url = https://github.com/xenodium/shell-maker.git
-[submodule "/Users/dn/.emacs.d/packages/expreg"]
-	path = /Users/dn/.emacs.d/packages/expreg
+[submodule "packages/expreg"]
+	path = packages/expreg
 	url = https://github.com/casouri/expreg.git
-[submodule "/Users/dn/.emacs.d/packages/dag-draw"]
-	path = /Users/dn/.emacs.d/packages/dag-draw
+[submodule "packages/dag-draw"]
+	path = packages/dag-draw
 	url = https://codeberg.org/trevoke/dag-draw.el
-[submodule "/Users/dn/.emacs.d/packages/appine"]
-	path = /Users/dn/.emacs.d/packages/appine
+[submodule "packages/appine"]
+	path = packages/appine
 	url = https://github.com/chaoswork/appine.git

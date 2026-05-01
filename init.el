@@ -381,6 +381,7 @@
   :custom
   (orderless-matching-styles '(orderless-prefixes orderless-regexp))
   (completion-styles '(basic substring initials orderless))
+  ;; (completion-styles '(flex))
   (completion-pcm-leading-wildcard t)
   (completions-format 'vertical)
   (completion-category-defaults nil)
@@ -534,15 +535,16 @@
 
 (defun my/org-insert-emphasis-with-zws (marker)
   "在标记符两侧自动插入零宽空格 (U+200B) 并包裹内容。"
-  (interactive "sEnter marker (e.g. *, ~, =): ")
-  (let* ((zws "\u200b")
+  (interactive "sEnter marker (e.g. *, ~, =. default =): ")
+  (let* ((c (if (string-empty-p marker) "*" marker))
+	 (zws "\u200b")
          (has-region (use-region-p))
          (beg (if has-region (region-beginning) (point)))
          (end (if has-region (region-end) (point))))
     (goto-char end)
-    (insert marker zws)
+    (insert c zws)
     (goto-char beg)
-    (insert zws marker)
+    (insert zws c)
     (if has-region
         (goto-char (+ end 4))
       (forward-char 2))))
@@ -2401,12 +2403,13 @@ Return OLP for capture."
   :hook ((dired-mode . denote-dired-mode-in-directories)
 	 (org-mode . denote-rename-buffer-mode))
   :custom
+  (denote-prompts '(title keywords signature))
   (denote-rename-confirmations nil)
   (denote-org-store-link-to-heading nil)
   (denote-directory (expand-file-name "denote" my-galaxy))
-  (denote-file-name-slug-functions '((title . denote-sluggify-title)
-				     (signature . denote-sluggify-signature)
-				     (keyword . identity)))
+  ;; (denote-file-name-slug-functions '((title . denote-sluggify-title)
+  ;; 				     (signature . denote-sluggify-signature)
+  ;; 				     (keyword . identity)))
   ;; (denote-dired-directories
   ;;  (list denote-directory
   ;;        (thread-last denote-directory (expand-file-name "books"))
@@ -2417,23 +2420,28 @@ Return OLP for capture."
   (denote-rename-buffer-format "%b %t")
   (denote-rename-buffer-backlinks-indicator ""))
 
-(with-eval-after-load 'denote
-  (defun my/modus-themes-denote-faces (&rest _)
-    (modus-themes-with-colors
-      (custom-set-faces
-       `(denote-faces-year ((,c :foreground ,cyan)))
-       `(denote-faces-month ((,c :foreground ,magenta-warmer)))
-       `(denote-faces-day ((,c :foreground ,cyan)))
-       `(denote-faces-time-delimiter ((,c :foreground ,fg-main)))
-       `(denote-faces-hour ((,c :foreground ,magenta-warmer)))
-       `(denote-faces-minute ((,c :foreground ,cyan)))
-       `(denote-faces-second ((,c :foreground ,magenta-warmer))))))
+;; (with-eval-after-load 'denote
+;;   (defun my/modus-themes-denote-faces (&rest _)
+;;     (modus-themes-with-colors
+;;       (custom-set-faces
+;;        `(denote-faces-year ((,c :foreground ,cyan)))
+;;        `(denote-faces-month ((,c :foreground ,magenta-warmer)))
+;;        `(denote-faces-day ((,c :foreground ,cyan)))
+;;        `(denote-faces-time-delimiter ((,c :foreground ,fg-main)))
+;;        `(denote-faces-hour ((,c :foreground ,magenta-warmer)))
+;;        `(denote-faces-minute ((,c :foreground ,cyan)))
+;;        `(denote-faces-second ((,c :foreground ,magenta-warmer))))))
 
-  (add-hook 'ns-system-appearance-change-functions #'my/modus-themes-denote-faces))
+;;   (add-hook 'ns-system-appearance-change-functions #'my/modus-themes-denote-faces))
 
 (use-package denote-org
   :load-path "~/.emacs.d/packages/denote-org/"
   :after denote)
+
+(use-package denote-sequence
+  :load-path "~/.emacs.d/packages/denote-sequence/"
+  :custom
+  (denote-sequence-scheme 'numeric))
 
 (use-package denote-journal
   :load-path "~/.emacs.d/packages/denote-journal/"
@@ -2467,6 +2475,10 @@ Return OLP for capture."
 (use-package denote-search
   :load-path "~/.emacs.d/packages/denote-search/"
   :commands denote-search)
+
+(use-package wordcloud
+  :load-path "~/.emacs.d/packages/wordcloud.el/" "~/.emacs.d/packages/denote-wordcloud/"
+  :after denote-wordcloud)
 
 (use-package consult-denote
   :load-path "~/.emacs.d/packages/consult-denote/"
@@ -3147,16 +3159,6 @@ but mark is only pushed if region isn't active."
 	 (output (concat base ".docx")))
     (shell-command (format "pandoc %s -o %s --citeproc --csl %s" input output csl))))
 
-(defun my/open-pdf-with-preview ()
-  "用 Preview 打开 PDF 并关闭当前 buffer。"
-  (interactive)
-  (when buffer-file-name
-    (call-process "open" nil 0 nil "-a" "Preview" buffer-file-name)
-    (kill-buffer)))
-
-(add-to-list 'auto-mode-alist
-             '("\\.pdf\\'" . my/open-pdf-with-preview))
-
 (use-package nov
   :load-path "~/.emacs.d/packages/nov.el/" "~/.emacs.d/packages/esxml"
   :mode (".epub" . nov-mode)
@@ -3272,13 +3274,23 @@ but mark is only pushed if region isn't active."
     (shell-command (concat "cd " blog-dir " && git push origin main"))
     (message "Blog changes staged, committed, and pushed!")))
 
+(transient-define-prefix my/denote-sequence-keys ()
+  "Denote sequence"
+  [[("s" "Sequence" denote-sequence)]
+   [("f" "Find" denote-sequence-find)]
+   [("l" "Link" denote-sequence-link)]
+   [("d" "Dired" denote-sequence-dired)]
+   [("r" "Reparent" denote-sequence-reparent)]
+   [("c" "Find" denote-sequence-convert)]
+   ])
 (transient-define-prefix my/knowledge-menu ()
   "Knowledge Management"
   [["Denote Create"
     ("n" "New Note" denote)
     ("t" "Template" denote-template)
     ("d" "Date/Journal" denote-date)
-    ("s" "Subdirectory" denote-subdirectory)]
+    ("s" "Sequence" my/denote-sequence-keys)
+    ]
    ["Link & Connect"
     ("i" "Insert Link" denote-link)
     ("I" "Batch Links" denote-add-links)
@@ -3837,17 +3849,29 @@ Supports multiple platform:file pairs and per-platform output files."
 (setq holo-layer-enable-place-info t)
 (holo-layer-enable)
 
-(use-package macos
-  :load-path "~/.emacs.d/packages/EmacsMacOSModule/"
-  :config
-  (module-load "/Users/dn/.emacs.d/modules/libEmacsMacOSModule.dylib"))
+(defun my/get-open-command (filename)
+  "根据文件后缀返回对应的系统命令。"
+  (let ((case-fold-search t))
+    (cond
+     ((string-match-p "\\.\\(mp3\\|mp4\\|mkv\\|avi\\|flv\\|mov\\)$" filename) "mpv")
+     ((string-match-p "\\.\\(pdf\\|docx\\|xlsx\\|pptx\\|png\\|jpg\\)$" filename) "open")
+     (t nil))))
 
-(defun my/open-mp4-with-mpv ()
-  (interactive)
-  (start-process "mpv" nil "mpv" (buffer-file-name))
-  (kill-buffer))
+(defun my/advice-find-file-external (orig-fun filename &rest args)
+  "拦截 find-file，根据文件类型分流到不同的外部程序。"
+  (let* ((full-path (expand-file-name filename))
+         (cmd (my/get-open-command full-path)))
+    (if cmd
+        (progn
+          (message "使用 %s 打开: %s" cmd (file-name-nondirectory full-path))
+          (call-process cmd nil 0 nil full-path))
+      (apply orig-fun filename args))))
 
-(add-to-list 'auto-mode-alist '("\\.mp4\\'" . my/open-mp4-with-mpv))
+(advice-add 'find-file :around #'my/advice-find-file-external)
+
+(use-package mpv
+  :load-path "~/.emacs.d/packages/mpv.el/"
+  :bind ())
 
 (defvar-keymap my/file-prefix-map
   :doc "Prefix map for file."
