@@ -1,0 +1,19 @@
+;; -*- lexical-binding: t; -*-
+
+(add-hook 'after-init-hook #'savehist-mode)
+
+(with-eval-after-load 'savehist
+  (setopt savehist-file (expand-file-name "history" cache-directory)
+	  history-length 1000
+          savehist-additional-variables '(kill-ring
+                                          search-ring
+                                          regexp-search-ring)
+          history-delete-duplicates t))
+
+(add-hook 'savehist-save-hook
+        (lambda ()
+          (setq kill-ring
+                (mapcar #'substring-no-properties
+                        (cl-remove-if-not #'stringp kill-ring)))))
+
+(provide 'init-builtin)
