@@ -1,2 +1,4 @@
 elpa
 .cache
+auto-save-list
+custom.el
