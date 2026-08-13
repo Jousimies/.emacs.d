@@ -3,30 +3,33 @@
 ;; Package.el
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
+(package-initialize t)
 (unless package-archive-contents
   (package-refresh-contents))
-(setq package-check-signature nil)
-
-;; Setup and on.el
-(unless (package-installed-p 'setup)
-  (package-install 'setup))
-(setup (:package on))
+;; (setq package-check-signature nil)
+;; (setq package-quickstart t)
 
 ;; Benchmark
-;; (setup (:package benchmark-init)
-;;   (:require benchmark-init)
-;;   (:when-loaded
-;;     (add-hook 'after-init-hook 'benchmark-init/deactivate)))
+(use-package benchmark-init
+  :ensure t
+  :preface (package-activate 'benchmark-init)
+;;   :commands benchmark-init/deactivate
+  :hook (after-init . benchmark-init/deactivate))
+
+;; on.el
+(use-package on
+  :ensure t
+  :preface (package-activate 'on))
 
 ;; Require configurations
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (require 'init-vars)
-(require 'init-setup)
 (require 'init-builtin)
 (require 'init-edit)
 (require 'init-ui)
 (require 'init-completion)
+
+(require 'init-org)
 
 ;; Custom
 (unless custom-file

@@ -45,12 +45,9 @@
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(scroll-bar-width . 5) default-frame-alist)
 ;; (push '(undecorated . t) default-frame-alist)
-(push '(width . 100) default-frame-alist)
+(push '(width . 150) default-frame-alist)
 (push '(vertical-scroll-bars . nil) default-frame-alist)
 (push '(left-fringe . 0) default-frame-alist)
 (push '(right-fringe . 0) default-frame-alist)
 
 (blink-cursor-mode -1)
-
-(set-face-attribute 'default nil :family "Maple Mono CN" :height 140)
-(set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend)
