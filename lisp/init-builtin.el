@@ -1,10 +1,17 @@
 ;; -*- lexical-binding: t; -*-
 
+;; Coding system
+(prefer-coding-system 'utf-8)
+(set-language-environment "UTF-8")
+(set-default-coding-systems 'utf-8)
+(setq default-process-coding-system '(utf-8 . utf-8))
+(set-selection-coding-system 'utf-8)
+
 (setq use-short-answers t)
 					;关闭 ring bell,用 mode-line 替代
-(setopt ring-bell-function (lambda ()
-			     (invert-face 'mode-line)
-			     (run-with-timer 0.05 nil 'invert-face 'mode-line)))
+(setq ring-bell-function (lambda ()
+			   (invert-face 'mode-line)
+			   (run-with-timer 0.05 nil 'invert-face 'mode-line)))
 (setq create-lockfiles nil)		;不要创建 lockfiles
 (setq history-delete-duplicates t)	;删除历史记录重复项
 (setq delete-by-moving-to-trash t)	;删除文件至系统垃圾箱
@@ -16,6 +23,8 @@
 (setq save-interprogram-paste-before-kill t)
 (setq lexical-binding t)
 (setq window-combination-resize t)
+
+(setq ffap-machine-p-known 'reject)
 
 (setq mark-ring-max 128
       kill-do-not-save-duplicates t
@@ -127,5 +136,21 @@
 
 (add-hook 'prog-mode-hook #'electric-pair-mode)
 (add-hook 'prog-mode-hook #'electric-indent-mode)
+
+(add-hook 'on-first-buffer-hook #'delete-selection-mode)
+
+(add-hook 'find-file-hook 'show-paren-mode)
+(with-eval-after-load 'paren
+  (setq show-paren-style 'parenthesis
+	show-paren-context-when-offscreen 'overlay
+	show-paren-highlight-openparen t
+	show-paren-when-point-inside-paren t
+	show-paren-when-point-in-periphery t))
+
+(add-hook 'after-init-hook #'global-word-wrap-whitespace-mode)
+
+(add-hook 'after-save-hook
+          #'executable-make-buffer-file-executable-if-script-p)
+
 
 (provide 'init-builtin)

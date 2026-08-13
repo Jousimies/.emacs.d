@@ -5,6 +5,23 @@
   (profiler-start 'cpu)
   (add-hook 'window-setup-hook #'profiler-stop 0))
 
+;; Emacs startup performance
+;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
+(setq auto-mode-case-fold nil)
+
+(unless (or (daemonp) noninteractive init-file-debug)
+  ;; Suppress file handlers operations at startup
+  ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
+  (let ((old-value file-name-handler-alist))
+    (setq file-name-handler-alist nil)
+    (set-default-toplevel-value 'file-name-handler-alist file-name-handler-alist)
+    (add-hook 'emacs-startup-hook
+              (lambda ()
+                "Recover file name handlers."
+                (setq file-name-handler-alist
+                      (delete-dups (append file-name-handler-alist old-value))))
+              101)))
+
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 1.0)
@@ -49,5 +66,3 @@
 (push '(vertical-scroll-bars . nil) default-frame-alist)
 (push '(left-fringe . 0) default-frame-alist)
 (push '(right-fringe . 0) default-frame-alist)
-
-(blink-cursor-mode -1)

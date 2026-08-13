@@ -54,10 +54,53 @@
   (keymap-set completion-preview-active-mode-map "C-n" #'completion-preview-next-candidate)
   (keymap-set completion-preview-active-mode-map "C-p" #'completion-preview-prev-candidate))
 
+(use-package marginalia
+  :ensure t
+  :preface (package-activate 'marginalia)
+  :hook (minibuffer-mode . marginalia-mode))
+
 (use-package consult
   :ensure t
   :preface (package-activate 'consult)
-  :bind (([remap recentf-open-files] . consult-recent-file)))
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :bind (([remap apropos] . consult-apropos)
+         ([remap bookmark-jump] . consult-bookmark)
+         ([remap goto-line] . consult-line)
+         ([remap locate] . consult-locate)
+         ([remap load-theme] . consult-theme)
+         ([remap man] . consult-man)
+         ([remap recentf-open-files] . consult-recent-file)
+         ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
+         ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
+         ([remap yank-pop] . consult-yank-pop)
+	 ([remap imenu] . consult-imenu)
+	 ("M-g l" . consult-goto-line)
+         :map minibuffer-mode-map
+         ("C-r" . consult-history))
+  :custom
+  (consult-narrow-key "<")
+  (consult-preview-key "M-."))
+
+;; Bind org-mode keys safely
+(with-eval-after-load 'org
+  (require 'consult-org)
+  (define-key org-mode-map (kbd "M-g h") #'consult-org-heading))
+
+(use-package embark
+  :ensure t
+  :preface (package-activate 'embark)
+  :bind (([remap describe-bindings] . embark-bindings)
+         ("C-;" . embark-act)
+         ("M-." . embark-dwim)
+         (:map minibuffer-local-map
+               ("C-;" . embark-act)
+               ("C-c C-e" . embark-export)
+               ("C-c C-l" . embark-collect))))
+
+(use-package embark-consult
+  :ensure t
+  :preface (package-activate 'embark-consult)
+  :after consult)
 
 
 (provide 'init-completion)

@@ -2,24 +2,40 @@
 
 ;; Package.el
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(setq package-archives '(("gnu"    . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                         ("nongnu" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+                         ("melpa"  . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize t)
 (unless package-archive-contents
   (package-refresh-contents))
-;; (setq package-check-signature nil)
+(setq package-check-signature nil)
 ;; (setq package-quickstart t)
 
 ;; Benchmark
 (use-package benchmark-init
   :ensure t
   :preface (package-activate 'benchmark-init)
-;;   :commands benchmark-init/deactivate
+  :commands benchmark-init/deactivate
   :hook (after-init . benchmark-init/deactivate))
 
 ;; on.el
 (use-package on
   :ensure t
   :preface (package-activate 'on))
+
+(use-package gcmh
+  :ensure t
+  :preface (package-activate 'gcmh)
+  :hook (after-init . gcmh-mode)
+  :custom
+  (gc-cons-percentage 0.1)
+  (gcmh-verbose nil)
+  (gcmh-idle-delay 'auto)
+  (gcmh-auto-idle-delay-factor 10)
+  (gcmh-high-cons-threshold #x1000000))
+
+(advice-add 'after-focus-change-function :after 'garbage-collect)
 
 ;; Require configurations
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))

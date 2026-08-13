@@ -1,26 +1,40 @@
 ;; -*- lexical-binding: t; -*-
 
-(set-face-attribute 'default nil :family "Maple Mono CN" :height 140)
-(set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 14) nil 'prepend)
+(set-face-attribute 'default nil :family "Maple Mono CN" :height 120)
+(set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 12) nil 'prepend)
 
-;; (use-package nerd-icons
-;;   :ensure t)
+(blink-cursor-mode -1)
 
-;; (setup (:package nerd-icons)
-;;   (:when-loaded
-;;     (when (display-graphic-p)
-;;       (unless (find-font (font-spec :name nerd-icons-font-family))
-;;         (nerd-icons-install-fonts t))
-;;       (nerd-icons-set-font))))
+(use-package nerd-icons
+  :ensure t
+  :preface (package-activate 'nerd-icons))
 
-;; (setup (:package nerd-icons-ibuffer)
-;;   (:hook-into ibuffer-mode))
+(use-package nerd-icons-ibuffer
+  :ensure t
+  :preface (package-activate 'nerd-icons-ibuffer)
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
-;; (setup (:package nerd-icons-dired)
-;;   (:hook-into dired-mode))
+(use-package nerd-icons-dired
+  :ensure t
+  :preface (package-activate 'nerd-icons-dired)
+  :hook (dired-mode . nerd-icons-dired-mode))
 
-;; (setup (:package nerd-icons-completion)
-;;   (:hook-into minibuffer-mode))
+(use-package nerd-icons-completion
+  :ensure t
+  :preface (package-activate 'nerd-icons-completion)
+  :hook (minibuffer-mode . nerd-icons-completion-mode))
+
+(use-package rainbow-mode
+  :ensure t
+  :preface (package-activate 'rainbow-mode)
+  :hook (prog-mode . rainbow-mode))
+
+(use-package goggles
+  :ensure t
+  :preface (package-activate 'goggles)
+  :hook ((prog-mode text-mode) . goggles-mode)
+  :config
+  (setq-default goggles-pulse t))
 
 
 (provide 'init-ui)
