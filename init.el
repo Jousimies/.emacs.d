@@ -10,14 +10,6 @@
 (unless package-archive-contents
   (package-refresh-contents))
 (setq package-check-signature nil)
-;; (setq package-quickstart t)
-
-;; Benchmark
-(use-package benchmark-init
-  :ensure t
-  :preface (package-activate 'benchmark-init)
-  :commands benchmark-init/deactivate
-  :hook (after-init . benchmark-init/deactivate))
 
 ;; on.el
 (use-package on

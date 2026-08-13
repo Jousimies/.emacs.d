@@ -66,3 +66,5 @@
 (push '(vertical-scroll-bars . nil) default-frame-alist)
 (push '(left-fringe . 0) default-frame-alist)
 (push '(right-fringe . 0) default-frame-alist)
+
+(setq-default mode-line-format nil)
