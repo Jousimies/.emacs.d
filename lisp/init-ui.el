@@ -5,6 +5,11 @@
 
 (blink-cursor-mode -1)
 
+(add-hook 'on-first-file-hook #'global-prettify-symbols-mode)
+(with-eval-after-load 'prog-mode
+  (setopt prettify-symbols-alist '(("lambda" . ?λ)
+                                   ("function" . ?𝑓))))
+
 (use-package nerd-icons
   :ensure t
   :preface (package-activate 'nerd-icons))

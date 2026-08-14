@@ -44,7 +44,7 @@
 (require 'init-completion)
 
 (require 'init-org)
-
+(require 'init-note)
 ;; Custom
 (unless custom-file
   (load (setq custom-file (locate-user-emacs-file "custom.el")) t))

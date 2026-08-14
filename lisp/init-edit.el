@@ -157,16 +157,15 @@
   (liberime-module-file "C:/Program Files/Emacs/emacs-30.2/bin/liberime-core.dll")
   (liberime-user-data-dir "~/AppData/Roaming/Rime"))
 
-(run-with-idle-timer 2 nil #'liberime-load)
+;; (run-with-idle-timer 2 nil #'liberime-load)
 
 (use-package liberime-regexp
   :vc (:url "https://github.com/roife/liberime-regexp.git"
 	    :rev "main")
   :preface (package-activate 'liberime-regexp)
-  :after liberime
   :bind ([remap goto-char] . liberime-regexp-avy-goto-char-timer)
-  :hook ((liberime-after-start . liberime-regexp-mode)
-	 (liberime-after-start . liberime-regexp-avy-mode)))
+  :hook ((on-first-buffer . liberime-regexp-mode)
+	 (minibuffer-setup . liberime-regexp-avy-mode)))
 
 
 (provide 'init-edit)
