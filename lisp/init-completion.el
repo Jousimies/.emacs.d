@@ -95,7 +95,6 @@
          ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
          ([remap yank-pop] . consult-yank-pop)
 	 ([remap imenu] . consult-imenu)
-	 ("M-g l" . consult-goto-line)
          :map minibuffer-mode-map
          ("C-r" . consult-history))
   :custom
