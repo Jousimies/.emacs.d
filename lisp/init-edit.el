@@ -152,10 +152,12 @@
 (use-package liberime
   :ensure t
   :preface (package-activate 'liberime)
-  :hook (on-first-file . liberime-load)
+  :commands liberime-load
   :custom
   (liberime-module-file "C:/Program Files/Emacs/emacs-30.2/bin/liberime-core.dll")
   (liberime-user-data-dir "~/AppData/Roaming/Rime"))
+
+(run-with-idle-timer 2 nil #'liberime-load)
 
 (use-package liberime-regexp
   :vc (:url "https://github.com/roife/liberime-regexp.git"

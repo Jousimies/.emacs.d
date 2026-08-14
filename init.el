@@ -29,6 +29,12 @@
 
 (advice-add 'after-focus-change-function :after 'garbage-collect)
 
+(run-with-idle-timer 2 nil #'server-start)
+
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
 ;; Require configurations
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (require 'init-vars)
@@ -49,3 +55,16 @@
             (message "window-setup: %.3fs, after-init: %.3fs"
                      (float-time (time-subtract nil before-init-time))
                      (float-time (time-subtract after-init-time before-init-time)))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-vc-selected-packages
+   '((liberime-regexp :url "https://github.com/roife/liberime-regexp.git"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
