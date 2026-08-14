@@ -21,5 +21,20 @@
   :preface (package-activate 'ghostel)
   :bind ("<f5>" . ghostel))
 
+;; markdown
+(use-package markdown-mode
+  :ensure t
+  :preface (package-activate 'markdown-mode)
+  :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
+         ("README\\.md\\'" . gfm-mode))
+  :init (setq markdown-command "multimarkdown")
+  :bind (:map markdown-mode-map
+	      ("C-c C-e" . markdown-do)))
+
+(use-package lua-mode
+  :ensure t
+  :preface (package-activate 'lua-mode)
+  :mode "\\.lua$"
+  :interpreter "lua")
 
 (provide 'init-prog)

@@ -46,7 +46,13 @@
 
 (require 'init-org)
 (require 'init-note)
+(require 'init-bib)
+(require 'init-reader)
+
 (require 'init-gtd)
+
+(require 'init-prog)
+(require 'init-git)
 
 (require 'init-misc)
 ;; Custom

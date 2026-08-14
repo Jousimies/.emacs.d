@@ -44,5 +44,12 @@
   :config
   (setq-default goggles-pulse t))
 
+(use-package form-feed
+  :ensure t
+  :preface (package-activate 'form-feed)
+  :hook ((org-mode . form-feed-mode)
+	 (emacs-news-mode . form-feed-mode)))
+
+
 
 (provide 'init-ui)

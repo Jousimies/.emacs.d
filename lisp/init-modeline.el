@@ -26,6 +26,11 @@
 ;; 							 pomm-current-mode-line-string))
 ;;               (propertize (my/modeline--timer) 'face `(:inherit font-lock-constant-face)))))
 
+(defun my/modeline--major-mode ()
+  (capitalize (string-replace "-mode" "" (symbol-name major-mode))))
+(defvar-local my/modeline-major-mode
+    '(:eval (propertize (my/modeline--major-mode) 'face `(:inherit font-lock-variable-name-face))))
+
 ;; file name
 (defun my/modeline-file-name ()
   (let ((name (or (buffer-file-name) (buffer-name))))
@@ -115,6 +120,8 @@
 	  my/modeline-region-indicator
 	  mode-line-format-right-align
 	  my/modeline-sys
+	  " "
+	  my/modeline-major-mode
 	  (project-mode-line project-mode-line-format)
 	  (vc-mode vc-mode)
           " "))
