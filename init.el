@@ -2,10 +2,10 @@
 
 ;; Package.el
 (require 'package)
-(setq package-archives '(("gnu"    . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-                         ("nongnu" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-                         ("melpa"  . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
-;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; (setq package-archives '(("gnu"    . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+;;                          ("nongnu" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+;;                          ("melpa"  . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize t)
 (unless package-archive-contents
   (package-refresh-contents))
@@ -41,10 +41,14 @@
 (require 'init-builtin)
 (require 'init-edit)
 (require 'init-ui)
+(require 'init-modeline)
 (require 'init-completion)
 
 (require 'init-org)
 (require 'init-note)
+(require 'init-gtd)
+
+(require 'init-misc)
 ;; Custom
 (unless custom-file
   (load (setq custom-file (locate-user-emacs-file "custom.el")) t))

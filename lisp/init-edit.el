@@ -164,8 +164,8 @@
 	    :rev "main")
   :preface (package-activate 'liberime-regexp)
   :bind ([remap goto-char] . liberime-regexp-avy-goto-char-timer)
-  :hook ((on-first-buffer . liberime-regexp-mode)
-	 (minibuffer-setup . liberime-regexp-avy-mode)))
+  :hook ((on-first-file . liberime-regexp-mode)
+	 (liberime-after-start . liberime-regexp-avy-mode)))
 
 
 (provide 'init-edit)

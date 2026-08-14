@@ -40,7 +40,7 @@
   :ensure t
   :preface (package-activate 'consult-notes)
   :bind ("C-c n f" . consult-notes)
-  :hook (minibuffer-setup . consult-notes-denote-mode)
+  :hook (on-first-buffer . consult-notes-denote-mode)
   :custom
   (consult-notes-denote-files-function (lambda () (denote-directory-files nil t t))))
 

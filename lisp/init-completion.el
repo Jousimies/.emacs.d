@@ -24,8 +24,10 @@
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)
 (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-(add-hook 'minibuffer-setup-hook (lambda ()
-  				   (setq-local truncate-lines t)))
+
+(add-hook 'minibuffer-setup-hook (lambda () (setq-local truncate-lines t)))
+(add-hook 'completion-list-mode-hook (lambda () (setq-local truncate-lines t)))
+
 (keymap-set minibuffer-local-completion-map "C-n" #'icomplete-forward-completions)
 (keymap-set minibuffer-local-completion-map "C-p" #'icomplete-backward-completions)
 
@@ -54,15 +56,34 @@
   (keymap-set completion-preview-active-mode-map "C-n" #'completion-preview-next-candidate)
   (keymap-set completion-preview-active-mode-map "C-p" #'completion-preview-prev-candidate))
 
+(use-package orderless
+  :ensure t
+  :preface (package-activate 'orderless)
+  :custom
+  (orderless-matching-styles '(orderless-prefixes orderless-regexp))
+  (completion-styles '(basic substring initials orderless))
+  ;; (completion-styles '(flex))
+  (completion-pcm-leading-wildcard t)
+  (completions-format 'vertical)
+  (completion-category-defaults nil)
+  (completion-category-overrides
+   '((file (styles . (basic partial-completion orderless)))
+     (bookmark (styles . (basic substring)))
+     (library (styles . (basic substring)))
+     (embark-keybinding (styles . (basic substring)))
+     (imenu (styles . (basic substring orderless)))
+     (consult-location (styles . (basic substring orderless)))
+     (kill-ring (styles . (emacs22 orderless)))
+     (eglot (styles . (emacs22 substring orderless))))))
+
 (use-package marginalia
   :ensure t
   :preface (package-activate 'marginalia)
-  :hook (minibuffer-mode . marginalia-mode))
+  :hook (minibuffer-setup . marginalia-mode))
 
 (use-package consult
   :ensure t
   :preface (package-activate 'consult)
-  :hook (completion-list-mode . consult-preview-at-point-mode)
   :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-line)
