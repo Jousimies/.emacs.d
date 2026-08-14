@@ -10,7 +10,7 @@
 (unless package-archive-contents
   (package-refresh-contents))
 (setq package-check-signature nil)
-
+(setq use-package-verbose t)
 ;; on.el
 (use-package on
   :ensure t
@@ -43,6 +43,7 @@
 (require 'init-ui)
 (require 'init-modeline)
 (require 'init-completion)
+(require 'init-buffer)
 
 (require 'init-org)
 (require 'init-note)

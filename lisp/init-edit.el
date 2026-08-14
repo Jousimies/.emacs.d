@@ -167,5 +167,10 @@
   :hook ((on-first-file . liberime-regexp-mode)
 	 (liberime-after-start . liberime-regexp-avy-mode)))
 
+(use-package hungry-delete
+  :ensure t
+  :preface (package-activate 'hungry-delete)
+  :hook (on-first-input . global-hungry-delete-mode))
+
 
 (provide 'init-edit)

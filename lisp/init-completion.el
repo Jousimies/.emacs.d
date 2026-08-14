@@ -120,7 +120,7 @@
 (use-package embark-consult
   :ensure t
   :preface (package-activate 'embark-consult)
-  :after consult)
+  :after consult embark)
 
 
 (provide 'init-completion)

@@ -164,8 +164,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
                       title
                       (if tags tags "nil")
                       current-date
-                      ))
-      
-      )))
+                      )))))
+
 
 (provide 'init-misc)

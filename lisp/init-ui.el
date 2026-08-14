@@ -15,7 +15,8 @@
 
 (use-package nerd-icons
   :ensure t
-  :preface (package-activate 'nerd-icons))
+  :preface (package-activate 'nerd-icons)
+  :defer t)
 
 (use-package nerd-icons-ibuffer
   :ensure t

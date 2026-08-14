@@ -15,7 +15,7 @@
 (use-package denote-org
   :ensure t
   :preface (package-activate 'denote-org)
-  :after denote)
+  :after denote org)
 
 (use-package denote-journal
   :ensure t
@@ -30,7 +30,7 @@
 (use-package denote-explore
   :ensure t
   :preface (package-activate 'denote-explore)
-  :after denote
+  :after denote org
   :custom
   (denote-explore-network-filename (expand-file-name "mindmap/denote-network.html" my-galaxy))
   (denote-explore-json-edges-filename (expand-file-name "denote-edges.json" cache-directory))
