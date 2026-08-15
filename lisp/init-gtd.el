@@ -54,4 +54,29 @@
 				  (unless (featurep 'org-gtd-projects)
 				    (require 'org-gtd-projects))))
 
+(with-eval-after-load 'org
+ (defun my/org-clock-out-to-ms-calendar ()
+  "Clock-out 时提取标题与起止时间，异步传给 C# 程序写入微软日历。"
+  (let* ((title (org-get-heading t t t t))
+         (start-time org-clock-start-time)
+         (end-time (current-time))
+         (start-str (format-time-string "%Y-%m-%d %H:%M:%S" start-time))
+         (end-str (format-time-string "%Y-%m-%d %H:%M:%S" end-time))
+         (exe-path (expand-file-name "module/EmacsCalendarSync.exe" user-emacs-directory)))
+
+    (if (and title start-time end-time)
+        (progn
+          ;; 日志会输出到 *Org-Cal-Sync* buffer 中
+          (start-process "org-ms-cal-sync"
+                         "*Org-Cal-Sync*"
+                         exe-path
+                         title
+                         start-str
+                         end-str)
+          (message " [日历同步] 已发送: %s (%s -> %s)" title start-str end-str))
+      (message "[日历同步] 错误: 未能抓取到有效的 Clock 节点信息")))))
+
+(when (eq system-type 'windows-nt)
+  (add-hook 'org-clock-out-hook #'my/org-clock-out-to-ms-calendar))
+
 (provide 'init-gtd)
