@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (with-eval-after-load 'org-agenda
-  (setq org-agenda-window-setup 'other-tab
+  (setq org-agenda-window-setup 'current-window
 	org-agenda-skip-scheduled-if-done t
 	org-agenda-skip-deadline-if-done t
 	org-agenda-todo-ignore-scheduled 'future

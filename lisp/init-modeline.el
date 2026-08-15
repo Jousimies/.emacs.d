@@ -140,6 +140,7 @@
 	  mode-line-format-right-align
 	  (:eval (with-eval-after-load 'org-clock
 	   	   my/modeline-clock-info))
+	  " "
 	  my/modeline-gtd
 	  my/modeline-sys
 	  " "
