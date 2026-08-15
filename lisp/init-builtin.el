@@ -163,9 +163,17 @@
             (setq-local whitespace-style
                         '(face trailing tabs tab-mark))
             (whitespace-mode 1)))
-(add-hook 'before-save-hook (lambda ()
-			      (delete-trailing-whitespace)))
 
+(defun my/delete-trailing-whitespace-except-current-line ()
+  "Delete trailing whitespace, but keep the current line intact."
+  (interactive)
+  (let ((beg (point-min))
+        (end (point-max))
+        (bol (line-beginning-position))
+        (eol (line-end-position)))
+    (delete-trailing-whitespace beg bol)
+    (delete-trailing-whitespace eol end)))
+(add-hook 'before-save-hook #'my/delete-trailing-whitespace-except-current-line)
 
 (add-hook 'after-save-hook
           #'executable-make-buffer-file-executable-if-script-p)

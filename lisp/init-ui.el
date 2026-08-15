@@ -38,12 +38,12 @@
   :preface (package-activate 'rainbow-mode)
   :hook (prog-mode . rainbow-mode))
 
-(use-package goggles
-  :ensure t
-  :preface (package-activate 'goggles)
-  :hook ((prog-mode text-mode) . goggles-mode)
-  :config
-  (setq-default goggles-pulse t))
+;; (use-package goggles
+;;   :ensure t
+;;   :preface (package-activate 'goggles)
+;;   :hook ((prog-mode text-mode) . goggles-mode)
+;;   :config
+;;   (setq-default goggles-pulse t))
 
 (use-package form-feed
   :ensure t

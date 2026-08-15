@@ -83,7 +83,7 @@
                content)
           (setq content
 		(if (org-element-property :contents-begin elem)
-                    (buffer-substring-no-properties 
+                    (buffer-substring-no-properties
                      (org-element-property :contents-begin elem)
                      (org-element-property :contents-end elem))
                   (buffer-substring-no-properties (+ begin 1) (- end 1))))
@@ -148,6 +148,13 @@
   :custom
   (vundo-glyph-alist vundo-unicode-symbols))
 
+(use-package hungry-delete
+  :ensure t
+  :preface (package-activate 'hungry-delete)
+  :hook (on-first-input . global-hungry-delete-mode))
+
+;; IME
+
 (use-package liberime
   :ensure t
   :preface (package-activate 'liberime)
@@ -156,7 +163,24 @@
   (liberime-module-file "C:/Program Files/Emacs/emacs-30.2/bin/liberime-core.dll")
   (liberime-user-data-dir "~/AppData/Roaming/Rime"))
 
-;; (run-with-idle-timer 2 nil #'liberime-load)
+(use-package rimel
+  :ensure t
+  :preface (package-activate 'rimel)
+  :defer t
+  :custom
+  (default-input-method "rimel")
+  (rimel-disable-predicates
+      '(rimel-predicate-prog-in-code-p
+        rimel-predicate-after-alphabet-char-p
+        rimel-predicate-current-uppercase-letter-p))
+  :config
+  (use-package posframe
+    :ensure t
+    :preface (package-activate 'posframe)
+    :custom
+    (rimel-show-candidate 'posframe)
+    (rimel-posframe-style 'horizontal))
+  (add-to-list 'rimel-disable-predicates 'rimel-predicate-org-in-src-block-p))
 
 (use-package liberime-regexp
   :vc (:url "https://github.com/roife/liberime-regexp.git"
@@ -165,11 +189,6 @@
   :bind ([remap goto-char] . liberime-regexp-avy-goto-char-timer)
   :hook ((on-first-file . liberime-regexp-mode)
 	 (liberime-after-start . liberime-regexp-avy-mode)))
-
-(use-package hungry-delete
-  :ensure t
-  :preface (package-activate 'hungry-delete)
-  :hook (on-first-input . global-hungry-delete-mode))
 
 
 (provide 'init-edit)

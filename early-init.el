@@ -62,6 +62,7 @@
 (push '(scroll-bar-width . 5) default-frame-alist)
 ;; (push '(undecorated . t) default-frame-alist)
 (push '(width . 150) default-frame-alist)
+(push '(height . 50) default-frame-alist)
 (push '(vertical-scroll-bars . nil) default-frame-alist)
 (push '(left-fringe . 0) default-frame-alist)
 (push '(right-fringe . 0) default-frame-alist)

@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t; -*-
+;; 我;; -*- lexical-binding: t; -*-
 
 (defcustom prot-modeline-string-truncate-length 20
   "String length after which truncation should be done in small windows."
@@ -86,6 +86,22 @@
 (defvar-local my/modeline-sys
     '(:eval (propertize (concat (my/modeline--sys-coding-category) (my/modeline--sys-coding-eol)) 'face nil)))
 
+;; gtd
+(defvar-local my/modeline-gtd
+  '(:eval (when (featurep 'org-gtd)
+	    (org-gtd-mode-lighter))))
+
+;; org-clock
+(defvar-local my/modeline-clock-info
+    '(:eval (when (and (mode-line-window-selected-p) (org-clocking-p))
+              (propertize (format " [%s](%s)"
+                                  (org-duration-from-minutes
+                                   (floor (org-time-convert-to-integer
+                                           (org-time-since org-clock-start-time))
+                                          60))
+                                  org-clock-heading)
+                          'face `(:inherit font-lock-builtin-face)))))
+
 (dolist (construct '(my/modeline-major-mode
 		     my/modeline-file-name
 		     my/modeline-buffer-modified
@@ -111,6 +127,9 @@
 
 (setopt mode-line-format
         '("%e"
+	  (:eval (if current-input-method
+                     (propertize (format " %s " current-input-method-title)
+                                 'face 'font-lock-keyword-face)))
 	  my/modeline-buffer-modified
           my/modeline-file-name
           "  "
@@ -119,6 +138,9 @@
 	  my/modeline-position
 	  my/modeline-region-indicator
 	  mode-line-format-right-align
+	  (:eval (with-eval-after-load 'org-clock
+	   	   my/modeline-clock-info))
+	  my/modeline-gtd
 	  my/modeline-sys
 	  " "
 	  my/modeline-major-mode

@@ -10,7 +10,8 @@
 (unless package-archive-contents
   (package-refresh-contents))
 (setq package-check-signature nil)
-(setq use-package-verbose t)
+;; (setq use-package-verbose t)
+
 ;; on.el
 (use-package on
   :ensure t
@@ -29,11 +30,8 @@
 
 (advice-add 'after-focus-change-function :after 'garbage-collect)
 
+;; Server
 (run-with-idle-timer 2 nil #'server-start)
-
-(require 'server)
-(unless (server-running-p)
-  (server-start))
 
 ;; Require configurations
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))

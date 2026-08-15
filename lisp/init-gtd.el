@@ -34,7 +34,7 @@
   (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAIT(w)" "|" "DONE(d)" "CNCL(c)")))
   (org-todo-state-tags-triggers
    (quote (("CNCL" ("CNCL" . t))
-           ("WAIT" ("WAIT" . t))              
+           ("WAIT" ("WAIT" . t))
            (done ("WAIT"))
            ("TODO" ("WAIT") ("CNCL"))
            ("NEXT" ("WAIT") ("CNCL"))

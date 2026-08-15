@@ -83,6 +83,9 @@
 
 (global-set-key (kbd "C-c l r") #'jf/org-link-remove-link)
 
+
+(defconst my/project-folder "D:/1-Project/")
+
 (defvar folder-structure-new
   '((:name "00_设计依据-方案-地勘" :subfolders ("01_设计说明" "02_甲方提供资料"))
     (:name "01_结构工程-施工图" :subfolders ("01_施工图-提资" "02_施工图_设计"))
@@ -145,7 +148,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
                            nil nil nil nil nil nil)
                           "_"))
          (folder-name (concat current-date "==" title (if tags (concat "_" tags) "")))
-         (base-path (expand-file-name folder-name "D:/1-Project/"))
+         (base-path (expand-file-name folder-name my/project-folder))
          ;; 选择文件夹结构类型
          (structure-type-string (completing-read "选择文件夹结构类型: "
                                                  '("new" "reinforcement")
@@ -165,6 +168,35 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
                       (if tags tags "nil")
                       current-date
                       )))))
+
+(global-set-key (kbd "C-c f g") #'generate-folder-tree)
+
+(defun my/project-readme-candidates ()
+  (let ((root my/project-folder)
+        files)
+    (when (file-directory-p root)
+      (dolist (dir (directory-files root t directory-files-no-dot-files-regexp))
+        (when (file-directory-p dir)
+          (let ((readme (expand-file-name "Readme.org" dir)))
+            (when (file-regular-p readme)
+              (push readme files))))))
+    (nreverse files)))
+
+(defun my/open-project-readme ()
+  (interactive)
+  (let* ((files (my/project-readme-candidates))
+         (table (mapcar (lambda (f)
+                          (cons (file-name-nondirectory
+                                 (directory-file-name (file-name-directory f)))
+                                f))
+                        files))
+         (name (consult--read table
+                              :prompt "Project Readme: "
+                              :require-match t
+                              :category 'file
+                              :sort nil)))
+    (find-file (cdr (assoc name table)))))
+(global-set-key (kbd "C-c f R") #'my/open-project-readme)
 
 
 (provide 'init-misc)
