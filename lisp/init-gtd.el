@@ -49,4 +49,9 @@
   (org-edna-mode)
   (org-gtd-mode))
 
+
+(add-hook 'org-agenda-mode-hook (lambda ()
+				  (unless (featurep 'org-gtd-projects)
+				    (require 'org-gtd-projects))))
+
 (provide 'init-gtd)
