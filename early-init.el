@@ -28,7 +28,7 @@
 (setq package-enable-at-startup nil)
 
 ;; Increase process read size before any package can start subprocesses.
-(setq read-process-output-max (* 64 1024))
+(setq read-process-output-max (* 4 1024 1024))
 
 ;; In noninteractive sessions, prioritize .el file. It saves IO time
 (setq load-prefer-newer noninteractive)
@@ -66,4 +66,5 @@
 (push '(left-fringe . 0) default-frame-alist)
 (push '(right-fringe . 0) default-frame-alist)
 
+(load-theme 'modus-operandi-tritanopia)
 (setq-default mode-line-format nil)

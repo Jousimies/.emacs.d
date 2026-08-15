@@ -28,11 +28,10 @@
 (use-package cape
   :ensure t
   :preface (package-activate 'cape)
-  :bind ("C-c p" . cape-prefix-map)
-  :config
-  (add-hook 'completion-at-point-functions #'cape-dabbrev)
-  (add-hook 'completion-at-point-functions #'cape-file)
-  (add-hook 'completion-at-point-functions #'cape-elisp-block))
+  :bind ("C-c p" . cape-prefix-map))
+(add-hook 'completion-at-point-functions #'cape-dabbrev)
+(add-hook 'completion-at-point-functions #'cape-file)
+(add-hook 'completion-at-point-functions #'cape-elisp-block)
 
 (use-package surround
   :ensure t
@@ -106,7 +105,7 @@
               ("x" . kill-region)
               ("w" . count-words-region)
               ("i" . surround-insert)
-              ("c" . surrond-change)
+              ("c" . surround-change)
 	      ("d" . surround-delete)
               ("s" . my/org-insert-emphasis-with-zws)
 	      ("S" . my/org-element-unwrap-emphasis)

@@ -72,7 +72,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-vc-selected-packages
-   '((liberime-regexp :url "https://github.com/roife/liberime-regexp.git"))))
+   '((org-gtd :url "https://github.com/Trevoke/org-gtd.el.git"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

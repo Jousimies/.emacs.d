@@ -1,4 +1,11 @@
 ;; -*- lexical-binding: t; -*-
+(global-set-key [remap list-buffers] #'ibuffer)
+(add-hook 'ibuffer-mode-hook #'ibuffer-auto-mode)
+(with-eval-after-load 'ibuffer
+  (setq ibuffer-expert t
+        ibuffer-show-empty-filter-groups nil
+        ibuffer-default-sorting-mode 'major-mode))
+
 (use-package bufferlo
   :ensure t
   :preface (package-activate 'bufferlo)

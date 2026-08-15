@@ -18,10 +18,8 @@
 (setq cursor-in-non-selected-windows nil) ;除当前窗口不显示光标
 (setq highlight-nonselected-windows nil)
 (setq read-buffer-completion-ignore-case t)
-(setq read-process-output-max (* 4 1024 1024))
 (setq inhibit-compacting-font-caches t)
 (setq save-interprogram-paste-before-kill t)
-(setq lexical-binding t)
 (setq window-combination-resize t)
 
 (setq ffap-machine-p-known 'reject)
@@ -31,8 +29,17 @@
       kill-ring-max (* kill-ring-max 2)
       async-shell-command-display-buffer nil)
 
-(add-hook 'on-first-buffer-hook #'global-so-long-mode)
+;; https://emacsredux.com/blog/2026/04/07/stealing-from-the-best-emacs-configs/
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+(setq bidi-inhibit-bpa t)
 
+(setq redisplay-skip-fontification-on-input t)
+
+(setq-default cursor-in-non-selected-windows nil)
+(setq highlight-nonselected-windows nil)
+
+(add-hook 'on-first-buffer-hook #'global-so-long-mode)
 ;; transient
 (with-eval-after-load 'transient
   ;; (setq transient-show-popup 1)
@@ -72,6 +79,8 @@
 (add-hook 'on-first-file-hook #'midnight-mode)
 
 (add-hook 'on-first-buffer-hook 'pixel-scroll-precision-mode)
+
+(add-hook 'prog-mode-hook #'subword-mode)
 
 (with-eval-after-load 'pixel-scroll
   (setq pixel-scroll-precision-use-momentum t
@@ -117,7 +126,6 @@
 (setq save-place-file (expand-file-name "places" cache-directory))
 (setq save-place-autosave-interval (* 60 5))
 (add-hook 'on-first-buffer-hook #'save-place-mode)
-;; https://emacsredux.com/blog/2026/04/07/stealing-from-the-best-emacs-configs/
 (advice-add 'save-place-find-file-hook :after
             (lambda (&rest _)
               (when buffer-file-name (ignore-errors (recenter)))))
@@ -136,6 +144,8 @@
 
 (add-hook 'prog-mode-hook #'electric-pair-mode)
 (add-hook 'prog-mode-hook #'electric-indent-mode)
+(add-hook 'text-mode-hook #'electric-quote-mode)
+(add-hook 'prog-mode-hook #'electric-layout-mode)
 
 (add-hook 'on-first-buffer-hook #'delete-selection-mode)
 
@@ -147,10 +157,104 @@
 	show-paren-when-point-inside-paren t
 	show-paren-when-point-in-periphery t))
 
-(add-hook 'after-init-hook #'global-word-wrap-whitespace-mode)
+(add-hook 'on-first-file-hook #'global-word-wrap-whitespace-mode)
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (setq-local whitespace-style
+                        '(face trailing tabs tab-mark))
+            (whitespace-mode 1)))
+(add-hook 'before-save-hook (lambda ()
+			      (delete-trailing-whitespace)))
+
 
 (add-hook 'after-save-hook
           #'executable-make-buffer-file-executable-if-script-p)
 
+(add-hook 'on-first-buffer-hook #'repeat-mode)
+(with-eval-after-load 'repeat
+  (setq repeat-on-final-keystroke t
+	repeat-exit-timeout 5
+	repeat-exit-key "<escape>"
+	repeat-keep-prefix nil
+	repeat-check-key t
+	set-mark-command-repeat-pop t))
+
+(add-hook 'emacs-startup-hook #'tab-bar-mode)
+(global-set-key (kbd "s-t") #'tab-new)
+(global-set-key (kbd "s-w") #'tab-close)
+(with-eval-after-load 'tab-bar
+  (setq tab-bar-auto-width nil
+	tab-bar-new-tab-choice 'scratch-buffer
+	tab-bar-close-button-show nil
+	tab-bar-new-tab-to 'rightmost
+	tab-bar-separator ""
+	tab-bar-select-tab-modifiers '(super)
+	tab-bar-tab-hints t
+	tab-bar-truncate t))
+
+;; C-c RET open links
+(add-hook 'on-first-buffer-hook #'global-goto-address-mode)
+
+;; windmove
+(add-hook 'after-init-hook #'windmove-mode)
+(with-eval-after-load 'windmove
+  (windmove-default-keybindings))
+
+;; winner
+(add-hook 'after-init-hook 'winner-mode)
+(global-set-key (kbd "M-g u") #'winner-undo)
+(global-set-key (kbd "M-g r") #'winner-redo)
+
+(defvar my-winner-repeat-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "u" #'winner-undo)
+    (define-key map "r" #'winner-redo)
+    map)
+  "Winner-mode 连击按键映射.")
+
+;; 2. 将命令关联到该映射
+(put 'winner-undo 'repeat-map 'my-winner-repeat-map)
+(put 'winner-redo 'repeat-map 'my-winner-repeat-map)
+
+(with-eval-after-load 'winner
+  (setopt winner-dont-bind-my-keys t
+	  winner-boring-buffers '("*Completions*"
+				  "*Compile-Log*"
+				  "*inferior-lisp*"
+				  "*Fuzzy Completions*"
+				  "*Apropos*"
+				  "*Help*"
+				  "*cvs*"
+				  "*Buffer List*"
+				  "*Ibuffer*"
+				  "*esh command on file*")))
+
+(defun toggle-delete-other-windows ()
+  "Delete other windows in frame if any, or restore previous window config."
+  (interactive)
+  (if (and winner-mode
+           (equal (selected-window) (next-window)))
+      (winner-undo)
+    (delete-other-windows)))
+
+(global-set-key (kbd "C-x 1") #'toggle-delete-other-windows)
+
+(with-eval-after-load 'dired
+  (setq dired-dwim-target t
+        dired-listing-switches "-alh --group-directories-first"
+	dired-auto-revert-buffer #'dired-buffer-stale-p
+        dired-kill-when-opening-new-dired-buffer t
+        dired-recursive-copies 'always
+        dired-recursive-deletes 'top
+	dired-filename-display-length 'window))
+(add-hook 'dired-mode-hook #'dired-hide-details-mode)
+(add-hook 'dired-mode-hook #'dired-omit-mode)
+(add-hook 'dired-mode-hook #'hl-line-mode)
+
+(add-hook 'on-first-input-hook #'which-key-mode)
+(with-eval-after-load 'which-key
+  (setopt which-key-idle-delay 0.1))
+
+(add-hook 'on-first-buffer-hook #'which-function-mode)
 
 (provide 'init-builtin)
