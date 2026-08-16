@@ -15,27 +15,22 @@
 
 (use-package nerd-icons
   :ensure t
-  :preface (package-activate 'nerd-icons)
   :defer t)
 
 (use-package nerd-icons-ibuffer
   :ensure t
-  :preface (package-activate 'nerd-icons-ibuffer)
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 (use-package nerd-icons-dired
   :ensure t
-  :preface (package-activate 'nerd-icons-dired)
   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package nerd-icons-completion
   :ensure t
-  :preface (package-activate 'nerd-icons-completion)
   :hook (minibuffer-mode . nerd-icons-completion-mode))
 
 (use-package rainbow-mode
   :ensure t
-  :preface (package-activate 'rainbow-mode)
   :hook (prog-mode . rainbow-mode))
 
 ;; (use-package goggles
@@ -47,10 +42,8 @@
 
 (use-package form-feed
   :ensure t
-  :preface (package-activate 'form-feed)
   :hook ((org-mode . form-feed-mode)
 	 (emacs-news-mode . form-feed-mode)))
-
 
 
 (provide 'init-ui)

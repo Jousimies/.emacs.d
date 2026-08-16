@@ -13,13 +13,11 @@
 
 (use-package expreg
   :ensure t
-  :preface (package-activate 'expreg)
   :bind (("C-=" . expreg-expand)
          ("C--" . expreg-contract)))
 
 (use-package consult-dir
   :ensure t
-  :preface (package-activate 'consult-dir)
   :bind (([remap list-directory] . consult-dir)
          :map minibuffer-local-completion-map
          ("C-x C-d" . consult-dir)
@@ -27,7 +25,6 @@
 
 (use-package cape
   :ensure t
-  :preface (package-activate 'cape)
   :bind ("C-c p" . cape-prefix-map))
 (add-hook 'completion-at-point-functions #'cape-dabbrev)
 (add-hook 'completion-at-point-functions #'cape-file)
@@ -35,12 +32,11 @@
 
 (use-package surround
   :ensure t
-  :preface (package-activate 'surround)
   :commands surround-delete surround-change surround-insert)
 
 (use-package selected
   :ensure t
-  :preface (package-activate 'selected)
+  :preface
   (defun my/selected-wrap-textcolor (color)
     "用 \textcolor{COLOR}{region} 包裹选中的文字。"
     (interactive "sEnter color (default red): ")
@@ -116,7 +112,6 @@
 
 (use-package symbol-overlay
   :ensure t
-  :preface (package-activate 'symbol-overlay)
   :hook ((prog-mode . symbol-overlay-mode)
          (html-mode . symbol-overlay-mode)))
 
@@ -136,28 +131,24 @@
 
 (use-package undo-fu-session
   :ensure t
-  :preface (package-activate 'undo-fu-session)
   :hook (on-first-file . undo-fu-session-global-mode)
   :custom
   (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory)))
 
 (use-package vundo
   :ensure t
-  :preface (package-activate 'vundo)
   :commands vundo
   :custom
   (vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package hungry-delete
   :ensure t
-  :preface (package-activate 'hungry-delete)
   :hook (on-first-input . global-hungry-delete-mode))
 
 ;; IME
 
 (use-package liberime
   :ensure t
-  :preface (package-activate 'liberime)
   :commands liberime-load
   :custom
   (liberime-module-file "C:/Program Files/Emacs/emacs-30.2/bin/liberime-core.dll")
@@ -165,7 +156,6 @@
 
 (use-package rimel
   :ensure t
-  :preface (package-activate 'rimel)
   :defer t
   :custom
   (default-input-method "rimel")
@@ -176,7 +166,6 @@
   :config
   (use-package posframe
     :ensure t
-    :preface (package-activate 'posframe)
     :custom
     (rimel-show-candidate 'posframe)
     (rimel-posframe-style 'horizontal))
@@ -185,7 +174,6 @@
 (use-package liberime-regexp
   :vc (:url "https://github.com/roife/liberime-regexp.git"
 	    :rev "main")
-  :preface (package-activate 'liberime-regexp)
   :bind ([remap goto-char] . liberime-regexp-avy-goto-char-timer)
   :hook ((on-first-file . liberime-regexp-mode)
 	 (liberime-after-start . liberime-regexp-avy-mode)))

@@ -14,7 +14,6 @@
 (use-package org-gtd
   :vc (:url "https://github.com/Trevoke/org-gtd.el.git"
 	    :rev "master")
-  :preface (package-activate 'org-gtd)
   :bind (("<f10>" . org-gtd-capture)
 	 ("<f12>" . org-gtd-engage)
 	 ("C-<f12>" . org-gtd-process-inbox)

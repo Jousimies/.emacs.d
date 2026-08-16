@@ -42,7 +42,7 @@
     (with-eval-after-load 'citar
       (require 'citar-org)
       (setq org-cite-insert-processor 'citar)
-      (setq org-cite-follow-processor 'citar)
-      (setq org-cite-activate-processor 'citar))))
+      (setq org-cite-follow-processor 'citar))))
+
 
 (provide 'init-bib)

@@ -28,7 +28,6 @@
 ;; rg.exe 的路径在环境变量 path 中，(executable-find "rg") 就可以找到路径
 (use-package rg
   :ensure t
-  :preface (package-activate 'rg)
   :bind ("M-s r" . rg)
   :custom
   (rg-executable (executable-find "rg"))
@@ -44,13 +43,11 @@
 
 (use-package ghostel
   :ensure t
-  :preface (package-activate 'ghostel)
   :bind ("<f5>" . ghostel))
 
 ;; markdown
 (use-package markdown-mode
   :ensure t
-  :preface (package-activate 'markdown-mode)
   :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
          ("README\\.md\\'" . gfm-mode))
   :init (setq markdown-command "multimarkdown")
@@ -59,7 +56,6 @@
 
 (use-package lua-mode
   :ensure t
-  :preface (package-activate 'lua-mode)
   :mode "\\.lua$"
   :interpreter "lua")
 

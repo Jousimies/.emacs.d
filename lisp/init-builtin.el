@@ -41,6 +41,7 @@
 
 (add-hook 'on-first-buffer-hook #'global-so-long-mode)
 ;; transient
+
 (with-eval-after-load 'transient
   ;; (setq transient-show-popup 1)
   (setq transient-history-file (expand-file-name "transient/history.el" cache-directory)

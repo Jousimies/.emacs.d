@@ -2,7 +2,6 @@
 
 (use-package denote
   :ensure t
-  :preface (package-activate 'denote)
   :defer t
   :custom
   (denote-prompts '(title keywords signature))
@@ -14,7 +13,6 @@
 
 (use-package denote-org
   :ensure t
-  :preface (package-activate 'denote-org)
   :after denote org
   :commands
   (denote-org-link-to-heading
@@ -33,7 +31,6 @@
 
 (use-package denote-journal
   :ensure t
-  :preface (package-activate 'denote-journal)
   :bind ("C-c n j" . denote-journal-new-or-existing-entry)
   :hook (calendar-mode . denote-journal-calendar-mode)
   :custom
@@ -43,7 +40,6 @@
 
 (use-package denote-explore
   :ensure t
-  :preface (package-activate 'denote-explore)
   :bind
   (;; Statistics
    ("C-c e s n" . denote-explore-count-notes)
@@ -77,7 +73,6 @@
 
 (use-package consult-notes
   :ensure t
-  :preface (package-activate 'consult-notes)
   :bind ("C-c n f" . consult-notes)
   :hook (on-first-buffer . consult-notes-denote-mode)
   :custom

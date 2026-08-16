@@ -58,7 +58,6 @@
 
 (use-package orderless
   :ensure t
-  :preface (package-activate 'orderless)
   :custom
   (orderless-matching-styles '(orderless-prefixes orderless-regexp))
   (completion-styles '(basic substring initials orderless))
@@ -78,12 +77,10 @@
 
 (use-package marginalia
   :ensure t
-  :preface (package-activate 'marginalia)
   :hook (minibuffer-setup . marginalia-mode))
 
 (use-package consult
   :ensure t
-  :preface (package-activate 'consult)
   :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-line)
@@ -108,7 +105,6 @@
 
 (use-package embark
   :ensure t
-  :preface (package-activate 'embark)
   :bind (([remap describe-bindings] . embark-bindings)
          ("C-;" . embark-act)
          ("M-." . embark-dwim)
@@ -119,7 +115,6 @@
 
 (use-package embark-consult
   :ensure t
-  :preface (package-activate 'embark-consult)
   :after consult embark)
 
 

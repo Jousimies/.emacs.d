@@ -8,13 +8,11 @@
 
 (use-package bufferlo
   :ensure t
-  :preface (package-activate 'bufferlo)
   :bind (([remap switch-to-buffer] . bufferlo-switch-to-buffer))
   :hook (on-first-buffer . bufferlo-mode))
 
 (use-package helpful
   :ensure t
-  :preface (package-activate 'helpful)
   :bind (([remap describe-function] . helpful-callable)
          ([remap describe-variable] . helpful-variable)
          ([remap describe-key] . helpful-key))
@@ -28,7 +26,6 @@
 
 (use-package elisp-demos
   :ensure t
-  :preface (package-activate 'elisp-demos)
   :after helpful
   :config
   (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))

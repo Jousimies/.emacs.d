@@ -2,7 +2,6 @@
 
 (use-package nov
   :ensure t
-  :preface (package-activate 'nov)
   :mode (".epub" . nov-mode)
   :custom
   (nov-unzip-program (executable-find "bsdtar"))
