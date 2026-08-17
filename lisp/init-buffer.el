@@ -7,12 +7,10 @@
         ibuffer-default-sorting-mode 'major-mode))
 
 (use-package bufferlo
-  :ensure t
   :bind (([remap switch-to-buffer] . bufferlo-switch-to-buffer))
   :hook (on-first-buffer . bufferlo-mode))
 
 (use-package helpful
-  :ensure t
   :bind (([remap describe-function] . helpful-callable)
          ([remap describe-variable] . helpful-variable)
          ([remap describe-key] . helpful-key))
@@ -25,7 +23,6 @@
                                         (mode-line-format . none)))))
 
 (use-package elisp-demos
-  :ensure t
   :after helpful
   :config
   (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))

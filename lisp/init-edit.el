@@ -12,30 +12,25 @@
 					   try-complete-lisp-symbol)))
 
 (use-package expreg
-  :ensure t
   :bind (("C-=" . expreg-expand)
          ("C--" . expreg-contract)))
 
 (use-package consult-dir
-  :ensure t
   :bind (([remap list-directory] . consult-dir)
          :map minibuffer-local-completion-map
          ("C-x C-d" . consult-dir)
          ("C-x C-j" . consult-dir-jump-file)))
 
 (use-package cape
-  :ensure t
   :bind ("C-c p" . cape-prefix-map))
 (add-hook 'completion-at-point-functions #'cape-dabbrev)
 (add-hook 'completion-at-point-functions #'cape-file)
 (add-hook 'completion-at-point-functions #'cape-elisp-block)
 
 (use-package surround
-  :ensure t
   :commands surround-delete surround-change surround-insert)
 
 (use-package selected
-  :ensure t
   :preface
   (defun my/selected-wrap-textcolor (color)
     "用 \textcolor{COLOR}{region} 包裹选中的文字。"
@@ -111,7 +106,6 @@
 	      ("k" . my/selected-wrap-textcolor)))
 
 (use-package symbol-overlay
-  :ensure t
   :hook ((prog-mode . symbol-overlay-mode)
          (html-mode . symbol-overlay-mode)))
 
@@ -130,32 +124,27 @@
   (advice-add 'embark-toggle-highlight :override #'my/embark-symbol-overlay-toggle))
 
 (use-package undo-fu-session
-  :ensure t
   :hook (on-first-file . undo-fu-session-global-mode)
   :custom
   (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory)))
 
 (use-package vundo
-  :ensure t
   :commands vundo
   :custom
   (vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package hungry-delete
-  :ensure t
   :hook (on-first-input . global-hungry-delete-mode))
 
 ;; IME
 
 (use-package liberime
-  :ensure t
   :commands liberime-load
   :custom
   (liberime-module-file "C:/Program Files/Emacs/emacs-30.2/bin/liberime-core.dll")
   (liberime-user-data-dir "~/AppData/Roaming/Rime"))
 
 (use-package rimel
-  :ensure t
   :defer t
   :custom
   (default-input-method "rimel")
@@ -165,7 +154,6 @@
         rimel-predicate-current-uppercase-letter-p))
   :config
   (use-package posframe
-    :ensure t
     :custom
     (rimel-show-candidate 'posframe)
     (rimel-posframe-style 'horizontal))

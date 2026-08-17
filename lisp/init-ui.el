@@ -14,34 +14,26 @@
                                    ("function" . ?𝑓))))
 
 (use-package nerd-icons
-  :ensure t
   :defer t)
 
 (use-package nerd-icons-ibuffer
-  :ensure t
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 (use-package nerd-icons-dired
-  :ensure t
   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package nerd-icons-completion
-  :ensure t
   :hook (minibuffer-mode . nerd-icons-completion-mode))
 
 (use-package rainbow-mode
-  :ensure t
   :hook (prog-mode . rainbow-mode))
 
-;; (use-package goggles
-;;   :ensure t
-;;   :preface (package-activate 'goggles)
-;;   :hook ((prog-mode text-mode) . goggles-mode)
-;;   :config
-;;   (setq-default goggles-pulse t))
+(use-package goggles
+  :hook ((prog-mode text-mode) . goggles-mode)
+  :config
+  (setq-default goggles-pulse t))
 
 (use-package form-feed
-  :ensure t
   :hook ((org-mode . form-feed-mode)
 	 (emacs-news-mode . form-feed-mode)))
 

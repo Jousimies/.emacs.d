@@ -54,9 +54,25 @@
 				    (require 'org-gtd-projects))))
 
 (with-eval-after-load 'org
+  (defun org2calendar-get-context-summary ()
+    "获取标题摘要。如果父标题存在且不属于特定的过滤词，则返回 '父标题 / 当前标题'。
+同时移除标题中的统计 Cookie，如 [3/3] 或 [100%]。"
+    (let* ((clean-heading (lambda (text)
+                            (if text
+				(string-trim (replace-regexp-in-string "\\[\\([0-9/]*\\|[0-9%]*\\)\\][ \t]*" "" text))
+                              text)))
+           (heading (funcall clean-heading (org-get-heading t t t t)))
+           (excluded-parents '("Actions" "Calendar" "Projects"))
+           (parent-title (save-excursion
+                           (when (org-up-heading-safe)
+                             (funcall clean-heading (org-get-heading t t t t))))))
+      (if (and parent-title
+               (not (member parent-title excluded-parents)))
+          (format "%s@%s" parent-title heading)
+	heading)))
  (defun my/org-clock-out-to-ms-calendar ()
   "Clock-out 时提取标题与起止时间，异步传给 C# 程序写入微软日历。"
-  (let* ((title (org-get-heading t t t t))
+  (let* ((title (org2calendar-get-context-summary))
          (start-time org-clock-start-time)
          (end-time (current-time))
          (start-str (format-time-string "%Y-%m-%d %H:%M:%S" start-time))

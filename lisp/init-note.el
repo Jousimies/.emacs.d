@@ -1,7 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
 (use-package denote
-  :ensure t
   :defer t
   :custom
   (denote-prompts '(title keywords signature))
@@ -12,7 +11,6 @@
   (denote-rename-buffer-backlinks-indicator ""))
 
 (use-package denote-org
-  :ensure t
   :after denote org
   :commands
   (denote-org-link-to-heading
@@ -30,7 +28,6 @@
    denote-org-dblock-insert-files-as-headings))
 
 (use-package denote-journal
-  :ensure t
   :bind ("C-c n j" . denote-journal-new-or-existing-entry)
   :hook (calendar-mode . denote-journal-calendar-mode)
   :custom
@@ -39,7 +36,6 @@
   (denote-journal-keyword "journal"))
 
 (use-package denote-explore
-  :ensure t
   :bind
   (;; Statistics
    ("C-c e s n" . denote-explore-count-notes)
@@ -72,7 +68,6 @@
   (denote-explore-json-vertices-filename (expand-file-name "denote-vertices.json" cache-directory)))
 
 (use-package consult-notes
-  :ensure t
   :bind ("C-c n f" . consult-notes)
   :hook (on-first-buffer . consult-notes-denote-mode)
   :custom

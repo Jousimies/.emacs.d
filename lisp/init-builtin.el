@@ -1,11 +1,11 @@
 ;; -*- lexical-binding: t; -*-
 
 ;; Coding system
-;; (prefer-coding-system 'utf-8)
-;; (set-language-environment "UTF-8")
-;; (set-default-coding-systems 'utf-8)
-;; (setq default-process-coding-system '(utf-8 . utf-8))
-;; (set-selection-coding-system 'utf-8)
+(set-language-environment "UTF-8")	;中文
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
 
 (setq use-short-answers t)
 					;关闭 ring bell,用 mode-line 替代

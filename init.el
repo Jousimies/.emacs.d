@@ -45,19 +45,22 @@
 (elpaca elpaca-use-package
 	(elpaca-use-package-mode))
 
-;; on.el
-(use-package on
-  :ensure t)
+(setq use-package-always-ensure t)
+(setq use-package-expand-minimally t)
 
-(use-package gcmh
-  :ensure t
-  :hook (after-init . gcmh-mode)
-  :custom
-  (gc-cons-percentage 0.1)
-  (gcmh-verbose nil)
-  (gcmh-idle-delay 'auto)
-  (gcmh-auto-idle-delay-factor 10)
-  (gcmh-high-cons-threshold #x1000000))
+;; on.el
+(use-package on)
+
+;; (use-package gcmh-mode
+;;   :vc (:url "https://gitlab.com/koral/gcmh.git"
+;; 	    :rev "master")
+;;   :hook (after-init . gcmh-mode)
+;;   :custom
+;;   (gc-cons-percentage 0.1)
+;;   (gcmh-verbose nil)
+;;   (gcmh-idle-delay 'auto)
+;;   (gcmh-auto-idle-delay-factor 10)
+;;   (gcmh-high-cons-threshold #x1000000))
 
 (advice-add 'after-focus-change-function :after 'garbage-collect)
 ;; Server

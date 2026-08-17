@@ -83,9 +83,6 @@
 
 (global-set-key (kbd "C-c l r") #'jf/org-link-remove-link)
 
-
-(defconst my/project-folder "D:/1-Project/")
-
 (defvar folder-structure-new
   '((:name "00_设计依据-方案-地勘" :subfolders ("01_设计说明" "02_甲方提供资料"))
     (:name "01_结构工程-施工图" :subfolders ("01_施工图-提资" "02_施工图_设计"))

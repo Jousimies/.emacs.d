@@ -4,6 +4,7 @@
                              ,(concat my-galaxy "/bibtexs/Books.bib")
 			     ,(concat my-galaxy "/bibtexs/Seismic.bib")))
 (use-package bibtex
+  :ensure nil
   :mode ("\\.bib\\'" . bibtex-mode)
   :custom
   (bibtex-align-at-equal-sign t)
@@ -16,6 +17,7 @@
   (bibtex-autokey-titleword-length 5))
 
 (use-package reftex
+  :ensure nil
   :hook (LaTeX-mode . turn-on-reftex)
   :bind ([remap reftex-citation] . citar-insert-citation)
   :config

@@ -57,7 +57,6 @@
   (keymap-set completion-preview-active-mode-map "C-p" #'completion-preview-prev-candidate))
 
 (use-package orderless
-  :ensure t
   :custom
   (orderless-matching-styles '(orderless-prefixes orderless-regexp))
   (completion-styles '(basic substring initials orderless))
@@ -76,11 +75,9 @@
      (eglot (styles . (emacs22 substring orderless))))))
 
 (use-package marginalia
-  :ensure t
   :hook (minibuffer-setup . marginalia-mode))
 
 (use-package consult
-  :ensure t
   :bind (([remap apropos] . consult-apropos)
          ([remap bookmark-jump] . consult-bookmark)
          ([remap goto-line] . consult-line)
@@ -104,7 +101,6 @@
   (define-key org-mode-map (kbd "M-g h") #'consult-org-heading))
 
 (use-package embark
-  :ensure t
   :bind (([remap describe-bindings] . embark-bindings)
          ("C-;" . embark-act)
          ("M-." . embark-dwim)
@@ -114,7 +110,6 @@
                ("C-c C-l" . embark-collect))))
 
 (use-package embark-consult
-  :ensure t
   :after consult embark)
 
 

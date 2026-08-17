@@ -27,7 +27,6 @@
 ;; winget install BurntSushi.ripgrep.MSVC
 ;; rg.exe 的路径在环境变量 path 中，(executable-find "rg") 就可以找到路径
 (use-package rg
-  :ensure t
   :bind ("M-s r" . rg)
   :custom
   (rg-executable (executable-find "rg"))
@@ -42,12 +41,10 @@
                                        (window-width . 0.5))))
 
 (use-package ghostel
-  :ensure t
   :bind ("<f5>" . ghostel))
 
 ;; markdown
 (use-package markdown-mode
-  :ensure t
   :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
          ("README\\.md\\'" . gfm-mode))
   :init (setq markdown-command "multimarkdown")
@@ -55,7 +52,6 @@
 	      ("C-c C-e" . markdown-do)))
 
 (use-package lua-mode
-  :ensure t
   :mode "\\.lua$"
   :interpreter "lua")
 
