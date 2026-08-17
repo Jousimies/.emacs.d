@@ -74,6 +74,7 @@
 ;; Require configurations
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (require 'init-vars)
+(require 'init-util)
 (require 'init-builtin)
 (require 'init-edit)
 (require 'init-ui)
