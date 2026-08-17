@@ -83,6 +83,31 @@
 
 (add-hook 'prog-mode-hook #'subword-mode)
 
+;; Scroll
+(setq fast-but-imprecise-scrolling t
+      scroll-step 6
+      scroll-margin 6
+      scroll-up-aggressively 0.25
+      scroll-down-aggressively 0.25
+      auto-window-vscroll t
+      auto-hscroll-mode t
+      hscroll-step 0.3
+      hscroll-margin 6)
+(defvar +scrolling-lines 10)
+(defun +scroll-other-window () (interactive) (scroll-other-window +scrolling-lines))
+(defun +scroll-other-window-down () (interactive) (scroll-other-window-down +scrolling-lines))
+(defun +scroll-window () (interactive) (scroll-up +scrolling-lines))
+(defun +scroll-window-down () (interactive) (scroll-down +scrolling-lines))
+(bind-keys*
+ ("C-M-v" . +scroll-other-window)
+ ("M-<down>" . +scroll-other-window)
+
+ ("C-M-S-v" . +scroll-other-window-down)
+ ("M-<up>" . +scroll-other-window-down)
+
+ ("C-v" . +scroll-window-down)
+ ("M-v" . +scroll-window))
+
 (with-eval-after-load 'pixel-scroll
   (setq pixel-scroll-precision-use-momentum t
 	pixel-scroll-precision-large-scroll-height 40.0
