@@ -64,7 +64,10 @@
 
 (advice-add 'after-focus-change-function :after 'garbage-collect)
 ;; Server
-(run-with-idle-timer 2 nil #'server-start)
+(run-with-idle-timer 2 nil (lambda ()
+			     (require 'server)
+			     (unless (server-running-p)
+			       (server-start))))
 
 (elpaca transient)
 
