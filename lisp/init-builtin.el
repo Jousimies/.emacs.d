@@ -157,7 +157,7 @@
               (when buffer-file-name (ignore-errors (recenter)))))
 
 (add-hook 'on-first-input-hook #'recentf-mode)
-(global-set-key (kbd "C-c f r") #'recentf-open-files)
+(global-set-key (kbd "C-x C-r") #'recentf-open-files)
 (with-eval-after-load 'recentf
   (setq recentf-max-saved-items 50
         recentf-keep nil
