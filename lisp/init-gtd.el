@@ -54,6 +54,13 @@
 				    (require 'org-gtd-projects))))
 
 (with-eval-after-load 'org
+
+  (defcustom org2calendar-exe-path
+    (expand-file-name "module/EmacsCalendarSync.exe" user-emacs-directory)
+    "Path to the external calendar sync executable."
+    :type 'string
+    :group 'org2calendar)
+
   (defun org2calendar-get-context-summary ()
     "获取标题摘要。如果父标题存在且不属于特定的过滤词，则返回 '父标题 / 当前标题'。
 同时移除标题中的统计 Cookie，如 [3/3] 或 [100%]。"
@@ -70,28 +77,52 @@
                (not (member parent-title excluded-parents)))
           (format "%s@%s" parent-title heading)
 	heading)))
- (defun my/org-clock-out-to-ms-calendar ()
-  "Clock-out 时提取标题与起止时间，异步传给 C# 程序写入微软日历。"
-  (let* ((title (org2calendar-get-context-summary))
-         (start-time org-clock-start-time)
-         (end-time (current-time))
-         (start-str (format-time-string "%Y-%m-%d %H:%M:%S" start-time))
-         (end-str (format-time-string "%Y-%m-%d %H:%M:%S" end-time))
-         (exe-path (expand-file-name "module/EmacsCalendarSync.exe" user-emacs-directory)))
 
-    (if (and title start-time end-time)
-        (progn
-          ;; 日志会输出到 *Org-Cal-Sync* buffer 中
-          (start-process "org-ms-cal-sync"
-                         "*Org-Cal-Sync*"
-                         exe-path
-                         title
-                         start-str
-                         end-str)
-          (message " [日历同步] 已发送: %s (%s -> %s)" title start-str end-str))
-      (message "[日历同步] 错误: 未能抓取到有效的 Clock 节点信息")))))
+  (defun org2calendar--send-event (title start-time end-time)
+    "Send TITLE with START-TIME and END-TIME to external sync program.
+START-TIME and END-TIME can be either time values (as returned by
+`current-time') or ISO-8601 style strings."
+    (unless (and title start-time end-time)
+      (message "[日历同步] 错误: 标题或时间缺失")
+      (cl-return-from org2calendar--send-event nil))
+
+    (let ((start-str (if (stringp start-time)
+			 start-time
+                       (format-time-string "%Y-%m-%d %H:%M:%S" start-time)))
+          (end-str   (if (stringp end-time)
+			 end-time
+                       (format-time-string "%Y-%m-%d %H:%M:%S" end-time))))
+      (start-process "org-ms-cal-sync"
+                     "*Org-Cal-Sync*"
+                     org2calendar-exe-path
+                     title
+                     start-str
+                     end-str)
+      (message " [日历同步] 已发送: %s (%s -> %s)" title start-str end-str)))
+
+  (defun org2calendar-send-to-ms ()
+    (interactive)
+    (let ((title (org2calendar-get-context-summary))
+          (start org-clock-start-time)
+          (end   (current-time)))
+      (org2calendar--send-event title start end)))
+
+  (defun org2calendar-send-to-ms-at-point ()
+    (interactive)
+    (save-excursion
+      (org-back-to-heading t)
+      (let ((end-of-subtree (save-excursion (org-end-of-subtree) (point))))
+	(if (re-search-forward "CLOCK: \\(\\[.*?\\]\\)--\\(\\[.*?\\]\\)" end-of-subtree t)
+            (let* ((start-ts (match-string 1))
+                   (end-ts   (match-string 2))
+                   (start    (org-time-string-to-time start-ts))
+                   (end      (org-time-string-to-time end-ts))
+                   (title    (org2calendar-get-context-summary)))
+              (org2calendar--send-event title start end))
+          (message "未在当前条目下找到 CLOCK 记录，无法同步。")))))
+  (keymap-global-set "C-c C-x p" #'org2calendar-send-to-ms-at-point))
 
 (when (eq system-type 'windows-nt)
-  (add-hook 'org-clock-out-hook #'my/org-clock-out-to-ms-calendar))
+  (add-hook 'org-clock-out-hook #'org2calendar-send-to-ms))
 
 (provide 'init-gtd)
