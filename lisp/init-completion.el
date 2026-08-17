@@ -3,6 +3,7 @@
 (setopt enable-recursive-minibuffers t)
 (setopt read-minibuffer-restore-windows nil
   	minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
+(setopt minibuffer-follows-selected-frame nil)
 
 (setopt minibuffer-completion-auto-choose t
 	minibuffer-completion-confirm 'confirm)

@@ -8,7 +8,8 @@
 (set-keyboard-coding-system 'utf-8)
 
 (setq use-short-answers t)
-					;关闭 ring bell,用 mode-line 替代
+(setq server-client-instructions nil)
+;;关闭 ring bell,用 mode-line 替代
 (setq ring-bell-function (lambda ()
 			   (invert-face 'mode-line)
 			   (run-with-timer 0.05 nil 'invert-face 'mode-line)))
