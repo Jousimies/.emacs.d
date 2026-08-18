@@ -16,9 +16,7 @@
 	    :rev "master")
   :bind (("<f10>" . org-gtd-capture)
 	 ("<f12>" . org-gtd-engage)
-	 ("C-<f12>" . org-gtd-process-inbox)
-	 :map org-gtd-clarify-map
-	 ("C-c C-c" . org-gtd-organize))
+	 ("C-<f12>" . org-gtd-process-inbox))
   :init
   (setq org-gtd-update-ack "4.0.0")
   (setq org-gtd-directory (expand-file-name "gtd" my-galaxy))
@@ -48,6 +46,8 @@
   (org-edna-mode)
   (org-gtd-mode))
 
+(with-eval-after-load 'org-gtd-clarify
+  (keymap-set org-gtd-clarify-map "C-c C-c" #'org-gtd-organize))
 
 (add-hook 'org-agenda-mode-hook (lambda ()
 				  (unless (featurep 'org-gtd-projects)
