@@ -126,7 +126,15 @@
 (use-package undo-fu-session
   :hook (on-first-file . undo-fu-session-global-mode)
   :custom
-  (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory)))
+  (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory))
+  :config
+  (defun my/undo-fu-session--make-file-name (filename)
+    "Take the path FILENAME and return a name base on this."
+    (concat
+     (file-name-concat undo-fu-session-directory
+                       (md5 (convert-standard-filename (expand-file-name filename))))
+     (undo-fu-session--file-name-ext)))
+  (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name))
 
 (use-package vundo
   :commands vundo
@@ -163,7 +171,7 @@
   :vc (:url "https://github.com/roife/liberime-regexp.git"
 	    :rev "main")
   :bind ([remap goto-char] . liberime-regexp-avy-goto-char-timer)
-  :hook ((on-first-file . liberime-regexp-mode)
+  :hook ((on-first-buffer . liberime-regexp-enable)
 	 (liberime-after-start . liberime-regexp-avy-mode)))
 
 

@@ -6,12 +6,12 @@
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
+;; (set-selection-coding-system 'utf-8)
 
-(setq default-process-coding-system '(utf-8 . utf-8))
-(setq file-name-coding-system 'utf-8)
-(setq selection-coding-system 'utf-8)
-(setq-default buffer-file-coding-system 'utf-8)
+;; (setq default-process-coding-system '(utf-8 . utf-8))
+;; (setq file-name-coding-system 'utf-8)
+;; (setq selection-coding-system 'utf-8)
+;; (setq-default buffer-file-coding-system 'utf-8)
 (when (fboundp 'w32-set-console-codepage)
   (w32-set-console-codepage 65001))
 
