@@ -14,22 +14,6 @@
 	  bibtex-autokey-titlewords-stretch 1
 	  bibtex-autokey-titleword-length 5))
 
-(add-hook 'LaTeX-mode-hook #'tuan-on-reftex)
-(keymap-set global-map "<remap> <reftex-citation>" #'citar-insert-citation)
-(setf (alist-get "\\*RefTex" display-buffer-alist nil t #'equal)
-        '((display-buffer-in-side-window)
-          (window-height . 0.25)
-          (side . bottom) (slot . -9)))
-
-(with-eval-after-load 'reftex
-  (setopt reftex-insert-label-flags '("sf" "sfte")
-	  reftex-plug-into-AUCTeX t
-	  reftex-ref-style-default-list '("Default" "AMSmath" "Cleveref")
-	  reftex-use-multiple-selection-buffers t
-	  reftex-default-bibliography org-cite-global-bibliography
-	  reftex-toc-follow-mode t
-	  reftex-toc-split-windows-horizontally t
-	  reftex-toc-split-windows-fraction 0.25))
 
 (with-eval-after-load 'oc
   (setq org-cite-global-bibliography my/reference-lists))
