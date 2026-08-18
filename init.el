@@ -85,6 +85,7 @@
 (require 'init-org)
 (require 'init-note)
 (require 'init-bib)
+(require 'init-latex)
 (require 'init-reader)
 
 (require 'init-gtd)
