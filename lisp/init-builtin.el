@@ -1,5 +1,8 @@
 ;; -*- lexical-binding: t; -*-
 
+
+(setq-default buffer-file-coding-system 'utf-8)
+
 (setq use-short-answers t)
 (setq server-client-instructions nil)
 ;;关闭 ring bell,用 mode-line 替代

@@ -51,6 +51,11 @@
 ;; on.el
 (use-package on)
 
+;; Auto detected coding system
+(use-package unicad
+  :config
+  (unicad-mode 1))
+
 ;; (use-package gcmh-mode
 ;;   :vc (:url "https://gitlab.com/koral/gcmh.git"
 ;; 	    :rev "master")
