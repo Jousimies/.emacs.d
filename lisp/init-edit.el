@@ -154,12 +154,22 @@
 
 (use-package rimel
   :defer t
+  :custom-face
+  (rimel-candidate-label-face ((t (:inherit font-lock-comment-face :height 0.85))))
+  (rimel-page-indicator-face ((t (:inherit font-lock-comment-face :height 0.85))))
+  (rimel-highlight-face ((t (:inherit hl-line))))
   :custom
   (default-input-method "rimel")
-  (rimel-disable-predicates
-      '(rimel-predicate-prog-in-code-p
-        rimel-predicate-after-alphabet-char-p
-        rimel-predicate-current-uppercase-letter-p))
+  (rimel-inline-preedit t)
+  (rimel-candidate-show-preedit nil)
+  (rimel-candidate-label-format "%d ")
+  (rimel-page-indicator-format "%d%s")
+  (rimel-disable-predicates '(rimel-predicate-prog-in-code-p
+                              rimel-predicate-after-alphabet-char-p
+                              rimel-predicate-current-uppercase-letter-p
+                              rimel-predicate-org-in-src-block-p
+                              rimel-predicate-org-latex-mode-p
+                              rimel-predicate-tex-math-or-command-p))
   :config
   (use-package posframe
     :custom
@@ -174,5 +184,18 @@
   :hook ((on-first-buffer . liberime-regexp-enable)
 	 (liberime-after-start . liberime-regexp-avy-mode)))
 
+(use-package sis
+  :commands sis-back-detect
+  :init
+  (sis-ism-lazyman-config nil "rimel" 'native)
+  :config
+  (sis-global-inline-mode)
+  (sis-global-context-mode)
+  (sis-global-cursor-color-mode)
+  (add-hook 'meow-insert-exit-hook #'sis-set-english)
+  (add-to-list 'sis-context-hooks 'meow-insert-enter-hook))
+
+(when (daemonp)
+  (liberime-load))
 
 (provide 'init-edit)

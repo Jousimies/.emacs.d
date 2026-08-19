@@ -81,6 +81,8 @@
 (require 'init-vars)
 (require 'init-util)
 (require 'init-builtin)
+
+(require 'init-modal)
 (require 'init-edit)
 (require 'init-ui)
 (require 'init-modeline)
