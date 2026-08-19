@@ -66,7 +66,7 @@
 同时移除标题中的统计 Cookie，如 [3/3] 或 [100%]。"
     (let* ((clean-heading (lambda (text)
                             (if text
-				(string-trim (replace-regexp-in-string "\\[\\([0-9/]*\\|[0-9%]*\\)\\][ \t]*" "" text))
+                                (string-trim (replace-regexp-in-string "\\[\\([0-9/]*\\|[0-9%]*\\)\\][ \t]*" "" text))
                               text)))
            (heading (funcall clean-heading (org-get-heading t t t t)))
            (excluded-parents '("Actions" "Calendar" "Projects"))
@@ -76,28 +76,34 @@
       (if (and parent-title
                (not (member parent-title excluded-parents)))
           (format "%s@%s" parent-title heading)
-	heading)))
+        heading)))
 
   (defun org2calendar--send-event (title start-time end-time)
-    "Send TITLE with START-TIME and END-TIME to external sync program.
-START-TIME and END-TIME can be either time values (as returned by
-`current-time') or ISO-8601 style strings."
+    "Send TITLE with START-TIME and END-TIME to external sync program via UTF-8 Stdin."
     (unless (and title start-time end-time)
       (message "[日历同步] 错误: 标题或时间缺失")
       (cl-return-from org2calendar--send-event nil))
 
-    (let ((start-str (if (stringp start-time)
-			 start-time
-                       (format-time-string "%Y-%m-%d %H:%M:%S" start-time)))
-          (end-str   (if (stringp end-time)
-			 end-time
-                       (format-time-string "%Y-%m-%d %H:%M:%S" end-time))))
-      (start-process "org-ms-cal-sync"
-                     "*Org-Cal-Sync*"
-                     org2calendar-exe-path
-                     title
-                     start-str
-                     end-str)
+    (let* ((start-str (if (stringp start-time)
+                          start-time
+                        (format-time-string "%Y-%m-%d %H:%M:%S" start-time)))
+           (end-str   (if (stringp end-time)
+                          end-time
+                        (format-time-string "%Y-%m-%d %H:%M:%S" end-time)))
+           ;; 1. 强制设定当前通信的编码为 UTF-8
+           (coding-system-for-write 'utf-8)
+           (coding-system-for-read 'utf-8)
+           ;; 2. 启动进程时不附带参数，避免被 Windows 命令行 ANSI 转码污染
+           (proc (start-process "org-ms-cal-sync"
+                                "*Org-Cal-Sync*"
+                                org2calendar-exe-path))
+           ;; 3. 按行拼接 payload 内容
+           (payload (concat title "\n" start-str "\n" end-str "\n")))
+
+      ;; 4. 将 payload 写入 Stdin 并关闭写通道 (EOF)
+      (process-send-string proc payload)
+      (process-send-eof proc)
+
       (message " [日历同步] 已发送: %s (%s -> %s)" title start-str end-str)))
 
   (defun org2calendar-send-to-ms ()
@@ -112,7 +118,7 @@ START-TIME and END-TIME can be either time values (as returned by
     (save-excursion
       (org-back-to-heading t)
       (let ((end-of-subtree (save-excursion (org-end-of-subtree) (point))))
-	(if (re-search-forward "CLOCK: \\(\\[.*?\\]\\)--\\(\\[.*?\\]\\)" end-of-subtree t)
+        (if (re-search-forward "CLOCK: \\(\\[.*?\\]\\)--\\(\\[.*?\\]\\)" end-of-subtree t)
             (let* ((start-ts (match-string 1))
                    (end-ts   (match-string 2))
                    (start    (org-time-string-to-time start-ts))
@@ -120,6 +126,7 @@ START-TIME and END-TIME can be either time values (as returned by
                    (title    (org2calendar-get-context-summary)))
               (org2calendar--send-event title start end))
           (message "未在当前条目下找到 CLOCK 记录，无法同步。")))))
+
   (keymap-global-set "C-c C-x p" #'org2calendar-send-to-ms-at-point))
 
 (when (eq system-type 'windows-nt)
