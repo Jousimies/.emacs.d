@@ -1,6 +1,21 @@
 ;;; -*- lexical-binding: t -*-
+;; on.el
+(use-package on)
 
-;; Thanks to DOOM Emacs
+;; Auto detected coding system
+(use-package unicad
+  :config
+  (unicad-mode 1))
+
+;; Server
+(run-with-idle-timer 2 nil (lambda ()
+			     (require 'server)
+			     (unless (server-running-p)
+			       (server-start))))
+
+(unless emacs/>=31p
+  (elpaca transient))
+
 (defmacro add-hook! (hooks &rest rest)
   "A convenience macro for adding N functions to M hooks.
 
@@ -55,71 +70,5 @@ This macro accepts, in order:
                 (unless-daemonp-call-immediately-p
                  `(unless (daemonp)
                     (funcall func))))))))
-
-(defmacro defadvice! (symbol arglist &rest body)
-  "Define an advice called SYMBOL and add it to PLACES.
-
-ARGLIST is as in `defun'. WHERE is a keyword as passed to `advice-add', and
-PLACE is the function to which to add the advice, like in `advice-add'.
-DOCSTRING and BODY are as in `defun'.
-
-\(fn SYMBOL ARGLIST &rest [WHERE PLACES...] BODY\)"
-  (declare (indent defun))
-  (let (where-alist)
-    (while (keywordp (car body))
-      (push `(cons ,(pop body) (ensure-list ,(pop body)))
-            where-alist))
-    `(progn
-       (defun ,symbol ,arglist ,@body)
-       (dolist (targets (list ,@(nreverse where-alist)))
-         (dolist (target (cdr targets))
-           (advice-add target (car targets) #',symbol))))))
-
-(defmacro +advice-pp-to-prin1! (&rest body)
-  "Define an advice called SYMBOL that map `pp' to `prin1' when called.
-PLACE is the function to which to add the advice, like in `advice-add'.
-
-\(fn SYMBOL &rest [PLACES...]\)"
-  `(progn
-     (dolist (target (list ,@body))
-       (advice-add target :around #'+call-fn-with-pp-to-prin1))))
-
-(defmacro defun-call! (symbol args &rest body)
-  "Define a function and optionally apply it with specified arguments.
-
-\(fn SYMBOL ARGS &optional [DOCSTRING] &optional [:call-with APPLY_ARGS] BODY\)"
-  (declare (indent defun))
-  (let* ((docstring (if (stringp (car body)) (pop body)))
-         (apply-body (if (eq :call-with (car body))
-                         (progn
-                           (cl-assert (eq (pop body) :call-with))
-                           (pop body))
-                       nil)))
-    `(progn
-       (defun ,symbol ,args
-         ,@(if docstring
-               (cons docstring body)
-             body))
-       (apply ',symbol
-              ,(if (listp apply-body)
-                   `(list ,@apply-body)
-                 `(list ,apply-body))))))
-
-(defun +call-fn-with-pp-to-prin1 (fn &rest args)
-  "Call FN with ARGS, map `pp' to `prin1' when called."
-  (cl-letf (((symbol-function #'pp) #'prin1)
-            ((symbol-function #'pp-to-string) #'prin1-to-string))
-    (apply fn args)))
-
-(defun +unfill-region (start end)
-  "Replace newline chars in region from START to END by single spaces.
-This command does the inverse of `fill-region'."
-  (interactive "r")
-  (let ((fill-column most-positive-fixnum))
-    (fill-region start end)))
-
-(defun +temp-buffer-p (buffer)
-  "Return t if BUFFER is temporary."
-  (string-match-p "^ " (buffer-name buffer)))
 
 (provide 'init-util)

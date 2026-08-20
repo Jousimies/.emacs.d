@@ -166,7 +166,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
                       current-date
                       )))))
 
-(global-set-key (kbd "C-c f g") #'generate-folder-tree)
+(global-set-key (kbd "C-x p n") #'generate-folder-tree)
 
 (defun my/project-readme-candidates ()
   (let ((root my/project-folder)
@@ -193,7 +193,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
                               :category 'file
                               :sort nil)))
     (find-file (cdr (assoc name table)))))
-(global-set-key (kbd "C-c f R") #'my/open-project-readme)
+(global-set-key (kbd "C-x p R") #'my/open-project-readme)
 
 
 (provide 'init-misc)

@@ -73,4 +73,8 @@
   :custom
   (consult-notes-denote-files-function (lambda () (denote-directory-files nil t t))))
 
+(use-package olivetti
+  :bind ("<f7>" . olivetti-mode)
+  :init (setq olivetti-body-width 0.62))
+
 (provide 'init-note)

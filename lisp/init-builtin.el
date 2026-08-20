@@ -37,8 +37,8 @@
 (setq highlight-nonselected-windows nil)
 
 (add-hook 'on-first-buffer-hook #'global-so-long-mode)
-;; transient
 
+;; transient
 (with-eval-after-load 'transient
   ;; (setq transient-show-popup 1)
   (setq transient-history-file (expand-file-name "transient/history.el" cache-directory)
@@ -270,21 +270,18 @@
 
 (global-set-key (kbd "C-x 1") #'toggle-delete-other-windows)
 
-(with-eval-after-load 'dired
-  (setq dired-dwim-target t
-        dired-listing-switches "-alh --group-directories-first"
-	dired-auto-revert-buffer #'dired-buffer-stale-p
-        dired-kill-when-opening-new-dired-buffer t
-        dired-recursive-copies 'always
-        dired-recursive-deletes 'top
-	dired-filename-display-length 'window))
-(add-hook 'dired-mode-hook #'dired-hide-details-mode)
-(add-hook 'dired-mode-hook #'dired-omit-mode)
-(add-hook 'dired-mode-hook #'hl-line-mode)
-
 (add-hook 'on-first-input-hook #'which-key-mode)
 (with-eval-after-load 'which-key
-  (setopt which-key-idle-delay 0.1))
+  (setopt which-key-idle-delay 0.1
+	  which-key-show-remaining-keys t)
+  (dolist (map '(("M-s h" . "highlight")
+		 ("C-x 8" . "unicode")
+                 ("C-x 8 e" . "emoji")
+		 ("C-c e" . "Denote Explore")
+		 ("C-c f" . "Folder/Files")
+		 ("C-x n" . "narrow")
+		 ))
+    (which-key-add-key-based-replacements (car map) (cdr map))))
 
 (add-hook 'on-first-buffer-hook #'which-function-mode)
 

@@ -178,14 +178,14 @@
   (add-to-list 'rimel-disable-predicates 'rimel-predicate-org-in-src-block-p))
 
 (use-package liberime-regexp
-  :vc (:url "https://github.com/roife/liberime-regexp.git"
-	    :rev "main")
-  :bind ([remap goto-char] . liberime-regexp-avy-goto-char-timer)
-  :hook ((on-first-buffer . liberime-regexp-enable)
-	 (liberime-after-start . liberime-regexp-avy-mode)))
+  :elpaca (liberime-regexp :repo "https://github.com/roife/liberime-regexp.git" :branch "main"))
+
+(add-hook 'on-first-buffer-hook #'liberime-regexp-mode)
+(add-hook 'on-first-buffer-hook #'liberime-regexp-avy-mode)
+(with-eval-after-load 'liberime-regexp
+  (global-set-key [remap goto-char] 'liberime-regexp-avy-goto-char-timer))
 
 (use-package sis
-  :commands sis-back-detect
   :init
   (sis-ism-lazyman-config nil "rimel" 'native)
   :config
@@ -193,9 +193,44 @@
   (sis-global-context-mode)
   (sis-global-cursor-color-mode)
   (add-hook 'meow-insert-exit-hook #'sis-set-english)
-  (add-to-list 'sis-context-hooks 'meow-insert-enter-hook))
+  (add-to-list 'sis-context-hooks 'meow-insert-enter-hook)
 
-(when (daemonp)
-  (liberime-load))
+  (defvar-local +sis-inline-english-last-space-pos nil
+    "The last space position in inline mode.")
+
+  (defun +sis-line-set-last-space-pos ()
+    (when (eq (char-before) ?\s)
+      (setq +sis-inline-english-last-space-pos (point))))
+  (add-hook 'sis-inline-english-activated-hook #'+sis-line-set-last-space-pos)
+
+  (add-hook 'sis-inline-mode-hook #'+sis-inline-add-post-self-insert-hook)
+
+  (defun +sis-inline-add-post-self-insert-hook ()
+    (add-hook! post-self-insert-hook :local
+               (defun +sis-inline-remove-redundant-space ()
+		 (when (and (eq +sis-inline-english-last-space-pos (1- (point)))
+			    (looking-back (concat " [" +sis-chinese-puncs "]")))
+		   (save-excursion
+		     (backward-char 2)
+		     (delete-char 1)
+		     (setq-local +sis-inline-english-last-space-pos nil))))))
+  ;; Chinese punc adjustment for inline mode
+  (defconst +sis-chinese-puncs "，。？！；：（【「“")
+
+  (defconst +sis-chinese-punc-chars (string-to-list +sis-chinese-puncs))
+
+  (defun +sis-remove-head-space-after-cc-punc (_)
+    (when (or (memq (char-before) +sis-chinese-punc-chars)
+              (bolp))
+      (delete-char 1)))
+  (setq sis-inline-tighten-head-rule #'+sis-remove-head-space-after-cc-punc)
+
+  (defun +sis-remove-tail-space-before-cc-punc (_)
+    (when (eq (char-before) ? )
+      (backward-delete-char 1)
+      (when (and (eq (char-before) ? )
+                 (memq (char-after) +sis-chinese-punc-chars))
+        (backward-delete-char 1))))
+  (setq sis-inline-tighten-tail-rule #'+sis-remove-tail-space-before-cc-punc))
 
 (provide 'init-edit)

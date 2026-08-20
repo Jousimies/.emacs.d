@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (with-eval-after-load 'org
-  (setq org-modules '(org-habit)
+  (setq org-modules nil
   	org-imenu-depth 4
   	org-return-follows-link t
   	org-display-remote-inline-images 'download
