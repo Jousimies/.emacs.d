@@ -178,12 +178,10 @@
   (add-to-list 'rimel-disable-predicates 'rimel-predicate-org-in-src-block-p))
 
 (use-package liberime-regexp
-  :elpaca (liberime-regexp :repo "https://github.com/roife/liberime-regexp.git" :branch "main"))
-
-(add-hook 'on-first-buffer-hook #'liberime-regexp-mode)
-(add-hook 'on-first-buffer-hook #'liberime-regexp-avy-mode)
-(with-eval-after-load 'liberime-regexp
-  (global-set-key [remap goto-char] 'liberime-regexp-avy-goto-char-timer))
+  :ensure (liberime-regexp :repo "https://github.com/roife/liberime-regexp.git" :branch "main")
+  :hook ((meow-insert-enter . liberime-regexp-mode)
+	 (meow-insert-enter . liberime-regexp-avy-mode))
+  :bind ([remap goto-char] . liberime-regexp-avy-goto-char-timer))
 
 (use-package sis
   :init

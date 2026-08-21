@@ -12,8 +12,7 @@
 	org-deadline-warning-days 7))
 
 (use-package org-gtd
-  :vc (:url "https://github.com/Trevoke/org-gtd.el.git"
-	    :rev "master")
+  :ensure (org-gtd :repo "https://github.com/Trevoke/org-gtd.el.git" :branch "master")
   :bind (("<f10>" . org-gtd-capture)
 	 ("<f12>" . org-gtd-engage)
 	 ("C-<f12>" . org-gtd-process-inbox))
@@ -47,6 +46,8 @@
   (org-gtd-mode))
 
 (with-eval-after-load 'org-gtd-clarify
+  (unless (featurep 'org-gtd-organize)
+    (require 'org-gtd-organize))
   (keymap-set org-gtd-clarify-map "C-c C-c" #'org-gtd-organize))
 
 (add-hook 'org-agenda-mode-hook (lambda ()

@@ -109,7 +109,7 @@
 	org-clock-history-length 23
 	org-clock-in-resume t
 	org-clock-into-drawer "LOGCLOCK"
-	org-clock-idle-time 15
+	;; org-clock-idle-time 15
 	org-clock-out-remove-zero-time-clocks t
 	org-clock-out-when-done t
 	org-clock-persist 'history

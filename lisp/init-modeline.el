@@ -1,4 +1,4 @@
-;; 我;; -*- lexical-binding: t; -*-
+;; -*- lexical-binding: t; -*-
 
 (defcustom prot-modeline-string-truncate-length 20
   "String length after which truncation should be done in small windows."

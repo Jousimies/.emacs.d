@@ -1,5 +1,19 @@
 ;; -*- lexical-binding: t; -*-
 
+;; Inhibit resizing frame
+(setq frame-inhibit-implied-resize t)
+
+;; Inhibit startup screen & message
+(setq inhibit-startup-screen t
+      inhibit-startup-echo-area-message t
+      inhibit-startup-message t
+      inhibit-startup-buffer-menu t
+      inhibit-x-resources t
+      inhibit-default-init t
+      initial-major-mode 'fundamental-mode)
+(advice-add #'display-startup-echo-area-message :override #'ignore)
+(advice-add #'display-startup-screen :override #'ignore)
+
 (set-face-attribute 'default nil :family "Iosevka" :height 120)
 (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Font Mono" :size 12) nil 'prepend)
 (dolist (charset '(kana han cjk-misc bopomofo symbol))
