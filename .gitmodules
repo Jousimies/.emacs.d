@@ -1,0 +1,210 @@
+[submodule "packages/surround"]
+	path = packages/surround
+	url = https://github.com/mkleehammer/surround.git
+[submodule "packages/selected.el"]
+	path = packages/selected.el
+	url = https://github.com/Kungsgeten/selected.el.git
+[submodule "packages/symbol-overlay"]
+	path = packages/symbol-overlay
+	url = https://github.com/wolray/symbol-overlay.git
+[submodule "packages/emacs-undo-fu-session"]
+	path = packages/emacs-undo-fu-session
+	url = https://codeberg.org/ideasman42/emacs-undo-fu-session.git
+[submodule "packages/vundo"]
+	path = packages/vundo
+	url = https://github.com/casouri/vundo.git
+[submodule "packages/liberime"]
+	path = packages/liberime
+	url = https://github.com/emacs-rime/liberime.git
+[submodule "packages/rimel"]
+	path = packages/rimel
+	url = https://github.com/emacs-rime/rimel.git
+[submodule "packages/liberime-regexp"]
+	path = packages/liberime-regexp
+	url = https://github.com/roife/liberime-regexp.git
+[submodule "packages/avy"]
+	path = packages/avy
+	url = https://github.com/abo-abo/avy.git
+[submodule "packages/diredfl"]
+	path = packages/diredfl
+	url = https://github.com/purcell/diredfl.git
+[submodule "packages/unicad"]
+	path = packages/unicad
+	url = https://github.com/ukari/unicad.git
+[submodule "packages/browse-at-remote"]
+	path = packages/browse-at-remote
+	url = https://github.com/rmuslimov/browse-at-remote.git
+[submodule "packages/bufferlo"]
+	path = packages/bufferlo
+	url = https://github.com/florommel/bufferlo.git
+[submodule "packages/cape"]
+	path = packages/cape
+	url = https://github.com/minad/cape.git
+[submodule "packages/compat"]
+	path = packages/compat
+	url = https://github.com/emacs-compat/compat.git
+[submodule "packages/consult"]
+	path = packages/consult
+	url = https://github.com/minad/consult.git
+[submodule "packages/consult-dir"]
+	path = packages/consult-dir
+	url = https://github.com/karthink/consult-dir.git
+[submodule "packages/consult-notes"]
+	path = packages/consult-notes
+	url = https://codeberg.org/mclear-tools/consult-notes.git
+[submodule "packages/dash.el"]
+	path = packages/dash.el
+	url = https://github.com/magnars/dash.el.git
+[submodule "packages/denote"]
+	path = packages/denote
+	url = https://github.com/protesilaos/denote.git
+[submodule "packages/denote-journal"]
+	path = packages/denote-journal
+	url = https://github.com/protesilaos/denote-journal.git
+[submodule "packages/denote-merge"]
+	path = packages/denote-merge
+	url = https://github.com/protesilaos/denote-merge.git
+[submodule "packages/denote-org"]
+	path = packages/denote-org
+	url = https://github.com/protesilaos/denote-org.git
+[submodule "packages/elisp-demos"]
+	path = packages/elisp-demos
+	url = https://github.com/xuchunyang/elisp-demos.git
+[submodule "packages/elisp-refs"]
+	path = packages/elisp-refs
+	url = https://github.com/Wilfred/elisp-refs.git
+[submodule "packages/emacs-smart-input-source"]
+	path = packages/emacs-smart-input-source
+	url = https://github.com/laishulu/emacs-smart-input-source.git
+[submodule "packages/embark"]
+	path = packages/embark
+	url = https://github.com/oantolin/embark.git
+[submodule "packages/expreg"]
+	path = packages/expreg
+	url = https://github.com/casouri/expreg.git
+[submodule "packages/f.el"]
+	path = packages/f.el
+	url = https://github.com/rejeep/f.el.git
+[submodule "packages/file-info"]
+	path = packages/file-info
+	url = https://github.com/emacsmirror/file-info.git
+[submodule "packages/form-feed"]
+	path = packages/form-feed
+	url = https://github.com/emacsmirror/form-feed.git
+[submodule "packages/goggles"]
+	path = packages/goggles
+	url = https://github.com/minad/goggles.git
+[submodule "packages/helpful"]
+	path = packages/helpful
+	url = https://github.com/Wilfred/helpful.git
+[submodule "packages/hungry-delete"]
+	path = packages/hungry-delete
+	url = https://github.com/nflath/hungry-delete.git
+[submodule "packages/hydra"]
+	path = packages/hydra
+	url = https://github.com/abo-abo/hydra.git
+[submodule "packages/marginalia"]
+	path = packages/marginalia
+	url = https://github.com/minad/marginalia.git
+[submodule "packages/meow"]
+	path = packages/meow
+	url = https://github.com/meow-edit/meow.git
+[submodule "packages/nerd-icons-completion"]
+	path = packages/nerd-icons-completion
+	url = https://github.com/rainstormstudio/nerd-icons-completion.git
+[submodule "packages/nerd-icons-dired"]
+	path = packages/nerd-icons-dired
+	url = https://github.com/rainstormstudio/nerd-icons-dired.git
+[submodule "packages/nerd-icons-ibuffer"]
+	path = packages/nerd-icons-ibuffer
+	url = https://github.com/seagle0128/nerd-icons-ibuffer.git
+[submodule "packages/nerd-icons.el"]
+	path = packages/nerd-icons.el
+	url = https://github.com/rainstormstudio/nerd-icons.el.git
+[submodule "packages/on.el"]
+	path = packages/on.el
+	url = https://github.com/axgfn/on.el.git
+[submodule "packages/orderless"]
+	path = packages/orderless
+	url = https://github.com/oantolin/orderless.git
+[submodule "packages/org-edna"]
+	path = packages/org-edna
+	url = https://github.com/emacs-straight/org-edna.git
+[submodule "packages/org-gtd.el"]
+	path = packages/org-gtd.el
+	url = https://github.com/Trevoke/org-gtd.el.git
+[submodule "packages/posframe"]
+	path = packages/posframe
+	url = https://github.com/tumashu/posframe.git
+[submodule "packages/rainbow-mode"]
+	path = packages/rainbow-mode
+	url = https://github.com/emacsmirror/rainbow-mode.git
+[submodule "packages/s.el"]
+	path = packages/s.el
+	url = https://github.com/magnars/s.el.git
+[submodule "packages/gcmh"]
+	path = packages/gcmh
+	url = https://gitlab.com/koral/gcmh.git
+[submodule "packages/rg.el"]
+	path = packages/rg.el
+	url = https://github.com/dajva/rg.el.git
+[submodule "packages/Emacs-wgrep"]
+	path = packages/Emacs-wgrep
+	url = https://github.com/mhayashi1120/Emacs-wgrep.git
+[submodule "packages/citar"]
+	path = packages/citar
+	url = https://github.com/emacs-citar/citar.git
+[submodule "packages/parsebib"]
+	path = packages/parsebib
+	url = https://github.com/joostkremers/parsebib.git
+[submodule "packages/emacs-reader"]
+	path = packages/emacs-reader
+	url = https://codeberg.org/MonadicSheep/emacs-reader.git
+[submodule "packages/pdf-tools"]
+	path = packages/pdf-tools
+	url = https://github.com/vedang/pdf-tools.git
+[submodule "packages/tablist"]
+	path = packages/tablist
+	url = https://github.com/emacsorphanage/tablist.git
+[submodule "packages/saveplace-pdf-view"]
+	path = packages/saveplace-pdf-view
+	url = https://github.com/nicolaisingh/saveplace-pdf-view.git
+[submodule "packages/benchmark-init-el"]
+	path = packages/benchmark-init-el
+	url = https://github.com/dholm/benchmark-init-el.git
+[submodule "packages/gptel"]
+	path = packages/gptel
+	url = https://github.com/karthink/gptel.git
+[submodule "packages/gptel-commit"]
+	path = packages/gptel-commit
+	url = https://github.com/lakkiy/gptel-commit.git
+[submodule "packages/gptel-quick"]
+	path = packages/gptel-quick
+	url = https://github.com/karthink/gptel-quick.git
+[submodule "packages/gptel-magit"]
+	path = packages/gptel-magit
+	url = https://github.com/ragnard/gptel-magit.git
+[submodule "packages/magit"]
+	path = packages/magit
+	url = https://github.com/magit/magit.git
+[submodule "packages/cond-let"]
+	path = packages/cond-let
+	url = https://github.com/tarsius/cond-let.git
+[submodule "packages/llama"]
+	path = packages/llama
+	url = https://github.com/tarsius/llama.git
+[submodule "packages/with-editor"]
+	path = packages/with-editor
+	url = https://github.com/magit/with-editor.git
+[submodule "packages/zotra"]
+	path = packages/zotra
+	url = https://github.com/mpedramfar/zotra.git
+[submodule "packages/biblio.el"]
+	path = packages/biblio.el
+	url = https://github.com/cpitclaudel/biblio.el.git
+[submodule "packages/scihub"]
+	path = packages/scihub
+	url = https://github.com/emacsmirror/scihub.git
+[submodule "packages/popper"]
+	path = packages/popper
+	url = https://github.com/karthink/popper.git

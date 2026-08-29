@@ -1,0 +1,18 @@
+#+TITLE: My Emacs Configuration
+
+* Emacs 使用
+
+#+begin_src shell
+  git clone --depth=1 https://github.com/Jousimies/.emacs.d.git
+
+  python update_emacs.py
+#+end_src
+
+
+* Emacs 启动策略
+
+1. 启动期 early-init + init
+2. 包管理完成后 after-init-hook
+3. 空闲增量 idle-timer 链式
+4. 真正交互时 first-buffer / first-file / first-input
+5. 命令触发 :commands / :bind / :hook
