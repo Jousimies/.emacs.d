@@ -2,12 +2,14 @@
 
 * Emacs 使用
 
+首次使用，安装。
 #+begin_src shell
   git clone --depth=1 https://github.com/Jousimies/.emacs.d.git
 
+  git submodule update --init --recursive
+
   python update_emacs.py
 #+end_src
-
 
 * Emacs 启动策略
 
