@@ -10,6 +10,7 @@
     biblio.el
     cape
     citar
+    cdlatex
     cond-let
     compat
     consult

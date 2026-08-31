@@ -214,3 +214,6 @@
 [submodule "packages/auctex-latexmk"]
 	path = packages/auctex-latexmk
 	url = https://github.com/tom-tan/auctex-latexmk.git
+[submodule "packages/cdlatex"]
+	path = packages/cdlatex
+	url = https://github.com/cdominik/cdlatex.git
