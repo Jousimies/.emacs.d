@@ -106,8 +106,8 @@
           (delete-window window)))))
   (advice-add #'keyboard-quit :before #'+popper-close-window-hack))
 
-(use-package popper-echo
-  :hook (popper-mode . popper-echo-mode))
+;; (use-package popper-echo
+;;   :hook (popper-mode . popper-echo-mode))
 
 (with-eval-after-load 'ibuffer
   (define-key ibuffer-mode-map (kbd "RET") #'+ibuffer-visit-buffer-in-popper))

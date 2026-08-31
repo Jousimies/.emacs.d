@@ -208,3 +208,9 @@
 [submodule "packages/popper"]
 	path = packages/popper
 	url = https://github.com/karthink/popper.git
+[submodule "packages/auctex"]
+	path = packages/auctex
+	url = https://github.com/emacsmirror/auctex.git
+[submodule "packages/auctex-latexmk"]
+	path = packages/auctex-latexmk
+	url = https://github.com/tom-tan/auctex-latexmk.git

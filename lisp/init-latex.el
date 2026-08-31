@@ -1,18 +1,24 @@
 ;; -*- lexical-binding: t; -*-
 
+;; 在 Win 上使用 Mysy2 UCRT64 进行编译。
+;; pacman -Syu
+;; pacman -S base-devel git make texinfo
+;; 如果报 pdftex: command not found 的错误，将 Miktex 的路径加入到 PATH 中
+;; export PATH="/c/Program Files/MiKTeX 2.9/miktex/bin/x64:$PATH"，需要注意替换 Miktex 的版本
+;; 如果报 dinbrief.el: Error: End of file during parsing 的错误，需要通过 dos2unix 转换 CRLF → LF
+;; 如果无法编译，提示找不到 Emacs 路径，设置 PATH 变量即可
+;; export PATH="/c/Program Files/Emacs/emacs-31.1/bin:$PATH"
+;; 使用 make 进行编译即可
+;; (load ~/path/to/auctex-autoloads.el nil t t) 这里的 path 需要完整的路径，不能省略
+
 (use-package auctex
-  :elpaca (auctex :repo "https://git.savannah.gnu.org/git/auctex.git" :branch "main"
-		  :pre-build (("make" "elpa"))
-		  :build (:not elpaca--compile-info) ;; Make will take care of this step
-		  :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style")
-		  :version (lambda (_) (require 'auctex) AUCTeX-version))
-  :mode ("\\.tex\\'" . TeX-latex-mode)
+  :mode ("\\.tex\\'" . LaTeX-mode)
   :hook (LaTeX-mode . turn-on-reftex)
-  :bind (:map LaTeX-mode-map
-              ("C-c h" . TeX-doc))
+  ;; :bind (:map LaTeX-mode-map
+  ;;             ("C-c h" . TeX-doc))
+  :init
+  (load (expand-file-name "packages/auctex/auctex-autoloads.el" user-emacs-directory) nil t t)
   :config
-  (load "latex.el" nil t t)
-  (load "preview-latex.el" nil t t)
   (setq-default preview-scale 1.4
                 preview-scale-function
                 (lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))
@@ -27,11 +33,16 @@
   (setq TeX-source-correlate-method 'synctex)
   (setq TeX-source-correlate-start-server nil)
   (setq-default TeX-master t)
+  (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer))
+
+(with-eval-after-load 'tex
   (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))
   (add-to-list 'TeX-view-program-selection '(output-pdf "PDF Tools"))
-  (add-to-list 'TeX-view-program-list '("PDF Tools" TeX-pdf-tools-sync-view))
-  (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
-  )
+  (add-to-list 'TeX-view-program-list '("PDF Tools" TeX-pdf-tools-sync-view)))
+
+(with-eval-after-load 'latex
+  (define-key LaTeX-mode-map (kbd "C-c h") #'TeX-doc))
+(add-hook 'TeX-mode-hook #'turn-on-font-lock)
 
 (use-package cdlatex
   :hook (org-mode . turn-on-org-cdlatex))
@@ -49,7 +60,7 @@
 	  reftex-toc-split-windows-horizontally t
 	  reftex-toc-split-windows-fraction 0.25))
 
-(add-hook 'LaTeX-mode-hook #'tuan-on-reftex)
+;; (add-hook 'LaTeX-mode-hook #'tuan-on-reftex)
 (keymap-set global-map "<remap> <reftex-citation>" #'citar-insert-citation)
 (setf (alist-get "\\*RefTex" display-buffer-alist nil t #'equal)
         '((display-buffer-in-side-window)
@@ -57,7 +68,6 @@
           (side . bottom) (slot . -9)))
 
 (use-package ox-latex
-  :ensure nil
   :defer t
   :config
   (setq org-latex-src-block-backend 'minted)

@@ -15,8 +15,7 @@
 	  bibtex-autokey-titleword-length 5))
 
 
-(with-eval-after-load 'oc
-  (setq org-cite-global-bibliography my/reference-lists))
+(setq org-cite-global-bibliography my/reference-lists)
 
 (with-eval-after-load 'org
   (with-eval-after-load 'oc

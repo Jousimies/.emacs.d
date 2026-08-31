@@ -92,6 +92,7 @@
   [["New Note"
 	("n" "Find" consult-notes :transient nil)
 	("N" "Denote" denote :transient nil)
+	("j" "Journal" denote-journal-new-or-existing-entry :transient nil)
 	]
    ["Denote Meta"
 	("r" "Rename Note" denote-rename-file-using-front-matter :transient nil)

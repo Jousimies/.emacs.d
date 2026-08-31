@@ -147,6 +147,7 @@
 (use-package liberime
   :if sys/win32p
   :commands liberime-load
+  :hook (on-first-buffer . liberime-load)
   :custom
   (liberime-verbose nil)
   (liberime-module-file "~/.emacs.d/module/liberime/liberime-core.dll")

@@ -11,9 +11,7 @@
 (my/add-used-packages-to-load-path)
 
 (when init-file-debug
-  (require 'benchmark-init-loaddefs)
-  (benchmark-init/activate)
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+  (require 'init-benchmark))
 
 (require 'init-idle)
 (require 'init-vars)
@@ -34,7 +32,7 @@
 (require 'init-org)
 (require 'init-note)
 (require 'init-bib)
-;; (require 'init-latex)
+(require 'init-latex)
 (require 'init-reader)
 
 (require 'init-gtd)

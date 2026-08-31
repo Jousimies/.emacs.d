@@ -2,6 +2,8 @@
 (defvar my/used-packages
   '(
     avy
+    auctex
+    auctex-latexmk
     benchmark-init-el
     browse-at-remote
     bufferlo
