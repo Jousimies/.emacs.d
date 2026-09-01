@@ -1,5 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
+;; Idle load org modules
 (my/idle-loader-add '(0.7 . (require 'org nil t))
 		    '(require 'org-id nil t)
 		    '(require 'org-agenda nil t)

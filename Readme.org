@@ -11,6 +11,24 @@
   python update_emacs.py
 #+end_src
 
+** 需特殊设置的 Packages
+
+*** Benchmark-init
+#+begin_src shell
+  cd ~/.emacs.d/packages/benchmark-init-el/
+  make
+#+end_src
+
+使用 --debug-init 参数启用 benchmark.
+
+*** Auctex
+#+begin_src shell
+  cd ~/.emacs.d/packages/auctex/
+  make
+#+end_src
+
+make 后会生成 auctex-autoloads.el, 在 Auctex 14 版本中加载此文件即可。
+
 * Emacs 启动策略
 
 1. 启动期 early-init + init

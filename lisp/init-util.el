@@ -22,6 +22,7 @@
     denote-merge
     denote-org
     diredfl
+    dired-sidebar
     elisp-demos
     elisp-refs
     emacs-reader
@@ -54,6 +55,7 @@
     orderless
     org-edna
     org-gtd.el
+    olivetti
     parsebib
     pdf-tools
     posframe

@@ -122,7 +122,3 @@
        (when (boundp 'ns-system-appearance)
 	 (my/apply-theme ns-system-appearance))))
 
-;; Profiling since here when in debug-mode
-(when init-file-debug
-  (profiler-start 'cpu)
-  (add-hook 'window-setup-hook #'profiler-stop 0))

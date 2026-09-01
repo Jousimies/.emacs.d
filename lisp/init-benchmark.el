@@ -1,5 +1,9 @@
 ;; -*- lexical-binding: t; -*-
 
+;; Profiling since here when in debug-mode
+(profiler-start 'cpu)
+(add-hook 'window-setup-hook #'profiler-stop 0)
+
 ;; https://github.com/purcell/emacs.d/blob/master/lisp/init-benchmarking.el
 (defun sanityinc/time-subtract-millis (b a)
   (* 1000.0 (float-time (time-subtract b a))))
@@ -65,9 +69,11 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
   (message "init completed in %.2fms"
            (sanityinc/time-subtract-millis after-init-time before-init-time)))
 
-;; (require 'benchmark-init-loaddefs)
-;; (benchmark-init/activate)
-;; (add-hook 'after-init-hook 'benchmark-init/deactivate)
+(unless (featurep 'benchmark-init-loaddefs)
+  (progn
+    (require 'benchmark-init-loaddefs)
+    (benchmark-init/activate)
+    (add-hook 'after-init-hook 'benchmark-init/deactivate)))
 
 
 (provide 'init-benchmark)

@@ -72,4 +72,8 @@
 (use-package file-info
   :bind ("C-c c i" . file-info-show))
 
+(use-package dired-sidebar
+  :idle t
+  :bind ("C-x C-n" . dired-sidebar-toggle-sidebar))
+
 (provide 'init-dired)

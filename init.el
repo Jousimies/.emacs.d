@@ -10,6 +10,7 @@
 (require 'init-util)
 (my/add-used-packages-to-load-path)
 
+;; Only load with --debug-init
 (when init-file-debug
   (require 'init-benchmark))
 
@@ -18,29 +19,33 @@
 
 (require 'init-font)
 (require 'init-modeline)
-
-(my/idle-loader-add '(require 'init-ui))
+(require 'init-ui)
 
 ;; Require configurations
 (require 'init-builtin)
 (require 'init-modal)
 (require 'init-edit)
-(my/idle-loader-add '(require 'init-dired))
+(require 'init-dired)
 (require 'init-completion)
 (require 'init-buffer)
 
+;; PKM with Org-mode
 (require 'init-org)
 (require 'init-note)
 (require 'init-bib)
 (require 'init-latex)
 (require 'init-reader)
-
 (require 'init-gtd)
 
+;; Programming
 (require 'init-prog)
-(my/idle-loader-add '(require 'init-git))
+(require 'init-git)
 (require 'init-ai)
+
+;; Misc
 (require 'init-misc)
+
+;; Keybindings
 (require 'init-keys)
 
 ;; Custom
@@ -52,4 +57,3 @@
             (message "window-setup: %.3fs, after-init: %.3fs"
                      (float-time (time-subtract nil before-init-time))
                      (float-time (time-subtract after-init-time before-init-time)))))
-(put 'downcase-region 'disabled nil)

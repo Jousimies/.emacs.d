@@ -78,6 +78,7 @@
 
 (with-eval-after-load 'biblio
   (add-to-list 'viper-emacs-state-mode-list 'biblio-selection-mode))
+
 ;; (use-package meow
 ;;   :commands meow-global-mode
 ;;   :config

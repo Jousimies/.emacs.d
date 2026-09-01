@@ -217,3 +217,12 @@
 [submodule "packages/cdlatex"]
 	path = packages/cdlatex
 	url = https://github.com/cdominik/cdlatex.git
+[submodule "packages/olivetti"]
+	path = packages/olivetti
+	url = https://github.com/rnkn/olivetti.git
+[submodule "packages/dired-sidebar"]
+	path = packages/dired-sidebar
+	url = https://github.com/jojojames/dired-sidebar.git
+[submodule "packages/dired-hacks"]
+	path = packages/dired-hacks
+	url = https://github.com/Fuco1/dired-hacks.git

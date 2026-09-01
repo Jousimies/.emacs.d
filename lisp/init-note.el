@@ -12,6 +12,7 @@
   (denote-rename-buffer-backlinks-indicator ""))
 
 (use-package denote-org
+  :idle t
   :after denote org
   :commands
   (denote-org-link-to-heading
@@ -29,6 +30,7 @@
    denote-org-dblock-insert-files-as-headings))
 
 (use-package denote-journal
+  :idle t
   :bind ("C-c n j" . denote-journal-new-or-existing-entry)
   :hook (calendar-mode . denote-journal-calendar-mode)
   :custom
@@ -75,8 +77,9 @@
   :custom
   (consult-notes-denote-files-function (lambda () (denote-directory-files nil t t))))
 
-;; (use-package olivetti
-;;   :bind ("<f7>" . olivetti-mode)
-;;   :init (setq olivetti-body-width 0.62))
+(use-package olivetti
+  :idle t
+  :bind ("<f7>" . olivetti-mode)
+  :init (setq olivetti-body-width 0.62))
 
 (provide 'init-note)
