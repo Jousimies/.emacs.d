@@ -26,7 +26,7 @@
       (setq org-cite-follow-processor 'citar))))
 
 (use-package citar
-  :idle t
+  :commands citar-create-note
   :after org
   :custom
   (citar-templates '((main . "${=type=:12}|${date year issued:4}| ${title:80}")

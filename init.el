@@ -8,7 +8,8 @@
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 (require 'init-util)
-(my/add-used-packages-to-load-path)
+;; (my/add-used-packages-to-load-path)
+(require 'load-path-cache)
 
 ;; Only load with --debug-init
 (when init-file-debug

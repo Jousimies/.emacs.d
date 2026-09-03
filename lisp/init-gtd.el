@@ -15,7 +15,7 @@
   :commands org-gtd-engage org-gtd-process-inbox
   :init
   (setq org-gtd-update-ack "4.0.0")
-  (setq org-gtd-directory my/org-gtd-directory)
+  (setq org-gtd-directory "~/OneDrive/Galaxy/gtd/")
   :bind ("<f10>" . org-gtd-capture)
   :custom
   (org-agenda-files (list org-gtd-directory))
