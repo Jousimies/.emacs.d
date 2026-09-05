@@ -145,21 +145,19 @@
 ;; IME
 ;; 如果 Emacs 启动报 liberime-load 相关错误，将 .emacs.d/module/liberime 路径下的 dll 文件复制到 Emacs 的安装目录
 (use-package liberime
-  :if sys/win32p
+  :if (or sys/win32p sys/macp)
   :commands liberime-load
   :hook (on-first-buffer . liberime-load)
   :custom
   (liberime-verbose nil)
-  (liberime-module-file "~/.emacs.d/module/liberime/liberime-core.dll")
-  (liberime-user-data-dir "~/AppData/Roaming/Rime"))
-
-(use-package liberime
-  :if sys/macp
-  :hook (on-first-buffer . liberime-load)
-  :custom
-  (liberime-verbose nil)
-  (liberime-module-file (expand-file-name "module/liberime-core.dylib" user-emacs-directory))
-  (liberime-user-data-dir "~/Library/Rime/"))
+  (liberime-module-file
+   (cond
+    (sys/win32p (expand-file-name "module/liberime/liberime-core.dll" user-emacs-directory))
+    (sys/macp   (expand-file-name "module/liberime-core.dylib" user-emacs-directory))))
+  (liberime-user-data-dir
+   (cond
+    (sys/win32p "~/AppData/Roaming/Rime")
+    (sys/macp   "~/Library/Rime/"))))
 
 (use-package rimel
   :commands rimel-activate
@@ -196,7 +194,8 @@
 	 (viper-insert-state . liberime-regexp-avy-mode))
   :bind ([remap goto-char] . liberime-regexp-avy-goto-char-timer)
   :custom
-  (liberime-regexp-auto-build nil))
+  (liberime-regexp-auto-build nil)
+  (liberime-regexp-segment-mode))
 
 (use-package sis
   :defer t
