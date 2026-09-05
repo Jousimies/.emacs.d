@@ -28,8 +28,8 @@
   :hook ((magit-mode . gptel-magit-install))
   :config
   (require 'gptel)
-  (setq gptel-magit-body-length 72))
-        ;; gptel-magit-commit-prompt (cdr (assoc "Conventional Commits" gptel-magit-commit-styles-alist))))
+  (setq gptel-magit-body-length 72
+	gptel-magit-commit-prompt (cdr (assoc "Conventional Commits" gptel-magit-commit-styles-alist))))
 
 
 
