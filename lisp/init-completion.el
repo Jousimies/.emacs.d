@@ -1,26 +1,24 @@
 ;; -*- lexical-binding: t; -*-
 
-(setopt enable-recursive-minibuffers t)
-(setopt read-minibuffer-restore-windows nil
-  	minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
-(setopt minibuffer-follows-selected-frame nil)
-
-(setopt minibuffer-completion-auto-choose t
-	minibuffer-completion-confirm 'confirm)
-(setopt tab-always-indent 'complete
-	tab-first-completion 'word-or-paren-or-punct)
-
-(setopt completion-cycle-threshold 2
-	completions-detailed t
-	completions-format 'one-column
-	completion-auto-select t
-	completion-ignore-case t
-	completion-show-inline-help nil
-	completions-max-height 50
-	completion-show-help nil
-	completion-auto-wrap nil
-	completions-header-format (propertize "%s candidates:\n" 'face 'font-lock-comment-face)
-	completions-highlight-face 'completions-highlight)
+(setq enable-recursive-minibuffers t
+      read-minibuffer-restore-windows nil
+      minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
+      minibuffer-follows-selected-frame nil
+      minibuffer-completion-auto-choose t
+      minibuffer-completion-confirm 'confirm
+      tab-always-indent 'complete
+      tab-first-completion 'word-or-paren-or-punct
+      completion-cycle-threshold 2
+      completions-detailed t
+      completions-format 'one-column
+      completion-auto-select t
+      completion-ignore-case t
+      completion-show-inline-help nil
+      completions-max-height 50
+      completion-show-help nil
+      completion-auto-wrap nil
+      completions-header-format (propertize "%s candidates:\n" 'face 'font-lock-comment-face)
+      completions-highlight-face 'completions-highlight)
 
 (keymap-set minibuffer-mode-map "C-r" #'minibuffer-complete-history)
 (add-hook 'minibuffer-mode-hook #'minibuffer-electric-default-mode)

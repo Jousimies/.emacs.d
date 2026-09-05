@@ -8,46 +8,47 @@
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 (require 'init-util)
-;; (my/add-used-packages-to-load-path)
-(require 'load-path-cache)
 
 ;; Only load with --debug-init
 (when init-file-debug
   (require 'init-benchmark))
 
-(require 'init-idle)
-(require 'init-vars)
+(if (and (file-exists-p (expand-file-name "lisp/load-path-cache.el" user-emacs-directory))
+	 (file-exists-p (expand-file-name "lisp/package-autoloads.el" user-emacs-directory)))
+    (progn
+      (require 'load-path-cache)
+      (require 'package-autoloads)
 
-(require 'init-font)
-(require 'init-modeline)
-(require 'init-ui)
+      (require 'init-idle)
+      (require 'init-vars)
 
-;; Require configurations
-(require 'init-builtin)
-(require 'init-modal)
-(require 'init-edit)
-(require 'init-dired)
-(require 'init-completion)
-(require 'init-buffer)
+      (require 'init-font)
+      (require 'init-modeline)
 
-;; PKM with Org-mode
-(require 'init-org)
-(require 'init-note)
-(require 'init-bib)
-(require 'init-latex)
-(require 'init-reader)
-(require 'init-gtd)
+      (require 'init-builtin)
+      (require 'init-modal)
+      (require 'init-completion)
+      (require 'init-edit)
+      (require 'init-dired)
+      (require 'init-buffer)
+      (require 'init-ui)
 
-;; Programming
-(require 'init-prog)
-(require 'init-git)
-(require 'init-ai)
+      (require 'init-org)
+      (require 'init-note)
+      (require 'init-bib)
+      (require 'init-latex)
+      (require 'init-gtd)
+      (require 'init-reader)
+      (require 'init-blog)
 
-;; Misc
-(require 'init-misc)
+      (require 'init-prog)
+      (require 'init-git)
+      (require 'init-ai)
 
-;; Keybindings
-(require 'init-keys)
+      (require 'init-misc)
+      (require 'init-keys))
+
+  (message "RUN PYTHON UPDATE_EMACS.PY IN TERMINAL!!!"))
 
 ;; Custom
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))

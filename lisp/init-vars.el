@@ -35,5 +35,21 @@
   (defconst my/org-gtd-directory (expand-file-name "gtd" my-galaxy))
   (defconst my/inbox-file (expand-file-name "inbox.org" my/org-gtd-directory)))
 
+(defconst website-directory "~/Repositories/blog-source/")
+
+;; Values used by progressively-loaded note/bibliography packages must be set
+;; before their files are required.  Otherwise autoloaded commands such as
+;; `citar-open' may see Denote/Citar defaults.
+(defconst my/denote-directory (expand-file-name "denote" my-galaxy))
+(defconst my/reference-lists `(,(expand-file-name "bibtexs/My Library.bib" my-galaxy)
+                               ,(expand-file-name "bibtexs/Books.bib" my-galaxy)
+			       ,(expand-file-name "bibtexs/Seismic.bib" my-galaxy)))
+
+(setq denote-directory my/denote-directory
+      denote-journal-directory (expand-file-name "journal" my/denote-directory)
+      org-cite-global-bibliography my/reference-lists
+      citar-bibliography my/reference-lists
+      citar-library-paths `(,(expand-file-name "PDF/" my-galaxy))
+      citar-notes-paths `(,(expand-file-name "References" my/denote-directory)))
 
 (provide 'init-vars)

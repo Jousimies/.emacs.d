@@ -1,10 +1,10 @@
 ;; -*- lexical-binding: t; -*-
 
 (when (and sys/macp (executable-find "gls"))
-  (setopt dired-use-ls-dired nil)
-  (setopt insert-directory-program "gls")
-  (setopt dired-listing-switches
-	  "-l --almost-all --human-readable --group-directories-first --no-group"))
+  (setq dired-use-ls-dired nil
+        insert-directory-program "gls"
+        dired-listing-switches
+	"-l --almost-all --human-readable --group-directories-first --no-group"))
 
 (with-eval-after-load 'dired
   (setq dired-dwim-target t
@@ -44,8 +44,8 @@
 
 ;; dired-omit-mode
 (add-hook 'dired-mode-hook #'dired-omit-mode)
-(setopt dired-omit-verbose nil
-	dired-omit-files "^\\.[^.].*")
+(setq dired-omit-verbose nil
+      dired-omit-files "^\\.[^.].*")
 
 (defun my/org-attach-visit-headline-from-dired ()
   "Go to the headline corresponding to this org-attach directory."

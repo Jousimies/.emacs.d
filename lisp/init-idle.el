@@ -138,17 +138,49 @@ ARGS can be:
 
 (add-hook 'window-setup-hook #'my/idle-loader-start)
 
-(require 'on)
+;; Lightweight replacement for on.el.  Loading the external package showed up
+;; prominently in `sanityinc/require-times'; these hooks are all we use.
+(defvar on-first-input-hook nil
+  "Transient hooks run before the first user input.")
+(defvar on-first-file-hook nil
+  "Transient hooks run before the first interactively opened file.")
+(defvar on-first-buffer-hook nil
+  "Transient hooks run before the first interactively opened buffer.")
+(defvar on-init-ui-hook nil
+  "List of hooks to run when the UI has been initialized.")
 
-(use-package gcmh
-  :hook (on-first-buffer . gcmh-mode)
-  :config
-  (setq gc-cons-percentage 0.1)
-  (setq gcmh-idle-delay 'auto)
-  (setq gcmh-auto-idle-delay-factor 10)
-  (setq gcmh-high-cons-threshold #x1000000))
+(defun on-run-first-input-hooks-h (&rest _)
+  (run-hooks 'on-first-input-hook)
+  (remove-hook 'pre-command-hook #'on-run-first-input-hooks-h))
 
-(advice-add 'after-focus-change-function :after 'garbage-collect)
+(defun on-run-first-file-hooks-h (&rest _)
+  (run-hooks 'on-first-file-hook)
+  (advice-remove 'after-find-file #'on-run-first-file-hooks-h)
+  (remove-hook 'dired-initial-position-hook #'on-run-first-file-hooks-h))
+
+(defun on-run-first-buffer-hooks-h (&rest _)
+  (run-hooks 'on-first-buffer-hook)
+  (advice-remove 'after-find-file #'on-run-first-buffer-hooks-h)
+  (remove-hook 'window-buffer-change-functions #'on-run-first-buffer-hooks-h)
+  (remove-hook 'server-visit-hook #'on-run-first-buffer-hooks-h))
+
+(defun on-run-init-ui-hooks-h (&rest _)
+  (run-hooks 'on-init-ui-hook)
+  (remove-hook 'server-after-make-frame-hook #'on-run-init-ui-hooks-h)
+  (remove-hook 'after-init-hook #'on-run-init-ui-hooks-h))
+
+(add-hook (if (daemonp) 'server-after-make-frame-hook 'after-init-hook)
+          #'on-run-init-ui-hooks-h)
+
+(defun on-setup-hooks-h ()
+  (add-hook 'pre-command-hook #'on-run-first-input-hooks-h)
+  (advice-add 'after-find-file :before #'on-run-first-file-hooks-h)
+  (add-hook 'dired-initial-position-hook #'on-run-first-file-hooks-h)
+  (advice-add 'after-find-file :before #'on-run-first-buffer-hooks-h)
+  (add-hook 'window-buffer-change-functions #'on-run-first-buffer-hooks-h)
+  (add-hook 'server-visit-hook #'on-run-first-buffer-hooks-h))
+
+(add-hook 'window-setup-hook #'on-setup-hooks-h -100)
 
 (when init-file-debug
   (setq my/idle-loader-log t)
@@ -157,12 +189,5 @@ ARGS can be:
   (setq use-package-compute-statistics t)
   (setq use-package-minimum-reported-time 0))
 
-;; Server
-(use-package server
-  :idle 5
-  :config
-  (setq server-client-instructions nil)
-  (unless (server-running-p)
-    (server-start)))
 
 (provide 'init-idle)

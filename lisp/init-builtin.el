@@ -74,6 +74,11 @@
 		    '(global-word-wrap-whitespace-mode)
 		    '(which-function-mode))
 
+;; Server
+(add-hook 'on-first-file-hook #'server-start)
+(with-eval-after-load 'server
+  (setq server-client-instructions nil))
+
 ;; transient
 (with-eval-after-load 'transient
   ;; (setq transient-show-popup 1)

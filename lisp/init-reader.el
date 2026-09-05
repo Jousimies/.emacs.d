@@ -12,6 +12,10 @@
   :commands pdf-tools-install
   :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
   :magic ("%PDF" . pdf-view-mode)
+  :init
+  (let ((epdfinfo (expand-file-name "packages/pdf-tools/server/epdfinfo" user-emacs-directory)))
+    (when (file-executable-p epdfinfo)
+      (setq pdf-info-epdfinfo-program epdfinfo)))
   :config
   (pdf-tools-install t nil t nil))
 

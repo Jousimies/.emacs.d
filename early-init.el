@@ -8,7 +8,7 @@
 ;; Increase process read size before any package can start subprocesses.
 (setq read-process-output-max (* 4 1024 1024))
 
-(setq load-prefer-newer t)
+(setq load-prefer-newer noninteractive)
 
 ;; Emacs startup performance
 ;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
@@ -47,7 +47,16 @@
     (setq exec-path (split-string path-from-shell path-separator))))
 
 (when (eq system-type 'darwin)
-  (set-exec-path-from-shell-PATH))
+  ;; Calling "$SHELL --login" during early-init is surprisingly expensive on
+  ;; macOS.  Add the usual Homebrew paths immediately, then refresh from the
+  ;; login shell after the first frame is usable.
+  (dolist (dir '("/opt/homebrew/bin" "/opt/homebrew/sbin" "/usr/local/bin"))
+    (when (file-directory-p dir)
+      (add-to-list 'exec-path dir)
+      (setenv "PATH" (concat dir path-separator (getenv "PATH")))))
+  (add-hook 'window-setup-hook
+            (lambda ()
+              (run-with-idle-timer 3 nil #'set-exec-path-from-shell-PATH))))
 
 (put 'if-let 'byte-obsolete-info nil)
 (put 'when-let 'byte-obsolete-info nil)
@@ -95,7 +104,7 @@
 
 (blink-cursor-mode -1)
 
-;; (setq-default mode-line-format nil)
+(setq-default mode-line-invisible-mode t)
 
 (defun my/apply-theme (appearance)
   "Load theme, taking current system APPEARANCE into consideration."
@@ -118,4 +127,3 @@
        (add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
        (when (boundp 'ns-system-appearance)
 	 (my/apply-theme ns-system-appearance))))
-

@@ -2,12 +2,11 @@
 
 (use-package denote
   :idle t
-  :commands denote
   :custom
   (denote-prompts '(title keywords signature))
   (denote-rename-confirmations nil)
   (denote-org-store-link-to-heading nil)
-  (denote-directory (expand-file-name "denote" my-galaxy))
+  (denote-directory my/denote-directory)
   (denote-rename-buffer-format "%b %t")
   (denote-rename-buffer-backlinks-indicator ""))
 
@@ -35,7 +34,7 @@
   :hook (calendar-mode . denote-journal-calendar-mode)
   :custom
   (denote-journal-directory
-   (expand-file-name "journal" denote-directory))
+   (expand-file-name "journal" my/denote-directory))
   (denote-journal-keyword "journal"))
 
 ;; (use-package denote-explore

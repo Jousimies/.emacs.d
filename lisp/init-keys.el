@@ -45,63 +45,77 @@
   :doc "Keymap for windows"
   "u" #'winner-undo
   "r" #'winner-redo
+  "h" #'windmove-left
+  "j" #'windmove-down
+  "k" #'windmove-up
+  "l" #'windmove-right
   "d" #'dired-sidebar-toggle-sidebar
   )
 (keymap-set global-map "M-o" my/window-prefix-map)
 
 
-;; Keybindings with transient
-(unless (featurep 'transient)
-  (require 'transient))
+;; Keybindings with transient.  Loading transient costs noticeable startup time,
+;; so define these menus on first use.
+(defun my/ensure-key-transients ()
+  "Define transient menus used by `my/agenda-menu' and `my/note-menu'."
+  (unless (fboundp 'my/agenda-menu--transient)
+    (require 'transient)
+    (eval
+     '(transient-define-prefix my/agenda-menu--transient ()
+        "GTD"
+        [["Agenda"
+          ("a" "Agenda" org-agenda :transient nil)]
+         ["Process & Engage"
+          ("x" "Process Inbox" org-gtd-process-inbox :transient nil)
+          ;; ("@" "By Context" org-gtd-engage-grouped-by-context :transient nil)
+          ("<f12>" "Engage" org-gtd-engage :transient nil)]
+         ;; ["Clarify"
+         ;;  ("c" "Item" org-gtd-clarify-item :transient nil)
+         ;;  ("C" "Item: agenda" org-gtd-clarify-agenda-item :transient nil)]
+         ;; ["Review"
+         ;;  ("o" "Missed Appointments" org-gtd-oops :transient t)
+         ;;  ("m" "Missed Items" org-gtd-review-missed-items :transient t)
+         ;;  ("f" "Area of Focus" org-gtd-review-area-of-focus :transient t)]
+	 ]))
+    (eval
+     '(transient-define-prefix my/note-menu--transient ()
+        "Note"
+        [["New Note"
+          ("n" "Find or Create" consult-notes :transient nil)
+          ("j" "New Journal" denote-journal-new-or-existing-entry :transient nil)
+          ("s" "New Signature" denote-signature :transient nil)
+          ("b" "Blogs" my/blog-new-post :transient nil)]
+         ["Meta Rename"
+          ("k" "Keywords" denote-rename-file-keywords :transient nil)
+          ("r" "Note" denote-rename-file-using-front-matter :transient nil)
+          ("S" "Signature" denote-rename-file-signature :transient nil)
+          ("t" "Title" denote-rename-file-title :transient nil)]
+         ["Denote Link"
+          ("c" "Contents" denote-link-to-file-with-contents :transient nil)
+          ("C" "All Contents" denote-link-to-all-files-with-contents :transient nil)
+          ("%" "regexp" denote-link-to-all-files-with-regexp :transient nil)
+          ("l" "Link" denote-link-or-create :transient nil)
+          ("L" "Delete Link" jf/org-link-remove-link :transient nil)]
+         ["References"
+          ("o" "Citar Open" citar-open :transient nil)
+          ("e" "Open entry" citar-open-entry :transient nil)
+          ("f" "Open file" citar-open-files :transient nil)
+          ("O" "Open note" citar-open-note :transient nil)]
+         ["Misc"
+          ("P" "Blog Push" my/blog-sync :transient nil)]]))))
 
-(transient-define-prefix my/agenda-menu ()
-  "GTD"
-  [["Agenda"
-	("a" "Agenda" org-agenda :transient nil)]
-   ["Process & Engage"
-	("x" "Process Inbox" org-gtd-process-inbox :transient nil)
-	("@" "By Context" org-gtd-engage-grouped-by-context :transient nil)
-	("<f12>" "Engage" org-gtd-engage :transient nil)]
-   ["Clarify"
-	("c" "Item" org-gtd-clarify-item :transient nil)
-	("C" "Item: agenda" org-gtd-clarify-agenda-item :transient nil)]
-   ["Review"
-	("o" "Missed Appointments" org-gtd-oops :transient t)
-	("m" "Missed Items" org-gtd-review-missed-items :transient t)
-	("f" "Area of Focus" org-gtd-review-area-of-focus :transient t)]
-   ])
+(defun my/agenda-menu ()
+  "Open GTD transient menu."
+  (interactive)
+  (my/ensure-key-transients)
+  (call-interactively #'my/agenda-menu--transient))
 (global-set-key (kbd "<f12>") #'my/agenda-menu)
 
-;; In org-mode, use C-c C-o org-open-at-point to open link.
-;; Or, when cursor under a link, use embark-act to open it
-;; embark-act also work with citar
-(transient-define-prefix my/note-menu ()
-  "Note"
-  [["New Note"
-    ("n" "Find or Create" consult-notes :transient nil)
-    ("j" "New Journal" denote-journal-new-or-existing-entry :transient nil)
-    ("s" "New Signature" denote-signature :transient nil)
-    ]
-   ["Meta Rename"
-    ("k" "Keywords" denote-rename-file-keywords :transient nil)
-    ("r" "Note" denote-rename-file-using-front-matter :transient nil)
-    ("S" "Signature" denote-rename-file-signature :transient nil)
-    ("t" "Title" denote-rename-file-title :transient nil)
-   ]
-  ["Denote Link"
-   ("c" "Contents" denote-link-to-file-with-contents :transient nil)
-   ("C" "All Contents" denote-link-to-all-files-with-contents :transient nil)
-   ("%" "regexp" denote-link-to-all-files-with-regexp :transient nil)
-   ("l" "Link" denote-link-or-create :transient nil)
-   ("L" "Delete Link" jf/org-link-remove-link :transient nil)
-   ]
-  ["References"
-   ("C-n" "Create" citar-create-note :transient nil)
-   ("e" "Open entry" citar-open-entry :transient nil)
-   ("f" "Open file" citar-open-files :transient nil)
-   ("F" "Open note" citar-open-note :transient nil)
-   ]])
-
+(defun my/note-menu ()
+  "Open note transient menu."
+  (interactive)
+  (my/ensure-key-transients)
+  (call-interactively #'my/note-menu--transient))
 
 ;; Viper 的 insert map 优先级高于 `electric-pair-mode-map'。
 ;; 直接绑定到 `delete-backward-char' 会绕过 Emacs 原生的成对删除；
@@ -153,15 +167,12 @@
 
 ;; Bind keys under g prefix
 ;; 高频使用的单一命令
+;; gh 等命令在某些 buffer 中会不可用，还是使用 M-o 进行转换。
 (with-eval-after-load 'viper
   (define-key viper-vi-global-user-map (kbd "gg") #'beginning-of-buffer)
   (define-key viper-vi-global-user-map (kbd "gd") #'xref-find-definitions)
   (define-key viper-vi-global-user-map (kbd "gr") #'recentf-open-files)
   (define-key viper-vi-global-user-map (kbd "gs") #'scratch-buffer)
-  (define-key viper-vi-global-user-map (kbd "gh") #'windmove-left)
-  (define-key viper-vi-global-user-map (kbd "gj") #'windmove-down)
-  (define-key viper-vi-global-user-map (kbd "gk") #'windmove-up)
-  (define-key viper-vi-global-user-map (kbd "gl") #'windmove-right)
   (define-key viper-vi-global-user-map (kbd "u") #'undo)
   (define-key viper-vi-global-user-map (kbd "U") #'vundo)
   )

@@ -226,3 +226,6 @@
 [submodule "packages/dired-hacks"]
 	path = packages/dired-hacks
 	url = https://github.com/Fuco1/dired-hacks.git
+[submodule "packages/citar-denote"]
+	path = packages/citar-denote
+	url = https://github.com/pprevos/citar-denote.git

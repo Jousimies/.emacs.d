@@ -1,5 +1,14 @@
 ;; -*- lexical-binding: t; -*-
+(use-package gcmh
+  :hook (on-first-buffer . gcmh-mode)
+  :config
+  (setq gc-cons-percentage 0.1)
+  (setq gcmh-idle-delay 'auto)
+  (setq gcmh-auto-idle-delay-factor 10)
+  (setq gcmh-high-cons-threshold #x1000000))
 
+(advice-add 'after-focus-change-function :after 'garbage-collect)
+;;;###autoload
 (defun my/insert-specified-datetree ()
   "Insert a datetree entry for a specified date."
   (interactive)
@@ -11,6 +20,7 @@
     (open-line 1)
     (forward-line 1)))
 
+;;;###autoload
 (defun switch-to-message ()
   "Quick switch to `*Message*' buffer."
   (interactive)
@@ -32,31 +42,56 @@
   	  (WikiPedia_en . "https://en.wikipedia.org/w/index.php?search=")
   	  (Annas-Archvie . "https://annas-archive.org/search?q=")))
 
-(defmacro my/define-search-functions ()
-  "Dynamically define search functions for each search engine in `my/browser-engines`."
-  `(progn
-     ,@(mapcar (lambda (engine)
-                 (let* ((engine-name (car engine))
-                        (function-name (intern (format "my/search-%s" (downcase (symbol-name engine-name))))))
-                   `(defun ,function-name (query)
-                      ,(format "Search for QUERY using the %s engine." engine-name)
-                      (interactive
-                       (list (let ((default-query
-                                    (if (and (eq system-type 'darwin)
-                                             (featurep 'emt))
-                                        (emt-word-at-point-or-forward)
-                                      (thing-at-point 'word t))))
-                               (if (region-active-p)
-                                   (buffer-substring-no-properties (region-beginning) (region-end))
-                                 (read-string (format "[%s] Enter search terms (default: %s): " ,(symbol-name engine-name) default-query))))))
-                      (let ((search-url (concat ,(cdr engine) (url-encode-url query))))
-                        (browse-url search-url))
-                      (when (region-active-p)
-                        (deactivate-mark)))))
-               my/browser-engines)))
+(defun my/search-web (engine query)
+  "Search QUERY using ENGINE from `my/browser-engines'."
+  (let ((base-url (alist-get engine my/browser-engines)))
+    (unless base-url
+      (user-error "Unknown search engine: %s" engine))
+    (browse-url (concat base-url (url-encode-url query))))
+  (when (region-active-p)
+    (deactivate-mark)))
 
-(add-hook 'after-init-hook (lambda ()
-  			     (my/define-search-functions)))
+(defun my/search-read-query (engine)
+  "Read search query for ENGINE."
+  (let ((default-query (thing-at-point 'word t)))
+    (if (region-active-p)
+        (buffer-substring-no-properties (region-beginning) (region-end))
+      (read-string (format "[%s] Search: " engine) default-query))))
+
+;;;###autoload
+(defun my/search-google (query)
+  (interactive (list (my/search-read-query 'Google)))
+  (my/search-web 'Google query))
+
+;;;###autoload
+(defun my/search-wikipedia_en (query)
+  (interactive (list (my/search-read-query 'WikiPedia_en)))
+  (my/search-web 'WikiPedia_en query))
+
+;;;###autoload
+(defun my/search-zhihu (query)
+  (interactive (list (my/search-read-query 'Zhihu)))
+  (my/search-web 'Zhihu query))
+
+;;;###autoload
+(defun my/search-doubanmovie (query)
+  (interactive (list (my/search-read-query 'DoubanMovie)))
+  (my/search-web 'DoubanMovie query))
+
+;;;###autoload
+(defun my/search-doubanbook (query)
+  (interactive (list (my/search-read-query 'DoubanBook)))
+  (my/search-web 'DoubanBook query))
+
+;;;###autoload
+(defun my/search-scholar (query)
+  (interactive (list (my/search-read-query 'Scholar)))
+  (my/search-web 'Scholar query))
+
+;;;###autoload
+(defun my/search-semanticscholar (query)
+  (interactive (list (my/search-read-query 'SemanticScholar)))
+  (my/search-web 'SemanticScholar query))
 
 (global-set-key (kbd "M-s g") #'my/search-google)
 (global-set-key (kbd "M-s W") #'my/search-wikipedia_en)
@@ -67,6 +102,7 @@
 (global-set-key (kbd "M-s s") #'my/search-scholar)
 (global-set-key (kbd "M-s S") #'my/search-semanticscholar)
 
+;;;###autoload
 (defun jf/org-link-remove-link ()
   "Remove the link part of an `org-mode' link at point and keep only the description."
   (interactive)
@@ -133,6 +169,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
     (let ((subfolder-path (expand-file-name folder parent-path)))
       (create-folder subfolder-path))))
 
+;;;###autoload
 (defun generate-folder-tree ()
   "生成以日期和标题命名的文件夹，并在其中创建Readme文件。"
   (interactive)
@@ -179,6 +216,7 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
               (push readme files))))))
     (nreverse files)))
 
+;;;###autoload
 (defun my/open-project-readme ()
   (interactive)
   (let* ((files (my/project-readme-candidates))

@@ -18,8 +18,6 @@
   (setq-default goggles-pulse t))
 
 (use-package form-feed
-  :hook ((org-mode . form-feed-mode)
-	 (emacs-news-mode . form-feed-mode)))
-
+  :hook (on-first-buffer . global-form-feed-mode))
 
 (provide 'init-ui)
