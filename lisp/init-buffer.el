@@ -11,7 +11,6 @@
   :hook (on-first-buffer . bufferlo-mode))
 
 (use-package helpful
-  :idle t
   :bind (([remap describe-function] . helpful-callable)
          ([remap describe-variable] . helpful-variable)
          ([remap describe-key] . helpful-key))

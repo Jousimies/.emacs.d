@@ -12,7 +12,7 @@
 	org-deadline-warning-days 7))
 
 (use-package org-gtd
-  :commands org-gtd-engage org-gtd-process-inbox
+  :commands org-gtd-engage org-gtd-process-inbox org-gtd-engage-grouped-by-context
   :init
   (setq org-gtd-update-ack "4.0.0")
   (setq org-gtd-directory "~/OneDrive/Galaxy/gtd/")

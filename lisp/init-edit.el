@@ -194,7 +194,9 @@
 (use-package liberime-regexp
   :hook ((viper-insert-state . liberime-regexp-mode)
 	 (viper-insert-state . liberime-regexp-avy-mode))
-  :bind ([remap goto-char] . liberime-regexp-avy-goto-char-timer))
+  :bind ([remap goto-char] . liberime-regexp-avy-goto-char-timer)
+  :custom
+  (liberime-regexp-auto-build nil))
 
 (use-package sis
   :defer t

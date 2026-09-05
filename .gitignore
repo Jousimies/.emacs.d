@@ -9,3 +9,5 @@ tree-sitter
 bookmarks
 elpaca
 .DS_Store
+emacs
+build-emacs

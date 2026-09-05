@@ -71,14 +71,16 @@
 ;;   (denote-explore-json-vertices-filename (expand-file-name "denote-vertices.json" cache-directory)))
 
 (use-package consult-notes
-  :idle t
   :bind ("C-c n f" . consult-notes)
-  :hook (on-first-buffer . consult-notes-denote-mode)
+  :commands consult-notes-denote-mode
+  ;;:hook (on-first-buffer . consult-notes-denote-mode)
   :custom
   (consult-notes-denote-files-function (lambda () (denote-directory-files nil t t))))
 
+(with-eval-after-load 'consult
+  (consult-notes-denote-mode))
+
 (use-package olivetti
-  :idle t
   :bind ("<f7>" . olivetti-mode)
   :init (setq olivetti-body-width 0.62))
 

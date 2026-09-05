@@ -16,7 +16,6 @@
   (pdf-tools-install t nil t nil))
 
 (use-package pdf-view
-  :idle t
   :hook ((pdf-tools-enabled . pdf-view-themed-minor-mode)
          (pdf-view-mode . (lambda ()
                             (require 'saveplace-pdf-view))))
@@ -28,23 +27,18 @@
   (setq pdf-annot-activate-created-annotations nil))
 
 (use-package pdf-roll
-  :idle t
   :hook (pdf-view-mode . pdf-view-roll-minor-mode))
 
 (use-package pdf-occur
-  :idle t
   :hook (pdf-view-mode . pdf-occur-global-minor-mode))
 
 (use-package pdf-history
-  :idle t
   :hook (pdf-view-mode . pdf-history-minor-mode))
 
 (use-package pdf-links
-  :idle t
   :hook (pdf-view-mode . pdf-links-minor-mode))
 
 (use-package pdf-outline
-  :idle t
   :hook ((pdf-view-mode . pdf-outline-minor-mode))
   :bind (:map pdf-outline-buffer-mode-map
               ("RET" . pdf-outline-follow-link-and-quit)))
@@ -54,25 +48,21 @@
   '(add-to-list 'viper-emacs-state-mode-list 'pdf-outline-buffer-mode))
 
 (use-package pdf-annot
-  :idle t
   :hook (pdf-view-mode . pdf-annot-minor-mode)
   :bind (:map pdf-annot-edit-contents-minor-mode-map
               ("<return>" . pdf-annot-edit-contents-commit)
               ("<S-return>" . newline)))
 
 (use-package pdf-sync
-  :idle t
   :hook (pdf-view-mode . pdf-sync-minor-mode))
 
 (use-package pdf-cache
-  :idle t
   :after pdf-view
   :config
   (define-pdf-cache-function pagelabels))
 
 (use-package pdf-misc
   :after pdf-view
-  :idle t
   :config
   (when sys/macp
     (setq pdf-misc-print-program-executable "/usr/bin/lp"))

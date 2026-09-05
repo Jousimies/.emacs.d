@@ -60,7 +60,8 @@
   (keymap-set completion-preview-active-mode-map "C-p" #'completion-preview-prev-candidate))
 
 (use-package orderless
-  :after minibuffer
+  :idle t
+  :defer t
   :custom
   (orderless-matching-styles '(orderless-prefixes orderless-regexp))
   (completion-styles '(basic substring initials orderless))
@@ -77,7 +78,16 @@
      (kill-ring (styles . (emacs22 orderless)))
      (eglot (styles . (emacs22 substring orderless))))))
 
+(defun my/ensure-orderless-before-completion ()
+  "Load Orderless if the minibuffer wins the race with idle preloading."
+  (require 'orderless)
+  (remove-hook 'minibuffer-setup-hook
+               #'my/ensure-orderless-before-completion))
+
+(add-hook 'minibuffer-setup-hook #'my/ensure-orderless-before-completion)
+
 (use-package marginalia
+  :idle t
   :after fido-mode
   :config
   (marginalia-mode))
@@ -107,12 +117,10 @@
   (consult-preview-key "M-."))
 
 (use-package consult-org
-  :idle t
   :bind (:map org-mode-map
 	      ("M-g h" . consult-org-heading)))
 
 (use-package embark
-  :idle t
   :bind (([remap describe-bindings] . embark-bindings)
          ("C-;" . embark-act)
          ("M-." . embark-dwim)
@@ -122,7 +130,6 @@
                ("C-c C-l" . embark-collect))))
 
 (use-package embark-consult
-  :idle t
   :after consult embark)
 
 

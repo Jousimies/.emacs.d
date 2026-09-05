@@ -16,7 +16,7 @@
   "Initial delay before starting the idle loader."
   :type 'number)
 
-(defcustom my/idle-loader-log t
+(defcustom my/idle-loader-log nil
   "Log each loaded item."
   :type 'boolean)
 
@@ -30,6 +30,12 @@
 (defvar my/idle-loader--start-time nil)
 (defvar my/idle-loader--count 0)
 (defvar my/idle-loader--errors 0)
+(defvar my/idle-loader--timer nil)
+
+(defun my/idle-loader--schedule (delay)
+  "Schedule the next queued form after DELAY idle seconds."
+  (setq my/idle-loader--timer
+        (run-with-idle-timer delay nil #'my/idle-loader-run)))
 
 (defun my/idle-loader--log (fmt &rest args)
   (when my/idle-loader-log
@@ -48,7 +54,7 @@
 
 (defun my/idle-loader-run ()
   (if (input-pending-p)
-      (run-with-idle-timer my/idle-loader-interval nil #'my/idle-loader-run)
+      (my/idle-loader--schedule my/idle-loader-interval)
     (when my/idle-loader-forms
       (let* ((item (pop my/idle-loader-forms))
              (delay (if (and (consp item) (numberp (car item)))
@@ -57,17 +63,20 @@
              (form  (if (and (consp item) (numberp (car item)))
                         (cdr item)
                       item))
-             (desc  (prin1-to-string form)))
+             (desc  (prin1-to-string form))
+             (started (current-time)))
         (condition-case err
             (progn
               (eval form t)
               (cl-incf my/idle-loader--count)
-              (my/idle-loader--log "OK  %s" desc))
+              (my/idle-loader--log
+               "OK  %.3fs %s"
+               (float-time (time-subtract nil started)) desc))
           (error
            (cl-incf my/idle-loader--errors)
            (my/idle-loader--log "ERR %s → %S" desc err)))
         (if my/idle-loader-forms
-            (run-with-idle-timer delay nil #'my/idle-loader-run)
+            (my/idle-loader--schedule delay)
           (my/idle-loader--log
            "Finished. Success: %d  Failed: %d  Total: %.2fs"
            my/idle-loader--count
@@ -77,12 +86,15 @@
 
 (defun my/idle-loader-start (&optional initial-delay)
   (interactive)
+  (when (timerp my/idle-loader--timer)
+    (cancel-timer my/idle-loader--timer))
   (setq my/idle-loader--start-time (current-time)
         my/idle-loader--count 0
         my/idle-loader--errors 0)
   (my/idle-loader--log "Starting (%d items)..." (length my/idle-loader-forms))
-  (run-with-idle-timer (or initial-delay my/idle-loader-initial-delay)
-                       nil #'my/idle-loader-run))
+  (setq my/idle-loader--timer
+        (run-with-idle-timer (or initial-delay my/idle-loader-initial-delay)
+                             nil #'my/idle-loader-run)))
 
 (defun my/idle-loader-add (&rest forms)
   (setq my/idle-loader-forms (append my/idle-loader-forms forms)))
@@ -138,11 +150,12 @@ ARGS can be:
 
 (advice-add 'after-focus-change-function :after 'garbage-collect)
 
-(setq my/idle-loader-log nil)
-(setq use-package-expand-minimally t)
-(setq use-package-verbose t)
-(setq use-package-compute-statistics t)
-(setq use-package-minimum-reported-time 0)
+(when init-file-debug
+  (setq my/idle-loader-log t)
+  (setq use-package-expand-minimally t)
+  (setq use-package-verbose t)
+  (setq use-package-compute-statistics t)
+  (setq use-package-minimum-reported-time 0))
 
 ;; Server
 (use-package server

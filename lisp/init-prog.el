@@ -7,7 +7,7 @@
 ;; 否则 (treesit-language-available-p 'yaml t) 会报错
 (with-eval-after-load 'treesit
   (add-to-list 'treesit-extra-load-path
-               (expand-file-name "tree-sitter" user-emacs-directory)))
+               (expand-file-name "module/tree-sitter" user-emacs-directory)))
 
 (setq major-mode-remap-alist
       '((python-mode     . python-ts-mode)

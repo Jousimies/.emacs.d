@@ -27,7 +27,6 @@
 
 (use-package citar
   :commands citar-create-note
-  :after org
   :custom
   (citar-templates '((main . "${=type=:12}|${date year issued:4}| ${title:80}")
 		     (suffix . " |${=key= id} |${tags keywords:*} |${author editor:20%sn}") ;

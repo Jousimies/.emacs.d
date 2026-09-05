@@ -1,15 +1,15 @@
 ;; -*- lexical-binding: t; -*-
 
-;; Idle load org modules
+;; Preload Org incrementally so its first interactive use stays responsive.
 (my/idle-loader-add '(0.7 . (require 'org nil t))
-		    '(require 'org-id nil t)
-		    '(require 'org-agenda nil t)
-		    '(require 'org-capture nil t)
-		    '(require 'org-clock nil t)
-		    '(require 'org-attach nil t)
-		    '(require 'org-refile nil t)
-		    '(require 'org-goto nil t)
-		    '(require 'org-archive nil t))
+                    '(require 'org-id nil t)
+                    '(require 'org-agenda nil t)
+                    '(require 'org-capture nil t)
+                    '(require 'org-clock nil t)
+                    '(require 'org-attach nil t)
+                    '(require 'org-refile nil t)
+                    '(require 'org-goto nil t)
+                    '(require 'org-archive nil t))
 
 (with-eval-after-load 'org
   (setq org-modules nil

@@ -1,12 +1,9 @@
 ;; -*- lexical-binding: t; -*-
 
 (use-package browse-at-remote
-  :idle t
   :bind ("M-g b" . browse-at-remote))
 
-
 (use-package magit
-  :idle t
   :bind ("C-x g" . magit))
 
 ;;; Git Submodule management (Emacs-native)

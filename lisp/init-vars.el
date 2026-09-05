@@ -30,7 +30,7 @@
   (defconst my/org-gtd-directory (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org" icloud/mobile)))
 
 (when (eq system-type 'windows-nt)
-  (defconst onedrive (expand-file-name "Onedrive" (file-truename "~")))
+  (defconst onedrive (expand-file-name "OneDrive" (file-truename "~")))
   (defconst my-galaxy (expand-file-name "Galaxy" onedrive))
   (defconst my/org-gtd-directory (expand-file-name "gtd" my-galaxy))
   (defconst my/inbox-file (expand-file-name "inbox.org" my/org-gtd-directory)))

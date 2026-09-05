@@ -97,9 +97,6 @@
 
 ;; (setq-default mode-line-format nil)
 
-(when initial-window-system
-  (load-theme 'modus-operandi-tritanopia t))
-
 (defun my/apply-theme (appearance)
   "Load theme, taking current system APPEARANCE into consideration."
   (mapc #'disable-theme custom-enabled-themes)
