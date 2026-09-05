@@ -69,6 +69,58 @@ def is_windows() -> bool:
     return platform.system() == "Windows"
 
 
+def configure_mail_account_env() -> None:
+    """首次使用时为 Windows 配置 MAIL_ACCOUNT 环境变量。"""
+    if not is_windows():
+        return
+
+    if os.environ.get("MAIL_ACCOUNT"):
+        print(f"✅ 已检测到 MAIL_ACCOUNT: {os.environ['MAIL_ACCOUNT']}")
+        return
+
+    if not sys.stdin.isatty():
+        print("ℹ 未检测到 MAIL_ACCOUNT，且当前不是交互终端，跳过设置")
+        return
+
+    print("\n📧 未检测到 MAIL_ACCOUNT 环境变量。")
+    print("   该变量会被 Emacs 中的 org2calendar-account 读取。")
+    account = input("请输入默认 Microsoft 账号邮箱（直接回车跳过）: ").strip()
+    if not account:
+        print("ℹ 已跳过 MAIL_ACCOUNT 设置")
+        return
+
+    os.environ["MAIL_ACCOUNT"] = account
+
+    # setx 写入当前用户环境变量；新启动的 Emacs / 终端才会读取到。
+    try:
+        result = subprocess.run(["setx", "MAIL_ACCOUNT", account], check=False)
+    except FileNotFoundError:
+        result = None
+    if result is not None and result.returncode == 0:
+        print("✅ 已写入用户环境变量 MAIL_ACCOUNT")
+        print("   请重启 Emacs，或重新登录后生效。")
+        return
+
+    # 某些精简环境可能没有 setx，尝试 PowerShell API。
+    escaped_account = account.replace("'", "''")
+    ps_command = (
+        "[Environment]::SetEnvironmentVariable"
+        f"('MAIL_ACCOUNT', '{escaped_account}', 'User')"
+    )
+    try:
+        result = subprocess.run(
+            ["powershell", "-NoProfile", "-Command", ps_command],
+            check=False,
+        )
+    except FileNotFoundError:
+        result = None
+    if result is not None and result.returncode == 0:
+        print("✅ 已通过 PowerShell 写入用户环境变量 MAIL_ACCOUNT")
+        print("   请重启 Emacs，或重新登录后生效。")
+    else:
+        print("❌ 自动写入 MAIL_ACCOUNT 失败，请手动设置系统环境变量。")
+
+
 def update_git() -> bool:
     print("📦 更新主仓库...")
     if not run_command(["git", "pull", "--ff-only"]):
@@ -350,6 +402,8 @@ def main() -> int:
     print("=" * 60)
     print("Emacs configuration updater / first-time setup")
     print("=" * 60)
+
+    configure_mail_account_env()
 
     if args.cache:
         generate_load_path_cache()

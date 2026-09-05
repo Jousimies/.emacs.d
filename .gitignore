@@ -11,3 +11,5 @@ elpaca
 .DS_Store
 emacs
 build-emacs
+.cask
+__pycache__
