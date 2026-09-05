@@ -183,7 +183,7 @@
 	url = https://github.com/karthink/gptel-quick.git
 [submodule "packages/gptel-magit"]
 	path = packages/gptel-magit
-	url = https://github.com/ragnard/gptel-magit.git
+	url = https://github.com/roife/gptel-magit.git
 [submodule "packages/magit"]
 	path = packages/magit
 	url = https://github.com/magit/magit.git

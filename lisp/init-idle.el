@@ -136,7 +136,7 @@ ARGS can be:
 
 ;;; 启动
 
-(add-hook 'after-init-hook #'my/idle-loader-start)
+(add-hook 'window-setup-hook #'my/idle-loader-start)
 
 (require 'on)
 
@@ -159,8 +159,9 @@ ARGS can be:
 
 ;; Server
 (use-package server
-  :idle t
+  :idle 5
   :config
+  (setq server-client-instructions nil)
   (unless (server-running-p)
     (server-start)))
 

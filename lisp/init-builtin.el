@@ -1,5 +1,9 @@
 ;; -*- lexical-binding: t; -*-
 
+;; Startup
+(setq user-mail-address (getenv "MAIL_ACCOUNT"))
+
+;; System Coding
 (prefer-coding-system 'utf-8-unix)
 (set-default-coding-systems 'utf-8-unix)
 (set-language-environment "UTF-8")
@@ -31,7 +35,6 @@
 (bind-key [remap capitalize-word] #'capitalize-dwim)
 
 (setq use-short-answers t)
-(setq server-client-instructions nil)
 ;;关闭 ring bell,用 mode-line 替代
 (setq ring-bell-function (lambda ()
 			   (invert-face 'mode-line)

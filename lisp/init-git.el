@@ -4,7 +4,17 @@
   :bind ("M-g b" . browse-at-remote))
 
 (use-package magit
-  :bind ("C-x g" . magit))
+  :bind ("C-x g" . magit)
+  :config
+  (magit-add-section-hook 'magit-status-sections-hook
+			  'magit-insert-modules
+			  'magit-insert-unpulled-from-upstream)
+  (remove-hook 'magit-module-sections-hook 'magit-insert-modules-overview)
+  (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpulled-from-pushremote)
+  (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote)
+  ;; (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-upstream)
+  )
+
 
 ;;; Git Submodule management (Emacs-native)
 

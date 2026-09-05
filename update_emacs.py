@@ -2,7 +2,7 @@
 """Emacs 配置首次安装 / 更新脚本。
 
 功能：
-  1. git pull + submodule init/update
+  1. git fetch 主仓库与 submodule 的最新提交，但默认不切换/更新工作区
   2. 生成 load-path + feature 缓存
   3. 自动 make 需要编译的包（auctex、benchmark-init-el）
   4. 尝试编译 pdf-tools（Linux/macOS 较顺；Windows 给出明确指引）
@@ -12,14 +12,18 @@
   python update_emacs.py --cache      # 只刷新缓存
   python update_emacs.py --build      # 只做 make / pdf-tools 编译
   python update_emacs.py --skip-git   # 跳过 git，只做编译 + 缓存
+  python update_emacs.py --mail       # 只设置 MAIL_ACCOUNT 邮件地址
 """
 
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import os
 import platform
+import plistlib
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -69,20 +73,65 @@ def is_windows() -> bool:
     return platform.system() == "Windows"
 
 
-def configure_mail_account_env() -> None:
-    """首次使用时为 Windows 配置 MAIL_ACCOUNT 环境变量。"""
-    if not is_windows():
+def is_macos() -> bool:
+    return platform.system() == "Darwin"
+
+
+def detect_mail_account() -> str | None:
+    """Detect MAIL_ACCOUNT from current env or the user's zsh startup files."""
+    account = os.environ.get("MAIL_ACCOUNT")
+    if account:
+        return account
+
+    zsh = which("zsh")
+    if zsh:
+        try:
+            result = subprocess.run(
+                [zsh, "-lc", "print -r -- ${MAIL_ACCOUNT-}"],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+        except OSError:
+            result = None
+        if result is not None and result.returncode == 0:
+            account = result.stdout.strip()
+            if account:
+                os.environ["MAIL_ACCOUNT"] = account
+                return account
+
+    # Fallback: parse simple lines in ~/.zshenv, including non-exported assignments.
+    zshenv = Path.home() / ".zshenv"
+    if zshenv.exists():
+        pattern = re.compile(r"^\s*(?:export\s+)?MAIL_ACCOUNT=(.*)\s*$")
+        for line in zshenv.read_text(encoding="utf-8", errors="ignore").splitlines():
+            match = pattern.match(line)
+            if not match:
+                continue
+            value = match.group(1).split("#", 1)[0].strip()
+            if value:
+                account = shlex.split(value)[0] if value else ""
+                if account:
+                    os.environ["MAIL_ACCOUNT"] = account
+                    return account
+    return None
+
+
+def configure_mail_account_env(force: bool = False) -> None:
+    """首次使用时为 Windows/macOS 配置 MAIL_ACCOUNT 环境变量。"""
+    if not (is_windows() or is_macos()):
         return
 
-    if os.environ.get("MAIL_ACCOUNT"):
-        print(f"✅ 已检测到 MAIL_ACCOUNT: {os.environ['MAIL_ACCOUNT']}")
+    account = detect_mail_account()
+    if account and not force:
+        print(f"✅ 已检测到 MAIL_ACCOUNT: {account}")
         return
 
     if not sys.stdin.isatty():
         print("ℹ 未检测到 MAIL_ACCOUNT，且当前不是交互终端，跳过设置")
         return
 
-    print("\n📧 未检测到 MAIL_ACCOUNT 环境变量。")
+    print("\n📧 未检测到 MAIL_ACCOUNT 环境变量。" if not account else "\n📧 重新设置 MAIL_ACCOUNT 环境变量。")
     print("   该变量会被 Emacs 中的 org2calendar-account 读取。")
     account = input("请输入默认 Microsoft 账号邮箱（直接回车跳过）: ").strip()
     if not account:
@@ -91,6 +140,14 @@ def configure_mail_account_env() -> None:
 
     os.environ["MAIL_ACCOUNT"] = account
 
+    if is_windows():
+        set_windows_mail_account_env(account)
+    elif is_macos():
+        set_macos_mail_account_env(account)
+
+
+def set_windows_mail_account_env(account: str) -> None:
+    """写入 Windows 当前用户环境变量。"""
     # setx 写入当前用户环境变量；新启动的 Emacs / 终端才会读取到。
     try:
         result = subprocess.run(["setx", "MAIL_ACCOUNT", account], check=False)
@@ -121,20 +178,279 @@ def configure_mail_account_env() -> None:
         print("❌ 自动写入 MAIL_ACCOUNT 失败，请手动设置系统环境变量。")
 
 
-def update_git() -> bool:
-    print("📦 更新主仓库...")
-    if not run_command(["git", "pull", "--ff-only"]):
-        return False
+def set_macos_mail_account_env(account: str) -> None:
+    """写入 macOS GUI 会话与默认 shell 配置。"""
+    try:
+        result = subprocess.run(
+            ["launchctl", "setenv", "MAIL_ACCOUNT", account],
+            check=False,
+        )
+    except FileNotFoundError:
+        result = None
+    if result is not None and result.returncode == 0:
+        print("✅ 已写入当前 launchctl 环境变量（供 Dock/Finder 启动的 Emacs 使用）")
+    else:
+        print("⚠ launchctl setenv 失败，请手动设置 GUI 会话环境变量。")
 
-    print("\n📦 初始化 / 更新 submodule...")
-    if not run_command(["git", "submodule", "update", "--init", "--recursive"]):
-        return False
+    agent_dir = Path.home() / "Library" / "LaunchAgents"
+    agent_file = agent_dir / "local.update-emacs.mail-account.plist"
+    agent = {
+        "Label": "local.update-emacs.mail-account",
+        "ProgramArguments": ["/bin/launchctl", "setenv", "MAIL_ACCOUNT", account],
+        "RunAtLoad": True,
+    }
+    try:
+        agent_dir.mkdir(parents=True, exist_ok=True)
+        with agent_file.open("wb") as fp:
+            plistlib.dump(agent, fp)
+        gui_domain = f"gui/{os.getuid()}"
+        subprocess.run(
+            ["launchctl", "bootout", gui_domain, str(agent_file)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        subprocess.run(
+            ["launchctl", "bootstrap", gui_domain, str(agent_file)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        print(f"✅ 已写入登录自启动环境变量: {agent_file}")
+    except OSError as err:
+        print(f"⚠ 写入 LaunchAgent 失败: {err}")
 
-    # 可选：跟踪远程最新（首次安装建议开，日常更新也可开）
-    print("\n📦 更新 submodule 到远程最新...")
-    return run_command(
-        ["git", "submodule", "update", "--remote", "--recursive"]
+    shell_name = Path(os.environ.get("SHELL", "")).name
+    if shell_name == "fish":
+        rc_file = Path.home() / ".config" / "fish" / "config.fish"
+        line = f"set -gx MAIL_ACCOUNT {account};"
+    elif shell_name == "bash":
+        rc_file = Path.home() / ".bash_profile"
+        line = f"export MAIL_ACCOUNT={shlex.quote(account)}"
+    else:
+        rc_file = Path.home() / ".zshenv"
+        line = f"export MAIL_ACCOUNT={shlex.quote(account)}"
+
+    marker_begin = "# >>> update_emacs.py MAIL_ACCOUNT >>>"
+    marker_end = "# <<< update_emacs.py MAIL_ACCOUNT <<<"
+    block = f"{marker_begin}\n{line}\n{marker_end}\n"
+
+    try:
+        rc_file.parent.mkdir(parents=True, exist_ok=True)
+        old = rc_file.read_text(encoding="utf-8") if rc_file.exists() else ""
+        if marker_begin in old and marker_end in old:
+            new = re.sub(
+                rf"{re.escape(marker_begin)}.*?{re.escape(marker_end)}\n?",
+                block,
+                old,
+                flags=re.S,
+            )
+        else:
+            new = old.rstrip() + ("\n\n" if old.strip() else "") + block
+        rc_file.write_text(new, encoding="utf-8")
+        print(f"✅ 已写入 shell 配置: {rc_file}")
+        print("   请重启 Emacs/终端，或重新登录后生效。")
+    except OSError as err:
+        print(f"❌ 写入 shell 配置失败: {err}")
+        print(f"   可手动加入: {line}")
+
+
+def get_uninitialized_submodule_paths() -> list[str]:
+    """Return submodule paths that are not initialized yet."""
+    try:
+        result = subprocess.run(
+            ["git", "submodule", "status", "--recursive"],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except FileNotFoundError:
+        print("❌ 找不到命令: git")
+        return []
+
+    if result.returncode != 0:
+        print("❌ 获取 submodule 状态失败")
+        if result.stderr.strip():
+            print(result.stderr.strip())
+        return []
+
+    paths: list[str] = []
+    for line in result.stdout.splitlines():
+        # `git submodule status` prefixes uninitialized submodules with '-'.
+        if not line.startswith("-"):
+            continue
+        parts = line[1:].strip().split()
+        if len(parts) >= 2:
+            paths.append(parts[1])
+    return paths
+
+
+def find_submodule_owner(path: str) -> tuple[Path, str] | None:
+    """Find the repository that owns submodule PATH and its relative path there."""
+    abs_path = (ROOT / path).resolve()
+    for owner in [abs_path.parent, *abs_path.parents]:
+        if owner == ROOT.parent:
+            break
+        if not ((owner / ".git").exists() or owner == ROOT):
+            continue
+        gitmodules = owner / ".gitmodules"
+        if not gitmodules.exists():
+            continue
+        try:
+            result = subprocess.run(
+                [
+                    "git", "config", "-f", str(gitmodules),
+                    "--get-regexp", r"^submodule\..*\.path$",
+                ],
+                cwd=owner,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+        except FileNotFoundError:
+            return None
+        if result.returncode != 0:
+            continue
+        for line in result.stdout.splitlines():
+            parts = line.split(maxsplit=1)
+            if len(parts) != 2:
+                continue
+            rel = parts[1].strip()
+            if (owner / rel).resolve() == abs_path:
+                return owner, rel
+    return None
+
+
+def initialize_missing_submodules() -> bool:
+    """Initialize missing submodules only; do not touch already checked-out ones."""
+    paths = get_uninitialized_submodule_paths()
+    if not paths:
+        print("✅ submodule 均已初始化，跳过 checkout/update，避免打断已有分支")
+        return True
+
+    ok = True
+    seen: set[str] = set()
+    while paths:
+        progressed = False
+        print(f"📦 初始化 {len(paths)} 个缺失的 submodule（仅缺失项会检出记录版本）...")
+        for path in sorted(paths, key=lambda p: p.count("/")):
+            if path in seen:
+                continue
+            owner_info = find_submodule_owner(path)
+            if owner_info is None:
+                # This can happen for nested submodules before their parent is initialized.
+                continue
+            owner, rel = owner_info
+            display_owner = owner.relative_to(ROOT) if owner != ROOT else Path(".")
+            if run_command(["git", "submodule", "update", "--init", "--", rel], cwd=owner):
+                print(f"  ✅ {display_owner}/{rel}")
+                seen.add(path)
+                progressed = True
+            else:
+                ok = False
+                print(f"  ❌ {display_owner}/{rel}")
+                seen.add(path)
+
+        paths = [p for p in get_uninitialized_submodule_paths() if p not in seen]
+        if paths and not progressed:
+            ok = False
+            print("❌ 仍有 submodule 未初始化，但找不到所属父仓库：")
+            for path in paths:
+                print(f"  - {path}")
+            break
+
+    return ok
+
+
+def get_submodule_paths() -> list[Path]:
+    """Return initialized submodule paths, including nested submodules."""
+    try:
+        result = subprocess.run(
+            [
+                "git", "submodule", "foreach", "--recursive", "--quiet",
+                "printf '%s\\n' \"$toplevel/$sm_path\"",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except FileNotFoundError:
+        print("❌ 找不到命令: git")
+        return []
+
+    if result.returncode != 0:
+        print("❌ 获取 submodule 列表失败")
+        if result.stderr.strip():
+            print(result.stderr.strip())
+        return []
+
+    paths = [Path(line.strip()) for line in result.stdout.splitlines() if line.strip()]
+    return list(dict.fromkeys(paths))
+
+
+def fetch_submodule(path: Path) -> tuple[Path, bool, str]:
+    """Fetch one submodule. Designed for parallel execution."""
+    result = subprocess.run(
+        ["git", "fetch", "--all", "--prune"],
+        cwd=path,
+        text=True,
+        capture_output=True,
+        check=False,
     )
+    output = (result.stdout or "") + (result.stderr or "")
+    return path, result.returncode == 0, output.strip()
+
+
+def fetch_submodules_parallel() -> bool:
+    """Fetch all submodules concurrently without changing checked-out revisions."""
+    paths = get_submodule_paths()
+    if not paths:
+        print("ℹ 未发现已初始化的 submodule")
+        return True
+
+    max_workers = min(8, len(paths), (os.cpu_count() or 4))
+    print(f"📦 并发 fetch {len(paths)} 个 submodule（workers={max_workers}）...")
+
+    ok = True
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = [executor.submit(fetch_submodule, path) for path in paths]
+        for future in concurrent.futures.as_completed(futures):
+            path, success, output = future.result()
+            rel = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
+            if success:
+                print(f"  ✅ {rel}")
+            else:
+                ok = False
+                print(f"  ❌ {rel}")
+                if output:
+                    print(output)
+    return ok
+
+
+def update_git() -> bool:
+    """Fetch latest commits without changing the checked-out revisions."""
+    print("📦 拉取主仓库远程信息（fetch only，不更新工作区）...")
+    if not run_command(["git", "fetch", "--all", "--prune"]):
+        return False
+
+    print("\n📦 初始化缺失的 submodule（不会触碰已存在的 submodule 分支）...")
+    if not run_command(["git", "submodule", "sync", "--recursive"]):
+        return False
+    if not initialize_missing_submodules():
+        return False
+
+    print("\n📦 拉取 submodule 远程信息（fetch only，不切换到远程最新）...")
+    if not fetch_submodules_parallel():
+        return False
+
+    print("\nℹ 已 fetch 最新提交，但未更新当前仓库或 submodule。")
+    print("   如需更新主仓库: git pull --ff-only")
+    print("   如需把 submodule 切到本仓库记录版本: git submodule update --init --recursive")
+    print("   注意：上面这条 git submodule update 会让 submodule 进入 detached HEAD")
+    print("   如需手动追踪 submodule 远程最新: git submodule update --remote --recursive")
+    return True
 
 
 def should_skip_directory(path: Path) -> bool:
@@ -315,7 +631,7 @@ def build_make_packages() -> bool:
 
 
 def build_pdf_tools() -> bool:
-    """尝试编译 pdf-tools（epdfinfo）。"""
+    """Prepare pdf-tools without local compilation on Windows/macOS."""
     pdf_dir = PACKAGE_DIR / "pdf-tools"
     if not pdf_dir.is_dir():
         print("⚠ packages/pdf-tools 不存在，跳过")
@@ -324,40 +640,54 @@ def build_pdf_tools() -> bool:
     print("\n📄 处理 pdf-tools ...")
 
     if is_windows():
-        print("""
-⚠️  Windows 上 pdf-tools 需要 MSYS2 环境，脚本不会强行编译。
-推荐做法（二选一）：
+        # On Windows, building epdfinfo locally from packages/pdf-tools is fragile.
+        # Prefer the MSYS2 prebuilt server package instead.
+        msystem = os.environ.get("MSYSTEM", "MINGW64").upper()
+        package_by_msystem = {
+            "MINGW64": "mingw-w64-x86_64-emacs-pdf-tools-server",
+            "UCRT64": "mingw-w64-ucrt-x86_64-emacs-pdf-tools-server",
+            "CLANG64": "mingw-w64-clang-x86_64-emacs-pdf-tools-server",
+        }
+        package = package_by_msystem.get(
+            msystem,
+            "mingw-w64-x86_64-emacs-pdf-tools-server",
+        )
 
-【推荐】安装预编译 server（最省事）
-  1. 安装 MSYS2：https://www.msys2.org/
-  2. 打开 MINGW64 终端，执行：
-       pacman -Syu
-       pacman -S mingw-w64-x86_64-emacs-pdf-tools-server
-  3. 把 C:\\msys64\\mingw64\\bin 加入系统 PATH，或在 Emacs 里：
-       (setenv "PATH" (concat "C:\\\\msys64\\\\mingw64\\\\bin;" (getenv "PATH")))
-  4. 重启 Emacs，打开任意 PDF 即可。
+        if which("epdfinfo"):
+            print(f"✅ 已在 PATH 中发现 epdfinfo: {which('epdfinfo')}")
+            return True
 
-【自己编译】
-  1. MINGW64 终端：
-       pacman -S base-devel mingw-w64-x86_64-toolchain \\
-                 mingw-w64-x86_64-zlib mingw-w64-x86_64-libpng \\
-                 mingw-w64-x86_64-poppler
-  2. cd 到 packages/pdf-tools
-  3. make -s
-  4. 把 server/epdfinfo.exe 放到 pdf-tools 目录下，并确保 PATH 含 mingw64/bin
-""")
-        # 检测是否已经有 epdfinfo
-        for candidate in [
-            pdf_dir / "epdfinfo.exe",
-            pdf_dir / "server" / "epdfinfo.exe",
-        ]:
-            if candidate.exists():
-                print(f"✅ 已发现 {candidate.relative_to(ROOT)}")
+        pacman = which("pacman")
+        if pacman:
+            print(f"🔧 Windows 上使用 MSYS2 pacman 安装 pdf-tools server: {package}")
+            if run_command([pacman, "-S", "--needed", package], check=False):
+                print("✅ pdf-tools server 安装完成")
+                print("   请确保对应 MSYS2 bin 目录在 PATH 中，然后重启 Emacs。")
                 return True
-        print("ℹ 当前未找到 epdfinfo.exe，请按上面步骤处理")
+            print("❌ pacman 安装 pdf-tools server 失败")
+            return False
+
+        print(f"""
+⚠️  Windows 上不再尝试在 packages/pdf-tools 里 make 编译。
+请安装 MSYS2，并在对应终端里执行：
+
+  pacman -Syu
+  pacman -S --needed {package}
+
+然后把对应 bin 目录加入系统 PATH，例如：
+  C:\\msys64\\mingw64\\bin
+  C:\\msys64\\ucrt64\\bin
+
+重启 Emacs 后打开 PDF 即可。
+""")
         return True
 
-    # Linux / macOS
+    if is_macos():
+        print("✅ macOS 跳过本地 make 编译 pdf-tools")
+        print("   如首次打开 PDF 未自动可用，在 Emacs 中执行: M-x pdf-tools-install")
+        return True
+
+    # Linux keeps the previous local build path.
     make = which("make")
     if not make:
         print("⚠ 未找到 make，跳过 pdf-tools 编译")
@@ -384,10 +714,16 @@ Windows 特别注意：
 - auctex 若 make 失败，可在 MSYS2 UCRT64 里：
     pacman -S base-devel git make texinfo
     并把 Emacs bin 与 MiKTeX bin 加入 PATH 后再 make
-- pdf-tools 强烈建议用 MSYS2 的预编译包（见上方说明）
+- pdf-tools 会通过 MSYS2 pacman 安装预编译 server，不在本地 make
+
+macOS 特别注意：
+- pdf-tools 不在脚本里 make；如首次打开 PDF 未自动可用，执行 M-x pdf-tools-install
 
 日常更新只需：
   python update_emacs.py
+
+只设置邮件账号：
+  python update_emacs.py --mail
 ============================================================
 """)
 
@@ -397,11 +733,16 @@ def main() -> int:
     parser.add_argument("--cache", action="store_true", help="只生成 load-path 缓存")
     parser.add_argument("--build", action="store_true", help="只编译需要 make 的包")
     parser.add_argument("--skip-git", action="store_true", help="跳过 git 操作")
+    parser.add_argument("--mail", action="store_true", help="只设置 MAIL_ACCOUNT 邮件地址")
     args = parser.parse_args()
 
     print("=" * 60)
     print("Emacs configuration updater / first-time setup")
     print("=" * 60)
+
+    if args.mail:
+        configure_mail_account_env(force=True)
+        return 0
 
     configure_mail_account_env()
 

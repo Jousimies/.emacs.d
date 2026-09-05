@@ -13,3 +13,4 @@ emacs
 build-emacs
 .cask
 __pycache__
+load-path-cache.el
