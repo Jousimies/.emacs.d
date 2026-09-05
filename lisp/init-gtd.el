@@ -58,7 +58,10 @@
     :group 'org)
 
   (defcustom org2calendar-exe-path
-    (expand-file-name "module/EmacsCalendarSync.exe" user-emacs-directory)
+    (expand-file-name (if (eq system-type 'windows-nt)
+                          "module/EmacsCalendarSync.exe"
+                        "module/EmacsCalendarSync")
+                      user-emacs-directory)
     "Path to the external calendar sync executable."
     :type 'string
     :group 'org2calendar)
@@ -73,6 +76,9 @@ If nil, the program will use the last active account in local cache."
   ;; 在 Windows 上设置环境变量 MS_CALENDAR_ACCOUNT 为邮箱地址。
   (when sys/win32p
     (setq org2calendar-account (getenv "MAIL_ACCOUNT")))
+
+  (define-derived-mode org2calendar-output-mode special-mode "Org-Cal-Sync"
+    "Major mode for Org calendar sync output buffers.")
 
   (defun org2calendar-get-context-summary ()
     "获取标题摘要。如果父标题存在且不属于特定的过滤词，则返回 '父标题@当前标题'。
@@ -107,17 +113,26 @@ Optional argument ACCOUNT specifies the target Microsoft account email."
            (target-acc (or account org2calendar-account))
            ;; 构建命令行参数
            (args (if (and target-acc (not (string-empty-p target-acc)))
-                     (list "-a" target-acc)
+                     (list "--account" target-acc)
                    '()))
            ;; 强制设定通信编码为 UTF-8
            (coding-system-for-write 'utf-8)
            (coding-system-for-read 'utf-8)
+           ;; 使用 pipe 而不是 pty。Emacs 默认可能用 pty 启动本地进程，
+           ;; 外部程序会把 stdin 视为终端而不按“三行标准输入”读取。
+           (process-connection-type nil)
+           (output-buffer (get-buffer-create "*Org-Cal-Sync*"))
            ;; 启动外部进程
-           (proc (apply #'start-process
-			"org-ms-cal-sync"
-			"*Org-Cal-Sync*"
-			org2calendar-exe-path
-			args))
+           (proc (progn
+                   (with-current-buffer output-buffer
+                     (let ((inhibit-read-only t))
+                       (erase-buffer))
+                     (org2calendar-output-mode))
+                   (apply #'start-process
+			  "org-ms-cal-sync"
+			  output-buffer
+			  org2calendar-exe-path
+			  args)))
            (payload (concat title "\n" start-str "\n" end-str "\n")))
 
       ;; 将 payload 写入 Stdin 并关闭 EOF
