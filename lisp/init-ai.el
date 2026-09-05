@@ -26,12 +26,12 @@
   :hook ((magit-mode . gptel-magit-install))
   :config
   (require 'gptel)
-  (unless (featurep 'gptel-gemini)
-    (require 'gptel-gemini))
-  (setq gptel-magit-backend (gptel-make-gemini "Gemini"
-					       :key 'gptel-api-key
-					       :stream t)
-	gptel-magit-models 'gemini-3.5-flash)
+  ;; (unless (featurep 'gptel-gemini)
+  ;;   (require 'gptel-gemini))
+  ;; (setq gptel-magit-backend (gptel-make-gemini "Gemini"
+  ;; 					       :key 'gptel-api-key
+  ;; 					       :stream t)
+  ;; 	gptel-magit-models 'gemini-3.5-flash)
   (setq gptel-magit-body-length 72
 	gptel-magit-commit-prompt (cdr (assoc "Conventional Commits" gptel-magit-commit-styles-alist))))
 
