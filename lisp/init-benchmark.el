@@ -73,7 +73,8 @@ LOAD-DURATION is the time taken in milliseconds to load FEATURE.")
   (progn
     (require 'benchmark-init-loaddefs)
     (benchmark-init/activate)
-    (add-hook 'after-init-hook 'benchmark-init/deactivate)))
+    ;; (add-hook 'after-init-hook 'benchmark-init/deactivate)
+    ))
 
 
 (provide 'init-benchmark)

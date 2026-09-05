@@ -8,7 +8,7 @@
 ;; Increase process read size before any package can start subprocesses.
 (setq read-process-output-max (* 4 1024 1024))
 
-(setq load-prefer-newer noninteractive)
+(setq load-prefer-newer t)
 
 ;; Emacs startup performance
 ;; https://github.com/seagle0128/.emacs.d/blob/master/init.el
@@ -37,26 +37,17 @@
         w32-pipe-buffer-size (* 64 1024)))  ; read more at a time (was 4K)
 
 ;; https://www.emacswiki.org/emacs/ExecPath
-(defun set-exec-path-from-shell-PATH ()
-  "This is particularly useful under Mac OS X and macOS."
-  (interactive)
-  (let ((path-from-shell (replace-regexp-in-string
-                          "[ \t\n]*$" "" (shell-command-to-string
-                                          "$SHELL --login -c 'echo $PATH'"))))
-    (setenv "PATH" path-from-shell)
-    (setq exec-path (split-string path-from-shell path-separator))))
-
 (when (eq system-type 'darwin)
-  ;; Calling "$SHELL --login" during early-init is surprisingly expensive on
-  ;; macOS.  Add the usual Homebrew paths immediately, then refresh from the
-  ;; login shell after the first frame is usable.
-  (dolist (dir '("/opt/homebrew/bin" "/opt/homebrew/sbin" "/usr/local/bin"))
-    (when (file-directory-p dir)
-      (add-to-list 'exec-path dir)
-      (setenv "PATH" (concat dir path-separator (getenv "PATH")))))
-  (add-hook 'window-setup-hook
-            (lambda ()
-              (run-with-idle-timer 3 nil #'set-exec-path-from-shell-PATH))))
+  (defun set-exec-path-from-shell-PATH ()
+    "This is particularly useful under Mac OS X and macOS."
+    (interactive)
+    (let ((path-from-shell (replace-regexp-in-string
+                            "[ \t\n]*$" "" (shell-command-to-string
+                                            "$SHELL --login -c 'echo $PATH'"))))
+      (setenv "PATH" path-from-shell)
+      (setq exec-path (split-string path-from-shell path-separator))))
+
+  (set-exec-path-from-shell-PATH))
 
 (put 'if-let 'byte-obsolete-info nil)
 (put 'when-let 'byte-obsolete-info nil)
@@ -102,9 +93,11 @@
   (push '(width . 150) default-frame-alist)
   (push '(height . 50) default-frame-alist))
 
-(blink-cursor-mode -1)
+;; (blink-cursor-mode -1)
 
-(setq-default mode-line-invisible-mode t)
+(if (> emacs-major-version 31)
+    (setq-default mode-line-invisible-mode t)
+  (setq-default mode-line-format nil))
 
 (defun my/apply-theme (appearance)
   "Load theme, taking current system APPEARANCE into consideration."

@@ -511,6 +511,37 @@ def collect_package_load_paths() -> list[str]:
     return list(dict.fromkeys(result))
 
 
+def collect_package_autoload_dirs() -> list[Path]:
+    """Return package directories that directly contain autoloadable .el files."""
+    result: list[Path] = []
+    if not PACKAGE_DIR.is_dir():
+        return result
+
+    for package in sorted(PACKAGE_DIR.iterdir()):
+        if (not package.is_dir()
+                or should_skip_directory(package)
+                or package.name in PACKAGE_AUTOLOAD_EXCLUDES):
+            continue
+        for current, dirs, files in os.walk(package):
+            current_path = Path(current)
+            if (current_path / ".nosearch").exists():
+                dirs[:] = []
+                continue
+            dirs[:] = [
+                d for d in dirs
+                if not should_skip_directory(current_path / d)
+            ]
+            if any(
+                f.endswith(".el")
+                and not f.startswith(".")
+                and not f.endswith(("-autoloads.el", "-pkg.el"))
+                for f in files
+            ):
+                result.append(current_path)
+
+    return list(dict.fromkeys(result))
+
+
 def collect_feature_map() -> dict[str, list[str]]:
     feature_map: dict[str, list[str]] = {}
     if not PACKAGE_DIR.is_dir():
@@ -654,10 +685,11 @@ def generate_package_autoloads() -> bool:
         return True
 
     autoload_file = elisp_string(PACKAGE_AUTOLOADS.as_posix())
-    package_dir = elisp_string(PACKAGE_DIR.as_posix())
+    autoload_dirs = collect_package_autoload_dirs()
     PACKAGE_AUTOLOADS.unlink(missing_ok=True)
-    excluded_packages = " ".join(
-        f'"{elisp_string(name)}"' for name in sorted(PACKAGE_AUTOLOAD_EXCLUDES)
+    dirs_elisp = "\n        ".join(
+        f'("{elisp_string(path.relative_to(PACKAGE_DIR).as_posix())}" . "{elisp_string(path.as_posix())}")'
+        for path in autoload_dirs
     )
     script = f'''
 (progn
@@ -666,16 +698,17 @@ def generate_package_autoloads() -> bool:
 (let ((backup-inhibited t)
       (make-backup-files nil)
       (version-control 'never)
-      (autoload-timestamps nil)
-      (excluded '({excluded_packages})))
-  (dolist (dir (directory-files "{package_dir}" t "^[^.].*"))
-    (when (and (file-directory-p dir)
-               (not (member (file-name-nondirectory (directory-file-name dir)) excluded))
-               (not (file-exists-p (expand-file-name ".nosearch" dir))))
+      (autoload-timestamps nil))
+  (dolist (entry '({dirs_elisp}))
+    (let ((display-name (car entry))
+          (dir (cdr entry)))
+      (message "INFO     Scraping %s for package-autoloads.el..." display-name)
       (condition-case err
-          (update-directory-autoloads dir)
+          (let ((inhibit-message t))
+            (update-directory-autoloads dir))
         (error
-         (message "Skip autoloads for %s: %S" dir err))))))
+         (message "Skip autoloads for %s: %S" display-name err)))
+      (message "INFO     Scraping %s for package-autoloads.el...done" display-name))))
 (with-temp-buffer
   (when (file-exists-p generated-autoload-file)
     (insert-file-contents generated-autoload-file))
@@ -699,6 +732,7 @@ def generate_package_autoloads() -> bool:
             text = text.replace('"../packages/', f'"{elisp_string((ROOT / "packages").as_posix())}/')
             PACKAGE_AUTOLOADS.write_text(text, encoding="utf-8")
         print(f"⚡ 已生成 {PACKAGE_AUTOLOADS.relative_to(ROOT)}")
+        print(f"   autoload 扫描目录: {len(autoload_dirs)}")
         if result.stderr.strip():
             print(result.stderr.strip())
         return True

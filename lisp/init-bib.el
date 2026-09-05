@@ -20,64 +20,52 @@
       (setq org-cite-insert-processor 'citar)
       (setq org-cite-follow-processor 'citar))))
 
-(use-package citar
-  :custom
-  (citar-templates '((main . "${=type=:12}|${date year issued:4}| ${title:80}")
-		     (suffix . " |${=key= id} |${tags keywords:*} |${author editor:20%sn}") ;
-		     (preview . "${author editor:%etal} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.")
-		     (note . "Notes on ${author editor:%etal}, ${title}")))
-  (citar-indicators (list citar-indicator-links
-                          citar-indicator-files
-                          citar-indicator-notes
-                          citar-indicator-cited))
-  (citar-library-paths `(,(expand-file-name "PDF/" my-galaxy)))
-  (citar-notes-paths `(,(expand-file-name "denote/References" my-galaxy)))
-  (citar-library-file-extensions '("pdf" "jpg" "epub"))
-  (citar-bibliography my/reference-lists)
-  (citar-symbol-separator "​")
-  (citar-select-multiple t)
-  (citar-file-additional-files-separator "-")
-  (citar-at-point-function 'embark-act)
-  (citar-file-open-function #'consult-file-externally))
+(with-eval-after-load 'citar
+  (setq citar-templates '((main . "${=type=:12}|${date year issued:4}| ${title:80}")
+                          (suffix . " |${=key= id} |${tags keywords:*} |${author editor:20%sn}")
+                          (preview . "${author editor:%etal} (${year issued date}) ${title}, ${journal journaltitle publisher container-title collection-title}.")
+                          (note . "Notes on ${author editor:%etal}, ${title}")))
+  (setq citar-indicators (list citar-indicator-links
+                               citar-indicator-files
+                               citar-indicator-notes
+                               citar-indicator-cited))
+  (setq citar-library-paths `(,(expand-file-name "PDF/" my-galaxy)))
+  (setq citar-notes-paths `(,(expand-file-name "denote/References" my-galaxy)))
+  (setq citar-library-file-extensions '("pdf" "jpg" "epub"))
+  (setq citar-bibliography my/reference-lists)
+  (setq citar-symbol-separator "​")
+  (setq citar-select-multiple t)
+  (setq citar-file-additional-files-separator "-")
+  (setq citar-at-point-function 'embark-act)
+  (setq citar-file-open-function #'consult-file-externally))
 
-(use-package citar-latex
-  :after tex)
-
-(use-package citar-capf
-  :hook ((LaTeX-mode . citar-capf-setup)
-         (org-mode . citar-capf-setup)))
+(add-hook 'LaTeX-mode-hook #'citar-capf-setup)
+(add-hook 'org-mode-hook #'citar-capf-setup)
 
 (with-eval-after-load 'citar-org
     (define-key citar-org-citation-map (kbd "RET") 'org-open-at-point))
 
-(use-package citar-embark
-  :after citar
-  :hook (org-mode . citar-embark-mode))
+(add-hook 'org-mode-hook #'citar-embark-mode)
+(with-eval-after-load 'citar
+  (with-eval-after-load 'denote
+    (setq citar-denote-use-bib-keywords t)
+    (setq citar-denote-subdir "References")
+    (setq citar-denote-cite-includes-reference t)
+    (citar-denote-mode)))
 
-(use-package citar-denote
-  :after (citar denote)
-  :custom
-  (citar-denote-use-bib-keywords t)
-  (citar-denote-subdir "References")
-  (citar-denote-cite-includes-reference t)
-  :config
-  (citar-denote-mode))
-
-(use-package zotra
-  :commands zotra-add-entry
-  :config
+;; zotra
+(with-eval-after-load 'zotra
   (setq zotra-backend 'zotra-server)
   (setq zotra-local-server-directory "~/zotra-server/"))
 
-(use-package biblio
-  :commands biblio-lookup biblio-crossref-lookup)
+;; biblio
+(with-eval-after-load 'biblio
+  (add-to-list 'viper-emacs-state-mode-list 'biblio-selection-mode))
 
-(use-package scihub
-  :commands scihub
-  :config
+(with-eval-after-load 'scihub
   (setq scihub-download-directory "~/Downloads/"
-	scihub-open-after-download t
-	scihub-fetch-domain 'scihub-fetch-domains-lovescihub))
+        scihub-open-after-download t
+        scihub-fetch-domain 'scihub-fetch-domains-lovescihub))
 
 ;; Need install bibutils.
 ;; https://sourceforge.net/p/bibutils/home/Bibutils/

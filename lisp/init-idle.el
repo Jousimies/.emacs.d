@@ -2,7 +2,7 @@
 
 ;;; use-package :idle 关键字 + 自动 idle 加载
 
-(require 'use-package-core)
+;; (require 'use-package-core)
 
 (defgroup my-idle-loader nil
   "Ordered automatic idle loading."
@@ -102,36 +102,36 @@
 
 ;;; use-package keyword: :idle
 
-(push :idle use-package-keywords)
+;; (push :idle use-package-keywords)
 
-(defun use-package-normalize/:idle (_name keyword args)
-  "Normalize :idle keyword.
-ARGS can be:
-  t              → (require 'NAME nil t)
-  number         → (number . (require 'NAME nil t))
-  form           → form
-  (number form)  → (number . form)"
-  (use-package-only-one (symbol-name keyword) args
-    (lambda (_label arg)
-      (cond
-       ((eq arg t) t)
-       ((numberp arg) arg)
-       ((and (consp arg) (numberp (car arg))) arg)
-       (t arg)))))
+;; (defun use-package-normalize/:idle (_name keyword args)
+;;   "Normalize :idle keyword.
+;; ARGS can be:
+;;   t              → (require 'NAME nil t)
+;;   number         → (number . (require 'NAME nil t))
+;;   form           → form
+;;   (number form)  → (number . form)"
+;;   (use-package-only-one (symbol-name keyword) args
+;;     (lambda (_label arg)
+;;       (cond
+;;        ((eq arg t) t)
+;;        ((numberp arg) arg)
+;;        ((and (consp arg) (numberp (car arg))) arg)
+;;        (t arg)))))
 
-(defun use-package-handler/:idle (name _keyword arg rest state)
-  "Handle :idle keyword. Add to idle loader queue."
-  (let* ((body (use-package-process-keywords name rest state))
-         (form (cond
-                ((eq arg t)
-                 `(require ',name nil t))
-                ((numberp arg)
-                 `(,arg . (require ',name nil t)))
-                ((and (consp arg) (numberp (car arg)))
-                 arg)
-                (t arg))))
-    `((my/idle-loader-add ',form)
-      ,@body)))
+;; (defun use-package-handler/:idle (name _keyword arg rest state)
+;;   "Handle :idle keyword. Add to idle loader queue."
+;;   (let* ((body (use-package-process-keywords name rest state))
+;;          (form (cond
+;;                 ((eq arg t)
+;;                  `(require ',name nil t))
+;;                 ((numberp arg)
+;;                  `(,arg . (require ',name nil t)))
+;;                 ((and (consp arg) (numberp (car arg)))
+;;                  arg)
+;;                 (t arg))))
+;;     `((my/idle-loader-add ',form)
+;;       ,@body)))
 
 
 ;;; 启动
@@ -183,11 +183,6 @@ ARGS can be:
 (add-hook 'window-setup-hook #'on-setup-hooks-h -100)
 
 (when init-file-debug
-  (setq my/idle-loader-log t)
-  (setq use-package-expand-minimally t)
-  (setq use-package-verbose t)
-  (setq use-package-compute-statistics t)
-  (setq use-package-minimum-reported-time 0))
-
+  (setq my/idle-loader-log t))
 
 (provide 'init-idle)

@@ -11,14 +11,13 @@
 ;; 使用 make 进行编译即可
 ;; (load ~/path/to/auctex-autoloads.el nil t t) 这里的 path 需要完整的路径，不能省略
 
-(use-package auctex
-  :mode ("\\.tex\\'" . LaTeX-mode)
-  :hook (LaTeX-mode . turn-on-reftex)
-  ;; :bind (:map LaTeX-mode-map
-  ;;             ("C-c h" . TeX-doc))
-  :init
-  (load (expand-file-name "packages/auctex/auctex-autoloads.el" user-emacs-directory) nil t t)
-  :config
+;; Load auctex autoloads early (from :init)
+(load (expand-file-name "packages/auctex/auctex-autoloads.el" user-emacs-directory) nil t t)
+(add-to-list 'auto-mode-alist '("\\.tex\\'" . LaTeX-mode))
+(add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+(with-eval-after-load 'auctex
+  ;; (define-key LaTeX-mode-map (kbd "C-c h") #'TeX-doc)
+
   (setq-default preview-scale 1.4
                 preview-scale-function
                 (lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))
@@ -44,12 +43,14 @@
   (define-key LaTeX-mode-map (kbd "C-c h") #'TeX-doc))
 (add-hook 'TeX-mode-hook #'turn-on-font-lock)
 
-(use-package cdlatex
-  :hook (org-mode . turn-on-org-cdlatex))
+;; cdlatex
+(add-hook 'org-mode-hook #'turn-on-org-cdlatex)
 
-(use-package auctex-latexmk
-  :hook (LaTeX-mode . auctex-latexmk-setup))
+;; auctex-latexmk
+;; (add-hook 'LaTeX-mode-hook #'auctex-latexmk-setup)
 
+;; Reftex
+(keymap-set global-map "<remap> <reftex-citation>" #'citar-insert-citation)
 (with-eval-after-load 'reftex
   (setopt reftex-insert-label-flags '("sf" "sfte")
 	  reftex-plug-into-AUCTeX t
@@ -58,22 +59,18 @@
 	  reftex-default-bibliography org-cite-global-bibliography
 	  reftex-toc-follow-mode t
 	  reftex-toc-split-windows-horizontally t
-	  reftex-toc-split-windows-fraction 0.25))
-
-;; (add-hook 'LaTeX-mode-hook #'tuan-on-reftex)
-(keymap-set global-map "<remap> <reftex-citation>" #'citar-insert-citation)
-(setf (alist-get "\\*RefTex" display-buffer-alist nil t #'equal)
+	  reftex-toc-split-windows-fraction 0.25)
+  (setf (alist-get "\\*RefTex" display-buffer-alist nil t #'equal)
         '((display-buffer-in-side-window)
           (window-height . 0.25)
-          (side . bottom) (slot . -9)))
+          (side . bottom) (slot . -9))))
 
-(use-package ox-latex
-  :defer t
-  :config
+(with-eval-after-load 'ox-latex
   (setq org-latex-src-block-backend 'minted)
   (setq org-latex-minted-options '(("breaklines" "true")
                                    ("breakanywhere" "true")))
   (setq org-latex-classes nil)
+
   (add-to-list 'org-latex-classes
                '("book"
                  "\\documentclass[UTF8,twoside,a4paper,12pt,openright]{ctexrep}
@@ -87,38 +84,45 @@
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-  (add-to-list 'org-latex-classes '("article-cn" "\\documentclass{ctexart}
-                                      [NO-DEFAULT-PACKAGES]
-                                      [NO-PACKAGES]
-                                      [EXTRA]"
-                                    ("\\section{%s}" . "\\section*{%s}")
-                                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("article-cn"
+                 "\\documentclass{ctexart}
+                   [NO-DEFAULT-PACKAGES]
+                   [NO-PACKAGES]
+                   [EXTRA]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-  (add-to-list 'org-latex-classes '("article" "\\documentclass[11pt]{article}
-                                      [NO-DEFAULT-PACKAGES]
-                                      [NO-PACKAGES]
-                                      [EXTRA]"
-                                    ("\\section{%s}" . "\\section*{%s}")
-                                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes '("beamer" "\\documentclass[presentation]{beamer}
-                                      [DEFAULT-PACKAGES]
-                                      [PACKAGES]
-                                      [EXTRA]"
-                                    ("\\section{%s}" . "\\section*{%s}")
-                                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("article"
+                 "\\documentclass[11pt]{article}
+                   [NO-DEFAULT-PACKAGES]
+                   [NO-PACKAGES]
+                   [EXTRA]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("beamer"
+                 "\\documentclass[presentation]{beamer}
+                   [DEFAULT-PACKAGES]
+                   [PACKAGES]
+                   [EXTRA]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 
   (setq org-latex-pdf-process
-        '("xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
+        '("xelatex -8bit --shell-escape -interaction=nonstopmode -output-directory %o %f"
           "bibtex -shell-escape %b"
-          "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
-          "xelatex -8bit --shell-escape  -interaction=nonstopmode -output-directory %o %f"
+          "xelatex -8bit --shell-escape -interaction=nonstopmode -output-directory %o %f"
+          "xelatex -8bit --shell-escape -interaction=nonstopmode -output-directory %o %f"
           "rm -fr %b.out %b.log %b.tex %b.brf %b.bbl"))
 
   (setq org-latex-logfiles-extensions '("lof" "lot" "tex~" "aux" "idx" "log"
@@ -127,5 +131,6 @@
                                         "entoc" "ps" "spl" "bbl"))
 
   (setq org-latex-prefer-user-labels t))
+
 
 (provide 'init-latex)

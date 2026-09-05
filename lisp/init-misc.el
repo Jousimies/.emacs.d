@@ -1,13 +1,13 @@
 ;; -*- lexical-binding: t; -*-
-(use-package gcmh
-  :hook (on-first-buffer . gcmh-mode)
-  :config
+
+(add-hook 'on-first-buffer-hook #'gcmh-mode)
+(with-eval-after-load 'gcmh
   (setq gc-cons-percentage 0.1)
   (setq gcmh-idle-delay 'auto)
   (setq gcmh-auto-idle-delay-factor 10)
   (setq gcmh-high-cons-threshold #x1000000))
-
 (advice-add 'after-focus-change-function :after 'garbage-collect)
+
 ;;;###autoload
 (defun my/insert-specified-datetree ()
   "Insert a datetree entry for a specified date."

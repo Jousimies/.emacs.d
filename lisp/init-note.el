@@ -1,41 +1,22 @@
 ;; -*- lexical-binding: t; -*-
 
-(use-package denote
-  :idle t
-  :custom
-  (denote-prompts '(title keywords signature))
-  (denote-rename-confirmations nil)
-  (denote-org-store-link-to-heading nil)
-  (denote-directory my/denote-directory)
-  (denote-rename-buffer-format "%b %t")
-  (denote-rename-buffer-backlinks-indicator ""))
+;; denote
+(with-eval-after-load 'denote
+  (setq denote-prompts '(title keywords signature))
+  (setq denote-rename-confirmations nil)
+  (setq denote-org-store-link-to-heading nil)
+  (setq denote-directory my/denote-directory)
+  (setq denote-rename-buffer-format "%b %t")
+  (setq denote-rename-buffer-backlinks-indicator ""))
 
-(use-package denote-org
-  :idle t
-  :after denote org
-  :commands
-  (denote-org-link-to-heading
-   denote-org-backlinks-for-heading
+;; denote-journal
+(global-set-key (kbd "C-c n j") #'denote-journal-new-or-existing-entry)
+(add-hook 'calendar-mode-hook #'denote-journal-calendar-mode)
+(with-eval-after-load 'denote-journal
+  (setq denote-journal-directory
+        (expand-file-name "journal" my/denote-directory))
+  (setq denote-journal-keyword "journal"))
 
-   denote-org-extract-org-subtree
-
-   denote-org-convert-links-to-file-type
-   denote-org-convert-links-to-denote-type
-
-   denote-org-dblock-insert-files
-   denote-org-dblock-insert-links
-   denote-org-dblock-insert-backlinks
-   denote-org-dblock-insert-missing-links
-   denote-org-dblock-insert-files-as-headings))
-
-(use-package denote-journal
-  :idle t
-  :bind ("C-c n j" . denote-journal-new-or-existing-entry)
-  :hook (calendar-mode . denote-journal-calendar-mode)
-  :custom
-  (denote-journal-directory
-   (expand-file-name "journal" my/denote-directory))
-  (denote-journal-keyword "journal"))
 
 ;; (use-package denote-explore
 ;;   :bind
@@ -69,18 +50,16 @@
 ;;   (denote-explore-json-edges-filename (expand-file-name "denote-edges.json" cache-directory))
 ;;   (denote-explore-json-vertices-filename (expand-file-name "denote-vertices.json" cache-directory)))
 
-(use-package consult-notes
-  :bind ("C-c n f" . consult-notes)
-  :commands consult-notes-denote-mode
-  ;;:hook (on-first-buffer . consult-notes-denote-mode)
-  :custom
-  (consult-notes-denote-files-function (lambda () (denote-directory-files nil t t))))
-
+;; consult-notes
+(with-eval-after-load 'consult-notes
+  (setq consult-notes-denote-files-function (lambda () (denote-directory-files nil t t))))
 (with-eval-after-load 'consult
   (consult-notes-denote-mode))
 
-(use-package olivetti
-  :bind ("<f7>" . olivetti-mode)
-  :init (setq olivetti-body-width 0.62))
+;; olivetti
+(global-set-key (kbd "<f7>") #'olivetti-mode)
+(with-eval-after-load 'olivetti
+  (setq olivetti-body-width 0.62))
+
 
 (provide 'init-note)

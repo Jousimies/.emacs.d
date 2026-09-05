@@ -11,35 +11,34 @@
 	org-agenda-align-tags-to-column 120
 	org-deadline-warning-days 7))
 
-(use-package org-gtd
-  :commands org-gtd-engage org-gtd-process-inbox org-gtd-engage-grouped-by-context
-  :init
-  (setq org-gtd-update-ack "4.0.0")
-  (setq org-gtd-directory "~/OneDrive/Galaxy/gtd/")
-  :bind ("<f10>" . org-gtd-capture)
-  :custom
-  (org-agenda-files (list org-gtd-directory))
-  (org-gtd-refile-to-any-target nil)
-  (org-gtd-refile-prompt-for-types '(single-action project-heading calendar someday delegated tickler habit))
-  (org-gtd-mode-lighter-display 'when-non-zero)
-  (org-use-fast-todo-selection 'expert)
-  (org-gtd-clarify-show-horizons 'right)
-  (org-gtd-clarify-display-helper-buffer t)
-  (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAIT(w)" "|" "DONE(d)" "CNCL(c)")))
-  (org-todo-state-tags-triggers
-   (quote (("CNCL" ("CNCL" . t))
-           ("WAIT" ("WAIT" . t))
-           (done ("WAIT"))
-           ("TODO" ("WAIT") ("CNCL"))
-           ("NEXT" ("WAIT") ("CNCL"))
-           ("DONE" ("WAIT") ("CNCL")))))
-  (org-gtd-keyword-mapping '((todo . "TODO")
-                             (next . "NEXT")
-                             (wait . "WAIT")
-			     (done . "DONE")
-                             (canceled . "CNCL")))
-  (org-gtd-areas-of-focus '("Work" "Professional" "Health" "Growth" "Finances" "Leisure" "Home" "Family" "Social"))
-  :config
+;; org-gtd
+(setq org-gtd-update-ack "4.0.0")
+(setq org-gtd-directory "~/OneDrive/Galaxy/gtd/")
+(global-set-key (kbd "<f10>") #'org-gtd-capture)
+
+(with-eval-after-load 'org-gtd
+  (setq org-agenda-files (list org-gtd-directory))
+  (setq org-gtd-refile-to-any-target nil)
+  (setq org-gtd-refile-prompt-for-types '(single-action project-heading calendar someday delegated tickler habit))
+  (setq org-gtd-mode-lighter-display 'when-non-zero)
+  (setq org-use-fast-todo-selection 'expert)
+  ;; (setq org-gtd-clarify-show-horizons 'right)
+  (setq org-gtd-clarify-display-helper-buffer t)
+  (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAIT(w)" "|" "DONE(d)" "CNCL(c)")))
+  (setq org-todo-state-tags-triggers
+        (quote (("CNCL" ("CNCL" . t))
+                ("WAIT" ("WAIT" . t))
+                (done ("WAIT"))
+                ("TODO" ("WAIT") ("CNCL"))
+                ("NEXT" ("WAIT") ("CNCL"))
+                ("DONE" ("WAIT") ("CNCL")))))
+  (setq org-gtd-keyword-mapping '((todo . "TODO")
+                                  (next . "NEXT")
+                                  (wait . "WAIT")
+                                  (done . "DONE")
+                                  (canceled . "CNCL")))
+  (setq org-gtd-areas-of-focus '("Work" "Professional" "Health" "Growth" "Finances" "Leisure" "Home" "Family" "Social"))
+
   (org-edna-mode)
   (org-gtd-mode))
 

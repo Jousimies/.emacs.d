@@ -26,12 +26,11 @@
 ;; winget search ripgrep
 ;; winget install BurntSushi.ripgrep.MSVC
 ;; rg.exe 的路径在环境变量 path 中，(executable-find "rg") 就可以找到路径
-(use-package rg
-  :bind ("M-s r" . rg)
-  :custom
-  (rg-executable (executable-find "rg"))
-  (rg-group-result t)
-  (rg-show-columns t))
+(global-set-key (kbd "M-s r") #'rg)
+(with-eval-after-load 'rg
+  (setq rg-executable (executable-find "rg"))
+  (setq rg-group-result t)
+  (setq rg-show-columns t))
 
 (with-eval-after-load 'rg
   (add-to-list 'rg-finish-functions (lambda (buffer _) (pop-to-buffer buffer)))

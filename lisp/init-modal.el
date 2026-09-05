@@ -12,7 +12,6 @@
       viper-auto-indent t)
 
 ;;; Viper 光标色：与主题 / 系统明暗同步
-
 (defun my-viper-force-cursor (color)
   "把 Viper 相关光标色全部设为 COLOR（字符串）。
 同时更新：全局变量、frame 参数、saved 缓存，并按当前状态立刻应用。"
@@ -75,9 +74,6 @@
 
 (when (eq system-type 'windows-nt)
   (add-hook 'viper-vi-state-hook (lambda () (w32-set-ime-open-status nil))))
-
-(with-eval-after-load 'biblio
-  (add-to-list 'viper-emacs-state-mode-list 'biblio-selection-mode))
 
 ;; (use-package meow
 ;;   :commands meow-global-mode

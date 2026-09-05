@@ -66,8 +66,7 @@
 (setq-default cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)
 
-(my/idle-loader-add '(which-key-mode)
-		    '(global-goto-address-mode)
+(my/idle-loader-add '(global-goto-address-mode)
 		    '(midnight-mode)
 		    '(pixel-scroll-precision-mode)
 		    '(delete-selection-mode)
@@ -176,20 +175,17 @@
             (lambda (&rest _)
               (when buffer-file-name (ignore-errors (recenter)))))
 
-(use-package recentf
-  :idle t
-  :bind ("C-x C-r" . recentf-open-files)
-  :custom
-  (recentf-max-saved-items 50)
-  (recentf-keep nil)
-  (recentf-autosave-interval 300)
-  (recentf-show-messages nil)
-  (recentf-save-file (expand-file-name "recentf" cache-directory))
-  :config
+(add-hook 'on-first-buffer-hook #'recentf-mode)
+(keymap-global-set "C-x C-r" #'recentf-open-files)
+(with-eval-after-load 'recentf
+  (setq recentf-max-saved-items 50
+	recentf-keep nil
+	recentf-autosave-interval 300
+	recentf-show-messages nil
+	recentf-save-file (expand-file-name "recentf" cache-directory))
   (add-to-list 'recentf-exclude #'recentf-exclude-file-by-extension-p)
   (add-to-list 'recentf-filename-handlers #'abbreviate-file-name)
-  (add-to-list 'recentf-filename-handlers #'substring-no-properties)
-  (recentf-mode 1))
+  (add-to-list 'recentf-filename-handlers #'substring-no-properties))
 
 (add-hook 'prog-mode-hook #'electric-pair-mode)
 (add-hook 'prog-mode-hook #'electric-indent-mode)
@@ -215,6 +211,7 @@
                         '(face trailing tabs tab-mark))
             (whitespace-mode 1)))
 
+;;;###autoload
 (defun my/delete-trailing-whitespace-except-current-line ()
   "Delete trailing whitespace, but keep the current line intact."
   (interactive)
@@ -225,6 +222,7 @@
     (delete-trailing-whitespace beg bol)
     (delete-trailing-whitespace eol end)))
 
+;;;###autoload
 (defun auto-save-delete-trailing-whitespace-except-current-line ()
     (interactive)
     (let ((begin (line-beginning-position))
@@ -256,7 +254,7 @@
 	repeat-check-key t
 	set-mark-command-repeat-pop t))
 
-(add-hook 'on-first-buffer-hook #'tab-bar-mode)
+(add-hook 'on-first-input-hook #'tab-bar-mode)
 (with-eval-after-load 'tab-bar
   (setq tab-bar-auto-width nil
 	tab-bar-new-tab-choice 'scratch-buffer
@@ -304,6 +302,7 @@
 ;; 				  "*Ibuffer*"
 ;; 				  "*esh command on file*")))
 
+;;;###autoload
 (defun toggle-delete-other-windows ()
   "Delete other windows in frame if any, or restore previous window config."
   (interactive)
@@ -314,6 +313,7 @@
 
 (global-set-key (kbd "C-x 1") #'toggle-delete-other-windows)
 
+(add-hook 'on-first-input-hook #'which-key-mode)
 (with-eval-after-load 'which-key
   (setq which-key-idle-delay 0.1
 	which-key-show-remaining-keys t))

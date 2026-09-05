@@ -66,13 +66,11 @@
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-'") 'my/org-attach-visit-headline-from-dired))
 
-(use-package diredfl
-  :hook (dired-mode . diredfl-mode))
 
-(use-package file-info
-  :bind ("C-c c i" . file-info-show))
+(add-hook 'dired-mode-hook #'diredfl-mode)
 
-(use-package dired-sidebar
-  :bind ("C-x C-n" . dired-sidebar-toggle-sidebar))
+(keymap-global-set "C-c c i" #'file-info-show)
+
+(keymap-global-set "C-x C-n" #'dired-sidebar-toggle-sidebar)
 
 (provide 'init-dired)

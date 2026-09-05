@@ -1,14 +1,14 @@
 ;; -*- lexical-binding: t; -*-
 
-(use-package browse-at-remote
-  :bind ("M-g b" . browse-at-remote))
+;; browse-at-remote
+(global-set-key (kbd "M-g b") #'browse-at-remote)
 
-(use-package magit
-  :bind ("C-x g" . magit)
-  :config
+;; magit
+(global-set-key (kbd "C-x g") #'magit)
+(with-eval-after-load 'magit
   (magit-add-section-hook 'magit-status-sections-hook
-			  'magit-insert-modules
-			  'magit-insert-unpulled-from-upstream)
+                          'magit-insert-modules
+                          'magit-insert-unpulled-from-upstream)
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-overview)
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpulled-from-pushremote)
   (remove-hook 'magit-module-sections-hook 'magit-insert-modules-unpushed-to-pushremote)
@@ -323,5 +323,6 @@ If URL is nil, try to guess from the package's own remote, then prompt."
               (my/git-submodule-fix-one path)
             (error (message "Skip %s: %s" path err))))
       (message "Done. 请检查并提交 .gitmodules"))))
+
 
 (provide 'init-git)

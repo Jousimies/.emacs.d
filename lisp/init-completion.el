@@ -57,24 +57,21 @@
   (keymap-set completion-preview-active-mode-map "C-n" #'completion-preview-next-candidate)
   (keymap-set completion-preview-active-mode-map "C-p" #'completion-preview-prev-candidate))
 
-(use-package orderless
-  :idle t
-  :defer t
-  :custom
-  (orderless-matching-styles '(orderless-prefixes orderless-regexp))
-  (completion-styles '(basic substring initials orderless))
-  (completion-pcm-leading-wildcard t)
-  (completions-format 'vertical)
-  (completion-category-defaults nil)
-  (completion-category-overrides
-   '((file (styles . (basic partial-completion orderless)))
-     (bookmark (styles . (basic substring)))
-     (library (styles . (basic substring)))
-     (embark-keybinding (styles . (basic substring)))
-     (imenu (styles . (basic substring orderless)))
-     (consult-location (styles . (basic substring orderless)))
-     (kill-ring (styles . (emacs22 orderless)))
-     (eglot (styles . (emacs22 substring orderless))))))
+(with-eval-after-load 'orderless
+  (setq orderless-matching-styles '(orderless-prefixes orderless-regexp))
+  (setq completion-styles '(basic substring initials orderless))
+  (setq completion-pcm-leading-wildcard t)
+  (setq completions-format 'vertical)
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrides
+        '((file (styles . (basic partial-completion orderless)))
+          (bookmark (styles . (basic substring)))
+          (library (styles . (basic substring)))
+          (embark-keybinding (styles . (basic substring)))
+          (imenu (styles . (basic substring orderless)))
+          (consult-location (styles . (basic substring orderless)))
+          (kill-ring (styles . (emacs22 orderless)))
+          (eglot (styles . (emacs22 substring orderless))))))
 
 (defun my/ensure-orderless-before-completion ()
   "Load Orderless if the minibuffer wins the race with idle preloading."
@@ -84,51 +81,45 @@
 
 (add-hook 'minibuffer-setup-hook #'my/ensure-orderless-before-completion)
 
-(use-package marginalia
-  :idle t
-  :after fido-mode
-  :config
-  (marginalia-mode))
+(add-hook 'fido-mode-hook #'marginalia-mode)
 
-(use-package consult
-  :init
-  (advice-add 'consult-recent-file :before
-              (lambda (&rest _)
-                (unless recentf-mode
-                  (recentf-mode 1))))
-  :bind (([remap apropos] . consult-apropos)
-         ([remap bookmark-jump] . consult-bookmark)
-         ([remap goto-line] . consult-line)
-         ([remap locate] . consult-locate)
-         ([remap load-theme] . consult-theme)
-         ([remap man] . consult-man)
-         ([remap recentf-open-files] . consult-recent-file)
-         ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
-         ([remap switch-to-buffer-other-frame] . consult-buffer-other-frame)
-         ([remap yank-pop] . consult-yank-pop)
-	 ([remap imenu] . consult-imenu)
-	 ([remap rg] . consult-ripgrep)
-         :map minibuffer-mode-map
-         ("C-r" . consult-history))
-  :custom
-  (consult-narrow-key "<")
-  (consult-preview-key "M-."))
+;; consult
+(advice-add 'consult-recent-file :before
+            (lambda (&rest _)
+              (unless recentf-mode
+                (recentf-mode 1))))
 
-(use-package consult-org
-  :bind (:map org-mode-map
-	      ("M-g h" . consult-org-heading)))
+(global-set-key [remap apropos] #'consult-apropos)
+(global-set-key [remap bookmark-jump] #'consult-bookmark)
+(global-set-key [remap goto-line] #'consult-line)
+(global-set-key [remap locate] #'consult-locate)
+(global-set-key [remap load-theme] #'consult-theme)
+(global-set-key [remap man] #'consult-man)
+(global-set-key [remap recentf-open-files] #'consult-recent-file)
+(global-set-key [remap switch-to-buffer-other-window] #'consult-buffer-other-window)
+(global-set-key [remap switch-to-buffer-other-frame] #'consult-buffer-other-frame)
+(global-set-key [remap yank-pop] #'consult-yank-pop)
+(global-set-key [remap imenu] #'consult-imenu)
+(global-set-key [remap rg] #'consult-ripgrep)
 
-(use-package embark
-  :bind (([remap describe-bindings] . embark-bindings)
-         ("C-;" . embark-act)
-         ("M-." . embark-dwim)
-         (:map minibuffer-local-map
-               ("C-;" . embark-act)
-               ("C-c C-e" . embark-export)
-               ("C-c C-l" . embark-collect))))
+(with-eval-after-load 'consult
+  (setq consult-narrow-key "<")
+  (setq consult-preview-key "M-."))
 
-(use-package embark-consult
-  :after consult embark)
+(with-eval-after-load 'minibuffer
+  (define-key minibuffer-mode-map (kbd "C-c C-r") #'consult-history))
+
+(with-eval-after-load 'org
+  (define-key org-mode-map "M-g h" #'consult-org-heading))
+
+(global-set-key [remap describe-bindings] #'embark-bindings)
+(global-set-key (kbd "C-;") #'embark-act)
+(global-set-key (kbd "M-.") #'embark-dwim)
+
+(with-eval-after-load 'minibuffer
+  (define-key minibuffer-local-map (kbd "C-;") #'embark-act)
+  (define-key minibuffer-local-map (kbd "C-c C-e") #'embark-export)
+  (define-key minibuffer-local-map (kbd "C-c C-l") #'embark-collect))
 
 
 (provide 'init-completion)

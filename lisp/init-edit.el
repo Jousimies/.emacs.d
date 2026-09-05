@@ -11,24 +11,18 @@
 					   try-complete-lisp-symbol-partially
 					   try-complete-lisp-symbol)))
 
-(use-package expreg
-  :bind (("C-=" . expreg-expand)
-         ("C--" . expreg-contract)))
+(global-set-key (kbd "C-=") #'expreg-expand)
+(global-set-key (kbd "C--") #'expreg-contract)
 
-(use-package cape
-  :idle t
-  :bind ("C-c p" . cape-prefix-map)
-  :config
+(global-set-key (kbd "C-c p") #'cape-prefix-map)
+
+(with-eval-after-load 'minibuffer
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
   (add-hook 'completion-at-point-functions #'cape-elisp-block))
 
-(use-package surround
-  :commands surround-delete surround-change surround-insert)
-
-(use-package selected
-  :preface
-  (defun my/selected-wrap-textcolor (color)
+;;;###autoload
+(defun my/selected-wrap-textcolor (color)
     "用 \textcolor{COLOR}{region} 包裹选中的文字。"
     (interactive "sEnter color (default red): ")
     (let ((c (if (string-empty-p color) "red" color))
@@ -40,7 +34,8 @@
 	(goto-char beg)
 	(insert (format "\\textcolor{%s}{" c)))))
 
-  (defun my/org-insert-emphasis-with-zws (marker)
+;;;####autoload
+(defun my/org-insert-emphasis-with-zws (marker)
     "在标记符两侧自动插入零宽空格 (U+200B) 并包裹内容。"
     (interactive "sEnter marker (e.g. *, ~, =. default =): ")
     (let* ((c (if (string-empty-p marker) "*" marker))
@@ -56,7 +51,8 @@
           (goto-char (+ end 4))
 	(forward-char 2))))
 
-  (defun my/org-element-unwrap-emphasis ()
+;;;###autoload
+(defun my/org-element-unwrap-emphasis ()
     "参照 jf/org-link-remove-link 的逻辑，精准删除标记符及两侧的零宽空格。"
     (interactive)
     (let ((elem (org-element-context))
@@ -86,29 +82,24 @@
           (delete-region actual-beg actual-end)
           (insert content)
           (message "已清理标记: %s" marker-char)))))
-  :hook (post-select-region . selected-minor-mode)
-  :bind (:map selected-keymap
-              ("q" . selected-off)
-              ("x" . kill-region)
-              ("w" . count-words-region)
-              ("i" . surround-insert)
-              ("c" . surround-change)
-	      ("d" . surround-delete)
-              ("s" . my/org-insert-emphasis-with-zws)
-	      ("S" . my/org-element-unwrap-emphasis)
-              ("m" . apply-macro-to-region-lines)
-              ("\\" . indent-region)
-              (";" . comment-dwim)
-	      ("k" . my/selected-wrap-textcolor)))
 
- (use-package symbol-overlay
-  :hook ((prog-mode . symbol-overlay-mode)
-         (html-mode . symbol-overlay-mode))
-  :config
-  (with-eval-after-load 'embark
-    ;; (unless (featurep 'symbol-overlay)
-    ;;   (require 'symbol-overlay))
-    (defun my/embark-symbol-overlay-toggle ()
+(add-hook 'post-select-region-hook #'selected-minor-mode)
+(with-eval-after-load 'selected
+  (define-key selected-keymap (kbd "q") #'selected-off)
+  (define-key selected-keymap (kbd "x") #'kill-region)
+  (define-key selected-keymap (kbd "w") #'count-words-region)
+  (define-key selected-keymap (kbd "i") #'surround-insert)
+  (define-key selected-keymap (kbd "c") #'surround-change)
+  (define-key selected-keymap (kbd "d") #'surround-delete)
+  (define-key selected-keymap (kbd "s") #'my/org-insert-emphasis-with-zws)
+  (define-key selected-keymap (kbd "S") #'my/org-element-unwrap-emphasis)
+  (define-key selected-keymap (kbd "m") #'apply-macro-to-region-lines)
+  (define-key selected-keymap (kbd "\\") #'indent-region)
+  (define-key selected-keymap (kbd ";") #'comment-dwim)
+  (define-key selected-keymap (kbd "k") #'my/selected-wrap-textcolo))
+
+;;;###autoload
+(defun my/embark-symbol-overlay-toggle ()
       "如果当前符号未高亮，则高亮它；
 如果当前符号已经处于高亮状态，则清除缓冲区内所有高亮。"
       (interactive)
@@ -117,99 +108,95 @@
             (symbol-overlay-remove-all)
             (message "Cleared all highlights."))
 	(symbol-overlay-put)))
-    (advice-add 'embark-toggle-highlight :override #'my/embark-symbol-overlay-toggle)))
+(add-hook 'prog-mode-hook #'symbol-overlay-mode)
+(add-hook 'html-mode-hook #'symbol-overlay-mode)
+(advice-add 'embark-toggle-highlight :override #'my/embark-symbol-overlay-toggle)
 
-(use-package undo-fu-session
-  :hook (on-first-file . undo-fu-session-global-mode)
-  :custom
-  (undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory))
-  :config
-  (defun my/undo-fu-session--make-file-name (filename)
+
+(add-hook 'on-first-file-hook #'undo-fu-session-global-mode)
+
+;;;###autoload
+(defun my/undo-fu-session--make-file-name (filename)
     "Take the path FILENAME and return a name base on this."
     (concat
      (file-name-concat undo-fu-session-directory
                        (md5 (convert-standard-filename (expand-file-name filename))))
      (undo-fu-session--file-name-ext)))
+
+(with-eval-after-load 'undo-fu-session
+  (setq undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory))
   (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name))
 
-(use-package vundo
-  :commands vundo
-  :custom
-  (vundo-glyph-alist vundo-unicode-symbols))
+(with-eval-after-load 'vundo
+  (setq vundo-glyph-alist vundo-unicode-symbols))
 
-(use-package hungry-delete
-  :hook (on-first-input . global-hungry-delete-mode)
-  :custom
-  (hungry-delete-chars-to-skip " \t\n\r\f\v"))
+(add-hook 'on-first-input-hook #'global-hungry-delete-mode)
+(with-eval-after-load 'hungry-delete
+  (setq hungry-delete-chars-to-skip " \t\n\r\f\v"))
 
 ;; IME
 ;; 如果 Emacs 启动报 liberime-load 相关错误，将 .emacs.d/module/liberime 路径下的 dll 文件复制到 Emacs 的安装目录
-(use-package liberime
-  :if (or sys/win32p sys/macp)
-  :commands liberime-load
-  :hook (on-first-buffer . liberime-load)
-  :custom
-  (liberime-verbose nil)
-  (liberime-module-file
-   (cond
-    (sys/win32p (expand-file-name "module/liberime/liberime-core.dll" user-emacs-directory))
-    (sys/macp   (expand-file-name "module/liberime-core.dylib" user-emacs-directory))))
-  (liberime-user-data-dir
-   (cond
-    (sys/win32p "~/AppData/Roaming/Rime")
-    (sys/macp   "~/Library/Rime/"))))
+(with-eval-after-load 'liberime
+  (setq liberime-verbose nil))
+(setq liberime-module-file
+      (cond
+       (sys/win32p (expand-file-name "module/liberime/liberime-core.dll" user-emacs-directory))
+       (sys/macp   (expand-file-name "module/liberime-core.dylib" user-emacs-directory))))
+(setq liberime-user-data-dir
+      (cond
+       (sys/win32p "~/AppData/Roaming/Rime")
+       (sys/macp   "~/Library/Rime/")))
 
-(use-package rimel
-  :commands rimel-activate
-  :hook (on-first-input . (lambda ()
-			    (unless (assoc "rimel" input-method-alist)
-			      (register-input-method
-			       "rimel" "Chinese" #'rimel-activate
-			       (if (char-displayable-p 12563) (char-to-string 12563) "中")
-			       "Rimel - Rime input method via liberime"))))
-  :custom-face
-  (rimel-candidate-label-face ((t (:inherit font-lock-comment-face :height 0.85))))
-  (rimel-page-indicator-face ((t (:inherit font-lock-comment-face :height 0.85))))
-  (rimel-highlight-face ((t (:inherit hl-line))))
-  :custom
-  (default-input-method "rimel")
-  (rimel-inline-preedit t)
-  (rimel-candidate-show-preedit nil)
-  (rimel-candidate-label-format "%d ")
-  (rimel-page-indicator-format "%d%s")
-  (rimel-disable-predicates '(rimel-predicate-prog-in-code-p
-                              rimel-predicate-after-alphabet-char-p
-                              rimel-predicate-current-uppercase-letter-p
-                              rimel-predicate-org-in-src-block-p
-                              rimel-predicate-org-latex-mode-p
-                              rimel-predicate-tex-math-or-command-p))
-  :config
-  (use-package posframe
-    :custom
-    (rimel-show-candidate 'posframe)
-    (rimel-posframe-style 'horizontal)))
+(with-eval-after-load 'rimel
+  (custom-set-faces
+   '(rimel-candidate-label-face ((t (:inherit font-lock-comment-face :height 0.85))))
+   '(rimel-page-indicator-face ((t (:inherit font-lock-comment-face :height 0.85))))
+   '(rimel-highlight-face ((t (:inherit hl-line)))))
 
-(use-package liberime-regexp
-  :hook ((viper-insert-state . liberime-regexp-mode)
-	 (viper-insert-state . liberime-regexp-avy-mode))
-  :bind ([remap goto-char] . liberime-regexp-avy-goto-char-timer)
-  :custom
-  (liberime-regexp-auto-build nil)
-  (liberime-regexp-segment-mode))
+  (setq default-input-method "rimel")
+  (setq rimel-inline-preedit t)
+  (setq rimel-candidate-show-preedit nil)
+  (setq rimel-candidate-label-format "%d ")
+  (setq rimel-page-indicator-format "%d%s")
+  (setq rimel-disable-predicates '(rimel-predicate-prog-in-code-p
+                                   rimel-predicate-after-alphabet-char-p
+                                   rimel-predicate-current-uppercase-letter-p
+                                   rimel-predicate-org-in-src-block-p
+                                   rimel-predicate-org-latex-mode-p
+                                   rimel-predicate-tex-math-or-command-p)))
 
-(use-package sis
-  :defer t
-  :hook ((on-first-input . sis-global-inline-mode)
-	 (on-first-input . sis-global-context-mode)
-	 (on-first-input . sis-global-cursor-color-mode))
-  :config
+(add-hook 'on-first-input-hook
+          (lambda ()
+	      (unless (assoc "rimel" input-method-alist)
+                (register-input-method
+                 "rimel" "Chinese" #'rimel-activate
+                 (if (char-displayable-p 12563) (char-to-string 12563) "中")
+                 "Rimel - Rime input method via liberime"))))
+
+(with-eval-after-load 'rimel
+  (with-eval-after-load 'posframe
+    (setq rimel-show-candidate 'posframe)
+    (setq rimel-posframe-style 'horizontal)))
+
+(add-hook 'on-first-input-hook #'liberime-regexp-mode)
+(add-hook 'on-first-input-hook #'liberime-regexp-avy-mode)
+
+(with-eval-after-load 'liberime-regexp
+  (setq liberime-regexp-auto-build nil)
+  (setq liberime-regexp-segment-mode nil)
+  (global-set-key [remap goto-char] #'liberime-regexp-avy-goto-char-timer))
+
+(add-hook 'on-first-input-hook #'sis-global-inline-mode)
+(add-hook 'on-first-input-hook #'sis-global-context-mode)
+(add-hook 'on-first-input-hook #'sis-global-cursor-color-mode)
+(add-hook 'viper-vi-state-hook #'sis-set-english)
+
+(with-eval-after-load 'sis
   (sis-ism-lazyman-config nil "rimel" 'native)
-  ;; (sis-global-inline-mode)
-  ;; (sis-global-context-mode)
-  ;; (sis-global-cursor-color-mode)
-  (add-hook 'viper-vi-state-hook #'sis-set-english)
+
   (add-to-list 'sis-context-hooks 'viper-insert-state-hook)
 
+  ;; Defvars and helper functions
   (defvar-local +sis-inline-english-last-space-pos nil
     "The last space position in inline mode.")
 
@@ -221,14 +208,17 @@
   (add-hook 'sis-inline-mode-hook #'+sis-inline-add-post-self-insert-hook)
 
   (defun +sis-inline-add-post-self-insert-hook ()
-    (add-hook! post-self-insert-hook :local
-               (defun +sis-inline-remove-redundant-space ()
-		 (when (and (eq +sis-inline-english-last-space-pos (1- (point)))
-			    (looking-back (concat " [" +sis-chinese-puncs "]")))
-		   (save-excursion
-		     (backward-char 2)
-		     (delete-char 1)
-		     (setq-local +sis-inline-english-last-space-pos nil))))))
+    (add-hook 'post-self-insert-hook
+              (defun +sis-inline-remove-redundant-space ()
+                (when (and (eq +sis-inline-english-last-space-pos (1- (point)))
+                           (looking-back (concat " [" +sis-chinese-puncs "]")))
+                  (save-excursion
+                    (backward-char 2)
+                    (delete-char 1)
+                    (setq-local +sis-inline-english-last-space-pos nil))))
+              nil
+              'local))
+
   ;; Chinese punc adjustment for inline mode
   (defconst +sis-chinese-puncs "，。？！；：（【「“")
 
@@ -247,5 +237,6 @@
       (backward-delete-char 1)))
 
   (setq sis-inline-tighten-tail-rule #'+sis-remove-tail-space-before-cc-punc))
+
 
 (provide 'init-edit)
