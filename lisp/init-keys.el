@@ -8,6 +8,9 @@
 ;; gs quick jump to scratch-buffer
 
 ;; Use C-x ] or C-x [ quick jump to next/previous page
+
+(global-set-key (kbd "M-g m") #'switch-to-message)
+(global-set-key (kbd "M-g s") #'scratch-buffer)
 
 
 ;; 设置 which-key 显示的快捷键名称，比显示 +prefix 更明确

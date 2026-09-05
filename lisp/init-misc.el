@@ -8,27 +8,6 @@
   (setq gcmh-high-cons-threshold #x1000000))
 (advice-add 'after-focus-change-function :after 'garbage-collect)
 
-;;;###autoload
-(defun my/insert-specified-datetree ()
-  "Insert a datetree entry for a specified date."
-  (interactive)
-  (let* ((date (org-parse-time-string (org-read-date)))
-         (year (nth 5 date))
-         (month (nth 4 date))
-         (day (nth 3 date)))
-    (org-datetree-find-date-create (list month day year))
-    (open-line 1)
-    (forward-line 1)))
-
-;;;###autoload
-(defun switch-to-message ()
-  "Quick switch to `*Message*' buffer."
-  (interactive)
-  (switch-to-buffer "*Messages*"))
-
-(global-set-key (kbd "M-g m") #'switch-to-message)
-(global-set-key (kbd "M-g s") #'scratch-buffer)
-
 (setopt my/browser-engines
         '((DoubanMovie . "https://search.douban.com/movie/subject_search?search_text=")
           (DoubanBook . "https://search.douban.com/book/subject_search?search_text=")

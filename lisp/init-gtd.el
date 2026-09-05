@@ -16,8 +16,11 @@
 (setq org-gtd-directory "~/OneDrive/Galaxy/gtd/")
 (global-set-key (kbd "<f10>") #'org-gtd-capture)
 
-(with-eval-after-load 'org-gtd
-  (setq org-agenda-files (list org-gtd-directory))
+(with-eval-after-load 'org
+    (setq org-agenda-files (list org-gtd-directory))
+    (org-gtd-mode))
+
+(with-eval-after-load 'org
   (setq org-gtd-refile-to-any-target nil)
   (setq org-gtd-refile-prompt-for-types '(single-action project-heading calendar someday delegated tickler habit))
   (setq org-gtd-mode-lighter-display 'when-non-zero)

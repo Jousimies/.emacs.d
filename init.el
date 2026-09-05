@@ -7,8 +7,6 @@
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
-(require 'init-util)
-
 (if (and (file-exists-p (expand-file-name "lisp/load-path-cache.el" user-emacs-directory))
 	 (file-exists-p (expand-file-name "lisp/package-autoloads.el" user-emacs-directory)))
     (progn
@@ -19,8 +17,8 @@
       (when init-file-debug
 	(require 'init-benchmark))
 
-      (require 'init-idle)
       (require 'init-vars)
+      (require 'init-util)
 
       (require 'init-modeline)
       (add-hook 'window-setup-hook
@@ -40,7 +38,6 @@
 		  (require 'init-latex)
 		  (require 'init-gtd)
 		  (require 'init-reader)
-		  (require 'init-blog)
 
 		  (require 'init-prog)
 		  (require 'init-git)

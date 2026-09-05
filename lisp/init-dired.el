@@ -37,35 +37,14 @@
           ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\)\\(?:\\.part\\)?\\'" ,cmd)
           ("\\.\\(?:mp3\\|flac\\)\\'" ,cmd))))
 
-(defun z/dired-insert-date-folder ()
-  "Create new directory with current date"
-  (interactive)
-  (dired-create-directory (format-time-string "%Y-%m-%d")))
 
 ;; dired-omit-mode
 (add-hook 'dired-mode-hook #'dired-omit-mode)
 (setq dired-omit-verbose nil
       dired-omit-files "^\\.[^.].*")
 
-(defun my/org-attach-visit-headline-from-dired ()
-  "Go to the headline corresponding to this org-attach directory."
-  (interactive)
-  (require 'org-attach)
-  (let* ((path (replace-regexp-in-string (regexp-quote org-attach-directory) "" (expand-file-name (dired-filename-at-point))))
-         (id-parts (split-string path "/"))
-         (id1 (nth 1 id-parts))
-         (id2 (nth 2 id-parts))
-         (id (concat id1 id2)))
-    (let ((m (org-id-find id 'marker)))
-      (unless m (user-error "Cannot find entry with ID \"%s\"" id))
-      (pop-to-buffer (marker-buffer m))
-      (goto-char m)
-      (move-marker m nil)
-      (org-fold-show-context))))
-
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-'") 'my/org-attach-visit-headline-from-dired))
-
 
 (add-hook 'dired-mode-hook #'diredfl-mode)
 

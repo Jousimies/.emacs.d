@@ -21,68 +21,6 @@
   (add-hook 'completion-at-point-functions #'cape-file)
   (add-hook 'completion-at-point-functions #'cape-elisp-block))
 
-;;;###autoload
-(defun my/selected-wrap-textcolor (color)
-    "用 \textcolor{COLOR}{region} 包裹选中的文字。"
-    (interactive "sEnter color (default red): ")
-    (let ((c (if (string-empty-p color) "red" color))
-          (beg (region-beginning))
-          (end (region-end)))
-      (save-excursion
-	(goto-char end)
-	(insert "}")
-	(goto-char beg)
-	(insert (format "\\textcolor{%s}{" c)))))
-
-;;;####autoload
-(defun my/org-insert-emphasis-with-zws (marker)
-    "在标记符两侧自动插入零宽空格 (U+200B) 并包裹内容。"
-    (interactive "sEnter marker (e.g. *, ~, =. default =): ")
-    (let* ((c (if (string-empty-p marker) "*" marker))
-	   (zws "\u200b")
-           (has-region (use-region-p))
-           (beg (if has-region (region-beginning) (point)))
-           (end (if has-region (region-end) (point))))
-      (goto-char end)
-      (insert c zws)
-      (goto-char beg)
-      (insert zws c)
-      (if has-region
-          (goto-char (+ end 4))
-	(forward-char 2))))
-
-;;;###autoload
-(defun my/org-element-unwrap-emphasis ()
-    "参照 jf/org-link-remove-link 的逻辑，精准删除标记符及两侧的零宽空格。"
-    (interactive)
-    (let ((elem (org-element-context))
-          (zws ?\u200b))
-      (when (memq (car elem) '(bold italic code verbatim strike-through underline))
-	(let* ((begin (org-element-property :begin elem))
-               (end (org-element-property :end elem))
-               (marker-char (buffer-substring-no-properties begin (1+ begin)))
-               (actual-beg begin)
-               (actual-end end)
-               content)
-          (setq content
-		(if (org-element-property :contents-begin elem)
-                    (buffer-substring-no-properties
-                     (org-element-property :contents-begin elem)
-                     (org-element-property :contents-end elem))
-                  (buffer-substring-no-properties (+ begin 1) (- end 1))))
-
-          (when (eq (char-before begin) zws)
-            (setq actual-beg (1- begin)))
-
-          (if (eq (char-after end) zws)
-              (setq actual-end (1+ end))
-            (when (eq (char-before end) zws)
-              (setq actual-end end)))
-
-          (delete-region actual-beg actual-end)
-          (insert content)
-          (message "已清理标记: %s" marker-char)))))
-
 (add-hook 'post-select-region-hook #'selected-minor-mode)
 (with-eval-after-load 'selected
   (define-key selected-keymap (kbd "q") #'selected-off)
@@ -98,16 +36,6 @@
   (define-key selected-keymap (kbd ";") #'comment-dwim)
   (define-key selected-keymap (kbd "k") #'my/selected-wrap-textcolo))
 
-;;;###autoload
-(defun my/embark-symbol-overlay-toggle ()
-      "如果当前符号未高亮，则高亮它；
-如果当前符号已经处于高亮状态，则清除缓冲区内所有高亮。"
-      (interactive)
-      (if (get-char-property (point) 'symbol-overlay)
-	  (progn
-            (symbol-overlay-remove-all)
-            (message "Cleared all highlights."))
-	(symbol-overlay-put)))
 (add-hook 'prog-mode-hook #'symbol-overlay-mode)
 (add-hook 'html-mode-hook #'symbol-overlay-mode)
 (advice-add 'embark-toggle-highlight :override #'my/embark-symbol-overlay-toggle)

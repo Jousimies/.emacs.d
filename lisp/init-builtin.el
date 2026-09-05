@@ -211,35 +211,6 @@
                         '(face trailing tabs tab-mark))
             (whitespace-mode 1)))
 
-;;;###autoload
-(defun my/delete-trailing-whitespace-except-current-line ()
-  "Delete trailing whitespace, but keep the current line intact."
-  (interactive)
-  (let ((beg (point-min))
-        (end (point-max))
-        (bol (line-beginning-position))
-        (eol (line-end-position)))
-    (delete-trailing-whitespace beg bol)
-    (delete-trailing-whitespace eol end)))
-
-;;;###autoload
-(defun auto-save-delete-trailing-whitespace-except-current-line ()
-    (interactive)
-    (let ((begin (line-beginning-position))
-          (end (point))
-          (buffername (buffer-name (buffer-base-buffer))))
-      (when (not (or (string-prefix-p "inbox" buffername)
-                     (string-match-p "^[0-9]" buffername)))
-        (save-excursion
-          (when (< (point-min) begin)
-            (save-restriction
-              (narrow-to-region (point-min) (1- begin))
-              (delete-trailing-whitespace)))
-          (when (> (point-max) end)
-            (save-restriction
-              (narrow-to-region end (point-max))
-              (delete-trailing-whitespace)))))))
-
 (add-hook 'before-save-hook #'auto-save-delete-trailing-whitespace-except-current-line)
 
 (add-hook 'after-save-hook
