@@ -126,7 +126,7 @@
 	url = https://github.com/emacs-straight/org-edna.git
 [submodule "packages/org-gtd.el"]
 	path = packages/org-gtd.el
-	url = https://github.com/Trevoke/org-gtd.el.git
+	url = https://github.com/Jousimies/org-gtd.el.git
 [submodule "packages/posframe"]
 	path = packages/posframe
 	url = https://github.com/tumashu/posframe.git
