@@ -121,9 +121,6 @@
 [submodule "packages/nerd-icons.el"]
 	path = packages/nerd-icons.el
 	url = https://github.com/rainstormstudio/nerd-icons.el.git
-[submodule "packages/on.el"]
-	path = packages/on.el
-	url = https://github.com/axgfn/on.el.git
 [submodule "packages/orderless"]
 	path = packages/orderless
 	url = https://github.com/oantolin/orderless.git
