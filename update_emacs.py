@@ -3,14 +3,18 @@
 
 功能：
   1. git fetch 主仓库与 submodule 的最新提交，但默认不切换/更新工作区
-  2. 生成 load-path + feature 缓存
-  3. 自动 make 需要编译的包（auctex、benchmark-init-el）
-  4. 尝试编译 pdf-tools（Linux/macOS 较顺；Windows 给出明确指引）
+  2. 生成 straight/elpaca 风格的 .cache/elisp/build 源文件镜像
+  3. 生成 load-path + feature 缓存与 package autoloads
+  4. 自动 make 需要编译的包（auctex、benchmark-init-el）
+  5. 默认 byte compile 配置与常用包，.elc 放在 build 镜像目录
+  6. 尝试处理 pdf-tools server（Linux 编译；Windows/macOS 给出指引）
 
 用法：
-  python update_emacs.py              # 完整更新 + 编译 + 缓存
-  python update_emacs.py --cache      # 只刷新缓存
-  python update_emacs.py --build      # 只做 make / pdf-tools 编译
+  python update_emacs.py              # 完整更新 + make + 缓存 + byte compile
+  python update_emacs.py --cache      # 只刷新缓存/autoload
+  python update_emacs.py --compile    # 只刷新缓存/autoload 并 byte compile
+  python update_emacs.py --build      # 只做 make / pdf-tools + 缓存 + byte compile
+  python update_emacs.py --no-compile # 默认/--build 流程中跳过 byte compile
   python update_emacs.py --skip-git   # 跳过 git，只做编译 + 缓存
   python update_emacs.py --mail       # 只设置 MAIL_ACCOUNT 邮件地址
 """
@@ -27,6 +31,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -34,6 +39,8 @@ PACKAGE_DIR = ROOT / "packages"
 LOAD_PATH_CACHE = ROOT / "lisp" / "load-path-cache.el"
 PACKAGE_AUTOLOADS = ROOT / "lisp" / "package-autoloads.el"
 CONFIG_LISP_DIR = ROOT / "lisp"
+ELISP_CACHE_DIR = ROOT / ".cache"
+BUILD_CACHE_DIR = ELISP_CACHE_DIR / "packages-build"
 
 FEATURE_RE = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9_+-]*$")
 AUTOLOAD_DEF_RE = re.compile(
@@ -56,28 +63,86 @@ PACKAGE_AUTOLOAD_EXCLUDES = {
     "pdf-tools",
 }
 
+PACKAGE_COMPILE_EXCLUDES = PACKAGE_AUTOLOAD_EXCLUDES | set(MAKE_TARGETS)
+
+BYTE_COMPILE_PACKAGES = {
+    "cape",
+    "compat",
+    "consult",
+    "dash.el",
+    "denote",
+    "embark",
+    "gptel",
+    "llama",
+    "magit",
+    "marginalia",
+    "meow",
+    "orderless",
+    "org-gtd.el",
+    "parsebib",
+    "pdf-tools",
+    "s.el",
+    "with-editor",
+}
+
+COMPILE_FILE_EXCLUDES = {
+    # These require optional dag-draw, which is not vendored in packages/.
+    "org-gtd-dag-draw.el",
+    "org-gtd-graph-mode.el",
+    "org-gtd-graph-navigation.el",
+    "org-gtd-graph-transient.el",
+    "org-gtd-graph-view.el",
+    "org-gtd-project-operations.el",
+}
+
+VERBOSE = False
+
+
+def log(message: str, level: str = "INFO", verbose_only: bool = False) -> None:
+    """Print a small, consistent log line."""
+    if verbose_only and not VERBOSE:
+        return
+    print(f"{level:<8} {message}")
+
 
 def run_command(
     command: list[str],
     cwd: Path | None = None,
     env: dict | None = None,
-    check: bool = True,
 ) -> bool:
+    """Run COMMAND and return whether it exited successfully.
+
+    stdout/stderr are captured so failures can show complete diagnostics.
+    The return value is always based on the process exit status; callers no
+    longer have to rely on subprocess exceptions to detect failures.
+    """
+    workdir = cwd or ROOT
     try:
-        subprocess.run(
+        result = subprocess.run(
             command,
-            cwd=cwd or ROOT,
+            cwd=workdir,
             env=env,
-            check=check,
+            text=True,
+            capture_output=True,
+            check=False,
         )
-        return True
-    except subprocess.CalledProcessError as err:
-        print(f"❌ 命令失败: {' '.join(command)}")
-        print(f"   exit code: {err.returncode}")
-        return False
     except FileNotFoundError:
         print(f"❌ 找不到命令: {command[0]}")
         return False
+
+    if result.returncode == 0:
+        return True
+
+    print(f"❌ 命令失败: {shlex.join(command)}")
+    print(f"   cwd: {workdir}")
+    print(f"   exit code: {result.returncode}")
+    if result.stdout:
+        print("   stdout:")
+        print(result.stdout.rstrip())
+    if result.stderr:
+        print("   stderr:")
+        print(result.stderr.rstrip())
+    return False
 
 
 def which(cmd: str) -> str | None:
@@ -483,16 +548,28 @@ def contains_elisp(files: list[str]) -> bool:
     return any(f.endswith((".el", ".elc")) for f in files)
 
 
-def collect_package_load_paths() -> list[str]:
-    result: list[str] = []
+def build_source_path(source: Path) -> Path:
+    """Return straight/elpaca-style build path for SOURCE."""
+    return BUILD_CACHE_DIR / source.relative_to(ROOT)
+
+
+def build_elc_path(source: Path) -> Path:
+    """Return .elc path next to SOURCE's build symlink."""
+    return build_source_path(source).with_suffix(".elc")
+
+
+def collect_package_cache_data() -> tuple[list[str], dict[str, list[str]]]:
+    """Collect package load-path directories and feature map in one walk."""
+    load_paths: list[str] = []
+    feature_map: dict[str, list[str]] = {}
     if not PACKAGE_DIR.is_dir():
         print(f"⚠ packages 目录不存在: {PACKAGE_DIR}")
-        return result
+        return load_paths, feature_map
 
     for package in sorted(PACKAGE_DIR.iterdir()):
         if not package.is_dir() or should_skip_directory(package):
             continue
-        result.append(package.relative_to(ROOT).as_posix())
+        load_paths.append(package.relative_to(ROOT).as_posix())
 
         for current, dirs, files in os.walk(package):
             current_path = Path(current)
@@ -503,12 +580,29 @@ def collect_package_load_paths() -> list[str]:
                 d for d in dirs
                 if not should_skip_directory(current_path / d)
             ]
-            if current_path == package:
-                continue
-            if contains_elisp(files):
-                result.append(current_path.relative_to(ROOT).as_posix())
 
-    return list(dict.fromkeys(result))
+            has_elisp = contains_elisp(files)
+            if current_path != package and has_elisp:
+                load_paths.append(current_path.relative_to(ROOT).as_posix())
+
+            for fname in files:
+                if not fname.endswith(".el"):
+                    continue
+                if fname.endswith(("-autoloads.el", "-pkg.el")):
+                    continue
+                stem = Path(fname).stem
+                if not FEATURE_RE.match(stem):
+                    continue
+                source = current_path / fname
+                feature_map.setdefault(stem, []).append(build_elc_path(source).relative_to(ROOT).as_posix())
+                feature_map.setdefault(stem, []).append(build_source_path(source).relative_to(ROOT).as_posix())
+
+    for feat, paths in feature_map.items():
+        elc = [p for p in paths if p.endswith(".elc")]
+        el = [p for p in paths if p.endswith(".el")]
+        feature_map[feat] = list(dict.fromkeys(elc + el))
+
+    return list(dict.fromkeys(load_paths)), feature_map
 
 
 def collect_package_autoload_dirs() -> list[Path]:
@@ -537,45 +631,9 @@ def collect_package_autoload_dirs() -> list[Path]:
                 and not f.endswith(("-autoloads.el", "-pkg.el"))
                 for f in files
             ):
-                result.append(current_path)
+                result.append(BUILD_CACHE_DIR / current_path.relative_to(ROOT))
 
     return list(dict.fromkeys(result))
-
-
-def collect_feature_map() -> dict[str, list[str]]:
-    feature_map: dict[str, list[str]] = {}
-    if not PACKAGE_DIR.is_dir():
-        return feature_map
-
-    for package in sorted(PACKAGE_DIR.iterdir()):
-        if not package.is_dir() or should_skip_directory(package):
-            continue
-        for current, dirs, files in os.walk(package):
-            current_path = Path(current)
-            if (current_path / ".nosearch").exists():
-                dirs[:] = []
-                continue
-            dirs[:] = [
-                d for d in dirs
-                if not should_skip_directory(current_path / d)
-            ]
-            for fname in files:
-                if not (fname.endswith(".el") or fname.endswith(".elc")):
-                    continue
-                if fname.endswith(("-autoloads.el", "-pkg.el",
-                                   "-autoloads.elc", "-pkg.elc")):
-                    continue
-                stem = Path(fname).stem
-                if not FEATURE_RE.match(stem):
-                    continue
-                rel = (current_path / fname).relative_to(ROOT).as_posix()
-                feature_map.setdefault(stem, []).append(rel)
-
-    for feat, paths in feature_map.items():
-        elc = [p for p in paths if p.endswith(".elc")]
-        el = [p for p in paths if p.endswith(".el")]
-        feature_map[feat] = list(dict.fromkeys(elc + el))
-    return feature_map
 
 
 def elisp_string(value: str) -> str:
@@ -603,24 +661,29 @@ def collect_config_autoloads() -> list[tuple[str, str]]:
 
 
 def generate_load_path_cache() -> None:
-    package_paths = collect_package_load_paths()
-    feature_map = collect_feature_map()
+    package_paths, feature_map = collect_package_cache_data()
     config_autoloads = collect_config_autoloads()
     LOAD_PATH_CACHE.parent.mkdir(parents=True, exist_ok=True)
 
+    build_paths = [
+        (BUILD_CACHE_DIR / path).relative_to(ROOT).as_posix()
+        for path in ["lisp", *package_paths]
+    ]
     lines: list[str] = [
         ";;; load-path-cache.el --- generated load-path + feature cache -*- lexical-binding: t; -*-",
         ";; Auto-generated by update_emacs.py. DO NOT EDIT.",
         "",
-        "(let ((package-load-path",
+        "(require 'cl-lib)",
+        "",
+        "(let ((build-load-path",
         "       (mapcar (lambda (path) (expand-file-name path user-emacs-directory))",
         "               '(",
     ]
-    for path in package_paths:
+    for path in build_paths:
         lines.append(f'          "{elisp_string(path)}"')
     lines.extend([
         "          ))))",
-        "  (setq load-path (append load-path package-load-path)))",
+        "  (setq load-path (append build-load-path load-path)))",
         "",
         ";;; Config autoloads generated from ;;;###autoload cookies in lisp/*.el.",
     ])
@@ -666,9 +729,9 @@ def generate_load_path_cache() -> None:
         "",
     ])
     LOAD_PATH_CACHE.write_text("\n".join(lines), encoding="utf-8")
-    print(f"\n⚡ 已生成 {LOAD_PATH_CACHE.relative_to(ROOT)}")
-    print(
-        f"   load-path 目录: {len(package_paths)}  "
+    log(f"已生成 {LOAD_PATH_CACHE.relative_to(ROOT)}")
+    log(
+        f"load-path 目录: {len(package_paths)}  "
         f"feature 条目: {len(feature_map)}  "
         f"autoload 条目: {len(config_autoloads)}"
     )
@@ -687,10 +750,12 @@ def generate_package_autoloads() -> bool:
     autoload_file = elisp_string(PACKAGE_AUTOLOADS.as_posix())
     autoload_dirs = collect_package_autoload_dirs()
     PACKAGE_AUTOLOADS.unlink(missing_ok=True)
+    build_packages_dir = BUILD_CACHE_DIR / "packages"
     dirs_elisp = "\n        ".join(
-        f'("{elisp_string(path.relative_to(PACKAGE_DIR).as_posix())}" . "{elisp_string(path.as_posix())}")'
+        f'("{elisp_string(path.relative_to(build_packages_dir).as_posix())}" . "{elisp_string(path.as_posix())}")'
         for path in autoload_dirs
     )
+    verbose_elisp = "t" if VERBOSE else "nil"
     script = f'''
 (progn
 (require 'autoload)
@@ -698,17 +763,20 @@ def generate_package_autoloads() -> bool:
 (let ((backup-inhibited t)
       (make-backup-files nil)
       (version-control 'never)
-      (autoload-timestamps nil))
+      (autoload-timestamps nil)
+      (verbose {verbose_elisp}))
   (dolist (entry '({dirs_elisp}))
     (let ((display-name (car entry))
           (dir (cdr entry)))
-      (message "INFO     Scraping %s for package-autoloads.el..." display-name)
+      (when verbose
+        (message "INFO     Scraping %s for package-autoloads.el..." display-name))
       (condition-case err
           (let ((inhibit-message t))
             (update-directory-autoloads dir))
         (error
-         (message "Skip autoloads for %s: %S" display-name err)))
-      (message "INFO     Scraping %s for package-autoloads.el...done" display-name))))
+         (message "ERROR    Skip autoloads for %s: %S" display-name err)))
+      (when verbose
+        (message "INFO     Scraping %s for package-autoloads.el...done" display-name)))))
 (with-temp-buffer
   (when (file-exists-p generated-autoload-file)
     (insert-file-contents generated-autoload-file))
@@ -729,12 +797,16 @@ def generate_package_autoloads() -> bool:
     if result.returncode == 0:
         if PACKAGE_AUTOLOADS.exists():
             text = PACKAGE_AUTOLOADS.read_text(encoding="utf-8")
+            text = text.replace('"../.cache/elisp/build/', f'"{elisp_string(BUILD_CACHE_DIR.as_posix())}/')
             text = text.replace('"../packages/', f'"{elisp_string((ROOT / "packages").as_posix())}/')
             PACKAGE_AUTOLOADS.write_text(text, encoding="utf-8")
-        print(f"⚡ 已生成 {PACKAGE_AUTOLOADS.relative_to(ROOT)}")
-        print(f"   autoload 扫描目录: {len(autoload_dirs)}")
+        log(f"已生成 {PACKAGE_AUTOLOADS.relative_to(ROOT)}")
+        log(f"autoload 扫描目录: {len(autoload_dirs)}")
         if result.stderr.strip():
-            print(result.stderr.strip())
+            for line in result.stderr.splitlines():
+                if not VERBOSE and re.search(r"\bScraping\b", line):
+                    continue
+                print(line)
         return True
     print("❌ package-autoloads.el 生成失败")
     if result.stdout.strip():
@@ -744,15 +816,303 @@ def generate_package_autoloads() -> bool:
     return False
 
 
+def collect_build_source_files() -> list[Path]:
+    """Return source files mirrored into the build directory."""
+    files = collect_config_compile_files()
+    if not PACKAGE_DIR.is_dir():
+        return files
+
+    for package in sorted(PACKAGE_DIR.iterdir()):
+        if not package.is_dir() or should_skip_directory(package):
+            continue
+        for current, dirs, names in os.walk(package):
+            current_path = Path(current)
+            if (current_path / ".nosearch").exists():
+                dirs[:] = []
+                continue
+            dirs[:] = [
+                d for d in dirs
+                if not should_skip_directory(current_path / d)
+            ]
+            for name in names:
+                path = current_path / name
+                if is_compilable_elisp_file(path):
+                    files.append(path)
+    return list(dict.fromkeys(files))
+
+
+def prepare_build_tree() -> None:
+    """Mirror .el files into .cache/elisp/build like straight/elpaca builds.
+
+    macOS/Unix use symlinks by default.  Windows copies files by default because
+    creating symlinks often requires extra privileges.  The build directory is
+    the only package load-path root; original package directories are kept as
+    source repositories, not load paths.
+    """
+    BUILD_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    sources = collect_build_source_files()
+    desired = {build_source_path(source) for source in sources}
+
+    removed = 0
+    for built_el in BUILD_CACHE_DIR.rglob("*.el"):
+        if built_el.is_dir():
+            continue
+        if built_el not in desired:
+            built_el.unlink(missing_ok=True)
+            built_el.with_suffix(".elc").unlink(missing_ok=True)
+            removed += 1
+
+    linked = 0
+    copied = 0
+    updated = 0
+    use_symlink = not is_windows()
+    for source in sources:
+        target = build_source_path(source)
+        target.parent.mkdir(parents=True, exist_ok=True)
+
+        if use_symlink:
+            if target.is_symlink():
+                try:
+                    if target.resolve() == source.resolve():
+                        continue
+                except OSError:
+                    pass
+            if target.exists() or target.is_symlink():
+                target.unlink()
+            target.symlink_to(source)
+            linked += 1
+            continue
+
+        if target.is_symlink():
+            target.unlink()
+        if (not target.exists()
+                or source.stat().st_mtime_ns > target.stat().st_mtime_ns
+                or source.stat().st_size != target.stat().st_size):
+            shutil.copy2(source, target)
+            copied += 1
+        else:
+            updated += 1
+
+    log(
+        f"已同步 build 目录: symlink {linked}, copy {copied}, unchanged {updated}, removed {removed}",
+        verbose_only=True,
+    )
+
+
+def generate_caches_parallel() -> bool:
+    """Generate load-path cache and package autoloads concurrently."""
+    prepare_build_tree()
+    log("并行生成 load-path 缓存与 package autoloads")
+    ok = True
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        futures = {
+            executor.submit(generate_load_path_cache): "load-path-cache",
+            executor.submit(generate_package_autoloads): "package-autoloads",
+        }
+        for future in concurrent.futures.as_completed(futures):
+            name = futures[future]
+            try:
+                result = future.result()
+            except Exception as err:  # noqa: BLE001 - top-level task boundary
+                ok = False
+                log(f"{name} 生成失败: {err!r}", "ERROR")
+            else:
+                if result is False:
+                    ok = False
+    return ok
+
+
+def is_compilable_elisp_file(path: Path) -> bool:
+    """Return whether PATH is an Elisp source file worth compiling."""
+    name = path.name
+    return (
+        path.suffix == ".el"
+        and not name.startswith(".")
+        and not name.endswith(("-autoloads.el", "-pkg.el"))
+    )
+
+
+def collect_config_compile_files() -> list[Path]:
+    """Return config source files for byte compilation."""
+    if not CONFIG_LISP_DIR.is_dir():
+        return []
+    skipped = {PACKAGE_AUTOLOADS.name}
+    return [
+        path for path in sorted(CONFIG_LISP_DIR.glob("*.el"))
+        if is_compilable_elisp_file(path) and path.name not in skipped
+    ]
+
+
+def collect_package_compile_files() -> list[Path]:
+    """Return package source files selected for byte compilation."""
+    result: list[Path] = []
+    if not PACKAGE_DIR.is_dir():
+        return result
+
+    for package in sorted(PACKAGE_DIR.iterdir()):
+        if (not package.is_dir()
+                or should_skip_directory(package)
+                or package.name not in BYTE_COMPILE_PACKAGES
+                or package.name in PACKAGE_COMPILE_EXCLUDES):
+            continue
+
+        for current, dirs, files in os.walk(package):
+            current_path = Path(current)
+            if (current_path / ".nosearch").exists():
+                dirs[:] = []
+                continue
+            dirs[:] = [
+                d for d in dirs
+                if not should_skip_directory(current_path / d)
+            ]
+            for fname in files:
+                path = current_path / fname
+                if is_compilable_elisp_file(path) and path.name not in COMPILE_FILE_EXCLUDES:
+                    result.append(path)
+
+    return list(dict.fromkeys(result))
+
+
+def remove_source_elc_files(files: list[Path]) -> None:
+    """Remove .elc files next to original sources."""
+    removed = 0
+    for source in files:
+        elc = source.with_suffix(".elc")
+        if elc.exists() and not elc.is_relative_to(BUILD_CACHE_DIR):
+            elc.unlink()
+            removed += 1
+    if removed:
+        log(f"已删除源目录旁的 .elc: {removed} 个")
+
+
+def split_chunks(items: list[Path], chunks: int) -> list[list[Path]]:
+    """Split ITEMS into at most CHUNKS balanced chunks."""
+    if chunks <= 1 or len(items) <= 1:
+        return [items]
+    return [items[i::chunks] for i in range(chunks) if items[i::chunks]]
+
+
+def run_emacs_byte_compile_chunk(emacs: str, files: list[Path], index: int) -> tuple[int, str]:
+    """Byte compile one chunk of build-tree FILES in a separate Emacs process."""
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as fp:
+        file_list = Path(fp.name)
+        for path in files:
+            fp.write(path.as_posix() + "\n")
+
+    file_list_elisp = elisp_string(file_list.as_posix())
+    load_cache = elisp_string(LOAD_PATH_CACHE.as_posix())
+    package_autoloads = elisp_string(PACKAGE_AUTOLOADS.as_posix())
+    verbose_elisp = "t" if VERBOSE else "nil"
+    script = f'''
+(progn
+(require 'cl-lib)
+(require 'bytecomp)
+(setq byte-compile-warnings nil)
+(when (file-exists-p "{load_cache}")
+  (load "{load_cache}" nil t))
+(when (file-exists-p "{package_autoloads}")
+  (load "{package_autoloads}" nil t))
+(let ((files (with-temp-buffer
+               (insert-file-contents "{file_list_elisp}")
+               (split-string (buffer-string) "\n" t)))
+      (verbose {verbose_elisp})
+      (ok 0)
+      (errors 0))
+  (dolist (file files)
+    (condition-case err
+        (progn
+          (when verbose (message "INFO     Byte compiling [%d] %s" {index} file))
+          (if (byte-compile-file file)
+              (setq ok (1+ ok))
+            (setq errors (1+ errors))
+            (message "ERROR    Byte compile failed %s" file)))
+      (error
+       (setq errors (1+ errors))
+       (message "ERROR    Byte compile failed %s: %S" file err))))
+  (message "INFO     byte compile chunk {index} done: %d ok, %d failed" ok errors)
+  (kill-emacs (if (> errors 0) 1 0))))
+'''
+    try:
+        result = subprocess.run(
+            [emacs, "--batch", "-Q", "--eval", script],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    finally:
+        file_list.unlink(missing_ok=True)
+
+    output = "\n".join(x for x in [result.stdout.strip(), result.stderr.strip()] if x)
+    return result.returncode, output
+
+
+def print_compile_output(output: str, failed: bool = False) -> None:
+    """Print compile output according to verbosity."""
+    if not output:
+        return
+    if VERBOSE or failed:
+        print(output)
+        return
+    for line in output.splitlines():
+        if line.startswith(("ERROR", "WARN")):
+            print(line)
+
+
+def run_emacs_byte_compile(files: list[Path]) -> bool:
+    """Byte compile FILES in the build tree, keeping .el and .elc together."""
+    emacs = which("emacs")
+    if not emacs:
+        log("未找到 emacs，跳过 byte compile", "WARN")
+        return True
+    if not files:
+        log("没有需要 byte compile 的文件")
+        return True
+
+    prepare_build_tree()
+    build_files = [build_source_path(path) for path in files]
+    remove_source_elc_files(files)
+
+    workers = min(max(1, os.cpu_count() or 1), len(build_files), 4)
+    chunks = split_chunks(build_files, workers)
+    log(f"开始 byte compile: {len(build_files)} 个文件，workers={workers}")
+
+    ok = True
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+        futures = [
+            executor.submit(run_emacs_byte_compile_chunk, emacs, chunk, index)
+            for index, chunk in enumerate(chunks, 1)
+        ]
+        for future in concurrent.futures.as_completed(futures):
+            returncode, output = future.result()
+            failed = returncode != 0
+            print_compile_output(output, failed=failed)
+            if failed:
+                ok = False
+
+    if ok:
+        remove_source_elc_files(files)
+        log(f"byte compile 完成: {len(build_files)} 个文件")
+        return True
+    log("byte compile 失败", "ERROR")
+    return False
+
+
+def byte_compile_files() -> bool:
+    """Byte compile config files and selected packages."""
+    files = collect_config_compile_files() + collect_package_compile_files()
+    return run_emacs_byte_compile(files)
+
+
 def verify_cache() -> bool:
     if not LOAD_PATH_CACHE.exists():
-        print("❌ load-path-cache.el 未生成")
+        log("load-path-cache.el 未生成", "ERROR")
         return False
     text = LOAD_PATH_CACHE.read_text(encoding="utf-8")
     if "packages/auctex/style" in text:
-        print("❌ AUCTeX style 进入了 cache，请检查 .nosearch")
+        log("AUCTeX style 进入了 cache，请检查 .nosearch", "ERROR")
         return False
-    print("✅ cache 检查通过")
+    log("cache 检查通过")
     return True
 
 
@@ -809,7 +1169,7 @@ def build_pdf_tools() -> bool:
         pacman = which("pacman")
         if pacman:
             print(f"🔧 Windows 上使用 MSYS2 pacman 安装 pdf-tools server: {package}")
-            if run_command([pacman, "-S", "--needed", package], check=False):
+            if run_command([pacman, "-S", "--needed", package]):
                 print("✅ pdf-tools server 安装完成")
                 print("   请确保对应 MSYS2 bin 目录在 PATH 中，然后重启 Emacs。")
                 return True
@@ -883,7 +1243,14 @@ def main() -> int:
     parser.add_argument("--build", action="store_true", help="只编译需要 make 的包")
     parser.add_argument("--skip-git", action="store_true", help="跳过 git 操作")
     parser.add_argument("--mail", action="store_true", help="只设置 MAIL_ACCOUNT 邮件地址")
+    parser.add_argument("--compile", action="store_true", help="只生成缓存并执行 byte compile")
+    parser.add_argument("--byte-compile", action="store_true", help="执行 byte compile")
+    parser.add_argument("--no-compile", action="store_true", help="默认/--build 流程中跳过 byte compile")
+    parser.add_argument("-v", "--verbose", action="store_true", help="显示详细日志，包括 autoload 扫描目录和编译文件")
     args = parser.parse_args()
+
+    global VERBOSE
+    VERBOSE = args.verbose
 
     print("=" * 60)
     print("Emacs configuration updater / first-time setup")
@@ -895,17 +1262,27 @@ def main() -> int:
 
     configure_mail_account_env()
 
+    compile_requested = args.compile or args.byte_compile
+
     if args.cache:
-        generate_load_path_cache()
-        generate_package_autoloads()
-        return 0 if verify_cache() else 1
+        ok = generate_caches_parallel() and verify_cache()
+        if ok and compile_requested:
+            ok = byte_compile_files()
+        return 0 if ok else 1
+
+    if args.compile:
+        ok = generate_caches_parallel() and verify_cache()
+        if ok:
+            ok = byte_compile_files()
+        return 0 if ok else 1
 
     if args.build:
         build_make_packages()
         build_pdf_tools()
-        generate_load_path_cache()
-        generate_package_autoloads()
-        return 0 if verify_cache() else 1
+        ok = generate_caches_parallel() and verify_cache()
+        if ok and not args.no_compile:
+            ok = byte_compile_files()
+        return 0 if ok else 1
 
     if not args.skip_git:
         if not (ROOT / ".git").exists():
@@ -919,11 +1296,13 @@ def main() -> int:
 
     build_pdf_tools()
 
-    print("\n⚡ 生成 load-path 缓存...")
-    generate_load_path_cache()
-    generate_package_autoloads()
+    if not generate_caches_parallel():
+        return 1
     if not verify_cache():
         return 1
+    if not args.no_compile:
+        if not byte_compile_files():
+            return 1
 
     print_first_time_tips()
     return 0
