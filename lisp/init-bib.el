@@ -1,5 +1,6 @@
 ;; -*- lexical-binding: t; -*-
-
+
+;; bibtex
 (with-eval-after-load 'bibtex
   (setopt bibtex-align-at-equal-sign t
 	  bibtex-autokey-year-length 4
@@ -9,7 +10,8 @@
 	  bibtex-autokey-titlewords 2
 	  bibtex-autokey-titlewords-stretch 1
 	  bibtex-autokey-titleword-length 5))
-
+
+;; oc
 (setq org-cite-global-bibliography my/reference-lists)
 
 (with-eval-after-load 'org
@@ -20,6 +22,8 @@
       (setq org-cite-insert-processor 'citar)
       (setq org-cite-follow-processor 'citar))))
 
+
+;; citar
 (with-eval-after-load 'citar
   (setq citar-templates '((main . "${=type=:12}|${date year issued:4}| ${title:80}")
                           (suffix . " |${=key= id} |${tags keywords:*} |${author editor:20%sn}")
@@ -52,16 +56,17 @@
     (setq citar-denote-subdir "References")
     (setq citar-denote-cite-includes-reference t)
     (citar-denote-mode)))
-
+
 ;; zotra
 (with-eval-after-load 'zotra
   (setq zotra-backend 'zotra-server)
   (setq zotra-local-server-directory "~/zotra-server/"))
-
+
 ;; biblio
 (with-eval-after-load 'biblio
   (add-to-list 'viper-emacs-state-mode-list 'biblio-selection-mode))
-
+
+;; scihub
 (with-eval-after-load 'scihub
   (setq scihub-download-directory "~/Downloads/"
         scihub-open-after-download t

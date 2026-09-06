@@ -20,8 +20,11 @@
 
 (with-eval-after-load 'org
     (setq org-agenda-files (list org-gtd-directory))
-    (org-gtd-mode))
+    ;; (org-gtd-mode)
+    )
 
+(with-eval-after-load 'org-agenda
+  (org-gtd-mode))
 (with-eval-after-load 'org
   (setq org-gtd-refile-to-any-target nil)
   (setq org-gtd-refile-prompt-for-types '(single-action project-heading calendar someday delegated tickler habit))

@@ -24,6 +24,19 @@
 ;;         (rust-mode       . rust-ts-mode)
 ;;         (go-mode         . go-ts-mode)))
 
+
+;; goggles
+(add-hook 'prog-mode-hook #'goggles-mode)
+(add-hook 'text-mode-hook #'goggles-mode)
+(with-eval-after-load 'goggles
+  (setq-default goggles-pulse t))
+
+;; form-feed
+(add-hook 'on-first-buffer-hook #'global-form-feed-mode)
+
+;; rainbow-mode
+(add-hook 'prog-mode-hook #'rainbow-mode)
+
 ;; Windows 11 可以通过 winget 安装 ripgrep
 ;; winget search ripgrep
 ;; winget install BurntSushi.ripgrep.MSVC
@@ -41,19 +54,20 @@
                                        (side . right)
                                        (window-width . 0.5))))
 
+
 ;; Python
 (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
 
+
 ;; markdown
 (dolist (re '("\\.md\\'" "\\.mdx\\'" "\\.markdown\\'"))
   (add-to-list 'auto-mode-alist (cons re 'markdown-ts-mode)))
 
-;; (use-package lua-mode
-;;   :mode "\\.lua$"
-;;   :interpreter "lua")
-
-;; (add-to-list 'auto-mode-alist '("\\.lua$\\'" . lua-ts-mode))
+
+;; lua-mode
 (add-to-list 'major-mode-remap-alist '(lua-mode . lua-ts-mode))
+
+
 ;; yaml
 (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
 

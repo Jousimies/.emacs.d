@@ -16,7 +16,7 @@
   "Initial delay before starting the idle loader."
   :type 'number)
 
-(defcustom my/idle-loader-log nil
+(defcustom my/idle-loader-log init-file-debug
   "Log each loaded item."
   :type 'boolean)
 
@@ -182,7 +182,5 @@
 
 (add-hook 'window-setup-hook #'on-setup-hooks-h -100)
 
-(when init-file-debug
-  (setq my/idle-loader-log t))
 
 (provide 'init-idle)

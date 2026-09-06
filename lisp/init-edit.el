@@ -11,16 +11,18 @@
 					   try-complete-lisp-symbol-partially
 					   try-complete-lisp-symbol)))
 
+;; expreg
 (global-set-key (kbd "C-=") #'expreg-expand)
 (global-set-key (kbd "C--") #'expreg-contract)
-
+
+;; cape
 (global-set-key (kbd "C-c p") #'cape-prefix-map)
+(add-hook 'completion-at-point-functions #'cape-dabbrev)
+(add-hook 'completion-at-point-functions #'cape-file)
+(add-hook 'completion-at-point-functions #'cape-elisp-block)
 
-(with-eval-after-load 'minibuffer
-  (add-hook 'completion-at-point-functions #'cape-dabbrev)
-  (add-hook 'completion-at-point-functions #'cape-file)
-  (add-hook 'completion-at-point-functions #'cape-elisp-block))
-
+
+;; selected
 (add-hook 'post-select-region-hook #'selected-minor-mode)
 (with-eval-after-load 'selected
   (define-key selected-keymap (kbd "q") #'selected-off)
@@ -36,11 +38,14 @@
   (define-key selected-keymap (kbd ";") #'comment-dwim)
   (define-key selected-keymap (kbd "k") #'my/selected-wrap-textcolo))
 
+
+;; symbol-overlay-mode
 (add-hook 'prog-mode-hook #'symbol-overlay-mode)
 (add-hook 'html-mode-hook #'symbol-overlay-mode)
 (advice-add 'embark-toggle-highlight :override #'my/embark-symbol-overlay-toggle)
 
-
+
+;; undo-fu-session
 (add-hook 'on-first-file-hook #'undo-fu-session-global-mode)
 
 ;;;###autoload
@@ -55,13 +60,18 @@
   (setq undo-fu-session-directory (expand-file-name "undo-fu-session/" cache-directory))
   (advice-add 'undo-fu-session--make-file-name :override #'my/undo-fu-session--make-file-name))
 
+
+;; vundo
 (with-eval-after-load 'vundo
   (setq vundo-glyph-alist vundo-unicode-symbols))
 
+
+;; hungry-delete
 (add-hook 'on-first-input-hook #'global-hungry-delete-mode)
 (with-eval-after-load 'hungry-delete
   (setq hungry-delete-chars-to-skip " \t\n\r\f\v"))
 
+
 ;; IME
 ;; 如果 Emacs 启动报 liberime-load 相关错误，将 .emacs.d/module/liberime 路径下的 dll 文件复制到 Emacs 的安装目录
 (with-eval-after-load 'liberime

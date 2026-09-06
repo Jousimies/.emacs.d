@@ -232,3 +232,6 @@
 [submodule "packages/denote-regexp"]
 	path = packages/denote-regexp
 	url = https://git.sr.ht/~swflint/denote-regexp
+[submodule "packages/dired-preview"]
+	path = packages/dired-preview
+	url = https://github.com/protesilaos/dired-preview.git

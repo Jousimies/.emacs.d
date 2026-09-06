@@ -1,4 +1,5 @@
 ;; -*- lexical-binding: t; -*-
+;; ibuffer
 (global-set-key [remap list-buffers] #'ibuffer)
 (add-hook 'ibuffer-mode-hook #'ibuffer-auto-mode)
 (with-eval-after-load 'ibuffer
@@ -6,10 +7,13 @@
         ibuffer-show-empty-filter-groups nil
         ibuffer-default-sorting-mode 'major-mode))
 
+;; nerd-icons-ibuffer
+(add-hook 'ibuffer-mode-hook #'nerd-icons-ibuffer-mode)
+
 ;; bufferlo
 (add-hook 'on-first-buffer-hook #'bufferlo-mode)
 (global-set-key [remap switch-to-buffer] #'bufferlo-switch-to-buffer)
-
+
 ;; helpful
 (global-set-key [remap describe-function] #'helpful-callable)
 (global-set-key [remap describe-variable] #'helpful-variable)
@@ -23,7 +27,7 @@
                   (mode-line-format . none))))
 ;; elisp-demos in helpful
 (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
-
+
 ;; popper
 (add-hook 'on-first-buffer-hook #'popper-mode)
 (global-set-key (kbd "C-`") #'popper-toggle)

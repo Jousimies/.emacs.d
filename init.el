@@ -20,17 +20,18 @@
       (require 'init-vars)
       (require 'init-util)
 
+      (require 'init-font)
       (require 'init-modeline)
+      (require 'init-keys)
+
       (add-hook 'window-setup-hook
 		(lambda ()
-		  (require 'init-font)
 		  (require 'init-builtin)
 		  (require 'init-modal)
 		  (require 'init-completion)
 		  (require 'init-edit)
 		  (require 'init-dired)
 		  (require 'init-buffer)
-		  (require 'init-ui)
 
 		  (require 'init-org)
 		  (require 'init-note)
@@ -42,9 +43,6 @@
 		  (require 'init-prog)
 		  (require 'init-git)
 		  (require 'init-ai)
-
-		  (require 'init-misc)
-		  (require 'init-keys)
 		  )))
 
   (message "RUN PYTHON UPDATE_EMACS.PY IN TERMINAL!!!"))
