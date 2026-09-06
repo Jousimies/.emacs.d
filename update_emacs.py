@@ -96,6 +96,7 @@ COMPILE_FILE_EXCLUDES = {
 }
 
 VERBOSE = False
+FORCE = False
 
 
 def log(message: str, level: str = "INFO", verbose_only: bool = False) -> None:
@@ -640,6 +641,28 @@ def elisp_string(value: str) -> str:
     return value.replace("\\", "\\\\").replace('"', '\\"')
 
 
+def write_text_if_changed(path: Path, content: str) -> bool:
+    """Write CONTENT to PATH only when it changed."""
+    if path.exists() and path.read_text(encoding="utf-8", errors="ignore") == content:
+        return False
+    path.write_text(content, encoding="utf-8")
+    return True
+
+
+def any_newer_than(paths: list[Path], target: Path) -> bool:
+    """Return whether any existing path is newer than TARGET."""
+    if FORCE or not target.exists():
+        return True
+    target_mtime = target.stat().st_mtime_ns
+    for path in paths:
+        try:
+            if path.stat().st_mtime_ns > target_mtime:
+                return True
+        except OSError:
+            return True
+    return False
+
+
 def collect_config_autoloads() -> list[tuple[str, str]]:
     """Collect ;;;###autoload defuns from lisp/*.el."""
     autoloads: list[tuple[str, str]] = []
@@ -728,12 +751,14 @@ def generate_load_path_cache() -> None:
         ";;; load-path-cache.el ends here",
         "",
     ])
-    LOAD_PATH_CACHE.write_text("\n".join(lines), encoding="utf-8")
-    log(f"已生成 {LOAD_PATH_CACHE.relative_to(ROOT)}")
+    changed = write_text_if_changed(LOAD_PATH_CACHE, "\n".join(lines))
+    status = "已生成" if changed else "未变化"
+    log(f"{status} {LOAD_PATH_CACHE.relative_to(ROOT)}")
     log(
         f"load-path 目录: {len(package_paths)}  "
         f"feature 条目: {len(feature_map)}  "
-        f"autoload 条目: {len(config_autoloads)}"
+        f"autoload 条目: {len(config_autoloads)}",
+        verbose_only=not changed,
     )
 
 
@@ -749,6 +774,17 @@ def generate_package_autoloads() -> bool:
 
     autoload_file = elisp_string(PACKAGE_AUTOLOADS.as_posix())
     autoload_dirs = collect_package_autoload_dirs()
+    autoload_sources = [
+        path
+        for directory in autoload_dirs
+        for path in directory.glob("*.el")
+        if is_elisp_source_file(path)
+    ] + [Path(__file__)]
+    if not any_newer_than(autoload_sources, PACKAGE_AUTOLOADS):
+        log(f"未变化 {PACKAGE_AUTOLOADS.relative_to(ROOT)}")
+        log(f"autoload 扫描目录: {len(autoload_dirs)}", verbose_only=True)
+        return True
+
     PACKAGE_AUTOLOADS.unlink(missing_ok=True)
     build_packages_dir = BUILD_CACHE_DIR / "packages"
     dirs_elisp = "\n        ".join(
@@ -818,7 +854,11 @@ def generate_package_autoloads() -> bool:
 
 def collect_build_source_files() -> list[Path]:
     """Return source files mirrored into the build directory."""
-    files = collect_config_compile_files()
+    skipped = {PACKAGE_AUTOLOADS.name}
+    files = [
+        path for path in sorted(CONFIG_LISP_DIR.glob("*.el"))
+        if is_elisp_source_file(path) and path.name not in skipped
+    ]
     if not PACKAGE_DIR.is_dir():
         return files
 
@@ -836,7 +876,7 @@ def collect_build_source_files() -> list[Path]:
             ]
             for name in names:
                 path = current_path / name
-                if is_compilable_elisp_file(path):
+                if is_elisp_source_file(path):
                     files.append(path)
     return list(dict.fromkeys(files))
 
@@ -922,14 +962,25 @@ def generate_caches_parallel() -> bool:
     return ok
 
 
-def is_compilable_elisp_file(path: Path) -> bool:
-    """Return whether PATH is an Elisp source file worth compiling."""
+def is_elisp_source_file(path: Path) -> bool:
+    """Return whether PATH is a normal Elisp source file."""
     name = path.name
     return (
         path.suffix == ".el"
         and not name.startswith(".")
         and not name.endswith(("-autoloads.el", "-pkg.el"))
     )
+
+
+def is_compilable_elisp_file(path: Path) -> bool:
+    """Return whether PATH is an Elisp source file worth byte compiling."""
+    if not is_elisp_source_file(path):
+        return False
+    try:
+        first_line = path.read_text(encoding="utf-8", errors="ignore").splitlines()[0]
+    except (OSError, IndexError):
+        return False
+    return "no-byte-compile: t" not in first_line
 
 
 def collect_config_compile_files() -> list[Path]:
@@ -1059,6 +1110,23 @@ def print_compile_output(output: str, failed: bool = False) -> None:
             print(line)
 
 
+def stale_byte_compile_files(files: list[Path]) -> list[Path]:
+    """Return source files whose build .elc is missing or older."""
+    if FORCE:
+        return files
+    stale: list[Path] = []
+    for source in files:
+        build_source = build_source_path(source)
+        build_elc = build_source.with_suffix(".elc")
+        try:
+            if (not build_elc.exists()
+                    or build_source.stat().st_mtime_ns > build_elc.stat().st_mtime_ns):
+                stale.append(source)
+        except OSError:
+            stale.append(source)
+    return stale
+
+
 def run_emacs_byte_compile(files: list[Path]) -> bool:
     """Byte compile FILES in the build tree, keeping .el and .elc together."""
     emacs = which("emacs")
@@ -1070,9 +1138,13 @@ def run_emacs_byte_compile(files: list[Path]) -> bool:
         return True
 
     prepare_build_tree()
-    build_files = [build_source_path(path) for path in files]
+    stale_files = stale_byte_compile_files(files)
     remove_source_elc_files(files)
+    if not stale_files:
+        log(f"byte compile 未变化: {len(files)} 个文件已是最新")
+        return True
 
+    build_files = [build_source_path(path) for path in stale_files]
     workers = min(max(1, os.cpu_count() or 1), len(build_files), 4)
     chunks = split_chunks(build_files, workers)
     log(f"开始 byte compile: {len(build_files)} 个文件，workers={workers}")
@@ -1092,7 +1164,7 @@ def run_emacs_byte_compile(files: list[Path]) -> bool:
 
     if ok:
         remove_source_elc_files(files)
-        log(f"byte compile 完成: {len(build_files)} 个文件")
+        log(f"byte compile 完成: {len(build_files)} / {len(files)} 个文件")
         return True
     log("byte compile 失败", "ERROR")
     return False
@@ -1246,11 +1318,13 @@ def main() -> int:
     parser.add_argument("--compile", action="store_true", help="只生成缓存并执行 byte compile")
     parser.add_argument("--byte-compile", action="store_true", help="执行 byte compile")
     parser.add_argument("--no-compile", action="store_true", help="默认/--build 流程中跳过 byte compile")
+    parser.add_argument("--force", action="store_true", help="强制重新生成 autoload/cache 并重新 byte compile")
     parser.add_argument("-v", "--verbose", action="store_true", help="显示详细日志，包括 autoload 扫描目录和编译文件")
     args = parser.parse_args()
 
-    global VERBOSE
+    global VERBOSE, FORCE
     VERBOSE = args.verbose
+    FORCE = args.force
 
     print("=" * 60)
     print("Emacs configuration updater / first-time setup")

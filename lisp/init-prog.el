@@ -5,22 +5,24 @@
 ;; 不同的 Emacs 版本需要不同 ABI 版本的 grammar, ABI 通过 (treesit-library-abi-version) 查看
 ;; 下载后的文件需要改名，如 yaml.dll->libtree-sitter-yaml.dll
 ;; 否则 (treesit-language-available-p 'yaml t) 会报错
+
 (with-eval-after-load 'treesit
   (add-to-list 'treesit-extra-load-path
                (expand-file-name "module/tree-sitter" user-emacs-directory)))
+(setq treesit-enabled-modes t)
 
-(setq major-mode-remap-alist
-      '((python-mode     . python-ts-mode)
-        (js-mode         . js-ts-mode)
-        (typescript-mode . typescript-ts-mode)
-        (css-mode        . css-ts-mode)
-        (html-mode       . html-ts-mode)
-        (json-mode       . json-ts-mode)
-        (c-mode          . c-ts-mode)
-        (c++-mode        . c++-ts-mode)
-        (yaml-mode       . yaml-ts-mode)
-        (rust-mode       . rust-ts-mode)
-        (go-mode         . go-ts-mode)))
+;; (setq major-mode-remap-alist
+;;       '((python-mode     . python-ts-mode)
+;;         (js-mode         . js-ts-mode)
+;;         (typescript-mode . typescript-ts-mode)
+;;         (css-mode        . css-ts-mode)
+;;         (html-mode       . html-ts-mode)
+;;         (json-mode       . json-ts-mode)
+;;         (c-mode          . c-ts-mode)
+;;         (c++-mode        . c++-ts-mode)
+;;         (yaml-mode       . yaml-ts-mode)
+;;         (rust-mode       . rust-ts-mode)
+;;         (go-mode         . go-ts-mode)))
 
 ;; Windows 11 可以通过 winget 安装 ripgrep
 ;; winget search ripgrep
@@ -39,19 +41,20 @@
                                        (side . right)
                                        (window-width . 0.5))))
 
-;; ;; markdown
-;; (use-package markdown-mode
-;;   :mode (("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode)
-;;          ("README\\.md\\'" . gfm-mode))
-;;   :init (setq markdown-command "multimarkdown")
-;;   :bind (:map markdown-mode-map
-;; 	      ("C-c C-e" . markdown-do)))
+;; Python
+(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+
+;; markdown
+(dolist (re '("\\.md\\'" "\\.mdx\\'" "\\.markdown\\'"))
+  (add-to-list 'auto-mode-alist (cons re 'markdown-ts-mode)))
 
 ;; (use-package lua-mode
 ;;   :mode "\\.lua$"
 ;;   :interpreter "lua")
 
-;; ;; yaml
-;; (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
+;; (add-to-list 'auto-mode-alist '("\\.lua$\\'" . lua-ts-mode))
+(add-to-list 'major-mode-remap-alist '(lua-mode . lua-ts-mode))
+;; yaml
+(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
 
 (provide 'init-prog)

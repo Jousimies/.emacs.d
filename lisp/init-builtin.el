@@ -2,7 +2,7 @@
 
 ;; Startup
 (setq user-mail-address (getenv "MAIL_ACCOUNT"))
-
+
 ;; System Coding
 (prefer-coding-system 'utf-8-unix)
 (set-default-coding-systems 'utf-8-unix)
@@ -28,33 +28,53 @@
   (modify-coding-system-alist 'process "[cC][mM][dD][pP][rR][oO][xX][yY]"
 			      '(gbk-dos . gbk-dos)))
 
-
+
+;; jit-lock
+(with-eval-after-load 'jit-lock
+  (setq jit-lock-defer-time 0)
+  (setq jit-lock-stealth-time 0.5)
+  (setq jit-lock-stealth-nice 0.5)
+  (setq jit-lock-stealth-load 100)
+  (setq jit-lock-chunk-size 1024))
+
+;; eldoc
+(with-eval-after-load 'eldoc
+  (setq eldoc-help-at-pt t)
+  (setq eldoc-idle-delay 0.5)
+  (setq eldoc-idle-delay-visible-only t)
+  (setq eldoc-echo-area-use-multiline-p nil)
+  (setq eldoc-documentation-strategy 'eldoc-documentation-enthusiast))
+
 ;; Simple
 (bind-key [remap downcase-word] #'downcase-dwim)
 (bind-key [remap upcase-word] #'upcase-dwim)
 (bind-key [remap capitalize-word] #'capitalize-dwim)
-
+(with-eval-after-load 'simple
+  (setq kill-whole-line t)
+  (setq kill-region-dwim t)
+  (setq track-eol t)
+  (setq kill-read-only-ok t)
+  (setq mark-ring-max 128
+	kill-do-not-save-duplicates t
+	kill-ring-max (* kill-ring-max 2)
+	async-shell-command-display-buffer nil))
+
+;; C Source code
 (setq use-short-answers t)
-;;关闭 ring bell,用 mode-line 替代
 (setq ring-bell-function (lambda ()
 			   (invert-face 'mode-line)
 			   (run-with-timer 0.05 nil 'invert-face 'mode-line)))
-(setq create-lockfiles nil)		;不要创建 lockfiles
-(setq history-delete-duplicates t)	;删除历史记录重复项
-(setq delete-by-moving-to-trash t)	;删除文件至系统垃圾箱
-(setq cursor-in-non-selected-windows nil) ;除当前窗口不显示光标
+(setq create-lockfiles nil)
+(setq history-delete-duplicates t)
+(setq delete-by-moving-to-trash t)
+(setq cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)
 (setq read-buffer-completion-ignore-case t)
 (setq inhibit-compacting-font-caches t)
 (setq save-interprogram-paste-before-kill t)
 (setq window-combination-resize t)
-
 (setq ffap-machine-p-known 'reject)
-
-(setq mark-ring-max 128
-      kill-do-not-save-duplicates t
-      kill-ring-max (* kill-ring-max 2)
-      async-shell-command-display-buffer nil)
+(setq multisession-directory (expand-file-name "multisession" cache-directory))
 
 ;; https://emacsredux.com/blog/2026/04/07/stealing-from-the-best-emacs-configs/
 (setq-default bidi-display-reordering 'left-to-right
@@ -66,54 +86,73 @@
 (setq-default cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)
 
+
 (my/idle-loader-add '(global-goto-address-mode)
 		    '(midnight-mode)
 		    '(pixel-scroll-precision-mode)
 		    '(delete-selection-mode)
 		    '(global-word-wrap-whitespace-mode)
 		    '(which-function-mode))
-
+
 ;; Server
 (add-hook 'on-first-file-hook #'server-start)
 (with-eval-after-load 'server
   (setq server-client-instructions nil))
-
+
 ;; transient
 (with-eval-after-load 'transient
-  ;; (setq transient-show-popup 1)
+  (setq transient-show-popup 1)
   (setq transient-history-file (expand-file-name "transient/history.el" cache-directory)
 	transient-levels-file (expand-file-name "transient/levels.el" cache-directory)
 	transient-values-file (expand-file-name "transient/values.el" cache-directory)))
-
+
+;; url
 (with-eval-after-load 'url
   (setq url-configuration-directory (expand-file-name "url" cache-directory))
   (setq url-history-file (expand-file-name "history" url-configuration-directory))
   (setq url-cookie-file (expand-file-name "cookies" url-configuration-directory)))
 
-(setq auto-save-default nil
-      auto-save-visited-interval 1
-      save-silently t
-      large-file-warning-threshold nil
-      confirm-kill-processes nil
-      confirm-kill-emacs nil
-      make-backup-files nil
-      view-read-only t
-      kill-read-only-ok t
-      isearch-lazy-count t
-      help-window-select 'other
-      help-window-keep-selected t
-      ad-redefinition-action 'accept
-      truncate-string-ellipsis "…"
-      multisession-directory (expand-file-name "multisession" cache-directory)
-      auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-" cache-directory))
+
+;; files
+(with-eval-after-load 'files
+  (setq auto-save-default nil
+	auto-save-visited-interval 1
+	save-silently t
+	large-file-warning-threshold nil
+	confirm-kill-processes nil
+	confirm-kill-emacs nil
+	make-backup-files nil
+	view-read-only t))
 
 (add-hook 'on-first-file-hook #'auto-save-visited-mode)
+
+;; startup
+(with-eval-after-load 'startup
+  (setq auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-" cache-directory)))
+
+;; isearch
+(with-eval-after-load 'isearch
+  (setq isearch-lazy-count t))
+
+;; help
+(with-eval-after-load 'help
+  (setq help-window-select 'other)
+  (setq help-window-keep-selected t))
+
+;; loaddefs
+(with-eval-after-load 'loaddefs
+  (setq ad-redefinition-action 'accept))
+
+;; mule-util
+(with-eval-after-load 'mule-util
+  (setq truncate-string-ellipsis "…"))
 
-;; https://emacs-china.org/t/macos-save-silently-t/24086
-(setq inhibit-message-regexps '("^Saving" "^Wrote"))
-(setq set-message-functions '(inhibit-message))
 
+;; Auto revert
 (add-hook 'on-first-file-hook #'global-auto-revert-mode)
+(with-eval-after-load 'autorevert
+  (setq auto-revert-avoid-polling t)
+  (setq auto-revert-stop-on-user-input nil))
 
 ;; Scroll
 (setq fast-but-imprecise-scrolling t

@@ -1,5 +1,9 @@
 ;; -*- lexical-binding: t; -*-
 
+;; https://emacs-china.org/t/macos-save-silently-t/24086
+(setq inhibit-message-regexps '("^Saving" "^Wrote"))
+(setq set-message-functions '(inhibit-message))
+
 (setq enable-recursive-minibuffers t
       read-minibuffer-restore-windows nil
       minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt)
@@ -111,6 +115,9 @@
 
 (with-eval-after-load 'org
   (define-key org-mode-map "M-g h" #'consult-org-heading))
+
+;; consult-dir
+(global-set-key [remap list-directory] #'consult-dir)
 
 (global-set-key [remap describe-bindings] #'embark-bindings)
 (global-set-key (kbd "C-;") #'embark-act)
