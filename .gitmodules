@@ -223,3 +223,12 @@
 [submodule "packages/citar-denote"]
 	path = packages/citar-denote
 	url = https://github.com/pprevos/citar-denote.git
+[submodule "packages/denote-explore"]
+	path = packages/denote-explore
+	url = https://github.com/pprevos/denote-explore.git
+[submodule "packages/denote-sequence"]
+	path = packages/denote-sequence
+	url = https://github.com/protesilaos/denote-sequence.git
+[submodule "packages/denote-regexp"]
+	path = packages/denote-regexp
+	url = https://git.sr.ht/~swflint/denote-regexp

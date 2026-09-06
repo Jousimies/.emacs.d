@@ -83,10 +83,12 @@
     (eval
      '(transient-define-prefix my/note-menu--transient ()
         "Note"
+	[[("n" "Find or Create" consult-notes :transient nil)]]
         [["New Note"
-          ("n" "Find or Create" consult-notes :transient nil)
-          ("j" "New Journal" denote-journal-new-or-existing-entry :transient nil)
-          ("s" "New Signature" denote-signature :transient nil)
+          ("sc" "Child" denote-sequence-new-child :transient nil)
+          ("sp" "Parents" denote-sequence-new-parent :transient nil)
+          ("sb" "Sibling" denote-sequence-new-sibling :transient nil)
+          ("j" "Journal" denote-journal-new-or-existing-entry :transient nil)
           ("b" "Blogs" my/blog-new-post :transient nil)]
          ["Meta Rename"
           ("k" "Keywords" denote-rename-file-keywords :transient nil)
