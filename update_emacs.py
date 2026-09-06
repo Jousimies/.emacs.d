@@ -154,6 +154,28 @@ def is_windows() -> bool:
     return platform.system() == "Windows"
 
 
+def find_emacs() -> str | None:
+    """Find Emacs, including native Windows installs outside the MSYS PATH.
+
+    EMACS may specify an executable path (without command-line arguments).
+    """
+    configured = os.environ.get("EMACS")
+    if configured:
+        executable = which(configured)
+        if executable:
+            return executable
+        print(f"⚠ EMACS 指定的程序不可用: {configured}")
+        return None
+    executable = which("emacs")
+    if executable:
+        return executable
+    if is_windows():
+        candidate = Path("C:/opt/emacs/bin/emacs.exe")
+        if candidate.is_file():
+            return str(candidate)
+    return None
+
+
 def is_macos() -> bool:
     return platform.system() == "Darwin"
 
@@ -327,7 +349,7 @@ def set_macos_mail_account_env(account: str) -> None:
                 flags=re.S,
             )
         else:
-            new = old.rstrip() + ("\n\n" if old.strip() else "") + block
+            NEW = old.rstrip() + ("\n\n" if old.strip() else "") + block
         rc_file.write_text(new, encoding="utf-8")
         print(f"✅ 已写入 shell 配置: {rc_file}")
         print("   请重启 Emacs/终端，或重新登录后生效。")
@@ -450,7 +472,7 @@ def get_submodule_paths() -> list[Path]:
         result = subprocess.run(
             [
                 "git", "submodule", "foreach", "--recursive", "--quiet",
-                "printf '%s\\n' \"$toplevel/$sm_path\"",
+                "printf '%s\\0' \"$displaypath\"",
             ],
             cwd=ROOT,
             text=True,
@@ -467,19 +489,26 @@ def get_submodule_paths() -> list[Path]:
             print(result.stderr.strip())
         return []
 
-    paths = [Path(line.strip()) for line in result.stdout.splitlines() if line.strip()]
+    # Git's shell may emit MSYS paths such as /c/Users/... for $toplevel,
+    # which native Windows Python cannot use as cwd.  $displaypath is relative
+    # to ROOT even for nested submodules; join it with Python's native path.
+    # NUL delimiters preserve whitespace (including newlines) in path names.
+    paths = [ROOT / path for path in result.stdout.split("\0") if path]
     return list(dict.fromkeys(paths))
 
 
 def fetch_submodule(path: Path) -> tuple[Path, bool, str]:
     """Fetch one submodule. Designed for parallel execution."""
-    result = subprocess.run(
-        ["git", "fetch", "--all", "--prune"],
-        cwd=path,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
+    try:
+        result = subprocess.run(
+            ["git", "fetch", "--all", "--prune"],
+            cwd=path,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except OSError as err:
+        return path, False, f"无法启动 git fetch (cwd: {path}): {err}"
     output = (result.stdout or "") + (result.stderr or "")
     return path, result.returncode == 0, output.strip()
 
@@ -764,7 +793,7 @@ def generate_load_path_cache() -> None:
 
 def generate_package_autoloads() -> bool:
     """Generate package autoloads with Emacs' own autoload scanner."""
-    emacs = which("emacs")
+    emacs = find_emacs()
     if not emacs:
         print("⚠ 未找到 emacs，跳过 package-autoloads.el 生成")
         return True
@@ -833,6 +862,8 @@ def generate_package_autoloads() -> bool:
     if result.returncode == 0:
         if PACKAGE_AUTOLOADS.exists():
             text = PACKAGE_AUTOLOADS.read_text(encoding="utf-8")
+            build_relative = os.path.relpath(BUILD_CACHE_DIR, PACKAGE_AUTOLOADS.parent).replace("\\", "/")
+            text = text.replace(f'"{build_relative}/', f'"{elisp_string(BUILD_CACHE_DIR.as_posix())}/')
             text = text.replace('"../.cache/elisp/build/', f'"{elisp_string(BUILD_CACHE_DIR.as_posix())}/')
             text = text.replace('"../packages/', f'"{elisp_string((ROOT / "packages").as_posix())}/')
             PACKAGE_AUTOLOADS.write_text(text, encoding="utf-8")
@@ -1053,14 +1084,21 @@ def run_emacs_byte_compile_chunk(emacs: str, files: list[Path], index: int) -> t
     file_list_elisp = elisp_string(file_list.as_posix())
     load_cache = elisp_string(LOAD_PATH_CACHE.as_posix())
     package_autoloads = elisp_string(PACKAGE_AUTOLOADS.as_posix())
+    # Native Windows Emacs may use a different HOME than MSYS Python.
+    # The generated load-path cache resolves paths against this directory.
+    emacs_directory = elisp_string(ROOT.as_posix() + "/")
     verbose_elisp = "t" if VERBOSE else "nil"
     script = f'''
 (progn
 (require 'cl-lib)
 (require 'bytecomp)
+(setq user-emacs-directory "{emacs_directory}")
 (setq byte-compile-warnings nil)
 (when (file-exists-p "{load_cache}")
   (load "{load_cache}" nil t))
+;; Compilation creates/removes .elc files while other workers load libraries.
+;; Use normal lookup rather than the runtime feature/file-name cache here.
+(setq load-path-filter-function nil)
 (when (file-exists-p "{package_autoloads}")
   (load "{package_autoloads}" nil t))
 (let ((files (with-temp-buffer
@@ -1129,7 +1167,7 @@ def stale_byte_compile_files(files: list[Path]) -> list[Path]:
 
 def run_emacs_byte_compile(files: list[Path]) -> bool:
     """Byte compile FILES in the build tree, keeping .el and .elc together."""
-    emacs = which("emacs")
+    emacs = find_emacs()
     if not emacs:
         log("未找到 emacs，跳过 byte compile", "WARN")
         return True
@@ -1197,13 +1235,21 @@ def build_make_packages() -> bool:
         print("   Windows 请在 MSYS2 UCRT64/MINGW64 里安装: pacman -S make")
         return False
 
+    emacs = find_emacs()
+    if not emacs:
+        print("⚠ 未找到 emacs，跳过 make 编译；请设置 EMACS 为 emacs.exe 的完整路径")
+        return False
+    # Make expands these values into shell commands; quote paths with spaces.
+    emacs_command = shlex.quote(Path(emacs).as_posix())
+
     for name in MAKE_TARGETS:
         pkg = PACKAGE_DIR / name
         if not pkg.is_dir():
             print(f"⚠ 跳过 {name}（目录不存在）")
             continue
         print(f"\n🔨 make {name} ...")
-        if run_command([make], cwd=pkg):
+        variable = "EMACSBIN" if name == "auctex" else "EMACS"
+        if run_command([make, f"{variable}={emacs_command}"], cwd=pkg):
             print(f"✅ {name} 编译完成")
         else:
             print(f"❌ {name} 编译失败")
