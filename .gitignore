@@ -15,3 +15,4 @@ build-emacs
 __pycache__
 load-path-cache.el
 package-autoloads.el
+build-emacs-macos
