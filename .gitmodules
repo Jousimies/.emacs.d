@@ -28,9 +28,6 @@
 [submodule "packages/diredfl"]
 	path = packages/diredfl
 	url = https://github.com/purcell/diredfl.git
-[submodule "packages/unicad"]
-	path = packages/unicad
-	url = https://github.com/ukari/unicad.git
 [submodule "packages/browse-at-remote"]
 	path = packages/browse-at-remote
 	url = https://github.com/rmuslimov/browse-at-remote.git
