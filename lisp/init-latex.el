@@ -34,6 +34,13 @@
   (setq-default TeX-master t)
   (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer))
 
+(with-eval-after-load 'latexenc
+  ;; Work around an Emacs 32 latexenc bug: when opening a .tex file without a
+  ;; TeX-master/tex-main-file local variable, `latexenc-find-file-coding-system'
+  ;; may call `decode-coding-string' with nil.  Disable that optional master-file
+  ;; coding-system probe; AUCTeX can still manage TeX-master after the file loads.
+  (setq latexenc-dont-use-TeX-master-flag t))
+
 (with-eval-after-load 'tex
   (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))
   (add-to-list 'TeX-view-program-selection '(output-pdf "PDF Tools"))

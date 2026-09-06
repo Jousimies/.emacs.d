@@ -1,4 +1,6 @@
 ;; -*- lexical-binding: t; -*-
+(my/idle-loader-add '(require 'org-edna nil t)
+		    '(require 'org-gtd nil t))
 
 (with-eval-after-load 'org-agenda
   (setq org-agenda-window-setup 'current-window

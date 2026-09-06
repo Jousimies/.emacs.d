@@ -306,7 +306,10 @@ With prefix REMOTE, use `--remote`."
 
 ;;; Optional: transient menu
 
-(when (require 'transient nil t)
+(eval-and-compile
+  (require 'transient nil t))
+
+(when (featurep 'transient)
   (transient-define-prefix my/git-submodule-menu ()
     "Git Submodule management"
     [["Add / Remove"
