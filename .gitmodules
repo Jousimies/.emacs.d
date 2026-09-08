@@ -235,3 +235,6 @@
 [submodule "packages/dired-preview"]
 	path = packages/dired-preview
 	url = https://github.com/protesilaos/dired-preview.git
+[submodule "packages/jinx"]
+	path = packages/jinx
+	url = https://github.com/minad/jinx.git
