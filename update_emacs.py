@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
-"""Emacs 配置首次安装 / 更新脚本。
+"""Emacs 配置维护脚本。
 
-功能：
-  1. git fetch 主仓库与 submodule 的最新提交，但默认不切换/更新工作区
-  2. 生成 straight/elpaca 风格的 .cache/elisp/build 源文件镜像
-  3. 生成 load-path + feature 缓存与 package autoloads
-  4. 自动 make 需要编译的包（auctex、benchmark-init-el）
-  5. 默认 byte compile 配置与常用包，.elc 放在 build 镜像目录
-  6. 尝试处理 pdf-tools server（Linux 编译；Windows/macOS 给出指引）
+主要命令：
+  sync    更新仓库元数据、构建包、生成缓存并 byte compile（默认）
+  doctor  只读检查 Emacs、submodule、模块、缓存和外部依赖
+  env     从登录 shell 生成白名单环境快照
+  test    检查 Elisp 语法并执行 batch startup smoke test
+  clean   删除本脚本生成的缓存和编译产物
 
 用法：
-  python update_emacs.py              # 完整更新 + make + 缓存 + byte compile
+  python update_emacs.py              # 等价于 sync，保持旧用法兼容
+  python update_emacs.py doctor       # 配置体检（不修改文件）
+  python update_emacs.py env          # 刷新 .cache/environment.el
+  python update_emacs.py test         # Elisp 语法 + batch 启动测试
+  python update_emacs.py clean        # 清理生成物（支持 --dry-run）
   python update_emacs.py --cache      # 只刷新缓存/autoload
   python update_emacs.py --compile    # 只刷新缓存/autoload 并 byte compile
   python update_emacs.py --build      # 只做 make / pdf-tools + 缓存 + byte compile
@@ -22,7 +25,9 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import concurrent.futures
+import datetime as dt
 import os
 import platform
 import plistlib
@@ -41,6 +46,48 @@ PACKAGE_AUTOLOADS = ROOT / "lisp" / "package-autoloads.el"
 CONFIG_LISP_DIR = ROOT / "lisp"
 ELISP_CACHE_DIR = ROOT / ".cache"
 BUILD_CACHE_DIR = ELISP_CACHE_DIR / "packages-build"
+ENVIRONMENT_CACHE = ELISP_CACHE_DIR / "environment.el"
+CACHE_STAMP = ELISP_CACHE_DIR / "elisp-cache.stamp"
+
+COMMANDS = ("sync", "doctor", "env", "test", "clean")
+
+# Only persist variables that affect command discovery and common development
+# toolchains. In particular, never snapshot tokens, passwords, or arbitrary
+# variables from the user's login shell.
+ENVIRONMENT_VARIABLES = {
+    "BUNDLE_PATH",
+    "CARGO_HOME",
+    "C_INCLUDE_PATH",
+    "CPLUS_INCLUDE_PATH",
+    "CPATH",
+    "GEM_HOME",
+    "GOPATH",
+    "GOROOT",
+    "INFOPATH",
+    "JAVA_HOME",
+    "LANG",
+    "LC_ALL",
+    "LC_CTYPE",
+    "LIBRARY_PATH",
+    "MANPATH",
+    "NVM_DIR",
+    "PATH",
+    "PKG_CONFIG_PATH",
+    "RUSTUP_HOME",
+    "SSH_AUTH_SOCK",
+    "TEXMFHOME",
+    "VIRTUAL_ENV",
+    "VOLTA_HOME",
+}
+
+REQUIRED_FILES = (
+    ROOT / "early-init.el",
+    ROOT / "init.el",
+    CONFIG_LISP_DIR / "init-util.el",
+)
+
+REQUIRED_EXECUTABLES = ("git",)
+OPTIONAL_EXECUTABLES = ("rg", "bsdtar", "make")
 
 FEATURE_RE = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9_+-]*$")
 AUTOLOAD_DEF_RE = re.compile(
@@ -349,7 +396,7 @@ def set_macos_mail_account_env(account: str) -> None:
                 flags=re.S,
             )
         else:
-            NEW = old.rstrip() + ("\n\n" if old.strip() else "") + block
+            new = old.rstrip() + ("\n\n" if old.strip() else "") + block
         rc_file.write_text(new, encoding="utf-8")
         print(f"✅ 已写入 shell 配置: {rc_file}")
         print("   请重启 Emacs/终端，或重新登录后生效。")
@@ -667,7 +714,14 @@ def collect_package_autoload_dirs() -> list[Path]:
 
 
 def elisp_string(value: str) -> str:
-    return value.replace("\\", "\\\\").replace('"', '\\"')
+    """Escape VALUE for an Emacs Lisp string literal."""
+    return (
+        value.replace("\\", "\\\\")
+        .replace('"', '\\"')
+        .replace("\r", "\\r")
+        .replace("\n", "\\n")
+        .replace("\t", "\\t")
+    )
 
 
 def write_text_if_changed(path: Path, content: str) -> bool:
@@ -990,6 +1044,9 @@ def generate_caches_parallel() -> bool:
             else:
                 if result is False:
                     ok = False
+    if ok:
+        CACHE_STAMP.parent.mkdir(parents=True, exist_ok=True)
+        CACHE_STAMP.touch()
     return ok
 
 
@@ -1328,6 +1385,498 @@ def build_pdf_tools() -> bool:
     return False
 
 
+class DoctorReport:
+    """Collect and display configuration health checks."""
+
+    def __init__(self) -> None:
+        self.ok_count = 0
+        self.warning_count = 0
+        self.error_count = 0
+
+    def ok(self, message: str) -> None:
+        self.ok_count += 1
+        print(f"✅ {message}")
+
+    def warn(self, message: str) -> None:
+        self.warning_count += 1
+        print(f"⚠  {message}")
+
+    def error(self, message: str) -> None:
+        self.error_count += 1
+        print(f"❌ {message}")
+
+    def finish(self, strict: bool = False) -> bool:
+        print("\n" + "-" * 60)
+        print(
+            f"Doctor: {self.ok_count} passed, "
+            f"{self.warning_count} warnings, {self.error_count} errors"
+        )
+        return self.error_count == 0 and (not strict or self.warning_count == 0)
+
+
+def capture_output(
+    command: list[str],
+    cwd: Path | None = None,
+) -> subprocess.CompletedProcess[str] | None:
+    """Run COMMAND without changing state and return its captured result."""
+    try:
+        return subprocess.run(
+            command,
+            cwd=cwd or ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except OSError:
+        return None
+
+
+def emacs_version(emacs: str) -> str | None:
+    result = capture_output(
+        [emacs, "--batch", "-Q", "--eval", "(princ emacs-version)"]
+    )
+    if result is None or result.returncode != 0:
+        return None
+    return result.stdout.strip() or None
+
+
+def configured_modules() -> list[str]:
+    """Read the deferred module list from init.el without evaluating it."""
+    init_file = ROOT / "init.el"
+    if not init_file.is_file():
+        return []
+    text = init_file.read_text(encoding="utf-8", errors="ignore")
+    match = re.search(
+        r"\(setq\s+my/config-modules\s+'?\((.*?)\)\s*\)",
+        text,
+        flags=re.S,
+    )
+    if not match:
+        return []
+    return re.findall(r"\binit-[a-zA-Z0-9-]+\b", match.group(1))
+
+
+def newest_mtime(paths: list[Path]) -> int:
+    mtimes: list[int] = []
+    for path in paths:
+        try:
+            mtimes.append(path.stat().st_mtime_ns)
+        except OSError:
+            continue
+    return max(mtimes, default=0)
+
+
+def doctor_generated_caches(report: DoctorReport) -> None:
+    config_sources = [
+        ROOT / "early-init.el",
+        ROOT / "init.el",
+        Path(__file__),
+        *CONFIG_LISP_DIR.glob("*.el"),
+        *PACKAGE_DIR.rglob("*.el"),
+    ]
+    generated = {LOAD_PATH_CACHE, PACKAGE_AUTOLOADS}
+    config_sources = [path for path in config_sources if path not in generated]
+    source_mtime = newest_mtime(config_sources)
+
+    caches_ready = True
+    for cache in (LOAD_PATH_CACHE, PACKAGE_AUTOLOADS):
+        relative = cache.relative_to(ROOT)
+        if not cache.is_file():
+            caches_ready = False
+            report.error(f"缺少生成缓存 {relative}；请运行 sync")
+        else:
+            report.ok(f"{relative} 已生成")
+
+    if caches_ready:
+        if not CACHE_STAMP.is_file():
+            report.warn("缓存没有同步时间戳；建议运行 sync")
+        elif CACHE_STAMP.stat().st_mtime_ns < source_mtime:
+            report.warn("Elisp 缓存旧于配置源文件；建议运行 sync")
+        else:
+            report.ok("Elisp 缓存同步时间戳有效")
+
+    if not BUILD_CACHE_DIR.is_dir():
+        report.error("缺少 .cache/packages-build；请运行 sync")
+        return
+    broken = [
+        path
+        for path in BUILD_CACHE_DIR.rglob("*.el")
+        if path.is_symlink() and not path.exists()
+    ]
+    if broken:
+        report.error(f"build 镜像有 {len(broken)} 个失效符号链接；请运行 clean 后再 sync")
+    else:
+        report.ok("build 镜像中没有失效符号链接")
+
+    if not ENVIRONMENT_CACHE.is_file():
+        report.warn("尚未生成 shell 环境快照；建议运行 env")
+    else:
+        age = dt.datetime.now().timestamp() - ENVIRONMENT_CACHE.stat().st_mtime
+        if age > 30 * 24 * 60 * 60:
+            report.warn("shell 环境快照已超过 30 天；建议运行 env")
+        else:
+            report.ok("shell 环境快照存在且未过期")
+
+
+def doctor_submodules(report: DoctorReport) -> None:
+    if not (ROOT / ".git").exists():
+        report.error(f"不是 Git 仓库: {ROOT}")
+        return
+    result = capture_output(["git", "submodule", "status", "--recursive"])
+    if result is None or result.returncode != 0:
+        report.error("无法读取 submodule 状态")
+        return
+    lines = [line for line in result.stdout.splitlines() if line]
+    uninitialized = [line for line in lines if line.startswith("-")]
+    conflicts = [line for line in lines if line.startswith("U")]
+    drifted = [line for line in lines if line.startswith("+")]
+    if uninitialized:
+        report.error(f"有 {len(uninitialized)} 个 submodule 未初始化")
+    if conflicts:
+        report.error(f"有 {len(conflicts)} 个 submodule 存在合并冲突")
+    if drifted:
+        report.warn(f"有 {len(drifted)} 个 submodule 偏离仓库记录提交")
+    if not (uninitialized or conflicts or drifted):
+        report.ok(f"{len(lines)} 个 submodule 均位于仓库记录提交")
+
+    status = capture_output(
+        ["git", "status", "--short", "--ignore-submodules=none", "--", "packages"]
+    )
+    if status is not None and status.returncode == 0 and status.stdout.strip():
+        dirty_count = len(status.stdout.splitlines())
+        report.warn(f"packages 下有 {dirty_count} 个工作区状态变化（不会自动覆盖）")
+
+
+def doctor_modules(report: DoctorReport) -> None:
+    modules = configured_modules()
+    if not modules:
+        report.error("无法从 init.el 解析 my/config-modules")
+        return
+    duplicates = sorted({name for name in modules if modules.count(name) > 1})
+    if duplicates:
+        report.error(f"模块列表包含重复项: {', '.join(duplicates)}")
+
+    missing: list[str] = []
+    bad_provides: list[str] = []
+    for module in dict.fromkeys(modules):
+        source = CONFIG_LISP_DIR / f"{module}.el"
+        if not source.is_file():
+            missing.append(module)
+            continue
+        content = source.read_text(encoding="utf-8", errors="ignore")
+        if not re.search(rf"\(provide\s+'{re.escape(module)}\)", content):
+            bad_provides.append(module)
+    if missing:
+        report.error(f"缺少模块文件: {', '.join(missing)}")
+    if bad_provides:
+        report.error(f"模块未 provide 自身 feature: {', '.join(bad_provides)}")
+    if not (duplicates or missing or bad_provides):
+        report.ok(f"{len(modules)} 个延迟模块的文件与 provide 声明一致")
+
+
+def doctor_tree_sitter(report: DoctorReport, emacs: str) -> None:
+    script = """
+(if (not (fboundp 'treesit-language-available-p))
+    (princ "unsupported\n")
+  (dolist (lang '(python lua))
+    (princ (format "%s=%s\n" lang
+                   (if (treesit-language-available-p lang) "yes" "no")))))
+"""
+    result = capture_output([emacs, "--batch", "-Q", "--eval", script])
+    if result is None or result.returncode != 0:
+        report.warn("无法检查 Tree-sitter grammar")
+        return
+    if "unsupported" in result.stdout:
+        report.warn("当前 Emacs 不支持内建 Tree-sitter")
+        return
+    unavailable = [
+        line.split("=", 1)[0]
+        for line in result.stdout.splitlines()
+        if line.endswith("=no")
+    ]
+    if unavailable:
+        report.warn(f"缺少 Tree-sitter grammar: {', '.join(unavailable)}")
+    else:
+        report.ok("已启用语言的 Tree-sitter grammar 均可用")
+
+
+def run_doctor(strict: bool = False) -> bool:
+    """Run read-only health checks for this configuration."""
+    report = DoctorReport()
+    print("\nConfiguration files")
+    for path in REQUIRED_FILES:
+        if path.is_file():
+            report.ok(str(path.relative_to(ROOT)))
+        else:
+            report.error(f"缺少 {path.relative_to(ROOT)}")
+
+    print("\nRuntime")
+    if sys.version_info >= (3, 10):
+        report.ok(f"Python {platform.python_version()}")
+    else:
+        report.error("需要 Python 3.10 或更高版本")
+
+    emacs = find_emacs()
+    if not emacs:
+        report.error("找不到 Emacs；可通过 EMACS 指定可执行文件")
+    else:
+        version = emacs_version(emacs)
+        if version:
+            report.ok(f"Emacs {version}: {emacs}")
+            if re.search(r"\.0\.50(?:\D|$)", version):
+                report.warn("当前是开发版 Emacs；升级后建议重新运行 clean、sync 和 test")
+        else:
+            report.error(f"Emacs 无法以 batch 模式运行: {emacs}")
+
+    for executable in REQUIRED_EXECUTABLES:
+        path = which(executable)
+        if path:
+            report.ok(f"{executable}: {path}")
+        else:
+            report.error(f"缺少必要命令: {executable}")
+    for executable in OPTIONAL_EXECUTABLES:
+        path = which(executable)
+        if path:
+            report.ok(f"{executable}: {path}")
+        else:
+            report.warn(f"缺少可选命令: {executable}")
+
+    print("\nModules and packages")
+    doctor_modules(report)
+    doctor_submodules(report)
+
+    print("\nGenerated state")
+    doctor_generated_caches(report)
+    if emacs:
+        doctor_tree_sitter(report, emacs)
+    return report.finish(strict=strict)
+
+
+def capture_login_environment() -> dict[str, str] | None:
+    """Return a login-shell environment, falling back to the current process."""
+    if is_windows():
+        return dict(os.environ)
+    shell = os.environ.get("SHELL") or which("zsh") or which("bash")
+    if not shell:
+        log("找不到登录 shell", "ERROR")
+        return None
+    try:
+        result = subprocess.run(
+            [shell, "-l", "-c", "env -0"],
+            cwd=ROOT,
+            capture_output=True,
+            check=False,
+        )
+    except OSError as err:
+        log(f"无法启动登录 shell: {err}", "ERROR")
+        return None
+    if result.returncode != 0:
+        log(f"登录 shell 返回 {result.returncode}", "ERROR")
+        if result.stderr:
+            print(result.stderr.decode(errors="replace").rstrip())
+        return None
+    environment: dict[str, str] = {}
+    for item in result.stdout.split(b"\0"):
+        if b"=" not in item:
+            continue
+        key, value = item.split(b"=", 1)
+        environment[key.decode(errors="replace")] = value.decode(errors="replace")
+    return environment
+
+
+def generate_environment_cache() -> bool:
+    """Persist a safe subset of the login-shell environment as Elisp."""
+    environment = capture_login_environment()
+    if environment is None:
+        return False
+    selected = {
+        key: value
+        for key, value in environment.items()
+        if key in ENVIRONMENT_VARIABLES or key.startswith("LC_")
+    }
+    if not selected.get("PATH"):
+        log("登录 shell 没有返回 PATH，拒绝写入环境快照", "ERROR")
+        return False
+
+    created_at = (
+        dt.datetime.now(dt.timezone.utc)
+        .astimezone()
+        .isoformat(timespec="seconds")
+    )
+    lines = [
+        ";;; environment.el --- generated shell environment -*- lexical-binding: t; -*-",
+        ";; Auto-generated by update_emacs.py env. DO NOT EDIT.",
+        f";; Generated: {created_at}",
+        ";; Only allowlisted, non-secret variables are persisted.",
+        "",
+        "(dolist (entry",
+        "         '(",
+    ]
+    for key, value in sorted(selected.items()):
+        lines.append(
+            f'           ("{elisp_string(key)}" . "{elisp_string(value)}")'
+        )
+    lines.extend([
+        "           ))",
+        "  (setenv (car entry) (cdr entry)))",
+        "(let ((path (getenv \"PATH\")))",
+        "  (when path",
+        "    (setq exec-path",
+        "          (append (parse-colon-path path)",
+        "                  (when (boundp 'exec-directory) (list exec-directory))))))",
+        "",
+        "(provide 'environment)",
+        ";;; environment.el ends here",
+        "",
+    ])
+    ENVIRONMENT_CACHE.parent.mkdir(parents=True, exist_ok=True)
+    changed = write_text_if_changed(ENVIRONMENT_CACHE, "\n".join(lines))
+    try:
+        ENVIRONMENT_CACHE.chmod(0o600)
+    except OSError:
+        pass
+    state = "已生成" if changed else "未变化"
+    log(
+        f"{state} {ENVIRONMENT_CACHE.relative_to(ROOT)}"
+        f"（{len(selected)} 个白名单变量）"
+    )
+    return True
+
+
+def elisp_test_files() -> list[Path]:
+    files = [ROOT / "early-init.el", ROOT / "init.el"]
+    files.extend(sorted(CONFIG_LISP_DIR.glob("*.el")))
+    return [path for path in dict.fromkeys(files) if path.is_file()]
+
+
+def run_elisp_syntax_test(emacs: str) -> bool:
+    """Read every local Elisp form without evaluating configuration code."""
+    file_forms = " ".join(
+        f'"{elisp_string(path.as_posix())}"' for path in elisp_test_files()
+    )
+    script = f'''
+(let ((files '({file_forms})) (errors 0))
+  (dolist (file files)
+    (condition-case err
+        (with-temp-buffer
+          (insert-file-contents file)
+          (emacs-lisp-mode)
+          (check-parens)
+          (goto-char (point-min))
+          (condition-case nil
+              (while t (read (current-buffer)))
+            (end-of-file nil)))
+      (error
+       (setq errors (1+ errors))
+       (princ (format "ERROR %s: %S\\n" file err)))))
+  (princ (format "Checked %d Elisp files; %d syntax errors\\n"
+                 (length files) errors))
+  (kill-emacs (if (> errors 0) 1 0)))
+'''
+    result = capture_output([emacs, "--batch", "-Q", "--eval", script])
+    if result is None:
+        log("无法启动 Emacs 语法测试", "ERROR")
+        return False
+    if result.stdout.strip():
+        print(result.stdout.strip())
+    if result.returncode != 0 and result.stderr.strip():
+        print(result.stderr.strip())
+    return result.returncode == 0
+
+
+def run_startup_smoke_test(emacs: str) -> bool:
+    """Load early-init/init and all deferred modules in a batch Emacs."""
+    emacs_directory = elisp_string(ROOT.as_posix() + "/")
+    early_init = elisp_string((ROOT / "early-init.el").as_posix())
+    init_file = elisp_string((ROOT / "init.el").as_posix())
+    script = f'''
+(progn
+  (setq user-emacs-directory "{emacs_directory}")
+  (load "{early_init}" nil nil)
+  (load "{init_file}" nil nil)
+  (unless (fboundp 'my/load-config-modules)
+    (error "my/load-config-modules is unavailable"))
+  (my/load-config-modules)
+  (let ((failed
+         (seq-filter
+          (lambda (feature)
+            (eq (plist-get (alist-get feature my/config-module-status) :state)
+                'failed))
+          my/config-modules)))
+    (princ (format "Loaded %d modules; %d failed\\n"
+                   (length my/config-modules) (length failed)))
+    (when failed (princ (format "Failed modules: %S\\n" failed)))
+    (kill-emacs (if failed 1 0))))
+'''
+    try:
+        result = subprocess.run(
+            [emacs, "--batch", "-Q", "--debug-init", "--eval", script],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=120,
+        )
+    except (OSError, subprocess.TimeoutExpired) as err:
+        log(f"batch startup test 无法完成: {err}", "ERROR")
+        return False
+    if result.stdout.strip():
+        print(result.stdout.strip())
+    if result.returncode != 0 and result.stderr.strip():
+        print(result.stderr.strip())
+    return result.returncode == 0
+
+
+def run_tests(skip_startup: bool = False) -> bool:
+    """Run script and Emacs configuration smoke tests."""
+    ast.parse(Path(__file__).read_text(encoding="utf-8"), filename=str(__file__))
+    log("Python 语法检查通过")
+    emacs = find_emacs()
+    if not emacs:
+        log("找不到 Emacs，无法运行 Elisp 测试", "ERROR")
+        return False
+    if not run_elisp_syntax_test(emacs):
+        return False
+    log("Elisp 语法检查通过")
+    if skip_startup:
+        return True
+    if not LOAD_PATH_CACHE.is_file() or not PACKAGE_AUTOLOADS.is_file():
+        log("缺少生成缓存；请先运行 sync", "ERROR")
+        return False
+    ok = run_startup_smoke_test(emacs)
+    log(
+        "batch startup smoke test 通过" if ok else "batch startup smoke test 失败",
+        "INFO" if ok else "ERROR",
+    )
+    return ok
+
+
+def clean_generated_artifacts(dry_run: bool = False) -> bool:
+    """Remove only files and directories owned by this script."""
+    targets = [
+        BUILD_CACHE_DIR,
+        LOAD_PATH_CACHE,
+        PACKAGE_AUTOLOADS,
+        ENVIRONMENT_CACHE,
+        CACHE_STAMP,
+    ]
+    for target in targets:
+        if not (target.exists() or target.is_symlink()):
+            continue
+        relative = target.relative_to(ROOT)
+        if dry_run:
+            log(f"would remove {relative}")
+        elif target.is_dir() and not target.is_symlink():
+            shutil.rmtree(target)
+            log(f"已删除 {relative}")
+        else:
+            target.unlink()
+            log(f"已删除 {relative}")
+    if not dry_run:
+        log("清理完成；运行 sync 可重新生成全部缓存")
+    return True
+
+
 def print_first_time_tips() -> None:
     print("""
 ============================================================
@@ -1357,6 +1906,13 @@ macOS 特别注意：
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Emacs config updater / first-time setup")
+    parser.add_argument(
+        "command",
+        nargs="?",
+        choices=COMMANDS,
+        default="sync",
+        help="维护命令（默认: sync）",
+    )
     parser.add_argument("--cache", action="store_true", help="只生成 load-path 缓存")
     parser.add_argument("--build", action="store_true", help="只编译需要 make 的包")
     parser.add_argument("--skip-git", action="store_true", help="跳过 git 操作")
@@ -1365,6 +1921,9 @@ def main() -> int:
     parser.add_argument("--byte-compile", action="store_true", help="执行 byte compile")
     parser.add_argument("--no-compile", action="store_true", help="默认/--build 流程中跳过 byte compile")
     parser.add_argument("--force", action="store_true", help="强制重新生成 autoload/cache 并重新 byte compile")
+    parser.add_argument("--strict", action="store_true", help="doctor 有警告时也返回失败")
+    parser.add_argument("--skip-startup", action="store_true", help="test 只检查语法，不运行启动测试")
+    parser.add_argument("--dry-run", action="store_true", help="clean 只显示将删除的生成物")
     parser.add_argument("-v", "--verbose", action="store_true", help="显示详细日志，包括 autoload 扫描目录和编译文件")
     args = parser.parse_args()
 
@@ -1379,6 +1938,15 @@ def main() -> int:
     if args.mail:
         configure_mail_account_env(force=True)
         return 0
+
+    if args.command == "doctor":
+        return 0 if run_doctor(strict=args.strict) else 1
+    if args.command == "env":
+        return 0 if generate_environment_cache() else 1
+    if args.command == "test":
+        return 0 if run_tests(skip_startup=args.skip_startup) else 1
+    if args.command == "clean":
+        return 0 if clean_generated_artifacts(dry_run=args.dry_run) else 1
 
     configure_mail_account_env()
 

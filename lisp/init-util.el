@@ -1,5 +1,8 @@
 ;;; -*- lexical-binding: t -*-
 
+(require 'cl-lib)
+(require 'seq)
+
 (defmacro add-hook! (hooks &rest rest)
   "A convenience macro for adding N functions to M hooks.
 
@@ -54,6 +57,115 @@ This macro accepts, in order:
                 (unless-daemonp-call-immediately-p
                  `(unless (daemonp)
                     (funcall func))))))))
+
+;; Config module loading and diagnostics
+(defvar my/config-modules nil
+  "Features loaded after the first graphical frame is ready.")
+
+(defvar my/config-module-status nil
+  "Alist recording load status and elapsed time for config modules.")
+
+(defvar my/config-modules-loaded-p nil
+  "Non-nil after the deferred config module pass has run.")
+
+(defcustom my/config-report-executables '("git" "rg" "bsdtar")
+  "External executables shown by `my/config-report'."
+  :type '(repeat string)
+  :group 'convenience)
+
+(defun my/require-config-module (feature)
+  "Require FEATURE and record its load status and elapsed time.
+
+During a normal startup, report an error and continue with the remaining
+modules.  With `--debug-init', preserve the usual fail-fast behavior."
+  (let* ((started (current-time))
+        (load-module
+         (lambda ()
+           (require feature)
+           (setf (alist-get feature my/config-module-status)
+                 (list :state 'loaded
+                       :seconds (float-time
+                                 (time-subtract nil started))))
+           t)))
+    (if init-file-debug
+        (funcall load-module)
+      (condition-case err
+          (funcall load-module)
+        (error
+         (setf (alist-get feature my/config-module-status)
+               (list :state 'failed
+                     :seconds (float-time (time-subtract nil started))
+                     :error err))
+         (display-warning 'my/config
+                          (format "Could not load %s: %S" feature err)
+                          :error)
+         nil)))))
+
+(defun my/load-config-modules ()
+  "Load each feature in `my/config-modules' exactly once."
+  (unless my/config-modules-loaded-p
+    (setq my/config-modules-loaded-p t)
+    (dolist (feature my/config-modules)
+      (my/require-config-module feature))))
+
+(defun my/config-retry-failed-modules ()
+  "Retry config modules which failed during the initial load pass."
+  (interactive)
+  (let ((failed (seq-filter
+                 (lambda (feature)
+                   (eq (plist-get (alist-get feature my/config-module-status)
+                                  :state)
+                       'failed))
+                 my/config-modules)))
+    (if failed
+        (progn
+          (dolist (feature failed)
+            (my/require-config-module feature))
+          (my/config-report))
+      (message "No failed config modules"))))
+
+(defun my/config-report ()
+  "Display startup health, module timings, caches, and external tools."
+  (interactive)
+  (let ((cache-files '("lisp/load-path-cache.el"
+                       "lisp/package-autoloads.el")))
+    (with-help-window "*Emacs Configuration Report*"
+      (princ (format "Emacs configuration report\n%s\n\n"
+                     (make-string 27 ?=)))
+      (princ (format "Emacs       %s\nSystem      %s\nConfig      %s\n"
+                     emacs-version system-type user-emacs-directory))
+      (when after-init-time
+        (princ (format "Startup     %.3f seconds\n"
+                       (float-time
+                        (time-subtract after-init-time before-init-time)))))
+      (princ (format "Idle loader %d completed, %d failed, %d queued\n\n"
+                     my/idle-loader--count my/idle-loader--errors
+                     (length my/idle-loader-forms)))
+
+      (princ "Modules\n-------\n")
+      (dolist (feature my/config-modules)
+        (let* ((status (alist-get feature my/config-module-status))
+               (state (or (plist-get status :state)
+                          (and (featurep feature) 'loaded)
+                          'pending))
+               (seconds (plist-get status :seconds))
+               (err (plist-get status :error)))
+          (princ (format "%-22s %-7s%s%s\n"
+                         feature state
+                         (if seconds (format " %7.3fs" seconds) "")
+                         (if err (format "  %S" err) "")))))
+
+      (princ "\nGenerated caches\n----------------\n")
+      (dolist (relative cache-files)
+        (let ((file (expand-file-name relative user-emacs-directory)))
+          (princ (format "%-28s %s\n" relative
+                         (if (file-readable-p file) "ready" "MISSING")))))
+
+      (princ "\nExternal tools\n--------------\n")
+      (dolist (program my/config-report-executables)
+        (princ (format "%-12s %s\n"
+                       program (or (executable-find program) "MISSING"))))
+      (princ "\nUse M-x my/config-retry-failed-modules after fixing a failed module.\n"))))
 
 ;; idle
 (defgroup my-idle-loader nil
@@ -138,6 +250,9 @@ This macro accepts, in order:
 
 (defun my/idle-loader-start (&optional initial-delay)
   (interactive)
+  ;; This is a one-shot UI hook, especially important for daemon frames.
+  (remove-hook 'window-setup-hook #'my/idle-loader-start)
+  (remove-hook 'server-after-make-frame-hook #'my/idle-loader-start)
   (when (timerp my/idle-loader--timer)
     (cancel-timer my/idle-loader--timer))
   (setq my/idle-loader--start-time (current-time)
@@ -151,7 +266,8 @@ This macro accepts, in order:
 (defun my/idle-loader-add (&rest forms)
   (setq my/idle-loader-forms (append my/idle-loader-forms forms)))
 
-(add-hook 'window-setup-hook #'my/idle-loader-start)
+(add-hook (if (daemonp) 'server-after-make-frame-hook 'window-setup-hook)
+          #'my/idle-loader-start)
 
 ;; Lightweight replacement for on.el.  Loading the external package showed up
 ;; prominently in `sanityinc/require-times'; these hooks are all we use.
@@ -193,9 +309,12 @@ This macro accepts, in order:
   (add-hook 'dired-initial-position-hook #'on-run-first-file-hooks-h)
   (advice-add 'after-find-file :before #'on-run-first-buffer-hooks-h)
   (add-hook 'window-buffer-change-functions #'on-run-first-buffer-hooks-h)
-  (add-hook 'server-visit-hook #'on-run-first-buffer-hooks-h))
+  (add-hook 'server-visit-hook #'on-run-first-buffer-hooks-h)
+  (remove-hook 'window-setup-hook #'on-setup-hooks-h)
+  (remove-hook 'server-after-make-frame-hook #'on-setup-hooks-h))
 
-(add-hook 'window-setup-hook #'on-setup-hooks-h -100)
+(add-hook (if (daemonp) 'server-after-make-frame-hook 'window-setup-hook)
+          #'on-setup-hooks-h -100)
 
 
 (provide 'init-util)

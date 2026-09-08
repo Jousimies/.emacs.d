@@ -195,12 +195,12 @@
 
 ;; visual-line-mode
 (add-hook 'org-mode-hook #'visual-line-mode)
-(add-hook 'eww-mode #'visual-line-mode)
+(add-hook 'eww-mode-hook #'visual-line-mode)
 
 ;; hl-line
 (when (display-graphic-p)
   (add-hook 'prog-mode-hook #'hl-line-mode)
-  (add-hook 'package-menu-mode #'hl-line-mode))
+  (add-hook 'package-menu-mode-hook #'hl-line-mode))
 (with-eval-after-load 'hl-line
   (setq hl-line-sticky-flag nil))
 
@@ -242,7 +242,7 @@
 
 ;; electric
 (add-hook 'prog-mode-hook #'electric-pair-mode)
-(add-hook 'prog-mode-hook #'electric-indent-mode)
+(add-hook 'prog-mode-hook (lambda () (electric-indent-local-mode 1)))
 (add-hook 'text-mode-hook #'electric-quote-mode)
 (add-hook 'prog-mode-hook #'electric-layout-mode)
 
@@ -253,7 +253,7 @@
 								 ("function" . ?𝑓)))))
 
 ;; paren
-(add-hook 'prog-mode-hook 'show-paren-mode)
+(add-hook 'prog-mode-hook (lambda () (show-paren-local-mode 1)))
 (with-eval-after-load 'paren
   (setq show-paren-style 'parenthesis
 	show-paren-context-when-offscreen 'overlay

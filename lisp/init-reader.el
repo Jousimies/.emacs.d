@@ -36,7 +36,8 @@
 
 ;; pdf-occur
 (with-eval-after-load 'pdf-view
-  (add-hook 'pdf-view-mode-hook #'pdf-occur-global-minor-mode))
+  (add-hook 'pdf-view-mode-hook
+            (lambda () (pdf-occur-global-minor-mode 1))))
 
 ;; pdf-history
 (with-eval-after-load 'pdf-history

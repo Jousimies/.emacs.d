@@ -1,7 +1,12 @@
 ;; -*- lexical-binding: t; -*-
 
 ;; jinx
-(add-hook 'org-mode-hook 'global-jinx-mode)
+(defun my/jinx-mode-maybe ()
+  "Enable `jinx-mode' in interactive Org buffers."
+  (unless noninteractive
+    (jinx-mode 1)))
+
+(add-hook 'org-mode-hook #'my/jinx-mode-maybe)
 (with-eval-after-load 'jinx
   ;; jinx-mod.c is not copied to the build directory.
   ;; Add the source directory so Jinx can locate and compile it.

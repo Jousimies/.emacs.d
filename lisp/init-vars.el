@@ -1,8 +1,5 @@
 ;; -*- lexical-binding: t; -*-
 
-
-(defconst cache-directory (expand-file-name ".cache" user-emacs-directory))
-
 (defconst sys/win32p(eq system-type 'windows-nt)
   "Are we running on a WinTel system?")
 
@@ -21,7 +18,15 @@
 ;; (when (eq system-type 'darwin)
 ;;   (defconst my-galaxy "~/Nextcloud/L.Personal.Galaxy"))
 
-(defconst my/project-folder "D:/1-Project/")
+(defconst cache-directory (expand-file-name ".cache" user-emacs-directory))
+
+(defcustom my/project-folder
+  (if sys/win32p
+      "D:/1-Project/"
+    (expand-file-name "Repositories/" "~"))
+  "Root directory used by the project helper commands."
+  :type 'directory
+  :group 'convenience)
 
 (when (eq system-type 'darwin)
   (defconst my-galaxy "~/Nextcloud/L.Personal.Galaxy")
@@ -51,5 +56,6 @@
       citar-bibliography my/reference-lists
       citar-library-paths `(,(expand-file-name "PDF/" my-galaxy))
       citar-notes-paths `(,(expand-file-name "References" my/denote-directory)))
+
 
 (provide 'init-vars)

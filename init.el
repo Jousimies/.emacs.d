@@ -26,33 +26,36 @@
       (require 'init-modeline)
       (require 'init-keys)
 
-      (add-hook 'window-setup-hook
-		(lambda ()
-		  (require 'init-basic)
-		  (require 'init-modal)
-		  (require 'init-completion)
-		  (require 'init-edit)
-		  (require 'init-dired)
-		  (require 'init-buffer)
+      (setq my/config-modules
+	    '(init-basic
+	      init-modal
+	      init-completion
+	      init-edit
+	      init-dired
+	      init-buffer
+	      init-org
+	      init-note
+	      init-bib
+	      init-latex
+	      init-gtd
+	      init-reader
+	      init-checker
+	      init-prog
+	      init-git
+	      init-ai))
 
-		  (require 'init-org)
-		  (require 'init-note)
-		  (require 'init-bib)
-		  (require 'init-latex)
-		  (require 'init-gtd)
-		  (require 'init-reader)
-
-		  (require 'init-checker)
-
-		  (require 'init-prog)
-		  (require 'init-git)
-		  (require 'init-ai)
-		  )))
+      ;; Daemons do not run `window-setup-hook', so load on the first client
+      ;; frame instead.  The loader itself guarantees a single pass.
+      (add-hook (if (daemonp)
+		    'server-after-make-frame-hook
+		  'window-setup-hook)
+		#'my/load-config-modules -90))
 
   (message "RUN PYTHON UPDATE_EMACS.PY IN TERMINAL!!!"))
 
 ;; Custom
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file 'noerror 'nomessage)
 
 ;; Show startup times
 (add-hook 'window-setup-hook

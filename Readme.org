@@ -36,3 +36,10 @@ make 后会生成 auctex-autoloads.el, 在 Auctex 14 版本中加载此文件即
 3. 空闲增量 idle-timer 链式
 4. 真正交互时 first-buffer / first-file / first-input
 5. 命令触发 :commands / :bind / :hook
+
+** 配置自检
+
+- =M-x my/config-report=：查看模块加载状态/耗时、空闲加载队列、生成缓存和外部命令。
+- =M-x my/config-retry-failed-modules=：修复问题后，只重试启动时失败的模块。
+- 普通启动会隔离单个延迟模块的错误并继续；使用 =emacs --debug-init= 时仍会立即中断，便于定位。
+- 项目根目录可通过 =M-x customize-variable RET my/project-folder= 调整；macOS/Linux 默认使用 =~/Repositories/=。
