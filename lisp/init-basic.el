@@ -1,5 +1,15 @@
 ;; -*- lexical-binding: t; -*-
 
+;; gcmh, Garbage-Collect Magic Hack
+(add-hook 'on-first-buffer-hook #'gcmh-mode)
+(with-eval-after-load 'gcmh
+  (setq gc-cons-percentage 0.1)
+  (setq gcmh-idle-delay 'auto)
+  (setq gcmh-auto-idle-delay-factor 10)
+  (setq gcmh-high-cons-threshold #x1000000))
+(advice-add 'after-focus-change-function :after 'garbage-collect)
+
+
 ;; C Source code
 (setq use-short-answers t)
 (setq ring-bell-function (lambda ()
@@ -340,4 +350,4 @@
 		    '(which-function-mode))
 
 
-(provide 'init-builtin)
+(provide 'init-basic)

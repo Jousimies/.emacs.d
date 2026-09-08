@@ -5,7 +5,10 @@
   (defalias 'decf 'cl-decf)
   (defalias 'incf 'cl-incf))
 
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(eval-and-compile
+  (add-to-list 'load-path
+               (expand-file-name "lisp" user-emacs-directory)))
+(require 'init-util)
 
 (if (and (file-exists-p (expand-file-name "lisp/load-path-cache.el" user-emacs-directory))
 	 (file-exists-p (expand-file-name "lisp/package-autoloads.el" user-emacs-directory)))
@@ -18,7 +21,6 @@
 	(require 'init-benchmark))
 
       (require 'init-vars)
-      (require 'init-util)
 
       (require 'init-font)
       (require 'init-modeline)
@@ -26,7 +28,7 @@
 
       (add-hook 'window-setup-hook
 		(lambda ()
-		  (require 'init-builtin)
+		  (require 'init-basic)
 		  (require 'init-modal)
 		  (require 'init-completion)
 		  (require 'init-edit)
@@ -39,6 +41,8 @@
 		  (require 'init-latex)
 		  (require 'init-gtd)
 		  (require 'init-reader)
+
+		  (require 'init-checker)
 
 		  (require 'init-prog)
 		  (require 'init-git)
