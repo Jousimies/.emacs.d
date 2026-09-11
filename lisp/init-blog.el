@@ -1,17 +1,15 @@
 ;; -*- lexical-binding: t; -*-
 
 (require 'subr-x)
-
-(defvar my/publish-directory "~/Repositories/blog-source/")
-
-(defcustom my/blog-source-directory
-  (expand-file-name "~/Repositories/blog-source/")
-  "Local blog source repository used by GitHub Actions."
-  :type 'directory)
+(require 'seq)
 
 (defcustom my/blog-post-author "Jousimies"
   "Default author inserted into new blog posts."
   :type 'string)
+
+(defcustom my/blog-sync-confirm t
+  "Whether `my/blog-sync' previews changes and asks before pushing."
+  :type 'boolean)
 
 (defun my/blog--posts-directory ()
   "Return the blog posts source directory."
@@ -66,23 +64,89 @@ Optional TAGS is a comma/space separated tag string."
 (define-derived-mode my/blog-sync-mode special-mode "Blog-Sync"
   "Major mode for blog sync output buffers.")
 
+(defun my/blog--append-process-status (buffer text)
+  "Append TEXT to blog sync BUFFER."
+  (when (buffer-live-p buffer)
+    (with-current-buffer buffer
+      (let ((inhibit-read-only t))
+        (goto-char (point-max))
+        (insert text)))))
+
+(defun my/blog--start-git-step (buffer label args next)
+  "Run Git ARGS for LABEL in BUFFER, then call NEXT after success."
+  (my/blog--append-process-status
+   buffer (format "\n$ git %s\n" (string-join args " ")))
+  (let ((default-directory my/blog-source-directory))
+    (make-process
+     :name (format "blog-sync-%s" label)
+     :buffer buffer
+     :command (cons (executable-find "git") args)
+     :coding 'utf-8
+     :noquery t
+     :sentinel
+     (lambda (process event)
+       (when (memq (process-status process) '(exit signal))
+         (let ((status (process-exit-status process)))
+           (if (zerop status)
+               (funcall next)
+             (my/blog--append-process-status
+              buffer
+              (format "\nFAILED: %s (exit %d, %s)\n"
+                      label status (string-trim event)))
+             (display-buffer buffer)
+             (message "Blog sync failed during %s (exit %d)" label status))))))))
+
+(defun my/blog--push (buffer)
+  "Push the blog repository, writing output to BUFFER."
+  (my/blog--start-git-step
+   buffer "push" '("push")
+   (lambda ()
+     (my/blog--append-process-status buffer "\nBlog sync completed.\n")
+     (message "Blog sync completed"))))
+
+(defun my/blog--commit-if-needed (buffer commit-message)
+  "Commit staged blog changes if needed, then push using BUFFER."
+  (let ((default-directory my/blog-source-directory))
+    (if (zerop (call-process "git" nil nil nil
+                             "diff" "--cached" "--quiet"))
+        (my/blog--push buffer)
+      (my/blog--start-git-step
+       buffer "commit" (list "commit" "-m" commit-message)
+       (lambda () (my/blog--push buffer))))))
+
 ;;;###autoload
 (defun my/blog-sync ()
-  "Auto commit blog source changes and push, triggering GitHub Actions deploy."
+  "Preview, commit, and push blog changes to trigger deployment."
   (interactive)
+  (unless (executable-find "git")
+    (user-error "Git is not available in exec-path"))
+  (unless (file-directory-p my/blog-source-directory)
+    (user-error "Blog directory does not exist: %s" my/blog-source-directory))
   (let* ((default-directory my/blog-source-directory)
-         (message (format "Update blog: %s" (format-time-string "%Y-%m-%d %H:%M")))
-         (command
-          (format "git add -A && if ! git diff --cached --quiet; then git commit -m %s; fi && git push"
-                  (shell-quote-argument message))))
-    (let ((buffer (get-buffer-create "*Blog Sync*"))
-          (process-connection-type nil))
-      (with-current-buffer buffer
-        (let ((inhibit-read-only t))
-          (erase-buffer))
-        (my/blog-sync-mode))
-      (pop-to-buffer buffer)
-      (start-process-shell-command "blog-sync" buffer command))))
+         (inside-work-tree
+          (with-temp-buffer
+            (and (zerop (call-process "git" nil t nil
+                                      "rev-parse" "--is-inside-work-tree"))
+                 (string-match-p "true" (buffer-string)))))
+         (buffer (get-buffer-create "*Blog Sync*"))
+         (commit-message
+          (format "Update blog: %s" (format-time-string "%Y-%m-%d %H:%M"))))
+    (unless inside-work-tree
+      (user-error "Not a Git work tree: %s" my/blog-source-directory))
+    (with-current-buffer buffer
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (setq default-directory my/blog-source-directory)
+        (insert "Blog changes to sync\n====================\n")
+        (let ((default-directory my/blog-source-directory))
+          (call-process "git" nil t nil "status" "--short")))
+      (my/blog-sync-mode))
+    (display-buffer buffer)
+    (when (or (not my/blog-sync-confirm)
+              (yes-or-no-p "Stage, commit, and push the changes shown? "))
+      (my/blog--start-git-step
+       buffer "add" '("add" "-A")
+       (lambda () (my/blog--commit-if-needed buffer commit-message))))))
 
 ;; (with-eval-after-load 'ox-publish
 ;;   (setq org-publish-timestamp-directory (expand-file-name "org-timestamps/" cache-directory))

@@ -7,7 +7,6 @@
   (setq gcmh-idle-delay 'auto)
   (setq gcmh-auto-idle-delay-factor 10)
   (setq gcmh-high-cons-threshold #x1000000))
-(advice-add 'after-focus-change-function :after 'garbage-collect)
 
 
 ;; C Source code
@@ -15,7 +14,7 @@
 (setq ring-bell-function (lambda ()
 			   (invert-face 'mode-line)
 			   (run-with-timer 0.05 nil 'invert-face 'mode-line)))
-(setq create-lockfiles nil)
+(setq create-lockfiles t)
 (setq history-delete-duplicates t)
 (setq delete-by-moving-to-trash t)
 (setq cursor-in-non-selected-windows nil)
@@ -126,20 +125,73 @@
   (setq server-client-instructions nil))
 
 ;; files
+(defcustom my/auto-save-visited-interval 7
+  "Seconds of idle time before saving visited file buffers.
+This keeps the existing `auto-save-visited-mode' workflow without writing on
+nearly every keystroke."
+  :type 'number
+  :group 'files)
+
+(defcustom my/backup-directory
+  (expand-file-name "backups/" cache-directory)
+  "Directory containing numbered backups of visited files."
+  :type 'directory
+  :group 'files)
+
+(defcustom my/large-file-size-threshold (* 5 1024 1024)
+  "File size above which expensive display and checking modes are disabled."
+  :type 'integer
+  :group 'files)
+
+(defcustom my/large-file-warning-threshold (* 25 1024 1024)
+  "File size above which Emacs asks before visiting a file."
+  :type 'integer
+  :group 'files)
+
+(make-directory my/backup-directory t)
+
 (with-eval-after-load 'files
-  (setq auto-save-default nil
-	auto-save-visited-interval 1
+  (setq backup-directory-alist
+        `(("." . ,my/backup-directory))
+	backup-by-copying t
+	version-control t
+	kept-new-versions 8
+	kept-old-versions 3
+	delete-old-versions t
+	make-backup-files t
+	auto-save-default nil
+	auto-save-visited-interval my/auto-save-visited-interval
 	save-silently t
-	large-file-warning-threshold nil
+	large-file-warning-threshold my/large-file-warning-threshold
 	confirm-kill-processes nil
 	confirm-kill-emacs nil
-	make-backup-files nil
 	view-read-only t))
 
 (add-hook 'on-first-file-hook #'auto-save-visited-mode)
 (add-hook 'before-save-hook #'auto-save-delete-trailing-whitespace-except-current-line)
 (add-hook 'after-save-hook
           #'executable-make-buffer-file-executable-if-script-p)
+
+(defun my/large-file-p (&optional size)
+  "Return non-nil when the current buffer or SIZE is considered large."
+  (>= (or size (buffer-size)) my/large-file-size-threshold))
+
+(defun my/large-file-disable-expensive-modes ()
+  "Disable high-overhead minor modes in unusually large file buffers."
+  (when (and buffer-file-name (my/large-file-p))
+    (setq-local display-line-numbers nil)
+    (dolist (mode '(display-line-numbers-mode
+                    whitespace-mode
+                    rainbow-mode
+                    rainbow-delimiters-mode
+                    goggles-mode
+                    flymake-mode))
+      (when (fboundp mode)
+        (funcall mode -1)))))
+
+(add-hook 'after-change-major-mode-hook
+          #'my/large-file-disable-expensive-modes 100)
+(global-so-long-mode 1)
 
 ;; indent
 (with-eval-after-load 'indent

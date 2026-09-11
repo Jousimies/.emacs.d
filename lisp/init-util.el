@@ -73,6 +73,54 @@ This macro accepts, in order:
   :type '(repeat string)
   :group 'convenience)
 
+(defcustom my/config-report-tree-sit-languages
+  '(python javascript typescript json yaml c cpp rust go lua)
+  "Tree-sitter grammars checked by `my/config-report'."
+  :type '(repeat symbol)
+  :group 'convenience)
+
+(defvar my/config-support-modules
+  '(init-util init-vars init-font init-modeline init-keys init-funcs
+    init-blog init-benchmark)
+  "Configuration libraries loaded eagerly, conditionally, or by autoload.")
+
+(defun my/config-cache-state (file)
+  "Return a short freshness description for generated cache FILE."
+  (cond
+   ((not (file-readable-p file)) "MISSING")
+   ((seq-some (lambda (source) (file-newer-than-file-p source file))
+              (directory-files (expand-file-name "lisp" user-emacs-directory)
+                               t "\\`init-.*\\.el\\'"))
+    "STALE (config changed)")
+   (t "ready")))
+
+(defun my/config-unused-modules ()
+  "Return config libraries with no known eager, deferred, or autoload use."
+  (let ((known (append my/config-modules my/config-support-modules))
+        unused)
+    (dolist (file (directory-files
+                   (expand-file-name "lisp" user-emacs-directory)
+                   t "\\`init-.*\\.el\\'"))
+      (let ((feature (intern (file-name-base file))))
+        (unless (or (memq feature known)
+                    (with-temp-buffer
+                      (insert-file-contents file)
+                      (search-forward ";;;###autoload" nil t)))
+          (push feature unused))))
+    (nreverse unused)))
+
+(defun my/config-report-path (label path &optional executable)
+  "Print LABEL and status for PATH, optionally requiring EXECUTABLE access."
+  (princ (format "%-18s %-8s %s\n"
+                 label
+                 (cond
+                  ((null path) "UNSET")
+                  ((and executable (file-executable-p path)) "ready")
+                  ((and executable (file-exists-p path)) "NOT-EXEC")
+                  ((file-exists-p path) "ready")
+                  (t "MISSING"))
+                 (or path ""))))
+
 (defun my/require-config-module (feature)
   "Require FEATURE and record its load status and elapsed time.
 
@@ -159,12 +207,75 @@ modules.  With `--debug-init', preserve the usual fail-fast behavior."
       (dolist (relative cache-files)
         (let ((file (expand-file-name relative user-emacs-directory)))
           (princ (format "%-28s %s\n" relative
-                         (if (file-readable-p file) "ready" "MISSING")))))
+                         (my/config-cache-state file)))))
+      (let ((backup-dir (if (boundp 'my/backup-directory)
+                            my/backup-directory
+                          (expand-file-name "backups/" cache-directory))))
+        (princ (format "%-28s %s\n" ".cache/backups/"
+                       (if (file-directory-p backup-dir)
+                           "ready"
+                         "not created yet"))))
 
       (princ "\nExternal tools\n--------------\n")
       (dolist (program my/config-report-executables)
         (princ (format "%-12s %s\n"
                        program (or (executable-find program) "MISSING"))))
+
+      (princ "\nFonts\n-----\n")
+      (if (not (display-graphic-p))
+          (princ "Font discovery requires a graphical frame.\n")
+        (dolist (entry `(("Default" . ,(and (boundp 'my/default-font-candidates)
+                                             my/default-font-candidates))
+                         ("CJK" . ,(and (boundp 'my/cjk-font-candidates)
+                                        my/cjk-font-candidates))
+                         ("Symbols" . ,(and (boundp 'my/symbol-font-candidates)
+                                            my/symbol-font-candidates))))
+          (princ (format "%-12s %s\n" (car entry)
+                         (or (and (fboundp 'my/first-available-font)
+                                  (my/first-available-font (cdr entry)))
+                             "MISSING")))))
+
+      (princ "\nTree-sitter grammars\n--------------------\n")
+      (dolist (language my/config-report-tree-sit-languages)
+        (princ (format "%-12s %s\n"
+                       language
+                       (if (and (fboundp 'treesit-language-available-p)
+                                (ignore-errors
+                                  (treesit-language-available-p language)))
+                           "ready"
+                         "MISSING"))))
+
+      (princ "\nJinx\n----\n")
+      (princ (format "%-18s %s\n" "Library"
+                     (or (locate-library "jinx") "MISSING")))
+      (princ (format "%-18s %s\n" "Native module/source"
+                     (or (locate-library "jinx-mod")
+                         (locate-library "jinx-mod.c")
+                         "MISSING")))
+      (princ (format "%-18s %s\n" "Dictionary setting"
+                     (if (boundp 'jinx-languages) jinx-languages "en_US (planned)")))
+
+      (princ "\nData paths\n----------\n")
+      (my/config-report-path
+       "GTD" (and (boundp 'my/org-gtd-directory) my/org-gtd-directory))
+      (my/config-report-path
+       "Denote" (and (boundp 'my/denote-directory) my/denote-directory))
+      (when (boundp 'my/reference-lists)
+        (cl-loop for file in my/reference-lists
+                 for index from 1
+                 do (my/config-report-path (format "BibTeX %d" index) file)))
+      (my/config-report-path
+       "PDF Tools server"
+       (if (boundp 'pdf-info-epdfinfo-program)
+           pdf-info-epdfinfo-program
+         (expand-file-name "packages/pdf-tools/server/epdfinfo"
+                           user-emacs-directory))
+       t)
+
+      (princ "\nUnused config modules\n---------------------\n")
+      (if-let* ((unused (my/config-unused-modules)))
+          (dolist (feature unused) (princ (format "%s\n" feature)))
+        (princ "none\n"))
       (princ "\nUse M-x my/config-retry-failed-modules after fixing a failed module.\n"))))
 
 ;; idle

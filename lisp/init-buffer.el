@@ -13,6 +13,27 @@
 ;; bufferlo
 (add-hook 'on-first-buffer-hook #'bufferlo-mode)
 (global-set-key [remap switch-to-buffer] #'bufferlo-switch-to-buffer)
+
+(defun my/project-open-workspace (&optional directory)
+  "Open DIRECTORY as a new project tab and show its Dired buffer.
+When DIRECTORY is nil, use the current project or prompt for one.  Bufferlo
+then keeps ordinary buffer switching scoped to the selected tab."
+  (interactive)
+  (require 'project)
+  (require 'tab-bar)
+  (let* ((project (and (not directory) (project-current)))
+         (root (file-name-as-directory
+                (or directory
+                    (and project (project-root project))
+                    (project-prompt-project-dir)))))
+    (tab-bar-mode 1)
+    (tab-bar-new-tab)
+    (tab-bar-rename-tab (file-name-nondirectory
+                         (directory-file-name root)))
+    (when (fboundp 'bufferlo-mode)
+      (bufferlo-mode 1))
+    (let ((default-directory root))
+      (project-dired))))
 
 ;; helpful
 (global-set-key [remap describe-function] #'helpful-callable)

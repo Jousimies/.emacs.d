@@ -15,7 +15,8 @@
 
 ;; org-gtd
 (setq org-gtd-update-ack "4.0.0")
-(setq org-gtd-directory "~/OneDrive/Galaxy/gtd/")
+(setq org-gtd-directory my/org-gtd-directory)
+(setq org-gtd-mode-lighter-display 'never)
 (global-set-key (kbd "<f10>") #'org-gtd-capture)
 
 (with-eval-after-load 'org
@@ -23,12 +24,9 @@
     ;; (org-gtd-mode)
     )
 
-(with-eval-after-load 'org-agenda
-  (org-gtd-mode))
 (with-eval-after-load 'org
   (setq org-gtd-refile-to-any-target nil)
   (setq org-gtd-refile-prompt-for-types '(single-action project-heading calendar someday delegated tickler habit))
-  (setq org-gtd-mode-lighter-display 'when-non-zero)
   (setq org-use-fast-todo-selection 'expert)
   ;; (setq org-gtd-clarify-show-horizons 'right)
   (setq org-gtd-clarify-display-helper-buffer t)
@@ -45,10 +43,10 @@
                                   (wait . "WAIT")
                                   (done . "DONE")
                                   (canceled . "CNCL")))
-  (setq org-gtd-areas-of-focus '("Work" "Professional" "Health" "Growth" "Finances" "Leisure" "Home" "Family" "Social"))
+  (setq org-gtd-areas-of-focus '("Work" "Professional" "Health" "Growth" "Finances" "Leisure" "Home" "Family" "Social")))
 
-  (org-edna-mode)
-  (org-gtd-mode))
+(with-eval-after-load 'org-gtd
+  (org-gtd-mode 1))
 
 (with-eval-after-load 'org-gtd-clarify
   (unless (featurep 'org-gtd-organize)
@@ -111,6 +109,13 @@ Optional argument ACCOUNT specifies the target Microsoft account email."
       (message "[日历同步] 错误: 标题或时间缺失")
       (cl-return-from org2calendar--send-event nil))
 
+    (unless (file-executable-p org2calendar-exe-path)
+      (user-error "[日历同步] 程序不存在或不可执行: %s"
+                  org2calendar-exe-path))
+
+    (when (get-process "org-ms-cal-sync")
+      (user-error "[日历同步] 已有同步进程正在运行"))
+
     (let* ((start-str (if (stringp start-time)
                           start-time
 			(format-time-string "%Y-%m-%d %H:%M:%S" start-time)))
@@ -142,7 +147,20 @@ Optional argument ACCOUNT specifies the target Microsoft account email."
 			  args)))
            (payload (concat title "\n" start-str "\n" end-str "\n")))
 
-      ;; 将 payload 写入 Stdin 并关闭 EOF
+      (set-process-sentinel
+       proc
+       (lambda (process event)
+         (when (memq (process-status process) '(exit signal))
+           (let ((status (process-exit-status process))
+                 (buffer (process-buffer process)))
+             (if (zerop status)
+                 (message "[日历同步] 完成")
+               (display-buffer buffer)
+               (message "[日历同步] 失败（退出状态 %d）：%s"
+                        status (string-trim event)))))))
+
+      ;; Install the sentinel before sending EOF so very fast processes cannot
+      ;; finish before their exit status is observed.
       (process-send-string proc payload)
       (process-send-eof proc)
 
@@ -153,9 +171,29 @@ Optional argument ACCOUNT specifies the target Microsoft account email."
   (defun org2calendar-list-accounts ()
     "查看本地已绑定/缓存的所有微软账号。"
     (interactive)
-    (let ((coding-system-for-read 'utf-8))
-      (async-shell-command (format "%s -l" (shell-quote-argument org2calendar-exe-path))
-                           "*Org-Cal-Accounts*")))
+    (unless (file-executable-p org2calendar-exe-path)
+      (user-error "[日历同步] 程序不存在或不可执行: %s"
+                  org2calendar-exe-path))
+    (let ((coding-system-for-read 'utf-8)
+          (buffer (get-buffer-create "*Org-Cal-Accounts*")))
+      (with-current-buffer buffer
+        (let ((inhibit-read-only t))
+          (erase-buffer)))
+      (display-buffer buffer)
+      (make-process
+       :name "org-ms-cal-accounts"
+       :buffer buffer
+       :command (list org2calendar-exe-path "-l")
+       :coding 'utf-8
+       :noquery t
+       :sentinel
+       (lambda (process event)
+         (when (memq (process-status process) '(exit signal))
+           (if (zerop (process-exit-status process))
+               (message "[日历同步] 账号列表已更新")
+             (message "[日历同步] 获取账号失败（退出状态 %d）：%s"
+                      (process-exit-status process)
+                      (string-trim event))))))))
 
   (defun org2calendar-send-to-ms (&optional arg)
     "同步当前 Clock 到微软日历。

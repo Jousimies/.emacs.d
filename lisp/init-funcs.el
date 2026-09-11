@@ -443,7 +443,7 @@ If URL is nil, try to guess from the package's own remote, then prompt."
       (message "Done. 请检查并提交 .gitmodules"))))
 
 
-;; init-misc
+;; Org/date helpers
 ;;;###autoload
 (defun my/insert-specified-datetree ()
   "Insert a datetree entry for a specified date."

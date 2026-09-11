@@ -39,21 +39,59 @@
 
 ;; ob-core
 (with-eval-after-load 'ob-core
-  (setq org-confirm-babel-evaluate nil)
-  (defun my/org-babel-execute-src-block (&optional _arg info _params)
-    "Load language if needed"
-    (let* ((lang (nth 0 info))
-           (sym (if (member (downcase lang) '("c" "cpp" "c++")) 'C (intern lang)))
-           (backup-languages org-babel-load-languages))
-      (unless (assoc sym backup-languages)
-        (condition-case err
-            (progn
-              (org-babel-do-load-languages 'org-babel-load-languages (list (cons sym t)))
-              (setq-default org-babel-load-languages (append (list (cons sym t)) backup-languages)))
-          (file-missing
-           (setq-default org-babel-load-languages backup-languages)
-           err)))))
-  (advice-add 'org-babel-execute-src-block :before 'my/org-babel-execute-src-block))
+  (defcustom my/org-babel-trusted-languages '(emacs-lisp shell python C)
+    "Babel languages allowed without confirmation in trusted local files.
+Other languages remain available on demand, but require confirmation before
+their backend is loaded and their code is evaluated."
+    :type '(repeat symbol)
+    :group 'org-babel)
+
+  (defun my/org-babel-language-symbol (language)
+    "Return the Babel backend symbol corresponding to LANGUAGE."
+    (pcase (downcase language)
+      ((or "c" "cpp" "c++") 'C)
+      ((or "sh" "bash" "zsh" "fish" "shell") 'shell)
+      ("r" 'R)
+      (_ (intern language))))
+
+  (defun my/org-babel-trusted-context-p (info)
+    "Return non-nil when Babel block INFO is safe for no-prompt execution."
+    (let* ((language (my/org-babel-language-symbol (car info)))
+           (params (nth 2 info))
+           (dir (cdr (assq :dir params))))
+      (and (memq language my/org-babel-trusted-languages)
+           buffer-file-name
+           (not (file-remote-p buffer-file-name))
+           (not (file-remote-p default-directory))
+           (or (not (stringp dir))
+               (not (file-remote-p (expand-file-name dir)))))))
+
+  (defun my/org-babel-confirm-evaluate-p (language _body)
+    "Request confirmation unless LANGUAGE is trusted in this local buffer."
+    (not (and (memq (my/org-babel-language-symbol language)
+                    my/org-babel-trusted-languages)
+              buffer-file-name
+              (not (file-remote-p buffer-file-name))
+              (not (file-remote-p default-directory)))))
+
+  (defun my/org-babel-load-language-after-confirmation (orig-fun info)
+    "Call ORIG-FUN for INFO, then load its backend only when approved."
+    (let ((org-confirm-babel-evaluate
+           (not (my/org-babel-trusted-context-p info))))
+      (when (funcall orig-fun info)
+        (let* ((language (my/org-babel-language-symbol (car info)))
+               (feature (intern (format "ob-%s" language))))
+          (unless (require feature nil t)
+            (user-error "No Org Babel backend found for %s" (car info)))
+          (cl-pushnew (cons language t) org-babel-load-languages
+                      :key #'car)
+          t))))
+
+  (setq org-confirm-babel-evaluate #'my/org-babel-confirm-evaluate-p)
+  (unless (advice-member-p #'my/org-babel-load-language-after-confirmation
+                           'org-babel-confirm-evaluate)
+    (advice-add 'org-babel-confirm-evaluate :around
+                #'my/org-babel-load-language-after-confirmation)))
 
 ;; org-refile
 (with-eval-after-load 'org-refile
@@ -127,10 +165,10 @@
 	org-clock-clocktable-default-properties '(:maxlevel 5 :link t :tags t)
 	org-clock-persist-query-resume nil
 	org-clock-report-include-clocking-task t)
-
-  (add-hook 'org-after-todo-state-change-hook (lambda ()
-                                                (if (org-clocking-p)
-                                                    (org-clock-out)))))
+  ;; `org-todo' already calls `org-clock-out-if-current' before running the
+  ;; state-change hook.  With this option enabled it stops only the clocked
+  ;; entry, and only when that entry enters an Org done state.
+  )
 
 ;; org-archive
 (with-eval-after-load 'org-archive

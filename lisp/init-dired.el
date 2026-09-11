@@ -1,10 +1,25 @@
 ;; -*- lexical-binding: t; -*-
 
-(when (and sys/macp (executable-find "gls"))
+(cond
+ (sys/win32p
+  ;; Let the built-in ls-lisp implementation handle Windows paths.
   (setq dired-use-ls-dired nil
-        insert-directory-program "gls"
+        ls-lisp-use-insert-directory-program nil
+        dired-listing-switches "-alh"))
+ ((and sys/macp (executable-find "gls"))
+  (setq dired-use-ls-dired t
+        insert-directory-program (executable-find "gls")
         dired-listing-switches
-	"-l --almost-all --human-readable --group-directories-first --no-group"))
+        "-alh --group-directories-first --no-group"))
+ (sys/macp
+  ;; BSD ls does not support GNU's --group-directories-first/--dired flags.
+  (setq dired-use-ls-dired nil
+        insert-directory-program "/bin/ls"
+        dired-listing-switches "-alh"))
+ (t
+  ;; The supported GNU/Linux setup uses GNU coreutils ls.
+  (setq dired-use-ls-dired t
+        dired-listing-switches "-alh --group-directories-first")))
 
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "M-n") #'scroll-other-window-down)
@@ -12,7 +27,6 @@
 
 (with-eval-after-load 'dired
   (setq dired-dwim-target t
-        dired-listing-switches "-alh --group-directories-first"
 	dired-auto-revert-buffer #'dired-buffer-stale-p
         dired-kill-when-opening-new-dired-buffer t
         dired-recursive-copies 'always

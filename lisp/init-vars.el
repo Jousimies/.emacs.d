@@ -20,35 +20,75 @@
 
 (defconst cache-directory (expand-file-name ".cache" user-emacs-directory))
 
+(defgroup my-paths nil
+  "Locations used by this Emacs configuration."
+  :group 'environment)
+
 (defcustom my/project-folder
   (if sys/win32p
       "D:/1-Project/"
     (expand-file-name "Repositories/" "~"))
   "Root directory used by the project helper commands."
   :type 'directory
-  :group 'convenience)
+  :group 'my-paths)
 
-(when (eq system-type 'darwin)
-  (defconst my-galaxy "~/Nextcloud/L.Personal.Galaxy")
-  (defconst icloud/mobile "~/Library/Mobile Documents"
-    "Mobile Documents in Icloud.")
-  (defconst my/org-gtd-directory (expand-file-name "iCloud~com~appsonthemove~beorg/Documents/org" icloud/mobile)))
+(defconst onedrive
+  (when sys/win32p
+    (expand-file-name "OneDrive" (file-truename "~")))
+  "Current user's OneDrive directory on Windows, or nil elsewhere.")
 
-(when (eq system-type 'windows-nt)
-  (defconst onedrive (expand-file-name "OneDrive" (file-truename "~")))
-  (defconst my-galaxy (expand-file-name "Galaxy" onedrive))
-  (defconst my/org-gtd-directory (expand-file-name "gtd" my-galaxy))
-  (defconst my/inbox-file (expand-file-name "inbox.org" my/org-gtd-directory)))
+(defconst icloud/mobile
+  (when sys/macp
+    (expand-file-name "~/Library/Mobile Documents"))
+  "Current user's iCloud Mobile Documents directory on macOS.")
 
-(defconst website-directory "~/Repositories/blog-source/")
+(defcustom my-galaxy
+  (if sys/win32p
+      (expand-file-name "Galaxy" onedrive)
+    (expand-file-name "~/Nextcloud/L.Personal.Galaxy"))
+  "Root directory for personal notes, references, and GTD data."
+  :type 'directory
+  :group 'my-paths)
+
+(defcustom my/org-gtd-directory
+  (file-name-as-directory
+   (if sys/macp
+       (expand-file-name
+        "iCloud~com~appsonthemove~beorg/Documents/org"
+        icloud/mobile)
+     (expand-file-name "gtd" my-galaxy)))
+  "Directory used by Org GTD and Org Agenda."
+  :type 'directory
+  :group 'my-paths)
+
+(defcustom my/inbox-file
+  (expand-file-name "inbox.org" my/org-gtd-directory)
+  "Primary Org inbox file."
+  :type 'file
+  :group 'my-paths)
+
+(defcustom my/blog-source-directory
+  (file-name-as-directory (expand-file-name "~/Repositories/blog-source"))
+  "Local blog source repository used by GitHub Actions."
+  :type 'directory
+  :group 'my-paths)
 
 ;; Values used by progressively-loaded note/bibliography packages must be set
 ;; before their files are required.  Otherwise autoloaded commands such as
 ;; `citar-open' may see Denote/Citar defaults.
-(defconst my/denote-directory (expand-file-name "denote" my-galaxy))
-(defconst my/reference-lists `(,(expand-file-name "bibtexs/My Library.bib" my-galaxy)
-                               ,(expand-file-name "bibtexs/Books.bib" my-galaxy)
-			       ,(expand-file-name "bibtexs/Seismic.bib" my-galaxy)))
+(defcustom my/denote-directory
+  (file-name-as-directory (expand-file-name "denote" my-galaxy))
+  "Directory containing Denote notes."
+  :type 'directory
+  :group 'my-paths)
+
+(defcustom my/reference-lists
+  (list (expand-file-name "bibtexs/My Library.bib" my-galaxy)
+        (expand-file-name "bibtexs/Books.bib" my-galaxy)
+	(expand-file-name "bibtexs/Seismic.bib" my-galaxy))
+  "BibTeX files used by Org Cite and Citar."
+  :type '(repeat file)
+  :group 'my-paths)
 
 (setq denote-directory my/denote-directory
       denote-journal-directory (expand-file-name "journal" my/denote-directory)
