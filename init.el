@@ -48,7 +48,8 @@
 	      init-checker
 	      init-prog
 	      init-git
-	      init-ai))
+	      init-ai
+	      init-finance))
 
       ;; Daemons do not run `window-setup-hook', so load on the first client
       ;; frame instead.  The loader itself guarantees a single pass.

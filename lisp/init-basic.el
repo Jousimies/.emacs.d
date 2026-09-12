@@ -125,7 +125,7 @@
   (setq server-client-instructions nil))
 
 ;; files
-(defcustom my/auto-save-visited-interval 7
+(defcustom my/auto-save-visited-interval 3
   "Seconds of idle time before saving visited file buffers.
 This keeps the existing `auto-save-visited-mode' workflow without writing on
 nearly every keystroke."

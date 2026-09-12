@@ -13,6 +13,7 @@
 (with-eval-after-load 'embark
   (keymap-set embark-general-map "?" #'gptel-quick))
 
+;; with M-w to copy reponds to kill-ring
 (with-eval-after-load 'gptel-quick
   (setq gptel-quick-backend (gptel-make-deepseek "DeepSeek"
                               :stream t

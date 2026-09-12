@@ -1,15 +1,18 @@
 ;; -*- lexical-binding: t; -*-
 
 ;; Preload Org incrementally so its first interactive use stays responsive.
-(my/idle-loader-add '(0.7 . (require 'org nil t))
-                    '(require 'org-id nil t)
-                    '(require 'org-agenda nil t)
-                    '(require 'org-capture nil t)
-                    '(require 'org-clock nil t)
-                    '(require 'org-attach nil t)
-                    '(require 'org-refile nil t)
-                    '(require 'org-goto nil t)
-                    '(require 'org-archive nil t))
+(my/idle-loader-add-features
+ '(org-macs
+   map calendar find-func format-spec thingatpt
+   org-compat org-keys org-fold-core org-fold
+   ol oc org-table org-cycle
+   outline time-date org-entities org-faces
+   org-footnote org-list org-pcomplete org-src org-macro ob
+   org
+   org-refile org-id org-persist org-element
+   org-agenda org-capture org-clock org-attach
+   org-goto org-archive)
+ 0.5)
 
 (with-eval-after-load 'org
   (setq org-modules nil

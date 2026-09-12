@@ -390,6 +390,17 @@ REQUIRED-IDLE is the minimum continuous idle time in seconds."
   (my/idle-loader--log "Starting (%d items)..." (length my/idle-loader-forms))
   (my/idle-loader--schedule (or initial-delay my/idle-loader-initial-delay)))
 
+(defun my/idle-loader-add-features (features &optional delay)
+  "Queue FEATURES individually, using DELAY between loads."
+  (apply #'my/idle-loader-add
+         (mapcar
+          (lambda (feature)
+            (let ((form `(require ',feature nil t)))
+              (if delay
+                  (cons delay form)
+                form)))
+          features)))
+
 (defun my/idle-loader-add (&rest forms)
   (setq my/idle-loader-forms (append my/idle-loader-forms forms)))
 

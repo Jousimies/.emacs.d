@@ -89,9 +89,9 @@
         "Note"
 	[[("n" "Find or Create" consult-notes :transient nil)]]
         [["New Note"
-          ("sc" "Child" denote-sequence-new-child :transient nil)
+          ("sc" "Child" denote-sequence-new-child-of-current :transient nil)
           ("sp" "Parents" denote-sequence-new-parent :transient nil)
-          ("sb" "Sibling" denote-sequence-new-sibling :transient nil)
+          ("sb" "Sibling" denote-sequence-new-sibling-of-current :transient nil)
           ("j" "Journal" denote-journal-new-or-existing-entry :transient nil)
           ("b" "Blogs" my/blog-new-post :transient nil)]
          ["Meta Rename"
@@ -181,7 +181,8 @@
   (define-key viper-vi-global-user-map (kbd "gg") #'beginning-of-buffer)
   (define-key viper-vi-global-user-map (kbd "gd") #'xref-find-definitions)
   (define-key viper-vi-global-user-map (kbd "gr") #'recentf-open-files)
-  (define-key viper-vi-global-user-map (kbd "gs") #'scratch-buffer)
+  (define-key viper-vi-global-user-map (kbd "gs") #'my/org-insert-emphasis-with-zws)
+  (define-key viper-vi-global-user-map (kbd "gS") #'my/org-element-unwrap-emphasis)
   (define-key viper-vi-global-user-map (kbd "u") #'undo)
   (define-key viper-vi-global-user-map (kbd "U") #'vundo)
   )

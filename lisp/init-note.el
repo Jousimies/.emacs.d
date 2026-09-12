@@ -20,6 +20,12 @@
 (with-eval-after-load 'denote-sequence
   (setq denote-sequence-scheme 'alphanumeric-delimited))
 
+;; denote-silo
+;; (with-eval-after-load 'denote-silo
+;;   (setq denote-silo-directories
+;; 	(list denote-directory
+;; 	      "~/OneDrive/Galaxy/denote/")))
+
 ;; denote-explore
 ;; Statistics
 (keymap-global-set "C-c e s n" #'denote-explore-count-notes)
