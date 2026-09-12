@@ -7,7 +7,21 @@
    org-compat org-keys org-fold-core org-fold
    ol oc org-table org-cycle
    outline time-date org-entities org-faces
-   org-footnote org-list org-pcomplete org-src org-macro ob
+   org-footnote org-list org-pcomplete
+   ob-eval
+   ob-core
+   inline
+   org-element-ast
+   ob-comint
+   executable
+   treesit
+   smie
+   sh-script
+   org-src
+   org-macro ob
+   org-loaddefs
+   ob-emacs-lisp
+   org-version
    org
    org-refile org-id org-persist org-element
    org-agenda org-capture org-clock org-attach

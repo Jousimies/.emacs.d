@@ -1,7 +1,21 @@
 ;; -*- lexical-binding: t; -*-
 (my/idle-loader-add-features
  '(org-edna
-   f transient compat ffap
+   f
+   eieio-core
+   eieio
+   kmacro
+   edmacro
+   bytecomp
+   byte-opt
+   transient
+   compat
+   url-vars
+   json
+   password-cache
+   auth-source
+   url-parse
+   ffap
    org-gtd-agenda-property
    org-gtd-backward-compatibility
    org-gtd-types
@@ -69,9 +83,9 @@
 (global-set-key (kbd "<f10>") #'org-gtd-capture)
 
 (with-eval-after-load 'org
-    (setq org-agenda-files (list org-gtd-directory))
-    ;; (org-gtd-mode)
-    )
+  (setq org-agenda-files (list org-gtd-directory))
+  ;; (org-gtd-mode)
+  )
 
 (with-eval-after-load 'org
   (setq org-gtd-refile-to-any-target nil)
