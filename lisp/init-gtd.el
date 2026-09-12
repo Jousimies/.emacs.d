@@ -1,69 +1,4 @@
 ;; -*- lexical-binding: t; -*-
-(my/idle-loader-add-features
- '(org-edna
-   f
-   eieio-core
-   eieio
-   kmacro
-   edmacro
-   bytecomp
-   byte-opt
-   transient
-   compat
-   url-vars
-   json
-   password-cache
-   auth-source
-   url-parse
-   ffap
-   org-gtd-agenda-property
-   org-gtd-backward-compatibility
-   org-gtd-types
-   org-gtd-core
-   org-gtd-context
-   org-gtd-id
-   org-gtd-files
-   org-gtd-horizons
-   org-gtd-wip
-   org-gtd-clarify
-   org-gtd-hooks
-   org-gtd-refile
-   org-gtd-organize-core
-   org-gtd-configure
-   org-gtd-create
-   org-gtd-calendar
-   org-gtd-habit
-   org-gtd-agenda
-   org-gtd-accessors
-   org-gtd-value-objects
-   org-gtd-dependencies
-   org-gtd-projects
-   org-gtd-archive
-   org-gtd-knowledge
-   org-gtd-reactivate
-   org-gtd-tickler
-   org-gtd-someday
-   org-gtd-quick-action
-   org-gtd-next-action
-   org-gtd-trash
-   org-gtd-delegate
-   org-gtd-capture
-   org-gtd-process
-   org-gtd-organize
-   org-gtd-areas-of-focus
-   org-gtd-agenda-transient
-   org-duration
-   org-gtd-skip
-   org-gtd-view-language
-   org-gtd-engage
-   org-gtd-mode
-   org-gtd-reflect
-   org-gtd-someday-review
-   org-habit
-   org-gtd-upgrades
-   org-gtd-command-center
-   org-gtd)
- 0.5)
 
 (with-eval-after-load 'org-agenda
   (setq org-agenda-window-setup 'current-window
@@ -112,8 +47,6 @@
   (org-gtd-mode 1))
 
 (with-eval-after-load 'org-gtd-clarify
-  ;; (unless (featurep 'org-gtd-organize)
-  ;;   (require 'org-gtd-organize))
   (keymap-set org-gtd-clarify-map "C-c C-c" #'org-gtd-organize))
 
 (add-hook 'org-agenda-mode-hook (lambda ()

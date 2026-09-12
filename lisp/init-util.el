@@ -299,6 +299,30 @@ modules.  With `--debug-init', preserve the usual fail-fast behavior."
   "Log buffer name."
   :type 'string)
 
+(defcustom my/idle-loader-feature-roots
+  '(org
+    org-id
+    org-agenda
+    org-capture
+    org-clock
+    org-attach
+    org-refile
+    org-goto
+    org-archive
+    org-edna
+    org-gtd)
+  "Root features whose dependency order is generated for idle loading."
+  :type '(repeat symbol))
+
+(defcustom my/idle-loader-feature-interval 0.5
+  "Seconds of idle time between generated feature-loading tasks."
+  :type 'number)
+
+(defcustom my/idle-loader-feature-cache-file
+  (expand-file-name ".cache/idle-features.el" user-emacs-directory)
+  "Generated platform-local feature plan used by the idle loader."
+  :type 'file)
+
 (defvar my/idle-loader-forms nil
   "Queue of forms. Each element is a form or (DELAY . FORM).")
 
@@ -306,6 +330,13 @@ modules.  With `--debug-init', preserve the usual fail-fast behavior."
 (defvar my/idle-loader--count 0)
 (defvar my/idle-loader--errors 0)
 (defvar my/idle-loader--timer nil)
+
+;; Set by `my/idle-loader-feature-cache-file'.  Keep these variables defined so
+;; a missing or stale generated cache has a predictable fallback path.
+(defvar my/idle-loader-generated-system-type nil)
+(defvar my/idle-loader-generated-emacs-version nil)
+(defvar my/idle-loader-generated-roots nil)
+(defvar my/idle-loader-generated-features nil)
 
 (defun my/idle-loader--schedule (delay)
   "Check for the next queued form after DELAY real seconds.
@@ -400,6 +431,36 @@ REQUIRED-IDLE is the minimum continuous idle time in seconds."
                   (cons delay form)
                 form)))
           features)))
+
+(defun my/idle-loader--load-generated-features ()
+  "Return a valid generated feature plan, or nil when none is usable."
+  (setq my/idle-loader-generated-system-type nil
+        my/idle-loader-generated-emacs-version nil
+        my/idle-loader-generated-roots nil
+        my/idle-loader-generated-features nil)
+  (condition-case err
+      (when (file-readable-p my/idle-loader-feature-cache-file)
+        (load my/idle-loader-feature-cache-file nil t)
+        (when (and (eq my/idle-loader-generated-system-type system-type)
+                   (equal my/idle-loader-generated-emacs-version emacs-version)
+                   (equal my/idle-loader-generated-roots
+                          my/idle-loader-feature-roots)
+                   (consp my/idle-loader-generated-features)
+                   (seq-every-p #'symbolp
+                                my/idle-loader-generated-features))
+          my/idle-loader-generated-features))
+    (error
+     (my/idle-loader--log "Ignoring feature cache: %S" err)
+     nil)))
+
+(defun my/idle-loader-add-feature-roots ()
+  "Queue the generated dependency plan for `my/idle-loader-feature-roots'.
+Fall back to loading only the roots when the generated cache is missing,
+stale, malformed, or belongs to another Emacs platform/version."
+  (my/idle-loader-add-features
+   (or (my/idle-loader--load-generated-features)
+       my/idle-loader-feature-roots)
+   my/idle-loader-feature-interval))
 
 (defun my/idle-loader-add (&rest forms)
   (setq my/idle-loader-forms (append my/idle-loader-forms forms)))
