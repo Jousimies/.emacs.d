@@ -6,8 +6,14 @@
   (defalias 'incf 'cl-incf))
 
 (eval-and-compile
-  (add-to-list 'load-path
-               (expand-file-name "lisp" user-emacs-directory)))
+  (let ((source-lisp-directory
+         (expand-file-name "lisp" user-emacs-directory))
+        (build-lisp-directory
+         (expand-file-name ".cache/packages-build/lisp"
+                           user-emacs-directory)))
+    (add-to-list 'load-path source-lisp-directory)
+    (when (file-directory-p build-lisp-directory)
+      (add-to-list 'load-path build-lisp-directory))))
 (require 'init-util)
 
 (if (and (file-exists-p (expand-file-name "lisp/load-path-cache.el" user-emacs-directory))

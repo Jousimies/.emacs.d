@@ -57,7 +57,6 @@
 
 (when (display-graphic-p)
   (my/apply-frame-font))
-(add-hook 'window-setup-hook #'my/apply-frame-font)
 (add-hook 'server-after-make-frame-hook #'my/apply-frame-font)
 
 

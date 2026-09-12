@@ -34,7 +34,7 @@
 
 (defconst onedrive
   (when sys/win32p
-    (expand-file-name "OneDrive" (file-truename "~")))
+    (expand-file-name "OneDrive" (expand-file-name "~")))
   "Current user's OneDrive directory on Windows, or nil elsewhere.")
 
 (defconst icloud/mobile
