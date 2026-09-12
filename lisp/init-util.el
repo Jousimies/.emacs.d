@@ -283,7 +283,7 @@ modules.  With `--debug-init', preserve the usual fail-fast behavior."
   "Ordered automatic idle loading."
   :group 'convenience)
 
-(defcustom my/idle-loader-interval 1
+(defcustom my/idle-loader-interval 0.2
   "Default idle interval between tasks (seconds)."
   :type 'number)
 
