@@ -265,3 +265,9 @@
 [submodule "packages/csv-mode"]
 	path = packages/csv-mode
 	url = https://github.com/emacsmirror/csv-mode.git
+[submodule "packages/tempel"]
+	path = packages/tempel
+	url = https://github.com/minad/tempel.git
+[submodule "packages/tempel-collection"]
+	path = packages/tempel-collection
+	url = https://github.com/Crandel/tempel-collection.git

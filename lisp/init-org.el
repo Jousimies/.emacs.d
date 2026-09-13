@@ -1,5 +1,15 @@
 ;; -*- lexical-binding: t; -*-
 
+(declare-function denote-sluggify "denote" (component string))
+
+(defun my/org-yank-image-file-name ()
+  "Return a timestamped, Denote-style name for an image pasted into Org."
+  (let ((title (string-trim (read-string "Image name (optional): "))))
+    (concat (format-time-string "%Y%m%dT%H%M%S")
+            (unless (string-empty-p title)
+              (require 'denote)
+              (concat "--" (denote-sluggify 'title title))))))
+
 ;; These roots enter the same generated execution plan as every other idle
 ;; task; update_emacs.py expands their observed dependency chains.
 (my/idle-loader-add-features
@@ -18,10 +28,14 @@
   	org-support-shift-select t
   	org-treat-S-cursor-todo-selection-as-state-change nil
   	org-hide-leading-stars nil
-  	org-startup-indented nil
-  	org-startup-with-inline-images t
-  	org-image-actual-width nil
-  	org-use-speed-commands t
+	org-startup-indented nil
+	org-startup-with-inline-images t
+	org-image-actual-width nil
+	org-yank-image-save-method 'attach
+	org-yank-image-file-name-function #'my/org-yank-image-file-name
+	org-yank-dnd-method 'ask
+	org-yank-dnd-default-attach-method 'cp
+	org-use-speed-commands t
   	org-highlight-latex-and-related '(latex script)
   	org-enforce-todo-dependencies t
   	org-enforce-todo-checkbox-dependencies t
@@ -29,8 +43,9 @@
   	org-tags-sort-function 'org-string-collate-greaterp
   	org-lowest-priority ?D
   	org-priority-default ?C
-  	org-columns-default-format "%50ITEM %TODO %3PRIORITY %TAGS"
-  	org-persist-directory (expand-file-name "org-persist" cache-directory)))
+	org-columns-default-format "%50ITEM %TODO %3PRIORITY %TAGS"
+	org-persist-directory (expand-file-name "org-persist" cache-directory))
+  (keymap-set org-mode-map "C-c i" #'yank-media))
 
 ;; ob-core
 (with-eval-after-load 'ob-core
@@ -115,8 +130,9 @@ their backend is loaded and their code is evaluated."
 	(org-with-wide-buffer
 	 (org-set-property "ORG_ATTACH_FILES" (mapconcat #'identity files ", ")))
 	(message "ORG_ATTACH_FILES property updated."))))
-
   (setq org-attach-expert t
+	org-attach-method 'cp
+	org-attach-store-link-p 'attached
 	org-attach-id-dir (expand-file-name "attach" my-galaxy)
 	org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format
 					      org-attach-id-uuid-folder-format)))

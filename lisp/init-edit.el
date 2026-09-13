@@ -176,5 +176,14 @@
 
   (setq sis-inline-tighten-tail-rule #'+sis-remove-tail-space-before-cc-punc))
 
+
+;; tempel and tempel-collection
+(defun tempel-setup-capf ()
+  (setq-local completion-at-point-functions
+              (cons #'tempel-expand completion-at-point-functions)))
+
+(add-hook 'conf-mode-hook 'tempel-setup-capf)
+(add-hook 'prog-mode-hook 'tempel-setup-capf)
+(add-hook 'text-mode-hook 'tempel-setup-capf)
 
 (provide 'init-edit)

@@ -38,6 +38,11 @@ def is_elisp_source_file(path: Path) -> bool:
     )
 
 
+def is_runtime_data_file(path: Path) -> bool:
+    """Return whether PATH is runtime data needed beside package Elisp."""
+    return path.suffix == ".eld" and not path.name.startswith(".")
+
+
 def build_source_path(source: Path) -> Path:
     """Return straight/elpaca-style build path for SOURCE."""
     return BUILD_CACHE_DIR / source.relative_to(ROOT)
@@ -49,7 +54,7 @@ def build_elc_path(source: Path) -> Path:
 
 
 def collect_build_source_files() -> list[Path]:
-    """Return source files mirrored into the build directory."""
+    """Return Elisp and runtime data files mirrored into the build directory."""
     files = [
         path for path in sorted(CONFIG_LISP_DIR.glob("*.el"))
         if is_elisp_source_file(path) and path.name != PACKAGE_AUTOLOADS.name
@@ -71,24 +76,25 @@ def collect_build_source_files() -> list[Path]:
             ]
             for name in names:
                 path = current_path / name
-                if is_elisp_source_file(path):
+                if is_elisp_source_file(path) or is_runtime_data_file(path):
                     files.append(path)
     return list(dict.fromkeys(files))
 
 
 def prepare_build_tree() -> None:
-    """Mirror .el files into the build directory."""
+    """Mirror Elisp and adjacent runtime data into the build directory."""
     BUILD_CACHE_DIR.mkdir(parents=True, exist_ok=True)
     sources = collect_build_source_files()
     desired = {build_source_path(source) for source in sources}
 
     removed = 0
-    for built_el in BUILD_CACHE_DIR.rglob("*.el"):
-        if built_el.is_dir():
+    for built_file in BUILD_CACHE_DIR.rglob("*"):
+        if built_file.is_dir() or built_file.suffix not in {".el", ".eld"}:
             continue
-        if built_el not in desired:
-            built_el.unlink(missing_ok=True)
-            built_el.with_suffix(".elc").unlink(missing_ok=True)
+        if built_file not in desired:
+            built_file.unlink(missing_ok=True)
+            if built_file.suffix == ".el":
+                built_file.with_suffix(".elc").unlink(missing_ok=True)
             removed += 1
 
     linked = copied = unchanged = 0
