@@ -96,7 +96,8 @@
       inhibit-startup-buffer-menu t
       inhibit-x-resources t
       inhibit-default-init t
-      initial-major-mode 'fundamental-mode)
+      ;;initial-major-mode 'fundamental-mode
+      )
 (advice-add #'display-startup-echo-area-message :override #'ignore)
 (advice-add #'display-startup-screen :override #'ignore)
 

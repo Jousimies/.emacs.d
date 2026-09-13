@@ -5,11 +5,36 @@
 首次使用，安装。
 #+begin_src shell
   git clone --depth=1 https://github.com/Jousimies/.emacs.d.git
+  cd .emacs.d
+  python update_emacs.py setup
+#+end_src
 
-  git submodule update --init --recursive
+日常修改配置或 package 源码后，只需同步本地缓存与 byte-compile 产物：
 
+#+begin_src shell
   python update_emacs.py
 #+end_src
+
+脚本的维护命令彼此独立，避免日常同步时隐式执行网络、原生构建或环境设置：
+
+- =sync=（默认）：生成 load-path/autoload/idle-feature 缓存并 byte compile
+- =fetch=：仅 fetch 主仓库与 submodule，不切换工作区版本
+- =build=：仅构建 AUCTeX、benchmark-init 和 pdf-tools
+- =setup=：首次安装流程（mail + fetch + build + sync）
+- =doctor=、=env=、=test=、=clean=、=mail=：诊断与专项维护
+
+** 维护脚本结构
+
+=update_emacs.py= 只保留命令入口，具体实现位于 =core/=：
+
+- =context.py=：路径、运行参数和进程调用
+- =git.py=、=build.py=：源码获取与原生构建
+- =build_tree.py=：维护用于加载和编译的 Elisp 镜像
+- =autoload.py=、=idle.py=：生成 load-path/autoload 与 idle plan
+- =cache.py=、=compiler.py=：协调缓存生成与 byte compile
+- =mail.py=、=environment.py=：用户环境设置与安全快照
+- =doctor.py=、=testing.py=、=cleanup.py=：诊断、测试与清理
+- =cli.py=：参数解析和工作流组合
 
 ** 需特殊设置的 Packages
 
