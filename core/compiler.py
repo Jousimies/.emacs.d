@@ -16,7 +16,6 @@ from .build_tree import (
     should_skip_directory,
 )
 from .context import (
-    BUILD_CACHE_DIR,
     CONFIG_LISP_DIR,
     LOAD_PATH_CACHE,
     PACKAGE_AUTOLOADS,
@@ -27,35 +26,33 @@ from .context import (
     log,
 )
 
-# Package name -> files deliberately omitted from that package.  Packages not
-# present here are not byte compiled by this script.
-BYTE_COMPILE_RULES: dict[str, frozenset[str]] = {
-    "cape": frozenset(),
-    "compat": frozenset(),
-    "consult": frozenset(),
-    "dash.el": frozenset(),
-    "denote": frozenset(),
-    "embark": frozenset(),
-    "gptel": frozenset(),
-    "llama": frozenset(),
-    "magit": frozenset(),
-    "marginalia": frozenset(),
-    "meow": frozenset(),
-    "orderless": frozenset(),
-    "org-edna": frozenset(),
-    "org-gtd.el": frozenset({
-        # These files require optional dag-draw, which is not vendored.
-        "org-gtd-dag-draw.el",
-        "org-gtd-graph-mode.el",
-        "org-gtd-graph-navigation.el",
-        "org-gtd-graph-transient.el",
-        "org-gtd-graph-view.el",
-        "org-gtd-project-operations.el",
-    }),
-    "parsebib": frozenset(),
-    "s.el": frozenset(),
-    "with-editor": frozenset(),
+# Compile every normal package by default.  Keep this denylist limited to
+# packages with their own build process or known unsafe compile-time effects.
+PACKAGE_BYTE_COMPILE_EXCLUDES = {
+    "auctex": "built by its Makefile",
+    "auctex-latexmk": "requires AUCTeX's generated tex-buf library",
+    "benchmark-init-el": "built by its Makefile",
+    "emacs-reader": "configured explicitly because its autoloads have side effects",
+    "pdf-tools": "uses a platform-specific native server build",
+    "rimel": "its Makefile supplies a liberime compile-time stub",
 }
+
+PACKAGE_DEVELOPMENT_DIRS = {"etc", "targets"}
+PACKAGE_DEVELOPMENT_SUFFIXES = (
+    "-bench.el",
+    "-subtest.el",
+    "-test.el",
+    "-tests.el",
+)
+
+
+def is_package_development_file(filename: str) -> bool:
+    """Return whether FILENAME is a package test or benchmark source."""
+    return (
+        filename.startswith(("test-", "tests-"))
+        or "-test-" in filename
+        or filename.endswith(PACKAGE_DEVELOPMENT_SUFFIXES)
+    )
 
 
 def is_compilable_elisp_file(path: Path) -> bool:
@@ -63,12 +60,12 @@ def is_compilable_elisp_file(path: Path) -> bool:
     if not is_elisp_source_file(path):
         return False
     try:
-        first_line = path.read_text(
-            encoding="utf-8", errors="ignore"
-        ).splitlines()[0]
-    except (OSError, IndexError):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+    except OSError:
         return False
-    return "no-byte-compile: t" not in first_line
+    # Emacs accepts this setting in either the first-line cookie or the
+    # trailing Local Variables block.
+    return "no-byte-compile: t" not in text
 
 
 def collect_config_compile_files() -> list[Path]:
@@ -82,17 +79,16 @@ def collect_config_compile_files() -> list[Path]:
 
 
 def collect_package_compile_files() -> list[Path]:
-    """Return package sources selected by BYTE_COMPILE_RULES."""
+    """Return all normal package sources except documented exclusions."""
     result: list[Path] = []
     if not PACKAGE_DIR.is_dir():
         return result
 
     for package in sorted(PACKAGE_DIR.iterdir()):
-        excluded_files = BYTE_COMPILE_RULES.get(package.name)
         if (
-            excluded_files is None
-            or not package.is_dir()
+            not package.is_dir()
             or should_skip_directory(package)
+            or package.name in PACKAGE_BYTE_COMPILE_EXCLUDES
         ):
             continue
         for current, dirs, files in os.walk(package):
@@ -102,28 +98,19 @@ def collect_package_compile_files() -> list[Path]:
                 continue
             dirs[:] = [
                 directory for directory in dirs
-                if not should_skip_directory(current_path / directory)
+                if (
+                    directory not in PACKAGE_DEVELOPMENT_DIRS
+                    and not should_skip_directory(current_path / directory)
+                )
             ]
             for filename in files:
                 path = current_path / filename
                 if (
-                    filename not in excluded_files
+                    not is_package_development_file(filename)
                     and is_compilable_elisp_file(path)
                 ):
                     result.append(path)
     return list(dict.fromkeys(result))
-
-
-def remove_source_elc_files(files: list[Path]) -> None:
-    """Remove .elc files next to original sources."""
-    removed = 0
-    for source in files:
-        elc = source.with_suffix(".elc")
-        if elc.exists() and not elc.is_relative_to(BUILD_CACHE_DIR):
-            elc.unlink()
-            removed += 1
-    if removed:
-        log(f"已删除源目录旁的 .elc: {removed} 个")
 
 
 def split_chunks(items: list[Path], chunks: int) -> list[list[Path]]:
@@ -242,7 +229,6 @@ def run_emacs_byte_compile(files: list[Path]) -> bool:
 
     prepare_build_tree()
     stale_files = stale_byte_compile_files(files)
-    remove_source_elc_files(files)
     if not stale_files:
         log(f"byte compile 未变化: {len(files)} 个文件已是最新")
         return True
@@ -265,7 +251,6 @@ def run_emacs_byte_compile(files: list[Path]) -> bool:
             if failed:
                 ok = False
     if ok:
-        remove_source_elc_files(files)
         log(f"byte compile 完成: {len(build_files)} / {len(files)} 个文件")
         return True
     log("byte compile 失败", "ERROR")

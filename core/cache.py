@@ -57,8 +57,8 @@ def verify_cache() -> bool:
         return False
     idle_text = IDLE_FEATURE_CACHE.read_text(encoding="utf-8")
     if (
-        "my/idle-loader-generated-roots" not in idle_text
-        or "my/idle-loader-generated-features" not in idle_text
+        "my/idle-loader-generated-source-signature" not in idle_text
+        or "my/idle-loader-generated-plan" not in idle_text
     ):
         log("idle-features.el 内容无效", "ERROR")
         return False

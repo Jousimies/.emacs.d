@@ -31,10 +31,15 @@
 - =git.py=、=build.py=：源码获取与原生构建
 - =build_tree.py=：维护用于加载和编译的 Elisp 镜像
 - =autoload.py=、=idle.py=：生成 load-path/autoload 与 idle plan
-- =cache.py=、=compiler.py=：协调缓存生成与 byte compile
+- =cache.py=、=compiler.py=：协调缓存生成，并默认 byte compile 所有运行时 package 源码
 - =mail.py=、=environment.py=：用户环境设置与安全快照
 - =doctor.py=、=testing.py=、=cleanup.py=：诊断、测试与清理
 - =cli.py=：参数解析和工作流组合
+
+Idle plan 会在隔离的 batch Emacs 中依次执行所有原始 idle task，记录每个
+task 实际加载的 feature 链，再按“依赖 → 原始动作”的顺序生成缓存。缓存使用
+完整原始队列的 SHA-256 签名校验；新增或调整 idle task 后运行 =sync= 即可自动
+刷新，不再为生成缓存单独保存一份 roots 元数据。
 
 ** 需特殊设置的 Packages
 

@@ -1,4 +1,4 @@
-;;; profile-idle-loader.el --- Profile the configured idle queue  -*- lexical-binding: t; -*-
+;;; profile-idle-loader.el --- Profile the prepared idle plan  -*- lexical-binding: t; -*-
 
 ;; Run from a terminal with:
 ;;
@@ -7,6 +7,10 @@
 ;; On Windows (cmd.exe):
 ;;
 ;;   emacs.exe --batch -Q -l "%USERPROFILE%\.emacs.d\scripts\profile-idle-loader.el"
+
+;; The profiler intentionally calls `my/idle-loader--prepare', just like the
+;; real loader.  Run `python3 update_emacs.py sync' first when the generated
+;; plan needs to be refreshed.
 
 (require 'cl-lib)
 (require 'seq)
@@ -44,10 +48,10 @@
                      feature state seconds
                      (if error-data (format "  %S" error-data) ""))))))
 
-(defun my/idle-profile--print-queue (queue)
-  "Print QUEUE without evaluating it."
-  (princ (format "\nIdle queue (%d items)\n" (length queue)))
-  (princ "---------------------\n")
+(defun my/idle-profile--print-plan (queue)
+  "Print the prepared idle plan QUEUE without evaluating it."
+  (princ (format "\nPrepared idle plan (%d items)\n" (length queue)))
+  (princ "-------------------------------\n")
   (cl-loop for item in queue
            for index from 1
            for (delay form) = (my/idle-profile--item-parts item)
@@ -79,7 +83,14 @@
                (princ (format "RUN %2d/%d  %S\n" index total form))
                (condition-case err
                    (progn
-                     (eval form t)
+                     (let ((result (eval form t)))
+                       ;; Generated dependency loads use NOERROR so that the
+                       ;; interactive loader can continue.  A profiler should
+                       ;; nevertheless expose a missing generated feature.
+                       (when (and (eq (car-safe form) 'require)
+                                  (null result))
+                         (error "Required feature unavailable: %S"
+                                (nth 1 form))))
                      (setq state "OK")
                      (cl-incf successes))
                  (error
@@ -123,14 +134,28 @@
   (when (timerp my/idle-loader--timer)
     (cancel-timer my/idle-loader--timer))
   (setq my/idle-loader--timer nil)
-  (let ((queue (copy-tree my/idle-loader-forms)))
-    ;; Do not let the real loader also consume the queue in this process.
-    (setq my/idle-loader-forms nil)
-    (princ (format "Idle loader profile\n===================\nEmacs   %s\nSystem  %s\nConfig  %s\nSetup   %.3fs\n"
-                   emacs-version system-type user-emacs-directory
-                   (float-time (time-subtract nil startup-started))))
-    (my/idle-profile--print-module-times)
-    (my/idle-profile--print-queue queue)
-    (my/idle-profile--run-queue queue)))
+  (let* ((raw-queue (copy-tree my/idle-loader-forms))
+         (source-signature (my/idle-loader-source-signature raw-queue)))
+    ;; Use exactly the same cache validation and queue replacement as normal
+    ;; startup.  If the cache is absent or stale, this leaves the raw queue in
+    ;; place and the report labels that fallback explicitly.
+    (my/idle-loader--prepare)
+    (let* ((queue (copy-tree my/idle-loader-forms))
+           (generated-p
+            (and (equal source-signature
+                        my/idle-loader-generated-source-signature)
+                 (equal queue my/idle-loader-generated-plan))))
+      ;; Do not let the real loader also consume the queue in this process.
+      (setq my/idle-loader-forms nil)
+      (princ (format "Idle loader profile\n===================\nEmacs       %s\nSystem      %s\nConfig      %s\nSetup       %.3fs\nRaw tasks   %d\nPlan source %s\nPlan tasks  %d\nSignature   %s\n"
+                     emacs-version system-type user-emacs-directory
+                     (float-time (time-subtract nil startup-started))
+                     (length raw-queue)
+                     (if generated-p "generated cache" "raw fallback")
+                     (length queue)
+                     source-signature))
+      (my/idle-profile--print-module-times)
+      (my/idle-profile--print-plan queue)
+      (my/idle-profile--run-queue queue))))
 
 ;;; profile-idle-loader.el ends here

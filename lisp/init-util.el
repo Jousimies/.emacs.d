@@ -331,12 +331,14 @@ modules.  With `--debug-init', preserve the usual fail-fast behavior."
 (defvar my/idle-loader--errors 0)
 (defvar my/idle-loader--timer nil)
 
-;; Set by `my/idle-loader-feature-cache-file'.  Keep these variables defined so
-;; a missing or stale generated cache has a predictable fallback path.
+;; Set by `my/idle-loader-feature-cache-file'.  The source signature ties a
+;; generated plan to the complete raw idle queue, including feature roots and
+;; arbitrary mode/function forms.
 (defvar my/idle-loader-generated-system-type nil)
 (defvar my/idle-loader-generated-emacs-version nil)
-(defvar my/idle-loader-generated-roots nil)
-(defvar my/idle-loader-generated-features nil)
+(defvar my/idle-loader-generated-source-signature nil)
+(defvar my/idle-loader-generated-plan nil)
+(defvar my/idle-loader--prepared-p nil)
 
 (defun my/idle-loader--schedule (delay)
   "Check for the next queued form after DELAY real seconds.
@@ -415,6 +417,7 @@ REQUIRED-IDLE is the minimum continuous idle time in seconds."
   (remove-hook 'server-after-make-frame-hook #'my/idle-loader-start)
   (when (timerp my/idle-loader--timer)
     (cancel-timer my/idle-loader--timer))
+  (my/idle-loader--prepare)
   (setq my/idle-loader--start-time (current-time)
         my/idle-loader--count 0
         my/idle-loader--errors 0)
@@ -432,35 +435,42 @@ REQUIRED-IDLE is the minimum continuous idle time in seconds."
                 form)))
           features)))
 
-(defun my/idle-loader--load-generated-features ()
-  "Return a valid generated feature plan, or nil when none is usable."
+(defun my/idle-loader-source-signature (&optional forms)
+  "Return a stable signature for FORMS or the current raw idle queue."
+  (secure-hash 'sha256
+               (encode-coding-string
+                (prin1-to-string (or forms my/idle-loader-forms))
+                'utf-8)))
+
+(defun my/idle-loader--load-generated-plan (source-signature)
+  "Return the generated plan matching SOURCE-SIGNATURE, or nil."
   (setq my/idle-loader-generated-system-type nil
         my/idle-loader-generated-emacs-version nil
-        my/idle-loader-generated-roots nil
-        my/idle-loader-generated-features nil)
+        my/idle-loader-generated-source-signature nil
+        my/idle-loader-generated-plan nil)
   (condition-case err
       (when (file-readable-p my/idle-loader-feature-cache-file)
         (load my/idle-loader-feature-cache-file nil t)
         (when (and (eq my/idle-loader-generated-system-type system-type)
                    (equal my/idle-loader-generated-emacs-version emacs-version)
-                   (equal my/idle-loader-generated-roots
-                          my/idle-loader-feature-roots)
-                   (consp my/idle-loader-generated-features)
-                   (seq-every-p #'symbolp
-                                my/idle-loader-generated-features))
-          my/idle-loader-generated-features))
+                   (equal my/idle-loader-generated-source-signature
+                          source-signature)
+                   (consp my/idle-loader-generated-plan)
+                   (seq-every-p #'listp my/idle-loader-generated-plan))
+          my/idle-loader-generated-plan))
     (error
      (my/idle-loader--log "Ignoring feature cache: %S" err)
      nil)))
 
-(defun my/idle-loader-add-feature-roots ()
-  "Queue the generated dependency plan for `my/idle-loader-feature-roots'.
-Fall back to loading only the roots when the generated cache is missing,
-stale, malformed, or belongs to another Emacs platform/version."
-  (my/idle-loader-add-features
-   (or (my/idle-loader--load-generated-features)
-       my/idle-loader-feature-roots)
-   my/idle-loader-feature-interval))
+(defun my/idle-loader--prepare ()
+  "Replace the raw idle queue with its generated dependency plan when valid."
+  (unless my/idle-loader--prepared-p
+    (setq my/idle-loader--prepared-p t)
+    (let* ((raw-forms (copy-tree my/idle-loader-forms))
+           (signature (my/idle-loader-source-signature raw-forms))
+           (generated (my/idle-loader--load-generated-plan signature)))
+      (when generated
+        (setq my/idle-loader-forms generated)))))
 
 (defun my/idle-loader-add (&rest forms)
   (setq my/idle-loader-forms (append my/idle-loader-forms forms)))

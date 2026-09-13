@@ -89,6 +89,14 @@ def run_startup_smoke_test(emacs: str) -> bool:
   (unless (fboundp 'my/load-config-modules)
     (error "my/load-config-modules is unavailable"))
   (my/load-config-modules)
+  (let ((source-signature (my/idle-loader-source-signature))
+        (raw-count (length my/idle-loader-forms)))
+    (my/idle-loader--prepare)
+    (unless (equal source-signature
+                   my/idle-loader-generated-source-signature)
+      (error "Generated idle plan does not match the raw idle queue"))
+    (princ (format "Prepared idle plan: %d raw tasks -> %d generated tasks\\n"
+                   raw-count (length my/idle-loader-forms))))
   (let ((failed
          (seq-filter
           (lambda (feature)
