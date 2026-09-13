@@ -27,7 +27,7 @@
 	(require 'init-benchmark))
 
       (require 'init-vars)
-
+      ;; (require 'init-dashboard)
       (require 'init-font)
       (require 'init-modeline)
       (require 'init-keys)

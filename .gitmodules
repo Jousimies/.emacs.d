@@ -259,3 +259,6 @@
 [submodule "packages/ht"]
 	path = packages/ht
 	url = https://github.com/emacsmirror/ht.git
+[submodule "packages/dashboard"]
+	path = packages/dashboard
+	url = https://github.com/emacsmirror/dashboard.git
