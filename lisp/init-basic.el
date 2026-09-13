@@ -196,9 +196,8 @@ nearly every keystroke."
 (global-so-long-mode 1)
 
 ;; indent
-(with-eval-after-load 'indent
-  (setq tab-always-indent 'complete)
-  (setq tab-first-completion 'word-or-paren-or-punct))
+(setq tab-always-indent 'complete)
+(setq tab-first-completion 'word-or-paren-or-punct)
 
 ;; isearch
 (with-eval-after-load 'isearch

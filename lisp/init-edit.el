@@ -185,5 +185,12 @@
 (add-hook 'conf-mode-hook 'tempel-setup-capf)
 (add-hook 'prog-mode-hook 'tempel-setup-capf)
 (add-hook 'text-mode-hook 'tempel-setup-capf)
+;; (add-hook 'org-mode-hook 'tempel-setup-capf)
+
+(with-eval-after-load 'tempel
+  (setq tempel-path "~/.emacs.d/template/tempel")
+  (define-key tempel-map (kbd "C-p") #'tempel-previous)
+  (define-key tempel-map (kbd "C-n") #'tempel-next))
+
 
 (provide 'init-edit)
