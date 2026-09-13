@@ -30,6 +30,7 @@
 (global-set-key (kbd "C-x p R") #'my/open-project-readme)
 (global-set-key (kbd "C-x p n") #'generate-folder-tree)
 (global-set-key (kbd "M-*") #'tempel-insert)
+(global-set-key (kbd "M-i") 'rimel-convert-string-at-point)
 
 (with-eval-after-load 'org
   (keymap-set org-mode-map "C-c i" #'my/org-yank-media))
