@@ -153,4 +153,6 @@ for example: ((nil . ((my/project-format-on-save . t))))."
 ;; yaml
 (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
 
+;; csv-mode
+
 (provide 'init-prog)
