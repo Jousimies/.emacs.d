@@ -2,8 +2,9 @@
 
 ;; These roots enter the same generated execution plan as every other idle
 ;; task; update_emacs.py expands their observed dependency chains.
-(my/idle-loader-add-features my/idle-loader-feature-roots
-                             my/idle-loader-feature-interval)
+(my/idle-loader-add-features
+ '(org-attach org-goto)
+ my/idle-loader-feature-interval)
 
 (with-eval-after-load 'org
   (setq org-modules nil

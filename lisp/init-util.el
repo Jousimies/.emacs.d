@@ -299,21 +299,6 @@ modules.  With `--debug-init', preserve the usual fail-fast behavior."
   "Log buffer name."
   :type 'string)
 
-(defcustom my/idle-loader-feature-roots
-  '(org
-    org-id
-    org-agenda
-    org-capture
-    org-clock
-    org-attach
-    org-refile
-    org-goto
-    org-archive
-    org-edna
-    org-gtd)
-  "Root features whose dependency order is generated for idle loading."
-  :type '(repeat symbol))
-
 (defcustom my/idle-loader-feature-interval 0.5
   "Seconds of idle time between generated feature-loading tasks."
   :type 'number)

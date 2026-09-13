@@ -1,4 +1,7 @@
 ;; -*- lexical-binding: t; -*-
+(my/idle-loader-add-features
+ '(org-gtd)
+ my/idle-loader-feature-interval)
 
 (with-eval-after-load 'org-agenda
   (setq org-agenda-window-setup 'current-window
