@@ -19,6 +19,7 @@ from .context import (
     PACKAGE_AUTOLOADS,
     PACKAGE_DIR,
     ROOT,
+    elisp_string,
     find_emacs,
     which,
 )
@@ -227,9 +228,20 @@ def doctor_modules(report: DoctorReport) -> None:
 
 
 def doctor_tree_sitter(report: DoctorReport, emacs: str) -> None:
-    script = """
+    grammar_directory = elisp_string(
+        (ROOT / "module" / "tree-sitter").as_posix()
+    )
+    script = f"""
 (if (not (fboundp 'treesit-language-available-p))
     (princ "unsupported\n")
+  (require 'treesit)
+  ;; Doctor runs with -Q, so reproduce the extra path from init-prog.el.
+  ;; Emacs continues to search its standard and system grammar directories.
+  (add-to-list 'treesit-extra-load-path "{grammar_directory}")
+  (when (fboundp 'treesit-library-abi-version)
+    (princ (format "abi=%s..%s\n"
+                   (treesit-library-abi-version t)
+                   (treesit-library-abi-version))))
   (dolist (lang '(python lua))
     (princ (format "%s=%s\n" lang
                    (if (treesit-language-available-p lang) "yes" "no")))))
@@ -241,6 +253,9 @@ def doctor_tree_sitter(report: DoctorReport, emacs: str) -> None:
     if "unsupported" in result.stdout:
         report.warn("当前 Emacs 不支持内建 Tree-sitter")
         return
+    abi = re.search(r"^abi=([0-9]+)\.\.([0-9]+)$", result.stdout, re.M)
+    if abi:
+        report.ok(f"Tree-sitter library 支持 grammar ABI {abi.group(1)}..{abi.group(2)}")
     unavailable = [
         line.split("=", 1)[0]
         for line in result.stdout.splitlines()

@@ -443,6 +443,38 @@ python3 update_emacs.py sync --force -v
 python3 update_emacs.py doctor --strict
 #+end_src
 
+*** Tree-sitter grammar 缺失或 ABI 不兼容
+
+Emacs 依次在 =treesit-extra-load-path=、=user-emacs-directory/tree-sitter/=
+和系统动态库目录查找 grammar。本配置还使用
+=module/tree-sitter/=；=doctor= 会在 =emacs -Q= 检查时显式加入该目录。
+
+检查当前 Tree-sitter library 支持的最旧和最新 grammar ABI：
+
+#+begin_src emacs-lisp
+(list (treesit-library-abi-version t)
+      (treesit-library-abi-version))
+#+end_src
+
+检查单个 grammar：
+
+#+begin_src emacs-lisp
+(treesit-language-available-p 'python t)
+(treesit-language-abi-version 'python)
+#+end_src
+
+grammar ABI 不必等于 library 的最新 ABI，只要位于支持范围内即可。例如 library
+支持 =13..15= 时，ABI 14 grammar 是兼容的。两个 Emacs 安装可以共用 grammar
+的条件是：grammar ABI 同时位于两者的支持范围内，并且操作系统、CPU 架构及动态
+库依赖兼容；macOS 的 =.dylib=、Linux 的 =.so= 和 Windows 的 =.dll= 不能互换。
+
+如果详细结果是 =not-found=，检查文件名是否为
+=libtree-sitter-<language>.<suffix>= 以及搜索目录是否正确。如果是
+=version-mismatch=，应使用目标 Emacs 所支持的 grammar 源码版本重新生成动态库，
+或通过 =treesit-language-source-alist= 配置官方 grammar 仓库后执行
+=M-x treesit-install-language-grammar=。安装时需要 Git、C compiler，部分 grammar
+还需要 C++ compiler。
+
 * 维护脚本结构
 
 =update_emacs.py= 只负责调用入口，功能位于 =core/=：

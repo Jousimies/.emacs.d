@@ -1,10 +1,12 @@
 ;; -*- lexical-binding: t; -*-
 
 ;; treesit
-;; grammar可以从这下载：https://github.com/emacs-tree-sitter/tree-sitter-langs
-;; 不同的 Emacs 版本需要不同 ABI 版本的 grammar, ABI 通过 (treesit-library-abi-version) 查看
-;; 下载后的文件需要改名，如 yaml.dll->libtree-sitter-yaml.dll
-;; 否则 (treesit-language-available-p 'yaml t) 会报错
+;; Grammar ABI need not equal the library's latest ABI: it only needs to fall
+;; within `(treesit-library-abi-version t)' and
+;; `(treesit-library-abi-version)'.  A compiled grammar is otherwise only
+;; reusable on a compatible OS/architecture.  Diagnose a grammar with:
+;; `(treesit-language-available-p 'python t)' and
+;; `(treesit-language-abi-version 'python)'.
 
 (with-eval-after-load 'treesit
   (add-to-list 'treesit-extra-load-path
