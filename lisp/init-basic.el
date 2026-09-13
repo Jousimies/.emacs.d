@@ -60,22 +60,24 @@
   (setq auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-" cache-directory)))
 
 ;; System Coding
+(set-language-environment "UTF-8")
+
+;; 最后调用的优先级最高：
+;; UTF-8 > GB18030 > GBK
+(prefer-coding-system 'chinese-gbk)
+(prefer-coding-system 'gb18030)
 (prefer-coding-system 'utf-8-unix)
 (set-default-coding-systems 'utf-8-unix)
-(set-language-environment "UTF-8")
+
+;; 新建文件、一般子进程默认使用 UTF-8
+(set-default-coding-systems 'utf-8-unix)
+(setq-default buffer-file-coding-system 'utf-8-unix)
 
 (when (eq system-type 'windows-nt)
   ;; 文件名相关
   (setq file-name-coding-system 'gbk)
   (setq locale-coding-system 'gbk)
   (setq w32-unicode-filenames nil)
-  ;; 识别优先级
-  (prefer-coding-system 'gbk)
-  (prefer-coding-system 'gb18030)
-  (prefer-coding-system 'utf-8-unix)
-  ;; 新建文件默认 UTF-8
-  (setq-default buffer-file-coding-system 'utf-8-unix)
-  (set-default-coding-systems 'utf-8-unix)
   ;; 子进程编码
   (setq default-process-coding-system '(gbk-dos . gbk-dos))
   ;; 更精确地针对 cmd / cmdproxy
