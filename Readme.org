@@ -1,75 +1,473 @@
 #+TITLE: My Emacs Configuration
+#+OPTIONS: toc:2 num:nil
 
-* Emacs 使用
+* 简介
 
-首次使用，安装。
-#+begin_src shell
-  git clone --depth=1 https://github.com/Jousimies/.emacs.d.git
-  cd .emacs.d
-  python update_emacs.py setup
+这是一个以快速启动、可诊断和可重复生成为目标的个人 Emacs 配置。
+
+- 第三方 Elisp 包保存在 =packages/=，主要由 Git submodule 管理。
+- =early-init.el= 和 =init.el= 只完成启动所需的最小工作。
+- 其余配置按模块拆分在 =lisp/init-*.el=，窗口建立后统一加载。
+- load-path、autoload、idle plan 和 byte-compile 产物由
+  =update_emacs.py= 生成，不手工维护。
+- package 源码保持不变；=.elc= 写入 =.cache/packages-build/= 镜像。
+
+维护脚本要求 Python 3.10 或更高版本。日常同步还需要可在命令行运行的
+Emacs；Git 是仓库和 submodule 操作的必要依赖。=make=、=rg=、=bsdtar=
+以及 Tree-sitter grammar 根据使用场景可选。
+
+可先运行只读体检查看本机缺少什么：
+
+#+begin_src sh
+python3 update_emacs.py doctor
 #+end_src
 
-日常修改配置或 package 源码后，只需同步本地缓存与 byte-compile 产物：
+如果 Emacs 不在 =PATH= 中，可显式指定：
 
-#+begin_src shell
-  python update_emacs.py
+#+begin_src sh
+EMACS=/path/to/emacs python3 update_emacs.py sync
 #+end_src
 
-脚本的维护命令彼此独立，避免日常同步时隐式执行网络、原生构建或环境设置：
+* 安装与日常使用
 
-- =sync=（默认）：生成 load-path/autoload/idle-feature 缓存并 byte compile
-- =fetch=：仅 fetch 主仓库与 submodule，不切换工作区版本
-- =build=：仅构建 AUCTeX、benchmark-init 和 pdf-tools
-- =setup=：首次安装流程（mail + fetch + build + sync）
-- =doctor=、=env=、=test=、=clean=、=mail=：诊断与专项维护
+** 首次安装
 
-** 维护脚本结构
-
-=update_emacs.py= 只保留命令入口，具体实现位于 =core/=：
-
-- =context.py=：路径、运行参数和进程调用
-- =git.py=、=build.py=：源码获取与原生构建
-- =build_tree.py=：维护用于加载和编译的 Elisp 镜像
-- =autoload.py=、=idle.py=：生成 load-path/autoload 与 idle plan
-- =cache.py=、=compiler.py=：协调缓存生成，并默认 byte compile 所有运行时 package 源码
-- =mail.py=、=environment.py=：用户环境设置与安全快照
-- =doctor.py=、=testing.py=、=cleanup.py=：诊断、测试与清理
-- =cli.py=：参数解析和工作流组合
-
-Idle plan 会在隔离的 batch Emacs 中依次执行所有原始 idle task，记录每个
-task 实际加载的 feature 链，再按“依赖 → 原始动作”的顺序生成缓存。缓存使用
-完整原始队列的 SHA-256 签名校验；新增或调整 idle task 后运行 =sync= 即可自动
-刷新，不再为生成缓存单独保存一份 roots 元数据。
-
-** 需特殊设置的 Packages
-
-*** Benchmark-init
-#+begin_src shell
-  cd ~/.emacs.d/packages/benchmark-init-el/
-  make
+#+begin_src sh
+git clone https://github.com/Jousimies/.emacs.d.git ~/.emacs.d
+cd ~/.emacs.d
+python3 update_emacs.py setup
 #+end_src
 
-使用 --debug-init 参数启用 benchmark.
+=setup= 依次执行：
 
-*** Auctex
-#+begin_src shell
-  cd ~/.emacs.d/packages/auctex/
-  make
+1. 在 macOS/Windows 上检查或设置 =MAIL_ACCOUNT=；
+2. fetch 主仓库并初始化缺失的 submodule；
+3. 构建 AUCTeX、benchmark-init 和 pdf-tools；
+4. 生成缓存并 byte compile。
+
+不使用邮件集成时可以跳过账号询问：
+
+#+begin_src sh
+python3 update_emacs.py setup --no-mail
 #+end_src
 
-make 后会生成 auctex-autoloads.el, 在 Auctex 14 版本中加载此文件即可。
+** 日常同步
 
-* Emacs 启动策略
+修改 =lisp/*.el=、package 源码或 submodule 版本后运行：
 
-1. 启动期 early-init + init
-2. 包管理完成后 after-init-hook
-3. 空闲增量 idle-timer 链式
-4. 真正交互时 first-buffer / first-file / first-input
-5. 命令触发 :commands / :bind / :hook
+#+begin_src sh
+python3 update_emacs.py
+#+end_src
 
-** 配置自检
+不带子命令等价于 =sync=。它会同步 build 镜像，重新生成 load-path、
+autoload 和 idle plan，然后增量 byte compile 发生变化的源码。
 
-- =M-x my/config-report=：查看模块加载状态/耗时、空闲加载队列、生成缓存和外部命令。
-- =M-x my/config-retry-failed-modules=：修复问题后，只重试启动时失败的模块。
-- 普通启动会隔离单个延迟模块的错误并继续；使用 =emacs --debug-init= 时仍会立即中断，便于定位。
-- 项目根目录可通过 =M-x customize-variable RET my/project-folder= 调整；macOS/Linux 默认使用 =~/Repositories/=。
+常用变体：
+
+#+begin_src sh
+# 显示详细生成和编译日志
+python3 update_emacs.py sync -v
+
+# 只刷新缓存，不 byte compile
+python3 update_emacs.py sync --no-compile
+
+# 忽略时间戳，强制重新生成并编译
+python3 update_emacs.py sync --force
+#+end_src
+
+建议在提交配置前执行：
+
+#+begin_src sh
+python3 update_emacs.py sync
+python3 update_emacs.py test
+#+end_src
+
+* update_emacs.py 命令
+
+| 命令     | 作用                                             | 重要参数                               |
+|----------+--------------------------------------------------+----------------------------------------|
+| =sync=   | 生成所有 Elisp 缓存并增量 byte compile；默认命令 | =--no-compile=、=--force=、=-v=        |
+| =fetch=  | fetch 主仓库和所有 submodule；不切换当前版本     | =-v=                                   |
+| =build=  | 运行需要独立构建流程的 package                   | =-v=                                   |
+| =setup=  | 首次安装：mail + fetch + build + sync            | =--no-mail=、=--no-compile=、=--force= |
+| =doctor= | 只读检查环境、模块、submodule 和生成缓存         | =--strict=、=-v=                       |
+| =env=    | 生成白名单 shell 环境快照                        | =-v=                                   |
+| =test=   | 检查 Python/Elisp 语法并运行 batch 启动测试      | =--skip-startup=、=-v=                 |
+| =clean=  | 删除本脚本拥有的生成物                           | =--dry-run=、=-v=                      |
+| =mail=   | 重新设置 =MAIL_ACCOUNT=                          | =-v=                                   |
+
+** fetch 不会修改工作区版本
+
+=fetch= 只更新远程引用，并只初始化尚未初始化的 submodule。它不会执行
+=git pull=，也不会把已经存在的 submodule checkout 强制切回某个提交，因而
+不会覆盖其中的本地分支或修改。
+
+需要真正更新版本时由使用者明确执行，例如：
+
+#+begin_src sh
+git pull --ff-only
+git submodule update --init --recursive
+#+end_src
+
+第二条命令会把 submodule 切到主仓库记录的提交，通常处于 detached HEAD；
+运行前应先确认 submodule 中没有需要保留的本地工作。
+
+** clean 的范围
+
+先预览：
+
+#+begin_src sh
+python3 update_emacs.py clean --dry-run
+#+end_src
+
+=clean= 只删除维护脚本生成的以下内容：
+
+- =.cache/packages-build/=
+- =.cache/idle-features.el=
+- =.cache/environment.el=
+- =.cache/elisp-cache.stamp=
+- =lisp/load-path-cache.el=
+- =lisp/package-autoloads.el=
+
+它不会删除 =packages/=、配置源码或个人数据。清理后运行 =sync= 即可重建。
+
+* 启动流程
+
+配置按以下阶段启动：
+
+1. =early-init.el= 暂时提高 GC 阈值、关闭 package.el 自动激活、恢复 shell
+   环境并设置启动期界面选项。
+2. =init.el= 加载 =init-util=、生成的 load-path/autoload 缓存，以及启动所需的
+   vars、font、modeline、keys。
+3. =window-setup-hook=（daemon 使用首个 client frame）加载
+   =my/config-modules= 中的配置模块。单个模块失败不会阻止其余模块；
+   =--debug-init= 下仍保持 fail-fast。
+4. 模块登记的 idle task 在持续空闲时依次执行。
+5. 其余功能继续由 autoload、命令、按键或 mode hook 按需加载。
+
+可以在 Emacs 内查看状态：
+
+- =M-x my/config-report=：模块状态和耗时、idle 队列、缓存、外部命令及数据路径。
+- =M-x my/config-retry-failed-modules=：修复问题后仅重试失败模块。
+- =emacs --debug-init=：启用 benchmark-init，并在启动错误处立即中断。
+
+* 生成缓存与 build 镜像
+
+** =.cache/packages-build/=
+
+build 镜像让源码和编译产物保持分离：
+
+- macOS/Linux 将 =lisp/*.el= 与 =packages/**/*.el= 链接到镜像；
+- Windows 将源码复制到镜像；
+- byte compiler 在镜像中生成相邻的 =.elc=；
+- 运行时 load-path 优先指向镜像，因此可加载 =.elc=，同时保留 =.el= 回退。
+
+这避免在 submodule 工作区中产生大量未跟踪的 =.elc= 文件。
+
+含有 =.nosearch= 的目录以及 =.git=、=test=、=tests=、=doc= 等目录不会进入
+正常搜索范围。
+
+** =lisp/load-path-cache.el=
+
+该文件包含：
+
+- build 镜像的预计算 load-path；
+- package feature 到 =.elc/.el= 候选文件的索引；
+- =lisp/*.el= 中由 =;;;###autoload= 标记的本地函数 autoload。
+
+它用于减少启动期目录扫描和文件系统查找。不要手工编辑。
+
+** =lisp/package-autoloads.el=
+
+该文件从 package 的 autoload cookie 自动生成。=emacs-reader= 和 =pdf-tools=
+的 autoload 文件存在初始化副作用，因此不进入全局合并文件，由各自配置模块
+显式处理。
+
+** =.cache/environment.el=
+
+=python3 update_emacs.py env= 从登录 shell 读取环境，仅保存代码中允许的变量，
+例如 =PATH=、语言环境和常见工具链路径。不会把整个 shell 环境或任意 secret
+写入缓存；文件权限会尽量设置为 =0600=。
+
+GUI Emacs 启动时优先读取此快照，避免每次启动都创建 login shell。macOS 在
+快照缺失时仍可回退到实时读取 =PATH=。
+
+* Byte compile 策略
+
+=sync= 默认编译所有正常运行时 package 源码。新增普通 package 后，只要其源码位于 =packages/=，下一次 =sync= 就会
+自动纳入编译。
+
+以下文件不会进入通用 byte compiler：
+
+- 文件声明 =no-byte-compile: t=；
+- =-test.el=、=-tests.el=、=-bench.el= 等测试/benchmark 文件；
+- =etc/=、=targets/= 以及被 =.nosearch= 排除的目录；
+- autoload、package metadata 等生成文件；
+- 拥有独立构建流程或已知编译期副作用的 package。
+
+当前 package 级排除项及原因：
+
+| Package             | 原因                                      |
+|---------------------+-------------------------------------------|
+| =auctex=            | 由自身 Makefile 生成和编译                |
+| =auctex-latexmk=    | 编译期依赖 AUCTeX 生成的 =tex-buf=        |
+| =benchmark-init-el= | 由自身 Makefile 构建                      |
+| =emacs-reader=      | autoload/初始化存在副作用，配置中显式处理 |
+| =pdf-tools=         | 依赖平台相关的 native server              |
+| =rimel=             | Makefile 提供编译期所需的 liberime stub   |
+
+这是一份最小 denylist。只有在包明确要求自己的构建系统、声明禁止编译，或可
+稳定复现不安全的编译期副作用时才增加排除项；“暂时缺少依赖”应优先补齐依赖，
+而不是把普通包永久排除。
+
+编译是增量的：镜像中的 =.elc= 缺失或比源码旧时才重编。=--force= 可强制重编，
+=-v= 可显示每个 worker 的详细输出。最多使用 4 个并行 worker。
+
+* Idle loader
+
+** 设计目标
+
+idle loader 将较重但希望提前准备的功能拆成小任务，只在 Emacs 持续空闲时执行。
+运行时不会扫描 package 依赖；依赖发现放在 =sync= 阶段的隔离 batch Emacs 中完成。
+
+完整流程如下：
+
+1. 配置模块通过 =my/idle-loader-add-features= 或 =my/idle-loader-add= 登记原始任务。
+2. =scripts/generate-idle-features.el= 在新的 batch Emacs 中加载正常配置。
+3. 生成器按原始队列顺序执行每项任务，记录该任务实际新增的 feature。
+4. 对 =require= 任务，以观察到的 feature 链替代原任务；对 mode/function 等动作，
+   先输出依赖，再保留原动作。
+5. =core/idle.py= 将结果写入 =.cache/idle-features.el=。
+6. 启动时 =my/idle-loader--prepare= 校验平台、Emacs 版本和完整原始队列的
+   SHA-256 签名，然后用生成计划替换原始队列。
+
+缓存缺失、损坏、平台/Emacs 版本不一致或签名过期时，loader 不会使用旧计划，
+而是保留原始队列作为安全回退。修改任何 idle task 后运行 =sync= 会刷新签名和
+计划。
+
+** 入口 feature 与依赖 feature
+
+生成器可以自动展开执行链，但无法判断哪些安装包应该主动预热。自动加载所有
+package 或所有 =with-eval-after-load= 目标会破坏按需加载语义，因此入口 feature
+必须由拥有它的配置模块显式登记，依赖 feature 不需要手工列出。
+
+例如 GTD 模块只登记顶层入口：
+
+#+begin_src emacs-lisp
+(my/idle-loader-add-features
+ '(org-gtd)
+ my/idle-loader-feature-interval)
+#+end_src
+
+=org-gtd= 的 Org、transient、compat 等依赖由生成器自动发现。=org-attach= 和
+=org-goto= 不属于 =org-gtd= 的执行依赖，但配置希望提前准备它们，所以由
+=init-org.el= 单独登记：
+
+#+begin_src emacs-lisp
+(my/idle-loader-add-features
+ '(org-attach org-goto)
+ my/idle-loader-feature-interval)
+#+end_src
+
+不存在共享的 =my/idle-loader-feature-roots= 或生成版 roots 清单；每个模块只声明
+自己负责的入口。以后增加 package 时，如需 idle 预热，在对应模块登记其顶层
+feature，随后运行 =sync=，执行链会自动生成。
+
+任意非 =require= 动作也可以进入队列：
+
+#+begin_src emacs-lisp
+(my/idle-loader-add
+ '(some-global-mode)
+ '(0.8 . (another-initialization-form)))
+#+end_src
+
+普通 form 使用 =my/idle-loader-interval=；=(DELAY . FORM)= 可指定执行该项后、
+调度下一项前所需的持续空闲时间。
+
+** 生成和验证
+
+只生成缓存、不编译：
+
+#+begin_src sh
+python3 update_emacs.py sync --no-compile
+#+end_src
+
+运行启动 smoke test 会确认生成计划的签名与当前原始队列一致：
+
+#+begin_src sh
+python3 update_emacs.py test
+#+end_src
+
+** 性能分析
+
+先执行 =sync=，再运行：
+
+#+begin_src sh
+emacs --batch -Q --load scripts/profile-idle-loader.el
+#+end_src
+
+profiler 使用与真实启动相同的 =my/idle-loader--prepare= 流程，并输出：
+
+- 原始任务数；
+- 使用 =generated cache= 还是 =raw fallback=；
+- 展开后的完整计划；
+- 每项执行时间、加载的 feature 和 GC 次数；
+- 成功/失败数、纯执行时间和包含配置间隔的理论总时间。
+
+生成计划中的 =require= 使用 =noerror=，以保证交互启动不会因单项缺失而中断；
+profiler 会额外检查其返回值，将找不到 feature 的情况明确报告为失败。
+
+* 增加或更新配置
+
+** 增加 package
+
+推荐流程：
+
+1. 将 package 放入 =packages/<name>/=；通常以 Git submodule 管理。
+2. 运行 =python3 update_emacs.py sync=，生成 load-path、autoload 和编译产物。
+3. 在已有 =lisp/init-*.el= 中添加配置；如职责独立，再建立新模块并将它加入
+   =init.el= 的 =my/config-modules=。
+4. 只有确实希望启动后预热时，才在该模块调用 =my/idle-loader-add-features=。
+5. 运行 =python3 update_emacs.py test=。
+
+不要把 package 的全部内部 feature 手工加入 idle 队列；只登记顶层入口，让生成器
+按实际执行链展开。
+
+** 增加配置模块
+
+新模块至少应满足：
+
+#+begin_src emacs-lisp
+;; lisp/init-example.el
+;; -*- lexical-binding: t; -*-
+
+;; configuration ...
+
+(provide 'init-example)
+#+end_src
+
+然后把 =init-example= 加入 =init.el= 中的 =my/config-modules=。=doctor= 会检查模块
+文件是否存在、是否重复，以及是否 =provide= 了与模块名一致的 feature。
+
+* 独立构建的 Packages
+
+运行全部受支持的独立构建步骤：
+
+#+begin_src sh
+python3 update_emacs.py build
+#+end_src
+
+** AUCTeX 与 benchmark-init
+
+脚本在各自 package 目录运行 Makefile，并把检测到的 Emacs 可执行文件传给构建
+系统。也可以手工执行：
+
+#+begin_src sh
+make -C packages/auctex
+make -C packages/benchmark-init-el
+#+end_src
+
+AUCTeX 的 autoload 等文件由自身构建过程生成。=benchmark-init= 只在使用
+=emacs --debug-init= 时加载。
+
+** pdf-tools
+
+- macOS：=build= 不在源码目录 make；首次需要时可执行 =M-x pdf-tools-install=。
+- Linux：在 =packages/pdf-tools/= 执行 =make -s=。
+- Windows：优先使用与当前 MSYS2 环境匹配的 pdf-tools server package，并确保
+  相应的 =mingw64/ucrt64/clang64/bin= 位于 =PATH=。
+
+* 测试与故障排查
+
+** 测试层级
+
+=python3 update_emacs.py test= 包含：
+
+1. 解析 =update_emacs.py= 和 =core/*.py=，检查 Python 语法；
+2. 读取 =early-init.el=、=init.el=、=lisp/*.el= 和 =scripts/*.el= 的所有 form，
+   检查括号及 Elisp 读取错误；
+3. 在 =emacs --batch -Q --debug-init= 中加载完整配置和全部延迟模块；
+4. 校验 idle plan 签名，并检查是否有模块加载失败。
+
+只做快速语法检查：
+
+#+begin_src sh
+python3 update_emacs.py test --skip-startup
+#+end_src
+
+完整测试依赖已生成缓存；若提示缺少缓存，先运行 =sync=。
+
+** 常见问题
+
+*** 启动提示运行 update_emacs.py
+
+说明 =lisp/load-path-cache.el= 或 =lisp/package-autoloads.el= 不存在。运行：
+
+#+begin_src sh
+python3 update_emacs.py sync
+#+end_src
+
+*** 修改配置后 idle plan 仍显示 raw fallback
+
+原始队列签名已经变化，而缓存尚未刷新。运行：
+
+#+begin_src sh
+python3 update_emacs.py sync --no-compile
+python3 update_emacs.py test
+#+end_src
+
+*** 升级 Emacs 后出现旧缓存或旧 elc 问题
+
+#+begin_src sh
+python3 update_emacs.py clean
+python3 update_emacs.py sync --force
+python3 update_emacs.py test
+#+end_src
+
+*** Byte compile 失败
+
+使用详细模式确定具体文件和错误：
+
+#+begin_src sh
+python3 update_emacs.py sync --force -v
+#+end_src
+
+优先确认 package 的必需依赖是否已经加入 =packages/=。只有 package 明确拥有独立
+构建流程或编译行为确实不安全时，才考虑修改 =PACKAGE_BYTE_COMPILE_EXCLUDES=。
+
+*** Doctor 有 warning
+
+普通 =doctor= 只有 error 才返回失败；CI 或严格检查可使用：
+
+#+begin_src sh
+python3 update_emacs.py doctor --strict
+#+end_src
+
+* 维护脚本结构
+
+=update_emacs.py= 只负责调用入口，功能位于 =core/=：
+
+| 文件             | 职责                                         |
+|------------------+----------------------------------------------|
+| =cli.py=         | 命令行解析与工作流编排                       |
+| =context.py=     | 路径、运行选项、日志和子进程工具             |
+| =git.py=         | 安全 fetch 与缺失 submodule 初始化           |
+| =build.py=       | AUCTeX、benchmark-init、pdf-tools 的平台构建 |
+| =build_tree.py=  | 同步源码到 build 镜像                        |
+| =autoload.py=    | 生成 load-path、feature 索引和 autoload      |
+| =idle.py=        | 调用 Elisp 生成器并写入 idle plan            |
+| =cache.py=       | 协调并校验全部 Elisp 缓存                    |
+| =compiler.py=    | 收集并并行 byte compile 运行时源码           |
+| =environment.py= | 生成白名单 shell 环境快照                    |
+| =mail.py=        | 显式设置 =MAIL_ACCOUNT=                      |
+| =doctor.py=      | 只读健康检查                                 |
+| =testing.py=     | Python/Elisp 语法与启动 smoke test           |
+| =cleanup.py=     | 删除脚本拥有的生成物                         |
+
+Elisp 辅助脚本：
+
+- =scripts/generate-idle-features.el=：在隔离 batch Emacs 中发现 idle 执行链。
+- =scripts/profile-idle-loader.el=：执行准备后的 idle plan 并输出逐项性能数据。
+
+生成文件均带有 =DO NOT EDIT= 标记；修改生成逻辑时应改 =core/= 或 =scripts/=，
+然后重新运行 =sync=。
