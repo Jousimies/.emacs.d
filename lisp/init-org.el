@@ -1,15 +1,5 @@
 ;; -*- lexical-binding: t; -*-
 
-(declare-function denote-sluggify "denote" (component string))
-
-(defun my/org-yank-image-file-name ()
-  "Return a timestamped, Denote-style name for an image pasted into Org."
-  (let ((title (string-trim (read-string "Image name (optional): "))))
-    (concat (format-time-string "%Y%m%dT%H%M%S")
-            (unless (string-empty-p title)
-              (require 'denote)
-              (concat "--" (denote-sluggify 'title title))))))
-
 ;; These roots enter the same generated execution plan as every other idle
 ;; task; update_emacs.py expands their observed dependency chains.
 (my/idle-loader-add-features
@@ -44,8 +34,7 @@
   	org-lowest-priority ?D
   	org-priority-default ?C
 	org-columns-default-format "%50ITEM %TODO %3PRIORITY %TAGS"
-	org-persist-directory (expand-file-name "org-persist" cache-directory))
-  (keymap-set org-mode-map "C-c i" #'yank-media))
+	org-persist-directory (expand-file-name "org-persist" cache-directory)))
 
 ;; ob-core
 (with-eval-after-load 'ob-core

@@ -196,6 +196,81 @@ If ASYNC is non-nil, use async-shell-command."
                    nil t))
 
 
+;; init-org
+(declare-function denote-sluggify "denote" (component string))
+
+(defvar my/org-yank-image-caption nil
+  "Caption collected while naming an image pasted into Org.")
+
+(defun my/org-yank-image-file-name ()
+  "Return a timestamped, Denote-style name for an image pasted into Org."
+  (let ((title (string-trim (read-string "Image name (optional): "))))
+    (setq my/org-yank-image-caption title)
+    (concat (format-time-string "%Y%m%dT%H%M%S")
+            (unless (string-empty-p title)
+              (require 'denote)
+              (concat "--" (denote-sluggify 'title title))))))
+
+;;;###autoloads
+(defun my/org-yank-media ()
+  "Yank an image into Org as an attributed, immediately previewed figure."
+  (interactive)
+  (unless (derived-mode-p 'org-mode)
+    (user-error "This command is only available in Org buffers"))
+  ;; Inserting on the headline itself would split the headline when
+  ;; `org-attach' subsequently adds its ATTACH tag and property drawer.
+  (when (org-at-heading-p)
+    (org-end-of-meta-data t))
+  (let ((beg (copy-marker (point) nil))
+        end
+        image-p
+        (my/org-yank-image-caption nil))
+    (unwind-protect
+        (progn
+          (call-interactively #'yank-media)
+          (setq end (copy-marker (point) t))
+          (save-excursion
+            (goto-char beg)
+            (let* ((link (org-element-context))
+                   (raw-link (and (eq (org-element-type link) 'link)
+                                  (org-element-property :raw-link link))))
+              (when (and raw-link
+                         (member (org-element-property :type link)
+                                 '("attachment" "file"))
+                         (string-match-p (image-file-name-regexp) raw-link))
+                (setq image-p t)
+                ;; `yank-media' creates a described attachment link.  Remove
+                ;; the description so Org treats it as an inline image.
+                (let ((link-beg (org-element-begin link))
+                      (link-end (org-element-end link)))
+                  (delete-region link-beg link-end)
+                  (goto-char link-beg)
+                  (insert (org-link-make-string raw-link)))))
+            (when image-p
+              (goto-char beg)
+              (unless (bolp)
+                (insert "\n"))
+              (unless (or (bobp)
+                          (save-excursion
+                            (forward-line -1)
+                            (looking-at-p "[[:space:]]*$")))
+                (insert "\n"))
+              (insert (format "#+CAPTION: %s\n"
+                              (or my/org-yank-image-caption ""))
+                      "#+ATTR_ORG: :width 500px\n"
+                      "#+ATTR_LATEX: :width 12cm :placement [!htpb]\n"
+                      "#+ATTR_HTML: :width 600px\n")
+              (goto-char end)
+              (unless (eolp)
+                (insert "\n"))))
+          (when image-p
+            (org-link-preview-region nil t beg end)))
+      (set-marker beg nil)
+      (when end
+        (set-marker end nil)))))
+
+
+
 ;;; Commands
 
 ;;;###autoload

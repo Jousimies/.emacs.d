@@ -1,5 +1,19 @@
 ;; -*- lexical-binding: t; -*-
 
+;; 设置 which-key 显示的快捷键名称，比显示 +prefix 更明确
+(with-eval-after-load 'which-key
+  (dolist (map '(("M-s h" . "highlight")
+		 ("C-x 8" . "unicode")
+                 ("C-x 8 e" . "emoji")
+		 ("C-c e" . "Denote Explore")
+		 ("C-c f" . "Folder/Files")
+		 ("SPC f" . "Folder/Files")
+		 ("SPC n" . "Notes")
+		 ("SPC b" . "Buffer")
+		 ("C-x n" . "narrow")
+		 ))
+    (which-key-add-key-based-replacements (car map) (cdr map))))
+
 ;; 常用快捷键绑定
 ;; M-s prefix meas search something
 ;; M-g prefix meas go to somewhere
@@ -15,21 +29,11 @@
 
 (global-set-key (kbd "C-x p R") #'my/open-project-readme)
 (global-set-key (kbd "C-x p n") #'generate-folder-tree)
-
+(global-set-key (kbd "M-*") #'tempel-insert)
 
-;; 设置 which-key 显示的快捷键名称，比显示 +prefix 更明确
-(with-eval-after-load 'which-key
-  (dolist (map '(("M-s h" . "highlight")
-		 ("C-x 8" . "unicode")
-                 ("C-x 8 e" . "emoji")
-		 ("C-c e" . "Denote Explore")
-		 ("C-c f" . "Folder/Files")
-		 ("SPC f" . "Folder/Files")
-		 ("SPC n" . "Notes")
-		 ("SPC b" . "Buffer")
-		 ("C-x n" . "narrow")
-		 ))
-    (which-key-add-key-based-replacements (car map) (cdr map))))
+(with-eval-after-load 'org
+  (keymap-set org-mode-map "C-c i" #'my/org-yank-media))
+
 
 (defvar-keymap my/file-prefix-map
   :doc "Prefix map for file."
