@@ -294,6 +294,7 @@ nearly every keystroke."
 
 ;; electric
 (add-hook 'prog-mode-hook #'electric-pair-mode)
+(add-hook 'lisp-interaction-mode-hook #'electric-pair-mode)
 (add-hook 'prog-mode-hook (lambda () (electric-indent-local-mode 1)))
 (add-hook 'text-mode-hook #'electric-quote-mode)
 (add-hook 'prog-mode-hook #'electric-layout-mode)
