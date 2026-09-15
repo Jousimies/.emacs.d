@@ -94,5 +94,19 @@
 (with-eval-after-load 'pdf-tools
   (require 'saveplace-pdf-view))
 
+
+;; elfeed
+;; Somewhere in your .emacs file
+(with-eval-after-load 'elfeed
+  (setq elfeed-db-directory (expand-file-name ".elfeed" cache-directory))
+  (setq-default elfeed-search-filter "@1week +unread")
+  (setq elfeed-feeds '(("https://planet.emacslife.com/atom.xml" planet emacslife)
+                       ("http://www.masteringemacs.org/feed/" mastering)
+                       ("https://oremacs.com/atom.xml" oremacs)
+                       ("https://pinecast.com/feed/emacscast" emacscast)
+                       ("https://emacstil.com/feed.xml" Emacs TIL)
+                       ;; ("https://www.reddit.com/r/emacs.rss" reddit)
+                       )))
+
 
 (provide 'init-reader)

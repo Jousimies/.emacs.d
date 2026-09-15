@@ -271,3 +271,6 @@
 [submodule "packages/tempel-collection"]
 	path = packages/tempel-collection
 	url = https://github.com/Crandel/tempel-collection.git
+[submodule "packages/elfeed"]
+	path = packages/elfeed
+	url = https://github.com/emacs-elfeed/elfeed.git

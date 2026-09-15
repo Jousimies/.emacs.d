@@ -35,6 +35,7 @@
 (with-eval-after-load 'org
   (keymap-set org-mode-map "C-c i" #'my/org-yank-media))
 
+(keymap-global-set "C-x w" #'elfeed)
 
 (defvar-keymap my/file-prefix-map
   :doc "Prefix map for file."
