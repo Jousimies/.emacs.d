@@ -139,13 +139,13 @@
 (with-eval-after-load 'evil
   (evil-set-leader '(normal visual motion) (kbd "SPC"))
 
-  (evil-define-key '(normal visual motion) 'global
+  (evil-define-key* '(normal visual motion) 'global
     (kbd "<leader> SPC") #'set-mark-command
     (kbd "<leader> f")   my/file-prefix-map
     (kbd "<leader> b")   my/buffer-prefix-map
     (kbd "<leader> n")   #'my/note-menu)
 
-  (evil-define-key 'insert 'global
+  (evil-define-key* 'insert 'global
     (kbd "C-\\") #'toggle-input-method))
 
 (with-eval-after-load 'viper
@@ -162,6 +162,13 @@
 ;; Bind keys under g prefix
 ;; 高频使用的单一命令
 ;; gh 等命令在某些 buffer 中会不可用，还是使用 M-o 进行转换。
+(with-eval-after-load 'evil
+  (evil-define-key* '(normal visual motion) 'global
+    (kbd "U") #'vundo
+    (kbd "gs") #'my/org-insert-emphasis-with-zws
+    (kbd "gS") #'my/org-element-unwrap-emphasis
+    ))
+
 (with-eval-after-load 'viper
   (define-key viper-vi-global-user-map (kbd "gg") #'beginning-of-buffer)
   (define-key viper-vi-global-user-map (kbd "gd") #'xref-find-definitions)

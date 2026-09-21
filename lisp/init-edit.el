@@ -127,7 +127,11 @@
 (add-hook 'on-first-input-hook #'sis-global-inline-mode)
 (add-hook 'on-first-input-hook #'sis-global-context-mode)
 (add-hook 'on-first-input-hook #'sis-global-cursor-color-mode)
-(add-hook 'viper-vi-state-hook #'sis-set-english)
+
+(with-eval-after-load 'viper
+  (add-hook 'viper-vi-state-hook #'sis-set-english))
+(with-eval-after-load 'evil
+  (add-hook 'evil-insert-state-exit-hook #'sis-set-english))
 
 (with-eval-after-load 'sis
   (sis-ism-lazyman-config nil "rimel" 'native)
