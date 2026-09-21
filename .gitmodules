@@ -274,3 +274,9 @@
 [submodule "packages/elfeed"]
 	path = packages/elfeed
 	url = https://github.com/emacs-elfeed/elfeed.git
+[submodule "packages/evil"]
+	path = packages/evil
+	url = https://github.com/emacs-evil/evil.git
+[submodule "packages/evil-collection"]
+	path = packages/evil-collection
+	url = https://github.com/emacs-evil/evil-collection.git

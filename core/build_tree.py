@@ -16,12 +16,29 @@ from .context import (
     log,
 )
 
+# Some packages deliberately put runtime sources below a `.nosearch` directory
+# and load them by an explicit relative path instead of through `load-path`.
+# Keep those sources in the build mirror while still excluding the directory
+# from load-path, feature-cache, and autoload discovery.
+RUNTIME_NOSEARCH_DIRS = {Path("evil-collection/modes")}
+
 
 def should_skip_directory(path: Path) -> bool:
     name = path.name
     if name in {".git", "CVS", "RCS", "__pycache__", "test", "tests", "doc", "docs"}:
         return True
     return name.startswith(".") or (path / ".nosearch").exists()
+
+
+def should_skip_build_directory(path: Path) -> bool:
+    """Return whether PATH should be omitted from the runtime build mirror."""
+    try:
+        relative = path.relative_to(PACKAGE_DIR)
+    except ValueError:
+        relative = None
+    if relative in RUNTIME_NOSEARCH_DIRS:
+        return False
+    return should_skip_directory(path)
 
 
 def contains_elisp(files: list[str]) -> bool:
@@ -63,16 +80,19 @@ def collect_build_source_files() -> list[Path]:
         return files
 
     for package in sorted(PACKAGE_DIR.iterdir()):
-        if not package.is_dir() or should_skip_directory(package):
+        if not package.is_dir() or should_skip_build_directory(package):
             continue
         for current, dirs, names in os.walk(package):
             current_path = Path(current)
-            if (current_path / ".nosearch").exists():
+            if (
+                current_path != package
+                and should_skip_build_directory(current_path)
+            ):
                 dirs[:] = []
                 continue
             dirs[:] = [
                 directory for directory in dirs
-                if not should_skip_directory(current_path / directory)
+                if not should_skip_build_directory(current_path / directory)
             ]
             for name in names:
                 path = current_path / name

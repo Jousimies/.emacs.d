@@ -52,6 +52,7 @@
   "k" #'kill-buffer
   "p" #'previous-buffer
   "n" #'next-buffer
+  "b" #'switch-to-buffer
   )
 
 (defvar-keymap my/window-prefix-map
@@ -132,43 +133,21 @@
   (my/ensure-key-transients)
   (call-interactively #'my/note-menu--transient))
 
-;; Viper 的 insert map 优先级高于 `electric-pair-mode-map'。
-;; 直接绑定到 `delete-backward-char' 会绕过 Emacs 原生的成对删除；
-;; 但直接绑定到 `electric-pair-delete-pair' 在普通位置会报 end-of-buffer。
-(defun my/electric-pair-adjacent-p ()
-  "Return non-nil when point is between an adjacent pair like (|) or \"|\"."
-  (let ((prev (char-before))
-        (next (char-after)))
-    (and prev next
-         (or (eq (cdr (assq prev electric-pair-pairs)) next)
-             (eq (cdr (assq prev electric-pair-text-pairs)) next)
-             (and (eq (char-syntax prev) ?\()
-                  (eq (char-syntax next) ?\))
-                  (ignore-errors
-                    (= (scan-sexps (1- (point)) 1) (1+ (point)))))))))
 
-(defun my/viper-electric-backward-delete (&optional arg killp)
-  "Delete backward in Viper insert state, preserving electric pair deletion."
-  (interactive "p\nP")
-  (if (and (bound-and-true-p electric-pair-mode)
-           (my/electric-pair-adjacent-p))
-      (electric-pair-delete-pair arg killp)
-    (backward-delete-char-untabify arg killp)))
-
-(with-eval-after-load 'viper
-  (require 'elec-pair)
-  (define-key viper-insert-global-user-map [backspace]
-              #'my/viper-electric-backward-delete)
-  (define-key viper-insert-global-user-map (kbd "C-h")
-              #'my/viper-electric-backward-delete)
-  (define-key viper-insert-global-user-map (kbd "DEL")
-              #'my/viper-electric-backward-delete)
-  (define-key viper-insert-global-user-map [?\C-?]
-              #'my/viper-electric-backward-delete))
-
-
 ;; Bind keys under SPC
 ;; 高频使用集合命令
+(with-eval-after-load 'evil
+  (evil-set-leader '(normal visual motion) (kbd "SPC"))
+
+  (evil-define-key '(normal visual motion) 'global
+    (kbd "<leader> SPC") #'set-mark-command
+    (kbd "<leader> f")   my/file-prefix-map
+    (kbd "<leader> b")   my/buffer-prefix-map
+    (kbd "<leader> n")   #'my/note-menu)
+
+  (evil-define-key 'insert 'global
+    (kbd "C-\\") #'toggle-input-method))
+
 (with-eval-after-load 'viper
   (defvar my/viper-leader-map (make-sparse-keymap))
   (define-key viper-vi-global-user-map (kbd "SPC") my/viper-leader-map)
