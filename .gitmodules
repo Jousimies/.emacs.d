@@ -48,7 +48,7 @@
 	url = https://github.com/karthink/consult-dir.git
 [submodule "packages/consult-notes"]
 	path = packages/consult-notes
-	url = https://codeberg.org/mclear-tools/consult-notes.git
+	url = https://github.com/Jousimies/consult-notes.git
 [submodule "packages/dash.el"]
 	path = packages/dash.el
 	url = https://github.com/magnars/dash.el.git

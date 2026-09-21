@@ -63,6 +63,7 @@
 
 ;; consult-notes
 (with-eval-after-load 'consult-notes
+  (setq consult-notes-denote-display-keywords-width 28)
   (setq consult-notes-denote-files-function (lambda () (denote-directory-files nil t t))))
 (with-eval-after-load 'consult
   (consult-notes-denote-mode))
