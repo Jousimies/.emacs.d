@@ -280,3 +280,6 @@
 [submodule "packages/evil-collection"]
 	path = packages/evil-collection
 	url = https://github.com/emacs-evil/evil-collection.git
+[submodule "packages/evil-surround"]
+	path = packages/evil-surround
+	url = https://github.com/emacs-evil/evil-surround.git

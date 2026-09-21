@@ -5,6 +5,8 @@
 (add-hook 'on-first-buffer-hook 'evil-mode)
 (add-hook 'evil-mode-hook 'evil-collection-init)
 
+(add-hook 'evil-mode-hook 'global-evil-surround-mode)
+
 ;; (add-hook 'on-first-buffer-hook 'viper-mode)
 ;; (setq viper-mode t
 ;;       viper-expert-level 5
