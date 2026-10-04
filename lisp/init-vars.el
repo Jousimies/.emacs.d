@@ -97,5 +97,8 @@
       citar-library-paths `(,(expand-file-name "PDF/" my-galaxy))
       citar-notes-paths `(,(expand-file-name "References" my/denote-directory)))
 
+(setq beanbox-root-directory (expand-file-name "Finance" my-galaxy))
+(setq beanbox-program (expand-file-name "~/.venv/bin/beanbox"))
+
 
 (provide 'init-vars)
