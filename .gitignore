@@ -17,3 +17,4 @@ load-path-cache.el
 package-autoloads.el
 build-emacs-macos
 bookmarks.eld
+projects.eld
