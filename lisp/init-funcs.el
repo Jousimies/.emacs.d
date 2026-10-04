@@ -755,3 +755,52 @@ STRUCTURE-TYPE: 结构类型，:new 或 :reinforcement"
                               :category 'file
                               :sort nil)))
     (find-file (cdr (assoc name table)))))
+
+
+;; Beancount
+(defvar my/beancount-date-regexp
+  "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}"
+  "匹配 Beancount 日期指令开头 (YYYY-MM-DD) 的正则表达式。")
+
+(defun my/beancount--goto-directive-start ()
+  "从当前位置向上回溯，跳过属于当前指令的前置注释和空行。"
+  (while (and (> (point) (point-min))
+              (save-excursion
+                (forward-line -1)
+                (looking-at "^[ \t]*\\(?:;.*\\)?$")))
+    (forward-line -1)))
+
+(defun my/beancount-sort-buffer-by-date ()
+  "按日期对当前 Buffer 中的所有 Beancount 指令进行排序。"
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (if (not (re-search-forward my/beancount-date-regexp nil t))
+          (message "未找到带日期的 Beancount 指令")
+
+        (beginning-of-line)
+        (my/beancount--goto-directive-start)
+
+        (narrow-to-region (point) (point-max))
+        (goto-char (point-min))
+
+        (sort-subr
+         nil
+         (lambda ()
+           (unless (looking-at my/beancount-date-regexp)
+             (re-search-forward my/beancount-date-regexp nil 'move)
+             (beginning-of-line)))
+
+         (lambda ()
+           (forward-line 1)
+           (when (re-search-forward my/beancount-date-regexp nil t)
+             (beginning-of-line)
+             (my/beancount--goto-directive-start)))
+
+         (lambda () (re-search-forward my/beancount-date-regexp nil t) (match-beginning 0))
+         (lambda () (match-end 0)))
+
+        (message "Beancount 已经按日期排序完成")))))
+
