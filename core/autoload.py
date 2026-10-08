@@ -30,7 +30,10 @@ from .context import (
 )
 
 FEATURE_RE = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9_+-]*$")
-AUTOLOAD_DEF_RE = re.compile(r"^\s*\((?:cl-)?defun\s+([^\s()]+)", re.M)
+AUTOLOAD_DEF_RE = re.compile(
+    r"^\s*\((?:(?:cl-)?defun|define-minor-mode)\s+([^\s()]+)",
+    re.M,
+)
 
 # These packages have side-effectful autoload cookies and must be configured
 # explicitly instead of entering the global package-autoloads.el.
@@ -113,7 +116,7 @@ def collect_package_autoload_dirs() -> list[Path]:
 
 
 def collect_config_autoloads() -> list[tuple[str, str]]:
-    """Collect ;;;###autoload defuns from lisp/*.el."""
+    """Collect autoloadable function and minor-mode definitions from lisp/*.el."""
     autoloads: list[tuple[str, str]] = []
     if not CONFIG_LISP_DIR.is_dir():
         return autoloads
