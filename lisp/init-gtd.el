@@ -232,4 +232,13 @@ Optional argument ACCOUNT specifies the target Microsoft account email."
 (when (eq system-type 'windows-nt)
   (add-hook 'org-clock-out-hook #'org2calendar-send-to-ms-if-nonzero))
 
+(add-hook 'org-mode-hook
+          (lambda () (org2calendar-auto-pull-mode 1)))
+
+(with-eval-after-load 'org2calendar
+  (module-load (expand-file-name "module/liborg2calendar.dylib" user-emacs-directory))
+  (setq org2calendar-reminder-list "Work"
+	org2calendar-auto-pull-idle-seconds 300
+	org2calendar-auto-pull-debounce-seconds 30))
+
 (provide 'init-gtd)

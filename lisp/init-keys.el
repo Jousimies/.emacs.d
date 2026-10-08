@@ -35,6 +35,10 @@
 (with-eval-after-load 'org
   (keymap-set org-mode-map "C-c i" #'my/org-yank-media))
 
+(with-eval-after-load 'org-agenda
+    (keymap-set org-agenda-mode-map "C-c C-r" #'org2calendar-sync-agenda-tasks)
+    (keymap-set org-agenda-mode-map "C-c C-e" #'org2calendar-show-project-tasks))
+
 (keymap-global-set "C-x w" #'elfeed)
 
 (defvar-keymap my/file-prefix-map
