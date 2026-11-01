@@ -44,6 +44,7 @@
 (defvar-keymap my/file-prefix-map
   :doc "Prefix map for file."
   "w" #'find-file-other-window
+  "f" #'find-file
   ;; "j" #'find-file-other-window-no-jump
   "p" #'find-file-at-point
   "t" #'find-file-other-tab
@@ -161,6 +162,10 @@
   (define-key my/viper-leader-map (kbd "b") my/buffer-prefix-map)
   (define-key my/viper-leader-map (kbd "n") #'my/note-menu)
   )
+
+(define-key global-map (kbd "C-c n") #'my/note-menu)
+(keymap-global-set "C-c f" my/file-prefix-map)
+(keymap-global-set "C-c b" my/buffer-prefix-map)
 
 
 ;; Bind keys under g prefix

@@ -124,12 +124,13 @@
   (setq liberime-regexp-segment-mode nil)
   (global-set-key [remap goto-char] #'liberime-regexp-avy-goto-char-timer))
 
-(add-hook 'on-first-input-hook #'sis-global-inline-mode)
-(add-hook 'on-first-input-hook #'sis-global-context-mode)
-(add-hook 'on-first-input-hook #'sis-global-cursor-color-mode)
+;; (add-hook 'on-first-input-hook #'sis-global-inline-mode)
+;; (add-hook 'on-first-input-hook #'sis-global-context-mode)
+;; (add-hook 'on-first-input-hook #'sis-global-cursor-color-mode)
 
 (with-eval-after-load 'viper
   (add-hook 'viper-vi-state-hook #'sis-set-english))
+
 (with-eval-after-load 'evil
   (add-hook 'evil-insert-state-exit-hook #'sis-set-english))
 

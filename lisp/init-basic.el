@@ -378,7 +378,7 @@ nearly every keystroke."
 
 
 ;; which-key-mode
-(add-hook 'on-first-input-hook #'which-key-mode)
+;; (add-hook 'on-first-input-hook #'which-key-mode)
 (with-eval-after-load 'which-key
   (setq which-key-idle-delay 0.1
 	which-key-show-remaining-keys t))

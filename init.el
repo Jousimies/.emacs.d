@@ -34,7 +34,7 @@
 
       (setq my/config-modules
 	    '(init-basic
-	      init-modal
+	      ;; init-modal
 	      init-completion
 	      init-edit
 	      init-dired
