@@ -122,7 +122,7 @@
   (setq async-shell-command-display-buffer nil))
 
 ;; Server
-(add-hook 'on-first-file-hook #'server-start)
+(add-hook 'on-first-buffer-hook #'server-start)
 (with-eval-after-load 'server
   (setq server-client-instructions nil))
 
